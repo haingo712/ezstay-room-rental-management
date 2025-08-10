@@ -3,11 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAPI", "RoomAPI\RoomAPI.csproj", "{BF4B2353-E872-448E-8498-D5B87F4E1592}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D71A3243-6B05-4402-B340-49BC4DA41276}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2A83EB78-7731-4736-8DBD-554BD53E3874}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 	EndGlobalSection
 EndGlobal
