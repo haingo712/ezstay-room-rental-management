@@ -3,11 +3,28 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmenityAPI", "AmenityAPI\AmenityAPI.csproj", "{2879C737-2F8F-4D71-ACB1-44C3DC273CC3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DA3EEAD8-13EC-4575-A786-1999AB6E06E4}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2A83EB78-7731-4736-8DBD-554BD53E3874}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2879C737-2F8F-4D71-ACB1-44C3DC273CC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2879C737-2F8F-4D71-ACB1-44C3DC273CC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2879C737-2F8F-4D71-ACB1-44C3DC273CC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2879C737-2F8F-4D71-ACB1-44C3DC273CC3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 EndGlobal
