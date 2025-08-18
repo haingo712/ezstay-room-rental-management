@@ -10,6 +10,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		compose.yaml = compose.yaml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAmenityAPI", "RoomAmenityAPI\RoomAmenityAPI.csproj", "{756C34C4-2DBC-4D2B-A83D-2A32E831285F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAPI", "RoomAPI\RoomAPI.csproj", "{BF280EF3-8BFB-4270-9676-ACA08A8D2EEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TenantAPI", "TenantAPI\TenantAPI.csproj", "{AA00DBD1-BAC7-4714-8ECE-0F85C4BBB55E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIGateway", "APIGateway\APIGateway.csproj", "{099E219C-4AC3-4AE9-8773-6C0E4752BF42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRHubServer", "SignalRHubServer\SignalRHubServer.csproj", "{5A9C1473-5DF2-4CD0-8A4E-07D1269D7935}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElectricityReadingAPI", "ElectricityReadingAPI\ElectricityReadingAPI.csproj", "{720E81F2-FDD9-48F4-956A-1F492F102442}"
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -22,6 +34,30 @@ Global
 		{2879C737-2F8F-4D71-ACB1-44C3DC273CC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2879C737-2F8F-4D71-ACB1-44C3DC273CC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2879C737-2F8F-4D71-ACB1-44C3DC273CC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{756C34C4-2DBC-4D2B-A83D-2A32E831285F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{756C34C4-2DBC-4D2B-A83D-2A32E831285F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{756C34C4-2DBC-4D2B-A83D-2A32E831285F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{756C34C4-2DBC-4D2B-A83D-2A32E831285F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF280EF3-8BFB-4270-9676-ACA08A8D2EEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF280EF3-8BFB-4270-9676-ACA08A8D2EEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF280EF3-8BFB-4270-9676-ACA08A8D2EEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF280EF3-8BFB-4270-9676-ACA08A8D2EEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA00DBD1-BAC7-4714-8ECE-0F85C4BBB55E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA00DBD1-BAC7-4714-8ECE-0F85C4BBB55E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA00DBD1-BAC7-4714-8ECE-0F85C4BBB55E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA00DBD1-BAC7-4714-8ECE-0F85C4BBB55E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{099E219C-4AC3-4AE9-8773-6C0E4752BF42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{099E219C-4AC3-4AE9-8773-6C0E4752BF42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{099E219C-4AC3-4AE9-8773-6C0E4752BF42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{099E219C-4AC3-4AE9-8773-6C0E4752BF42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A9C1473-5DF2-4CD0-8A4E-07D1269D7935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A9C1473-5DF2-4CD0-8A4E-07D1269D7935}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A9C1473-5DF2-4CD0-8A4E-07D1269D7935}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A9C1473-5DF2-4CD0-8A4E-07D1269D7935}.Release|Any CPU.Build.0 = Release|Any CPU
+		{720E81F2-FDD9-48F4-956A-1F492F102442}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{720E81F2-FDD9-48F4-956A-1F492F102442}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{720E81F2-FDD9-48F4-956A-1F492F102442}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{720E81F2-FDD9-48F4-956A-1F492F102442}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

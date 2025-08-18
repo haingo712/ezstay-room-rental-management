@@ -25,12 +25,18 @@ namespace AmenityAPI.Controllers
             _amenityService = amenityService;
         }
       //  [Authorize(Roles = "Owner")]
-        [HttpGet("ByOwnerId/{ownerId}")]
+        [HttpGet("ByOwnerId/odata/{ownerId}")]
         [EnableQuery]
-        public IQueryable<AmenityDto> GetAmenitiesByOwnerId(Guid ownerId)
+        public IQueryable<AmenityDto> GetAmenitiesByOwnerIdOdata(Guid ownerId)
         {
            
-            return _amenityService.GetAllByOwnerId(ownerId);
+            return _amenityService.GetAllByOwnerIdOdata(ownerId);
+        }
+        
+        [HttpGet("ByOwnerId/{ownerId}")]
+        public async Task<ActionResult<IEnumerable<AmenityDto>>> GetAmenitiesByOwnerId(Guid ownerId)
+        {
+            return Ok( await _amenityService.GetAllByOwnerId(ownerId));
         }
         
         [HttpGet("DistinctNames")]
@@ -46,15 +52,15 @@ namespace AmenityAPI.Controllers
         // {
         //     return _amenityService.GetAll();
         // }
-        [HttpGet]
-        public async Task<ActionResult<AmenityDto>> GetAmenities()
-        {
-            return Ok(await _amenityService.GetAll());
-        }
+        // [HttpGet]
+        // public async Task<ActionResult<AmenityDto>> GetAmenities()
+        // {
+        //     return Ok(await _amenityService.GetAll());
+        // }
 
         // GET: api/Amenity/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Amenity>> GetAmenity(int id)
+        public async Task<ActionResult<Amenity>> GetAmenity(Guid id)
         {
             try
             {
@@ -68,10 +74,9 @@ namespace AmenityAPI.Controllers
         }
 
         // PUT: api/Amenity/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
    //     [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> PutAmenity(int id, UpdateAmenityDto request)
+        public async Task<IActionResult> PutAmenity(Guid id, UpdateAmenityDto request)
         {
             try
             {
@@ -99,7 +104,7 @@ namespace AmenityAPI.Controllers
                 {
                     return BadRequest(new { message = createAmentity.Message });
                 }
-                return CreatedAtAction("GetAmenity", new { id = createAmentity.Data.AmenityId }, createAmentity);
+                return CreatedAtAction("GetAmenity", new { id = createAmentity.Data.Id }, createAmentity);
             }
             catch (Exception e)
             {
@@ -110,7 +115,7 @@ namespace AmenityAPI.Controllers
         // DELETE: api/Amenity/5
         [HttpDelete("{id}")]
     //    [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> DeleteAmenity(int id)
+        public async Task<IActionResult> DeleteAmenity(Guid id)
         {
             try
             { 

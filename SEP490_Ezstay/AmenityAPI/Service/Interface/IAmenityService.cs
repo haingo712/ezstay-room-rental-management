@@ -5,13 +5,12 @@ namespace AmenityAPI.Service.Interface;
 
 public interface IAmenityService
 {
-    //IQueryable<AmenityDto> GetAllOdata();
-    Task<IEnumerable<AmenityDto>> GetAll();
-    IQueryable<AmenityDto> GetAllByOwnerId(Guid ownerId);
-    Task<AmenityDto> GetByIdAsync(int id);
+    Task<IEnumerable<AmenityDto>> GetAllByOwnerId(Guid ownerId);
+    IQueryable<AmenityDto> GetAllByOwnerIdOdata(Guid ownerId);
+    Task<AmenityDto> GetByIdAsync(Guid id);
     Task<ApiResponse<AmenityDto>> AddAsync(CreateAmenityDto request);
     Task<IEnumerable<String>> GetAllDistinctNameAsync();
-    Task<ApiResponse<bool>> UpdateAsync(int id,UpdateAmenityDto request);
-    Task DeleteAsync(int id);
+    Task<ApiResponse<bool>> UpdateAsync(Guid id,UpdateAmenityDto request);
+    Task DeleteAsync(Guid id);
     
 }

@@ -18,15 +18,10 @@ public class AmenityService: IAmenityService
         _mapper = mapper;
         _amenityRepository = amenityRepository;
     }
-
-  // public IQueryable<AmenityDto> GetAllOdata()
-  //   {
-  //       var amenity =   _amenityRepository.GetAll();
-  //   return amenity.ProjectTo<AmenityDto>(_mapper.ConfigurationProvider);
-  //   }
-  public async Task<IEnumerable<AmenityDto>> GetAll()
+    
+  public async Task<IEnumerable<AmenityDto>> GetAllByOwnerId(Guid ownerId)
       {
-           var amenity =  await _amenityRepository.GetAll();
+           var amenity =  await _amenityRepository.GetAllByOwnerId(ownerId);
       return _mapper.Map<IEnumerable<AmenityDto>>(amenity);
       
 }
@@ -34,14 +29,14 @@ public class AmenityService: IAmenityService
     {
         return _amenityRepository.GetAllDistinctNameAsync();
     }
-    public IQueryable<AmenityDto> GetAllByOwnerId(Guid ownerId)
+    public IQueryable<AmenityDto> GetAllByOwnerIdOdata(Guid ownerId)
     {
         var amenity =   _amenityRepository.GetAllOdata().Where(x=> x.OwnerId == ownerId);
       
         return amenity.ProjectTo<AmenityDto>(_mapper.ConfigurationProvider);
     }
 
-    public async Task<AmenityDto> GetByIdAsync(int id)
+    public async Task<AmenityDto> GetByIdAsync(Guid id)
     {
         var amenity = await _amenityRepository.GetByIdAsync(id);
         if (amenity == null)
@@ -51,19 +46,16 @@ public class AmenityService: IAmenityService
 
     public async  Task<ApiResponse<AmenityDto>> AddAsync(CreateAmenityDto request)
     { 
-        
         var exist = await _amenityRepository.AmenityNameExistsAsync(request.AmenityName);
         if (exist)
             return ApiResponse<AmenityDto>.Fail("Tiện ích đã có tại trong nhà trọ.");
-          //  throw new Exception("Tiện ích đã có tại trong nhà trọ.");
-        
         var amenity = _mapper.Map<Amenity>(request);
         await _amenityRepository.AddAsync(amenity);
         var result =_mapper.Map<AmenityDto>(amenity);
         return  ApiResponse<AmenityDto>.Success(result,"Thêm tiện ích thành công");
     }
 
-    public async Task<ApiResponse<bool>> UpdateAsync(int id, UpdateAmenityDto request)
+    public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateAmenityDto request)
     {
         var amenity =await _amenityRepository.GetByIdAsync(id);
         if (amenity == null)
@@ -77,7 +69,7 @@ public class AmenityService: IAmenityService
         var result = _mapper.Map<AmenityDto>(amenity);
         return ApiResponse<bool>.Success(true,"Cập nhật tiện ích thành công");
     }
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
         var amenity = await _amenityRepository.GetByIdAsync(id);
         if (amenity==null) 
