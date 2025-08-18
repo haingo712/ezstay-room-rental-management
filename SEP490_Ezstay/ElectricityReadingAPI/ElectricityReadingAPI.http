@@ -1,0 +1,6 @@
+@ElectricityReadingAPI_HostAddress = http://localhost:5037
+
+GET {{ElectricityReadingAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

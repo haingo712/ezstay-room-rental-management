@@ -1,0 +1,57 @@
+﻿version: '3.8'
+
+services:
+  amenityapi:
+    image: amenityapi
+    build:
+      context: .
+      dockerfile: AmenityAPI/Dockerfile
+    ports:
+      - "5000:5000"   # Nếu bạn muốn map port API
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:8.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: sa
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
+
+  roomamenityapi:
+    image: roomamenityapi
+    build:
+      context: .
+      dockerfile: RoomAmenityAPI/Dockerfile
+
+  roomapi:
+    image: roomapi
+    build:
+      context: .
+      dockerfile: RoomAPI/Dockerfile
+
+  apigateway:
+    image: apigateway
+    build:
+      context: .
+      dockerfile: APIGateway/Dockerfile
+
+  signalrhubserver:
+    image: signalrhubserver
+    build:
+      context: .
+      dockerfile: SignalRHubServer/Dockerfile
+
+  electricityreadingapi:
+    image: electricityreadingapi
+    build:
+      context: .
+      dockerfile: ElectricityReadingAPI/Dockerfile
+
