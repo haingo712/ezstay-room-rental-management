@@ -23,11 +23,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElectricityReadingAPI", "ElectricityReadingAPI\ElectricityReadingAPI.csproj", "{720E81F2-FDD9-48F4-956A-1F492F102442}"
 EndProject
 Global
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {2A83EB78-7731-4736-8DBD-554BD53E3874}
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2879C737-2F8F-4D71-ACB1-44C3DC273CC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -59,8 +57,10 @@ Global
 		{720E81F2-FDD9-48F4-956A-1F492F102442}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{720E81F2-FDD9-48F4-956A-1F492F102442}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2A83EB78-7731-4736-8DBD-554BD53E3874}
 	EndGlobalSection
 EndGlobal
