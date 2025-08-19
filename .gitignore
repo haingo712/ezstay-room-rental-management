@@ -400,9 +400,6 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-**/appsettings.json
-**/appsettings*.json
-
 # Ignore build folders recursively in all solutions/projects
 **/bin/
 **/obj/
