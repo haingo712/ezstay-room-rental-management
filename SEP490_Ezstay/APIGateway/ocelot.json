@@ -24,19 +24,7 @@
       ],
       "UpstreamPathTemplate": "/api/HouseLocations/{everything}",
       "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ]
-    },
-    {
-      "DownstreamPathTemplate": "/api/Locations/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7253
-        }
-      ],
-      "UpstreamPathTemplate": "/api/Locations/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ]
-    },
+    },    
     {
       "DownstreamPathTemplate": "/api/RoomAmenity/{everything}",
       "DownstreamScheme": "https",
@@ -96,18 +84,6 @@
       ],
       "UpstreamPathTemplate": "/api/BoardingHouses/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
-    },
-    {
-      "DownstreamPathTemplate": "/odata/BoardingHouses{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7186
-        }
-      ],
-      "UpstreamPathTemplate": "/odata/BoardingHouses{everything}",
-      "UpstreamHttpMethod": [ "GET" ]
     },
     {
       "DownstreamPathTemplate": "/api/RentalPosts/{everything}",
