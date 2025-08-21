@@ -55,3 +55,27 @@ volumes:
       context: .
       dockerfile: ElectricityReadingAPI/Dockerfile
 
+  waterreadingapi:
+    image: waterreadingapi
+    build:
+      context: .
+      dockerfile: WaterReadingAPI/Dockerfile
+
+  utility:
+    image: utility
+    build:
+      context: .
+      dockerfile: Utility/Dockerfile
+
+  utilityreading:
+    image: utilityreading
+    build:
+      context: .
+      dockerfile: UtilityReading/Dockerfile
+
+  utilityreadingapi:
+    image: utilityreadingapi
+    build:
+      context: .
+      dockerfile: UtilityReadingAPI/Dockerfile
+
