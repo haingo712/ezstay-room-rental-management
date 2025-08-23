@@ -3,28 +3,32 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmenityAPI", "AmenityAPI\AmenityAPI.csproj", "{2879C737-2F8F-4D71-ACB1-44C3DC273CC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmenityAPI", "AmenityAPI\AmenityAPI.csproj", "{2879C737-2F8F-4D71-ACB1-44C3DC273CC3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DA3EEAD8-13EC-4575-A786-1999AB6E06E4}"
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAmenityAPI", "RoomAmenityAPI\RoomAmenityAPI.csproj", "{756C34C4-2DBC-4D2B-A83D-2A32E831285F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoomAmenityAPI", "RoomAmenityAPI\RoomAmenityAPI.csproj", "{756C34C4-2DBC-4D2B-A83D-2A32E831285F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAPI", "RoomAPI\RoomAPI.csproj", "{BF280EF3-8BFB-4270-9676-ACA08A8D2EEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoomAPI", "RoomAPI\RoomAPI.csproj", "{BF280EF3-8BFB-4270-9676-ACA08A8D2EEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TenantAPI", "TenantAPI\TenantAPI.csproj", "{AA00DBD1-BAC7-4714-8ECE-0F85C4BBB55E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TenantAPI", "TenantAPI\TenantAPI.csproj", "{AA00DBD1-BAC7-4714-8ECE-0F85C4BBB55E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIGateway", "APIGateway\APIGateway.csproj", "{099E219C-4AC3-4AE9-8773-6C0E4752BF42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIGateway", "APIGateway\APIGateway.csproj", "{099E219C-4AC3-4AE9-8773-6C0E4752BF42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRHubServer", "SignalRHubServer\SignalRHubServer.csproj", "{5A9C1473-5DF2-4CD0-8A4E-07D1269D7935}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRHubServer", "SignalRHubServer\SignalRHubServer.csproj", "{5A9C1473-5DF2-4CD0-8A4E-07D1269D7935}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElectricityReadingAPI", "ElectricityReadingAPI\ElectricityReadingAPI.csproj", "{720E81F2-FDD9-48F4-956A-1F492F102442}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElectricityReadingAPI", "ElectricityReadingAPI\ElectricityReadingAPI.csproj", "{720E81F2-FDD9-48F4-956A-1F492F102442}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardingHouseAPI", "BoardingHouseAPI\BoardingHouseAPI.csproj", "{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoardingHouseAPI", "BoardingHouseAPI\BoardingHouseAPI.csproj", "{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HouseLocationAPI", "HouseLocationAPI\HouseLocationAPI.csproj", "{A81BE5A2-6DCB-0926-1D32-7653DB429A17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HouseLocationAPI", "HouseLocationAPI\HouseLocationAPI.csproj", "{A81BE5A2-6DCB-0926-1D32-7653DB429A17}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthApi", "AuthApi\AuthApi.csproj", "{50A1D78F-EFA6-4B3F-868D-CAF1187DDBE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailApi", "MailApi\MailApi.csproj", "{66F4B3D5-3D75-4A60-845F-4E0CC31481C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +72,14 @@ Global
 		{A81BE5A2-6DCB-0926-1D32-7653DB429A17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A81BE5A2-6DCB-0926-1D32-7653DB429A17}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A81BE5A2-6DCB-0926-1D32-7653DB429A17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50A1D78F-EFA6-4B3F-868D-CAF1187DDBE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50A1D78F-EFA6-4B3F-868D-CAF1187DDBE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50A1D78F-EFA6-4B3F-868D-CAF1187DDBE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50A1D78F-EFA6-4B3F-868D-CAF1187DDBE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66F4B3D5-3D75-4A60-845F-4E0CC31481C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66F4B3D5-3D75-4A60-845F-4E0CC31481C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66F4B3D5-3D75-4A60-845F-4E0CC31481C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66F4B3D5-3D75-4A60-845F-4E0CC31481C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
