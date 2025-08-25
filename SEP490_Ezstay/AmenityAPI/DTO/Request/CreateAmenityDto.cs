@@ -8,5 +8,5 @@ public class CreateAmenityDto
     [StringLength(100, ErrorMessage = "Amenity name cannot exceed 100 characters.")]
     public string AmenityName { get; set; } 
     [Required]
-    public Guid OwnerId { get; set; }
+    public Guid StaffId { get; set; }
 }

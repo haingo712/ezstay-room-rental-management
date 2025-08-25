@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AmenityAPI.Data;
 using AmenityAPI.DTO.Request;
 using AmenityAPI.Models;
 using AmenityAPI.Service.Interface;
@@ -25,39 +24,32 @@ namespace AmenityAPI.Controllers
             _amenityService = amenityService;
         }
       //  [Authorize(Roles = "Owner")]
-        [HttpGet("ByOwnerId/odata/{ownerId}")]
+        [HttpGet("ByStaffId/odata/{staffId}")]
         [EnableQuery]
-        public IQueryable<AmenityDto> GetAmenitiesByOwnerIdOdata(Guid ownerId)
+        public IQueryable<AmenityDto> GetAmenitiesByOwnerIdOdata(Guid staffId)
         {
            
-            return _amenityService.GetAllByOwnerIdOdata(ownerId);
+            return _amenityService.GetAllByStaffIdOdata(staffId);
         }
         
-        [HttpGet("ByOwnerId/{ownerId}")]
-        public async Task<ActionResult<IEnumerable<AmenityDto>>> GetAmenitiesByOwnerId(Guid ownerId)
+        [HttpGet("ByStaffId/{staffId}")]
+        public async Task<ActionResult<AmenityDto>> GetAmenitiesByStaffId(Guid staffId)
         {
-            return Ok( await _amenityService.GetAllByOwnerId(ownerId));
-        }
-        
-        [HttpGet("DistinctNames")]
-        public async Task<ActionResult<IEnumerable<string>>> GetDistinctAmenityNames()
-        {
-            var names = await _amenityService.GetAllDistinctNameAsync();
-            return Ok(names);
+            return Ok( await _amenityService.GetAllByStaffId(staffId));
         }
 
-        // [HttpGet]
-        // [EnableQuery]
-        // public IQueryable<AmenityDto> GetAmenities()
-        // {
-        //     return _amenityService.GetAll();
-        // }
-        // [HttpGet]
-        // public async Task<ActionResult<AmenityDto>> GetAmenities()
-        // {
-        //     return Ok(await _amenityService.GetAll());
-        // }
-
+        [HttpGet("odata")]
+        [EnableQuery]
+        public IQueryable<AmenityDto> GetAmenitiesOdata()
+        {
+            return  _amenityService.GetAllOdata();
+        }
+        [HttpGet]
+        public  async Task<ActionResult<AmenityDto>> GetAmenities()
+        {
+            return Ok(await _amenityService.GetAll());
+        }
+      
         // GET: api/Amenity/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Amenity>> GetAmenity(Guid id)
@@ -75,7 +67,7 @@ namespace AmenityAPI.Controllers
 
         // PUT: api/Amenity/5
         [HttpPut("{id}")]
-   //     [Authorize(Roles = "Owner")]
+   //      [Authorize(Roles = "Staff")]
         public async Task<IActionResult> PutAmenity(Guid id, UpdateAmenityDto request)
         {
             try
@@ -94,7 +86,7 @@ namespace AmenityAPI.Controllers
         }
         
         [HttpPost]
-      //  [Authorize(Roles = "Owner")]
+      //  [Authorize(Roles = "Staff")]
         public async Task<ActionResult<AmenityDto>> PostAmenity(CreateAmenityDto request)
         {
             try
@@ -114,7 +106,7 @@ namespace AmenityAPI.Controllers
         }
         // DELETE: api/Amenity/5
         [HttpDelete("{id}")]
-    //    [Authorize(Roles = "Owner")]
+    //    [Authorize(Roles = "Staff")]
         public async Task<IActionResult> DeleteAmenity(Guid id)
         {
             try

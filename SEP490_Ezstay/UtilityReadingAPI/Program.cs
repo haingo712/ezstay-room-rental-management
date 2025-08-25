@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
-using UtilityReadingAPI.Data;
+using MongoDB.Driver;
 using UtilityReadingAPI.DTO.Request;
 using UtilityReadingAPI.Repository;
 using UtilityReadingAPI.Repository.Interface;
@@ -15,10 +15,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.Configure<MongoSettings>(
-    builder.Configuration.GetSection("ConnectionStrings"));
-builder.Services.AddSingleton<MongoDbService>();
-
+var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
+builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
 
 
 

@@ -29,6 +29,9 @@ public class RoomAmenityService: IRoomAmenityService
         var book = _roomAmenityRepository.GetAll();
         return book.ProjectTo<RoomAmenityDto>(_mapper.ConfigurationProvider);
     }
+
+   
+
     public async Task<RoomAmenityDto> GetByIdAsync(Guid id)
     {
         var roomAmenity = await _roomAmenityRepository.GetByIdAsync(id);
@@ -36,29 +39,15 @@ public class RoomAmenityService: IRoomAmenityService
             throw new KeyNotFoundException("RoomAmentityId not found");
       return   _mapper.Map<RoomAmenityDto>(roomAmenity);
     }
-    // public async  Task<RoomAmenityDto> AddAsync(CreateRoomAmenityDto request)
-    // {
-    //     var exist = await _roomAmenityRepository.AmenityIdExistsInRoomAsync(request.RoomId, request.AmenityId);
-    //     if (exist)
-    //     {
-    //       throw new Exception("Tiện ích đã có tại trong nhà trọ. vui long them tien ich khac");
-    //     }
-    //     var roomAmenity = _mapper.Map<RoomAmenity>(request);
-    //     await _roomAmenityRepository.AddAsync(roomAmenity);
-    //    return _mapper.Map<RoomAmenityDto>(roomAmenity);
-    //
-    // }
-
+    
     public async  Task<ApiResponse<RoomAmenityDto>> AddAsync(CreateRoomAmenityDto request)
     {
          var exist = await _roomAmenityRepository.AmenityIdExistsInRoomAsync(request.RoomId, request.AmenityId);
         if (exist)
           return  ApiResponse<RoomAmenityDto>.Fail("Tiện ích đã có tại trong nhà trọ. vui long them tien ich khac");
-        
         var roomAmenity = _mapper.Map<RoomAmenity>(request);
         await _roomAmenityRepository.AddAsync(roomAmenity);
-        
-        return ApiResponse<RoomAmenityDto>.Success(_mapper.Map<RoomAmenityDto>(roomAmenity), "add thanh cong");
+        return ApiResponse<RoomAmenityDto>.Success(_mapper.Map<RoomAmenityDto>(roomAmenity), "Thêm tiện ích vào trọ thành công");
         
     }
 
@@ -70,18 +59,18 @@ public class RoomAmenityService: IRoomAmenityService
         var exist = await _roomAmenityRepository.AmenityIdExistsInRoomAsync(request.RoomId, request.AmenityId);
         if (exist)
         {
-           return ApiResponse<bool>.Fail("Tiện ích đã có tại trong nhà trọ. vui long them tien ich khac");
+           return ApiResponse<bool>.Fail("Tiện ích đã có tại trong nhà trọ. Vui lòng thêm tiện ích khác");
         }
          _mapper.Map(request, roomAmenity);
          await _roomAmenityRepository.UpdateAsync(roomAmenity);
       //  var result =_mapper.Map<RoomAmenityDto>(roomAmenity);
-           return ApiResponse<bool>.Success(true,"add thanh cong");
+           return ApiResponse<bool>.Success(true,"Cập nhật thành công");
     }
     public async Task DeleteAsync(Guid id)
     {
         var amenity = await _roomAmenityRepository.GetByIdAsync(id);
         if (amenity==null) 
-            throw new KeyNotFoundException("k tim thay phong amenity voi id: " + id);
+            throw new KeyNotFoundException("k tim thay phong amenity id: " + id);
         await _roomAmenityRepository.DeleteAsync(amenity);
     }
 }

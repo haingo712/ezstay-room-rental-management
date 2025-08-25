@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
-using RoomAmenityAPI.Data;
 using RoomAmenityAPI.DTO.Request;
 using RoomAmenityAPI.DTO.Response;
 using RoomAmenityAPI.Service.Interface;
@@ -26,14 +25,7 @@ namespace RoomAmenityAPI.Controllers
             _roomAmenityService = roomAmenityService;
         }
 
-        // GET: api/RoomAmenity
-   //     [Authorize(Roles = "Owner")]
-        [HttpGet("ByRoomId/{roonId}")]
-        [EnableQuery]
-        public IQueryable<RoomAmenityDto> GetRoomAmenitiesByRoomId(Guid roonId)
-        {
-            return  _roomAmenityService.GetAllByRoomId(roonId);
-        }
+        
         [HttpGet]
         [EnableQuery]
         public IQueryable<RoomAmenityDto> GetRoomAmenities( )
@@ -41,6 +33,21 @@ namespace RoomAmenityAPI.Controllers
             return  _roomAmenityService.GetAll();
         }
 
+        
+        
+        // GET: api/RoomAmenity
+        //  [Authorize(Roles = "Owner")]
+        [HttpGet("ByRoomId/{roonId}")]
+        [EnableQuery]
+        public IQueryable<RoomAmenityDto> GetRoomAmenitiesByRoomId(Guid roonId)
+        {
+            return  _roomAmenityService.GetAllByRoomId(roonId);
+        }
+        
+        
+        
+     
+        
         // GET: api/RoomAmenity/5
         [HttpGet("{id}")]
         public async Task<ActionResult<RoomAmenityDto>> GetRoomAmenity(Guid id)
@@ -48,8 +55,10 @@ namespace RoomAmenityAPI.Controllers
             var roomAmenity = await _roomAmenityService.GetByIdAsync(id);
             return Ok(roomAmenity);
         }
+        
+        
       [HttpPut("{id}")]
-      [Authorize(Roles = "Owner")]
+  //    [Authorize(Roles = "Owner")]
         public async Task<IActionResult> PutRoomAmenity(Guid id, UpdateRoomAmenityDto roomAmenity)
         {
         var createdRoomAmenity=   await   _roomAmenityService.UpdateAsync(id,roomAmenity);
@@ -59,6 +68,7 @@ namespace RoomAmenityAPI.Controllers
            }
            return Ok(createdRoomAmenity);
         }
+  
         [HttpPost]
     //    [Authorize(Roles = "Owner")]
         public async Task<IActionResult> PostRoomAmenity(CreateRoomAmenityDto roomAmenity)
@@ -71,6 +81,7 @@ namespace RoomAmenityAPI.Controllers
            }
             return CreatedAtAction("GetRoomAmenity", new { id = roomAmenity.AmenityId }, roomAmenity);
         }
+    
         // DELETE: api/RoomAmenity/5
         [HttpDelete("{id}")]
       //  [Authorize(Roles = "Owner")]

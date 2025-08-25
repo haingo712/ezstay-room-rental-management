@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
-using RoomAPI.Data;
 using RoomAPI.DTO.Request;
 using RoomAPI.Model;
 using RoomAPI.Service.Interface;

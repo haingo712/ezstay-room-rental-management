@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using System.Text;
-using AmenityAPI.Data;
 using AmenityAPI.DTO.Request;
+using AmenityAPI.Mapping;
 using AmenityAPI.Repository;
 using AmenityAPI.Repository.Interface;
 using AmenityAPI.Service;
@@ -27,11 +27,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.Configure<MongoSettings>(
-    builder.Configuration.GetSection("ConnectionStrings"));
-builder.Services.AddSingleton<MongoDbService>();
-
-
+var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
+builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
 
 
 builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
@@ -47,8 +44,9 @@ builder.Services.AddControllers().AddOData(options =>
         .OrderBy()
         .Expand()
         .Select());
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); 
- 
+// builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); 
+builder.Services.AddAutoMapper(typeof(MappingAmenity).Assembly);
+
 builder.Services.AddHttpClient("AuthorAPI", client =>
             {
                 client.BaseAddress = new Uri("https://localhost:7152"); // đổi đúng cổng AuthorAPI

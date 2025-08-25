@@ -1,6 +1,17 @@
 {
   "Routes": [
-
+    {
+      "DownstreamPathTemplate": "/api/signalR",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7123
+        }
+      ],
+      "UpstreamPathTemplate": "/signalR",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
     {
       "DownstreamPathTemplate": "/api/Account/{everything}",
       "DownstreamScheme": "https",

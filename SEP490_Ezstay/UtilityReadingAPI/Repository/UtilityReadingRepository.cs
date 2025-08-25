@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-using UtilityReadingAPI.Data;
 using UtilityReadingAPI.Model;
 using UtilityReadingAPI.Repository.Interface;
 using MongoDB.Driver;
@@ -12,11 +10,10 @@ public class UtilityReadingRepository:IUtilityReadingRepository
 {
     private readonly IMongoCollection<UtilityReading> _utilityReadings;
     
-    public UtilityReadingRepository(MongoDbService service)
+    public UtilityReadingRepository(IMongoDatabase database)
     {
-        _utilityReadings=service.UtilityReadings;
+        _utilityReadings=database.GetCollection<UtilityReading>("UtilityReadings");
     }
-   
 
     public IQueryable<Model.UtilityReading> GetAllOdata()=> _utilityReadings.AsQueryable();
 

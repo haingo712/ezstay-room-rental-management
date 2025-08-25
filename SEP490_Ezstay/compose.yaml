@@ -79,3 +79,35 @@ volumes:
       context: .
       dockerfile: UtilityReadingAPI/Dockerfile
 
+  signalrhubapi:
+    image: signalrhubapi
+    build:
+      context: .
+      dockerfile: SignalRHubAPI/Dockerfile
+
+  rentalrequest:
+    image: rentalrequest
+    build:
+      context: .
+      dockerfile: RentalRequest/Dockerfile
+
+  rentalrequest:
+    image: rentalrequest
+    build:
+      context: .
+      dockerfile: RentalRequest/Dockerfile
+
+services:
+  rentalrequestapi:
+    image: rentalrequestapi
+    build:
+      context: .
+      dockerfile: RentalRequestAPI/Dockerfile
+
+services:
+  utilityrateapi:
+    image: utilityrateapi
+    build:
+      context: .
+      dockerfile: UtilityRateAPI/Dockerfile
+
