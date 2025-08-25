@@ -55,7 +55,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7086
+          "Port": 7009
         }
       ],
       "UpstreamPathTemplate": "/api/Auth/{everything}",
