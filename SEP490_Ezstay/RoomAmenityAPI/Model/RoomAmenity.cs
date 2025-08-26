@@ -14,5 +14,6 @@ namespace RoomAmenityAPI.Model
         public Guid RoomId { get; set; }
         [BsonRepresentation(BsonType.String)] 
         public Guid AmenityId { get; set; }
+        
     }
 }

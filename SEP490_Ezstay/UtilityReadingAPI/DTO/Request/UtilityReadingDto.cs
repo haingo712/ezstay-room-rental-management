@@ -1,4 +1,5 @@
-using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using UtilityReadingAPI.Enum;
 
 namespace UtilityReadingAPI.DTO.Request;
 
@@ -9,9 +10,11 @@ public class UtilityReadingDto
     public Guid Id { get; set; }
   
     public Guid RoomId { get; set; }
-    public string Type { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public UtilityType Type { get; set; }
     
     public DateTime ReadingDate  { get; set;}
+    public DateTime UpdatedAt  { get; set;}
   
     public decimal PreviousIndex { get; set;}
   

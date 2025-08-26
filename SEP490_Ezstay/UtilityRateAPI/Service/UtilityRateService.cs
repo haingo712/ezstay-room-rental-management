@@ -39,7 +39,6 @@ public class UtilityRateService : IUtilityRateService
         {
             return ApiResponse<IEnumerable<UtilityRateDto>>.Fail("Không có muc  nào.");
         }
-
         return ApiResponse<IEnumerable<UtilityRateDto>>.Success(dto);
     }
 
@@ -67,76 +66,109 @@ public class UtilityRateService : IUtilityRateService
         return _mapper.Map<UtilityRateDto>(entity);
     }
     
-    private async Task<int> GetNextTierAsync(Guid ownerId, UtilityType type)
+    public async Task<int> GetMaxTierByTypeAndOwnerAsync(Guid ownerId, UtilityType type)
     {
-        var maxTier = await _utilityRateRepository.GetMaxTierByTypeAndOwnerAsync(ownerId, type);
-        return maxTier + 1;
+        var rates = await _utilityRateRepository.GetAllByOwnerAndTypeAsync(ownerId, type);
+        return rates.Any() ? rates.Max(x => x.Tier) : 0;
     }
-    
+
     public async Task<ApiResponse<UtilityRateDto>> AddAsync(CreateUtilityRateDto request)
     {
-        var maxTier = await _utilityRateRepository.GetMaxTierByTypeAndOwnerAsync(request.OwnerId, request.Type);
+        var maxTier =await GetMaxTierByTypeAndOwnerAsync(request.OwnerId, request.Type);
         var nextTier = maxTier + 1;
-        decimal from;
+        int from;
         if (nextTier == 1)
         {
             from = 0;
             if (request.To <= from)
-                return ApiResponse<UtilityRateDto>.Fail($"Giá trị To ({request.To}) phải lớn hơn {from}");
+                return ApiResponse<UtilityRateDto>.Fail($"Giá trị To {request.To} phải lớn hơn {from} ");
         }
         else
         {
-            var previousTier = await _utilityRateRepository.GetMaxToByTypeAndOwnerAndTierAsync (request.OwnerId, request.Type, nextTier - 1);
-            from = previousTier + 1;
+            var previousTier = await _utilityRateRepository.GetByOwnerTypeAndTierAsync(request.OwnerId, request.Type, maxTier);
+            from = previousTier.To + 1;
             if (request.To <= from)
-                return ApiResponse<UtilityRateDto>.Fail($"Giá trị To ({request.To}) phải lớn hơn {from}");
+                return ApiResponse<UtilityRateDto>.Fail($"Giá trị To {request.To} phải lớn hơn {from}");
         }
-        var entity = _mapper.Map<UtilityRate>(request);
-        entity.Tier = nextTier;
-        entity.From = from;
-        entity.To = request.To;
-        await _utilityRateRepository.AddAsync(entity);
-        var dto = _mapper.Map<UtilityRateDto>(entity);
+        var utilityRate = _mapper.Map<UtilityRate>(request);
+        utilityRate.Tier = nextTier;
+        utilityRate.From = from;
+        utilityRate.To = request.To;
+        utilityRate.CreatedAt = DateTime.UtcNow;
+        await _utilityRateRepository.AddAsync(utilityRate);
+        var dto = _mapper.Map<UtilityRateDto>(utilityRate);
         return ApiResponse<UtilityRateDto>.Success(dto, "Thêm thành công mức");
     }
-   public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateUtilityRateDto request)
-   {
-       try
-       {
-           var entity = await _utilityRateRepository.GetByIdAsync(id);
-           if (entity == null)
-               return ApiResponse<bool>.Fail("Không tìm thấy mức giá");
-   
-           var allType = await _utilityRateRepository.GetAllByTypeAsync(request.Type);
-           var currentTier = allType.FirstOrDefault(r => r.Tier == request.Tier);
-           currentTier.To = request.To;
-           currentTier.Price = request.Price;
+    public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateUtilityRateDto request)
+    {
+        try
+        {
+            var entity = await _utilityRateRepository.GetByIdAsync(id);
+            if (entity == null)
+                return ApiResponse<bool>.Fail("Không tìm thấy mức giá");
+            _mapper.Map(request, entity); 
+            entity.UpdatedAt = DateTime.UtcNow;
+            await _utilityRateRepository.UpdateAsync(entity);
            
-           await _utilityRateRepository.UpdateAsync(currentTier);
-           var nextTiers = allType.Where(r => r.Tier > request.Tier)
-                                 .OrderBy(r => r.Tier)
-                                 .ToList();
-           
-           // foreach (var next in nextTiers)
-           // {
-           //     next.From = request.To+ 1;
-           //     next.To = next.From+ ( next.To - next.From);
-           //     await _utilityRateRepository.UpdateAsync(next);
-           // }
-         
-           foreach (var next in nextTiers)
-           {
-               next.From = request.To + 1;
-               await _utilityRateRepository.UpdateAsync(next);
-           }
+            var allType = await _utilityRateRepository.GetAllByOwnerAndTypeAsync(entity.OwnerId,entity.Type);
+            var nextTiers = allType
+                .Where(r => r.Tier > entity.Tier)
+                .OrderBy(r => r.Tier)
+                .ToList();
+            foreach (var next in nextTiers)
+            {
+                var newFrom = entity.To + 1;
+                if (next.From != newFrom) 
+                {
+                    next.From = newFrom;
+                    next.UpdatedAt = DateTime.UtcNow;
+                    await _utilityRateRepository.UpdateAsync(next);
+                }
+            }
 
-           return ApiResponse<bool>.Success(true, "Cập nhật thành công");
-       }
-       catch (Exception ex)
-       {
-           return ApiResponse<bool>.Fail("Có lỗi xảy ra khi cập nhật");
-       }
-   }
+            return ApiResponse<bool>.Success(true, "Cập nhật thành công");
+        }
+        catch (Exception)
+        {
+            return ApiResponse<bool>.Fail("Có lỗi xảy ra khi cập nhật");
+        }
+    }
+
+    
+   // public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateUtilityRateDto request)
+   // {
+   //     try
+   //     {
+   //         var entity = await _utilityRateRepository.GetByIdAsync(id);
+   //         if (entity == null)
+   //             return ApiResponse<bool>.Fail("Không tìm thấy mức giá");
+   //         var allType = await _utilityRateRepository.GetAllByTypeAsync(request.Type);
+   //         var currentTier = allType.FirstOrDefault(r => r.Tier == request.Tier);
+   //         currentTier.To = request.To;
+   //         currentTier.Price = request.Price;
+   //         currentTier.UpdatedAt = DateTime.UtcNow;
+   //         await _utilityRateRepository.UpdateAsync(currentTier);
+   //         var nextTiers = allType.Where(r => r.Tier > request.Tier)
+   //                               .OrderBy(r => r.Tier)
+   //                               .ToList();
+   //         // foreach (var next in nextTiers)
+   //         // {
+   //         //     next.From = request.To+ 1;
+   //         //     next.To = next.From+ ( next.To - next.From);
+   //         //     await _utilityRateRepository.UpdateAsync(next);
+   //         // }
+   //         foreach (var next in nextTiers)
+   //         {
+   //             next.From = request.To + 1;
+   //             await _utilityRateRepository.UpdateAsync(next);
+   //         }
+   //         return ApiResponse<bool>.Success(true, "Cập nhật thành công");
+   //     }
+   //     catch (Exception ex)
+   //     {
+   //         return ApiResponse<bool>.Fail("Có lỗi xảy ra khi cập nhật");
+   //     }
+   // }
 
     public async Task DeleteAsync(Guid id)
     {

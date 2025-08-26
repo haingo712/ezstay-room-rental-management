@@ -6,16 +6,12 @@ namespace UtilityRateAPI.DTO.Request;
 
 public class UpdateUtilityRateDto
 {
-  //  public Guid OwnerId { get; set; } 
-  [JsonConverter(typeof(JsonStringEnumConverter))]
-   public UtilityType Type { get; set; }
-    public int Tier { get; set; }
-    // [Required]
-    // public decimal From { get; set; } 
+  //[JsonConverter(typeof(JsonStringEnumConverter))]
+  // public UtilityType Type { get; set; }
+ //   public int Tier { get; set; }
     [Required]
-    public decimal To { get; set; } 
+    public int To { get; set; } 
     [Required]
     public decimal Price { get; set; } 
-    public bool IsActive { get; set; }
-    public DateTime CreatedAt { get; set; }
+  //  public bool IsActive { get; set; }
 }

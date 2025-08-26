@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace AmenityAPI.Controllers
         {
             _amenityService = amenityService;
         }
-      //  [Authorize(Roles = "Owner")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("ByStaffId/odata/{staffId}")]
         [EnableQuery]
         public IQueryable<AmenityDto> GetAmenitiesByOwnerIdOdata(Guid staffId)
@@ -31,7 +32,7 @@ namespace AmenityAPI.Controllers
            
             return _amenityService.GetAllByStaffIdOdata(staffId);
         }
-        
+       // [Authorize(Roles = "Admin")]
         [HttpGet("ByStaffId/{staffId}")]
         public async Task<ActionResult<AmenityDto>> GetAmenitiesByStaffId(Guid staffId)
         {
@@ -78,7 +79,7 @@ namespace AmenityAPI.Controllers
                     return BadRequest(new { message = updateAmentity.Message });
                 }
                 return Ok(updateAmentity);
-            }
+           }
             catch (KeyNotFoundException e)
             {
                 return NotFound(new { message = e.Message });
@@ -86,12 +87,13 @@ namespace AmenityAPI.Controllers
         }
         
         [HttpPost]
-      //  [Authorize(Roles = "Staff")]
+      [Authorize(Roles = "Staff")]
         public async Task<ActionResult<AmenityDto>> PostAmenity(CreateAmenityDto request)
         {
             try
             {
-                var createAmentity =   await  _amenityService.AddAsync(request);
+              
+                var createAmentity =   await  _amenityService.AddAsync(request );
                 if (!createAmentity.IsSuccess)
                 {
                     return BadRequest(new { message = createAmentity.Message });

@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using UtilityReadingAPI.DTO.Request;
 using UtilityReadingAPI.DTO.Response;
 using UtilityReadingAPI.Model;
@@ -17,18 +18,10 @@ public class UtilityReadingService: IUtilityReadingService
         _mapper = mapper;
         _utilityReadingRepository= utilityReadingRepository;
     }
-    
-//   public async Task<IEnumerable<ElectricityReadingDto>> GetAllByOwnerId(Guid ownerId)
-//       {
-//            var amenity =  await _electricityReadingRepository.GetAllByOwnerId(ownerId);
-//       return _mapper.Map<IEnumerable<ElectricityReadingDto>>(amenity);
-// }
-   
-    // public IQueryable<ElectricityReadingDto> GetAllByOwnerIdOdata(Guid ownerId)
+    // public IQueryable<UtilityReadingDto> GetAllByOwnerIdOdata(Guid ownerId)
     // {
-    //     var amenity =   _amenityRepository.GetAllOdata().Where(x=> x.OwnerId == ownerId);
-    //   
-    //     return amenity.ProjectTo<AmenityDto>(_mapper.ConfigurationProvider);
+    //     var utilityReading =   _utilityReadingRepository.GetAllOdata().Where(x=> x.RoomId == ownerId);
+    //     return utilityReading.ProjectTo<UtilityReadingDto>(_mapper.ConfigurationProvider);
     // }
 
     public async Task<UtilityReadingDto> GetByIdAsync(Guid id)
@@ -41,10 +34,10 @@ public class UtilityReadingService: IUtilityReadingService
 
     public async  Task<ApiResponse<UtilityReadingDto>> AddAsync(CreateUtilityReadingDto request)
     { 
-         if (await _utilityReadingRepository.ExistsUtilityReadingInMonthAsync(request.RoomId, request.Type, request.ReadingDate)) 
+         if (await _utilityReadingRepository.ExistsUtilityReadingInMonthAsync(request.RoomId, request.Type, DateTime.UtcNow)) 
              return  ApiResponse<UtilityReadingDto>.Fail("Đã tồn tại chỉ số cho phòng này trong tháng này.");
         var utilityReading = _mapper.Map<UtilityReading>(request);
-       
+       utilityReading.ReadingDate = DateTime.UtcNow;
         await _utilityReadingRepository.AddAsync(utilityReading);
         var result =_mapper.Map<UtilityReadingDto>(utilityReading);
         return  ApiResponse<UtilityReadingDto>.Success(result,"Thêm"+request.Type+" thành công");
@@ -60,15 +53,9 @@ public class UtilityReadingService: IUtilityReadingService
             return ApiResponse<bool>.Fail("CurrentIndex k dc nho hon PreviousIndex");
         }
          _mapper.Map(request,utilityReading);
+         utilityReading.UpdatedAt = DateTime.UtcNow;
          await _utilityReadingRepository.UpdateAsync(utilityReading);
         var result = _mapper.Map<UtilityReadingDto>(utilityReading);
         return ApiResponse<bool>.Success(true,"Cập nhật thành công");
     }
-    // public async Task DeleteAsync(Guid id)
-    // {
-    //     var amenity = await _amenityRepository.GetByIdAsync(id);
-    //     if (amenity==null) 
-    //         throw new KeyNotFoundException("k tim thay phong tro");
-    //     await _amenityRepository.DeleteAsync(amenity);
-    // }
 }

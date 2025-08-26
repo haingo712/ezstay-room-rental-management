@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using UtilityReadingAPI.Enum;
 
 namespace UtilityReadingAPI.Model;
 
@@ -11,9 +12,10 @@ public class UtilityReading
     [BsonRepresentation(BsonType.String)]
     public Guid RoomId { get; set; }
     
-    public string Type { get; set; }
+    public UtilityType Type { get; set; }
     
-    public DateTime ReadingDate  { get; set;}= DateTime.UtcNow;
+    public DateTime ReadingDate  { get; set;}
+    public DateTime UpdatedAt  { get; set;}
 
     [BsonRepresentation(BsonType.Decimal128)]
     public decimal PreviousIndex { get; set; } 

@@ -25,44 +25,20 @@ public class UtilityRateRepository:IUtilityRateRepository
     {
       return await _utilityRates.Find(a => a.Id == id).FirstOrDefaultAsync();
     }
-    public async Task<List<UtilityRate>> GetAllByTypeAsync(UtilityType type)
+   
+    public async Task<List<UtilityRate>> GetAllByOwnerAndTypeAsync(Guid ownerId, UtilityType type)
     {
-        return await _utilityRates.Find(r => r.Type == type & r.IsActive).SortBy(r => r.Tier)
+        return await _utilityRates
+            .Find(x => x.OwnerId == ownerId && x.Type == type)
             .ToListAsync();
     }
-    
-    public async Task<UtilityRate?> GetPreviousTierAsync(Guid ownerId, UtilityType type, int currentTier)
+
+    public async Task<UtilityRate> GetByOwnerTypeAndTierAsync(Guid ownerId, UtilityType type, int tier)
     {
-        var previousTier = currentTier - 1;
         return await _utilityRates
-            .Find(x => x.OwnerId == ownerId && x.Type == type && x.Tier == previousTier)
+            .Find(x => x.OwnerId == ownerId && x.Type == type && x.Tier == tier)
             .FirstOrDefaultAsync();
     }
-
-
-    
-    public async Task<int> GetMaxTierByTypeAndOwnerAsync(Guid ownerId, UtilityType type)
-    {
-        var maxTier = await _utilityRates.Find(x => x.OwnerId == ownerId && x.Type == type)
-            .SortByDescending(x => x.Tier)
-            .Limit(1)
-            .Project(x => x.Tier)
-            .FirstOrDefaultAsync();
-    
-        return maxTier; 
-    }
-    public async Task<decimal> GetMaxToByTypeAndOwnerAndTierAsync (Guid ownerId, UtilityType type, int tier)
-    {
-        var maxTier = await _utilityRates.Find(x => x.OwnerId == ownerId && x.Type == type && x.Tier == tier)
-            .SortByDescending(x => x.Tier)
-            .Limit(1)
-            .Project(x => x.To)
-            .FirstOrDefaultAsync();
-    
-        return maxTier; 
-    }
-    
-    
     
     public async Task AddAsync(UtilityRate utilityRate)
     {

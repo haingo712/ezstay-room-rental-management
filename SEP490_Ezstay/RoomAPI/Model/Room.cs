@@ -20,7 +20,7 @@ namespace RoomAPI.Model
         public decimal? Area { get; set; }
         public decimal Price { get; set; }
         public bool IsAvailable { get; set; } = true;
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

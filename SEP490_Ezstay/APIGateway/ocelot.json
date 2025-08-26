@@ -1,6 +1,18 @@
 {
   "Routes": [
     {
+      "DownstreamPathTemplate": "/api/Auth/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7009
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Auth/{everything}",
+      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/signalR",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -61,18 +73,6 @@
       "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ]
     },
     {
-      "DownstreamPathTemplate": "/api/Auth/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7086
-        }
-      ],
-      "UpstreamPathTemplate": "/api/Auth/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ]
-    },
-    {
       "DownstreamPathTemplate": "/api/Amenity/{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -82,7 +82,8 @@
         }
       ],
       "UpstreamPathTemplate": "/api/Amenity/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer" }
     },
     {
       "DownstreamPathTemplate": "/api/BoardingHouses/{everything}",

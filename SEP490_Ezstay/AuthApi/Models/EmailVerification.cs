@@ -1,0 +1,17 @@
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+
+namespace AuthApi.Models
+{
+    public class EmailVerification
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.String)]
+        public Guid Id { get; set; } = Guid.NewGuid();
+
+        public string Email { get; set; } = null!;
+        public string OtpCode { get; set; } = null!;
+        public DateTime ExpiredAt { get; set; }
+        public bool IsVerified { get; set; } = false;
+    }
+}

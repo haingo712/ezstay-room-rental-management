@@ -12,8 +12,6 @@ public interface IUtilityRateRepository
     Task AddAsync(UtilityRate utilityRate);
     Task UpdateAsync(UtilityRate utilityRate);
     Task DeleteAsync(UtilityRate utilityRate);
-    Task<List<UtilityRate>> GetAllByTypeAsync(UtilityType type);
-    //Task<UtilityRate?> GetPreviousTierAsync(Guid ownerId, UtilityType type, int currentTier);
-    Task<decimal> GetMaxToByTypeAndOwnerAndTierAsync (Guid ownerId, UtilityType type, int tier);
-    Task<int> GetMaxTierByTypeAndOwnerAsync(Guid ownerId, UtilityType type);
+    Task<List<UtilityRate>> GetAllByOwnerAndTypeAsync (Guid ownerId, UtilityType type);
+    Task<UtilityRate> GetByOwnerTypeAndTierAsync(Guid ownerId, UtilityType type, int tier);
 }

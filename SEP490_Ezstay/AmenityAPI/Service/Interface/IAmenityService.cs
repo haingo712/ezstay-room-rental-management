@@ -7,7 +7,7 @@ namespace AmenityAPI.Service.Interface;
 
 public interface IAmenityService
 {
-    Task<IEnumerable<AmenityDto>> GetAllByStaffId(Guid staffId);
+    Task<ApiResponse<IEnumerable<AmenityDto>>>  GetAllByStaffId(Guid staffId);
     IQueryable<AmenityDto> GetAllByStaffIdOdata(Guid staffId);
     IQueryable<AmenityDto> GetAllOdata();
     Task<ApiResponse<IEnumerable<AmenityDto>>> GetAll();
