@@ -1,10 +1,7 @@
-using System.Text.RegularExpressions;
-using AmenityAPI.Data;
 using AmenityAPI.Models;
-using AmenityAPI.Repository.Interface;
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using AmenityAPI.Repository.Interface;
 
 
 namespace AmenityAPI.Repository;
@@ -13,27 +10,28 @@ public class AmenityRepository:IAmenityRepository
 {
     private readonly IMongoCollection<Amenity> _amenities;
     
-    public AmenityRepository(MongoDbService service)
+    public AmenityRepository(IMongoDatabase database)
     {
-        _amenities = service.Amenities;
+        _amenities = database.GetCollection<Amenity>("Amenities");
     }
    
 
     public IQueryable<Amenity> GetAllOdata()=> _amenities.AsQueryable();
-
-  
-    public async Task<IEnumerable<Amenity>> GetAllByOwnerId(Guid ownerId)
+    public async Task<IEnumerable<Amenity>> GetAll()
     {
-        return await _amenities.Find(a=> a.OwnerId == ownerId).ToListAsync();
+        return await _amenities.Find(_ => true).ToListAsync();
     }
     
-    public async Task<IEnumerable<string>> GetAllDistinctNameAsync()
+    // public async Task<IEnumerable<Amenity>> GetAll()
+    // {
+    //     return await _amenities.AsQueryable().ToListAsync();
+    // }
+    //
+    public async Task<IEnumerable<Amenity>> GetAllByStaffId(Guid staffId)
     {
-        return await _amenities.Distinct<string>("AmenityName", 
-            FilterDefinition<Amenity>.Empty).ToListAsync();
+        return await _amenities.Find(a=> a.StaffId == staffId).ToListAsync();
     }
-   
-
+    
     public async Task<Amenity?> GetByIdAsync(Guid id)
     {
       return await _amenities.Find(a => a.Id == id).FirstOrDefaultAsync();
@@ -52,9 +50,10 @@ public class AmenityRepository:IAmenityRepository
     
     public async Task<bool> AmenityNameExistsAsync(string amenityNameExists)
     {
-        return await _amenities
-            .AsQueryable()
-            .AnyAsync(a => a.AmenityName.ToLower() == amenityNameExists.ToLower());
+         return await _amenities
+        .AsQueryable()
+        .AnyAsync(a => a.AmenityName.ToLower() == amenityNameExists.ToLower());
+      // return await _amenities.Find(a => a.AmenityName.ToLower() == amenityNameExists.ToLower()).AnyAsync();
     }
 
 

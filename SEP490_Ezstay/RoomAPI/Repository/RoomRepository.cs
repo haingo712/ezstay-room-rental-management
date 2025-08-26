@@ -1,7 +1,6 @@
 
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using RoomAPI.Data;
 using RoomAPI.Model;
 using RoomAPI.Repository.Interface;
 
@@ -11,9 +10,9 @@ public class RoomRepository:IRoomRepository
 {
     private readonly IMongoCollection<Room> _rooms;
     
-    public RoomRepository(MongoDbService service)
+    public RoomRepository(IMongoDatabase database)
     {
-        _rooms= service.Rooms;
+        _rooms = database.GetCollection<Room>("Rooms");
     }
 
     public IQueryable<Room> GetAll()=> _rooms.AsQueryable();

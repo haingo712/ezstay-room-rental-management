@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using System.Text;
-using AmenityAPI.Data;
 using AmenityAPI.DTO.Request;
+using AmenityAPI.Mapping;
 using AmenityAPI.Repository;
 using AmenityAPI.Repository.Interface;
 using AmenityAPI.Service;
@@ -27,11 +27,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.Configure<MongoSettings>(
-    builder.Configuration.GetSection("ConnectionStrings"));
-builder.Services.AddSingleton<MongoDbService>();
-
-
+var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
+builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 
 builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
@@ -47,33 +45,30 @@ builder.Services.AddControllers().AddOData(options =>
         .OrderBy()
         .Expand()
         .Select());
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); 
- 
-builder.Services.AddHttpClient("AuthorAPI", client =>
-            {
-                client.BaseAddress = new Uri("https://localhost:7152"); // đổi đúng cổng AuthorAPI
-            });
+// builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); 
+builder.Services.AddAutoMapper(typeof(MappingAmenity).Assembly);
 
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    var jwtSettings = builder.Configuration.GetSection("Jwt");
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
+var jwt = builder.Configuration.GetSection("Jwt");
+var key = jwt["Key"];
+var issuer = jwt["Issuer"];
+var audience = jwt["Audience"];
 
-                        ValidIssuer = jwtSettings["Issuer"],
-                        ValidAudience = jwtSettings["Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!)),
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) // "Bearer" mặc định
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = issuer,
+            ValidateAudience = true,
+            ValidAudience = audience,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+        };
+    });
 
-                        // ✅ Bổ sung dòng này
-                        RoleClaimType = ClaimTypes.Role,
-                        NameClaimType = ClaimTypes.NameIdentifier
-                    };
-                });
+builder.Services.AddAuthorization();
 
             builder.Services.AddSwaggerGen(c =>
             {
@@ -107,17 +102,8 @@ builder.Services.AddHttpClient("AuthorAPI", client =>
                     }
                 });
             });
-            
 
             var app = builder.Build();
-
-// --- Seed dữ liệu MongoDB ---
-            // using (var scope = app.Services.CreateScope())
-            // {
-            //     var context = scope.ServiceProvider.GetRequiredService<MongoDbService>();
-            //     await DbSeeder.SeedAsync(context.Amenities);
-            // }
-
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

@@ -1,9 +1,8 @@
-using System.Text.RegularExpressions;
-using UtilityReadingAPI.Data;
 using UtilityReadingAPI.Model;
 using UtilityReadingAPI.Repository.Interface;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using UtilityReadingAPI.Enum;
 
 
 namespace UtilityReadingAPI.Repository;
@@ -12,15 +11,14 @@ public class UtilityReadingRepository:IUtilityReadingRepository
 {
     private readonly IMongoCollection<UtilityReading> _utilityReadings;
     
-    public UtilityReadingRepository(MongoDbService service)
+    public UtilityReadingRepository(IMongoDatabase database)
     {
-        _utilityReadings=service.UtilityReadings;
+        _utilityReadings=database.GetCollection<UtilityReading>("UtilityReadings");
     }
-   
 
-    public IQueryable<Model.UtilityReading> GetAllOdata()=> _utilityReadings.AsQueryable();
+    public IQueryable<UtilityReading> GetAllOdata()=> _utilityReadings.AsQueryable();
 
-    public async Task<bool> ExistsUtilityReadingInMonthAsync(Guid roomId, string type, DateTime readingDate)
+    public async Task<bool> ExistsUtilityReadingInMonthAsync(Guid roomId, UtilityType type, DateTime readingDate)
     {
         var startOfMonth = new DateTime(readingDate.Year, readingDate.Month, 1);
         var endOfMonth = startOfMonth.AddMonths(1).AddTicks(-1); 
@@ -34,10 +32,6 @@ public class UtilityReadingRepository:IUtilityReadingRepository
 
         return await _utilityReadings.Find(filter).AnyAsync();
     }
-    // public async Task<IEnumerable<ElectricityReading>> GetAllByOwnerId(Guid ownerId)
-    // {
-    //     return await _electricityReadings.Find(a=> a.OwnerId == ownerId).ToListAsync();
-    // }
     
     public async Task<UtilityReading?> GetByIdAsync(Guid id)
     {
@@ -56,8 +50,6 @@ public class UtilityReadingRepository:IUtilityReadingRepository
     }
     public async Task DeleteAsync(UtilityReading utilityReading)
     {
-        // var filter = Builders<Amenity>.Filter.Eq(a => a.AmenityId, amenity.AmenityId);
-        // await _amenities.DeleteOneAsync(filter);
         await _utilityReadings.DeleteOneAsync(a => a.Id == utilityReading.Id);
     }
 

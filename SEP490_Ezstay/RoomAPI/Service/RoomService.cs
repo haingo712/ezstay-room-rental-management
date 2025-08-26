@@ -50,6 +50,8 @@ public class RoomService: IRoomService
         if (exist)
             return ApiResponse<RoomDto>.Fail("Tên phòng đã tồn tại trong nhà trọ.");
         var room = _mapper.Map<Room>(request);
+        room.IsAvailable = true;
+        room.CreatedAt = DateTime.UtcNow;
         await _roomRepository.Add(room);
         var result = _mapper.Map<RoomDto>(room);
         return ApiResponse<RoomDto>.Success(result, "Thêm phòng thành công");
@@ -63,12 +65,11 @@ public class RoomService: IRoomService
         var existRoomName = await _roomRepository.RoomNameExistsInHouse(checkRoom.HouseId, request.RoomName, id);
         if(existRoomName)
             return ApiResponse<bool>.Fail("Tên phòng đã tồn tại trong nhà trọ.");    
-        request.CreatedAt = DateTime.Now;
          _mapper.Map(request, checkRoom);
+         checkRoom.UpdatedAt = DateTime.UtcNow;
          await _roomRepository.Update(checkRoom);
          // return _mapper.Map<RoomDto>(checkRoom);
          return  ApiResponse<bool>.Success(true, "Cặp nhật phòng thành công");
- 
     }
     public async Task Delete(Guid id)
     {

@@ -1,4 +1,3 @@
-using RoomAmenityAPI.Data;
 using RoomAmenityAPI.Model;
 using RoomAmenityAPI.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -11,9 +10,9 @@ public class RoomAmenityRepository:IRoomAmenityRepository
 {
     private readonly IMongoCollection<RoomAmenity> _roomAmenities;
     
-    public RoomAmenityRepository(MongoDbService service)
+    public RoomAmenityRepository(IMongoDatabase database)
     {
-        _roomAmenities= service.RoomAmenities;
+        _roomAmenities = database.GetCollection<RoomAmenity>("RoomAmenities");
     }
 
     public IQueryable<RoomAmenity> GetAll()=> _roomAmenities.AsQueryable();

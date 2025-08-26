@@ -1,7 +1,6 @@
-using AmenityAPI.Data;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
-using RoomAPI.Data;
+using MongoDB.Driver;
 using RoomAPI.DTO.Request;
 using RoomAPI.Repository;
 using RoomAPI.Repository.Interface;
@@ -16,9 +15,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.Configure<MongoSettings>(
-    builder.Configuration.GetSection("ConnectionStrings"));
-builder.Services.AddSingleton<MongoDbService>();
+var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
+builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
+
 
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();

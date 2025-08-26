@@ -5,8 +5,8 @@ namespace AmenityAPI.Repository.Interface;
 public interface IAmenityRepository
 {
     IQueryable<Amenity> GetAllOdata();
-    Task<IEnumerable<Amenity>> GetAllByOwnerId(Guid ownerId);
-    Task<IEnumerable<String>> GetAllDistinctNameAsync();
+    Task<IEnumerable<Amenity>> GetAll();
+    Task<IEnumerable<Amenity>> GetAllByStaffId(Guid staffId);
     Task<Amenity?> GetByIdAsync(Guid id);
     Task AddAsync(Amenity amenity);
     Task UpdateAsync(Amenity amenity);

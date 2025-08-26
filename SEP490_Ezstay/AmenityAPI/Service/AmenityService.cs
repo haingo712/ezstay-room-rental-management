@@ -1,37 +1,58 @@
-using AmenityAPI.Service.Interface;
+using System.Security.Claims;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using AmenityAPI.DTO.Request;
 using AmenityAPI.DTO.Response;
 using AmenityAPI.Models;
 using AmenityAPI.Repository.Interface;
+using AmenityAPI.Service.Interface;
 
 namespace AmenityAPI.Service;
+
+
 
 public class AmenityService: IAmenityService
 {
     private readonly IMapper _mapper;
     private readonly IAmenityRepository _amenityRepository;
-
-    public AmenityService(IMapper mapper, IAmenityRepository amenityRepository)
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    public AmenityService(IMapper mapper, IAmenityRepository amenityRepository, IHttpContextAccessor httpContextAccessor)
     {
         _mapper = mapper;
         _amenityRepository = amenityRepository;
+        _httpContextAccessor = httpContextAccessor;
+     
     }
     
-  public async Task<IEnumerable<AmenityDto>> GetAllByOwnerId(Guid ownerId)
+     public async Task<ApiResponse<IEnumerable<AmenityDto>>> GetAllByStaffId(Guid staffId)
       {
-           var amenity =  await _amenityRepository.GetAllByOwnerId(ownerId);
-      return _mapper.Map<IEnumerable<AmenityDto>>(amenity);
+          var staffIdStr = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+          if (string.IsNullOrEmpty(staffIdStr))
+              return ApiResponse<IEnumerable<AmenityDto>>.Fail("Không xác định được StaffId từ token.");
       
-}
-    public Task<IEnumerable<String>> GetAllDistinctNameAsync()
+           var amenity =  await _amenityRepository.GetAllByStaffId(Guid.Parse(staffIdStr));
+      var c=  _mapper.Map<IEnumerable<AmenityDto>>(amenity);
+      return ApiResponse<IEnumerable<AmenityDto>>.Success(c, "ok");
+      }
+  
+      public async Task<ApiResponse<IEnumerable<AmenityDto>>> GetAll()
+      {
+         var result =  _mapper.Map<IEnumerable<AmenityDto>>(await _amenityRepository.GetAll()) ;
+         if (result == null || !result.Any())
+         {
+             return ApiResponse<IEnumerable<AmenityDto>>.Fail("Không có tiện ích nào.");
+         }
+           return ApiResponse<IEnumerable<AmenityDto>>.Success(result);
+      }
+      public IQueryable<AmenityDto> GetAllOdata()
+      {
+          var amenity = _amenityRepository.GetAllOdata();
+      
+          return amenity.ProjectTo<AmenityDto>(_mapper.ConfigurationProvider);
+      }
+    public IQueryable<AmenityDto> GetAllByStaffIdOdata(Guid staffId)
     {
-        return _amenityRepository.GetAllDistinctNameAsync();
-    }
-    public IQueryable<AmenityDto> GetAllByOwnerIdOdata(Guid ownerId)
-    {
-        var amenity =   _amenityRepository.GetAllOdata().Where(x=> x.OwnerId == ownerId);
+        var amenity =   _amenityRepository.GetAllOdata().Where(x=> x.StaffId == staffId);
       
         return amenity.ProjectTo<AmenityDto>(_mapper.ConfigurationProvider);
     }
@@ -44,12 +65,20 @@ public class AmenityService: IAmenityService
       return   _mapper.Map<AmenityDto>(amenity);
     }
 
-    public async  Task<ApiResponse<AmenityDto>> AddAsync(CreateAmenityDto request)
+    public async  Task<ApiResponse<AmenityDto>> AddAsync( CreateAmenityDto request )
     { 
+       
         var exist = await _amenityRepository.AmenityNameExistsAsync(request.AmenityName);
         if (exist)
-            return ApiResponse<AmenityDto>.Fail("Tiện ích đã có tại trong nhà trọ.");
+            return ApiResponse<AmenityDto>.Fail("Tiện ích đã có rồi.");
         var amenity = _mapper.Map<Amenity>(request);
+        amenity.CreatedAt = DateTime.UtcNow;
+        var staffIdStr = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(staffIdStr))
+            return ApiResponse<AmenityDto>.Fail("Không xác định được StaffId từ token.");
+
+        amenity.StaffId = Guid.Parse(staffIdStr);
+
         await _amenityRepository.AddAsync(amenity);
         var result =_mapper.Map<AmenityDto>(amenity);
         return  ApiResponse<AmenityDto>.Success(result,"Thêm tiện ích thành công");
@@ -62,9 +91,10 @@ public class AmenityService: IAmenityService
             throw new KeyNotFoundException("AmentityId not found");
         var existAmentityName = await _amenityRepository.AmenityNameExistsAsync(request.AmenityName);
         if(existAmentityName)
-            return ApiResponse<bool>.Fail("Tiện ích đã có tại trong nhà trọ.");
+            return ApiResponse<bool>.Fail("Tiện ích đã có rồi.");
            // throw new Exception("Tiện ích đã có tại trong nhà trọ.");
          _mapper.Map(request, amenity);
+         amenity.UpdatedAt = DateTime.UtcNow;
          await _amenityRepository.UpdateAsync(amenity);
         var result = _mapper.Map<AmenityDto>(amenity);
         return ApiResponse<bool>.Success(true,"Cập nhật tiện ích thành công");
@@ -73,7 +103,7 @@ public class AmenityService: IAmenityService
     {
         var amenity = await _amenityRepository.GetByIdAsync(id);
         if (amenity==null) 
-            throw new KeyNotFoundException("k tim thay phong tro");
+            throw new KeyNotFoundException("AmentityId not found");
         await _amenityRepository.DeleteAsync(amenity);
     }
 }

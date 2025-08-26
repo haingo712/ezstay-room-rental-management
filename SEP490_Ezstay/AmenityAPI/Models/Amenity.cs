@@ -10,6 +10,8 @@ public class Amenity
     [BsonRepresentation(BsonType.String)] 
     public Guid Id { get; set; } = Guid.NewGuid();
     [BsonRepresentation(BsonType.String)]
-    public Guid OwnerId { get; set; }
+    public Guid StaffId { get; set; }
     public string AmenityName { get; set; } = null!;
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }

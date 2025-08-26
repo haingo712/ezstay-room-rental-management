@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
-using RoomAmenityAPI.Data;
+using MongoDB.Driver;
 using RoomAmenityAPI.DTO.Request;
 using RoomAmenityAPI.Repository;
 using RoomAmenityAPI.Repository.Interface;
@@ -24,9 +24,9 @@ builder.Services.AddSwaggerGen();
 
 // Add services to the container.
 
-builder.Services.Configure<MongoSettings>(
-    builder.Configuration.GetSection("ConnectionStrings"));
-builder.Services.AddSingleton<MongoDbService>();
+var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
+builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
+
 
 builder.Services.AddScoped<IRoomAmenityRepository, RoomAmenityRepository>();
 builder.Services.AddScoped<IRoomAmenityService, RoomAmenityService>();
