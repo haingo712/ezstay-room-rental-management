@@ -96,7 +96,9 @@
       ],
       "UpstreamPathTemplate": "/api/Amenity/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-     
+     "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/BoardingHouses/{everything}",
