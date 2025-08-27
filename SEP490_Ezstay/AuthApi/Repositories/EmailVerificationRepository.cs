@@ -24,7 +24,7 @@ namespace AuthApi.Repositories
             return await _collection.Find(x => x.Email == email && !x.IsVerified).FirstOrDefaultAsync();
         }
 
-        public async Task<bool> VerifyOtpAsync(string email, string otp)
+        public async Task<EmailVerification?> VerifyOtpAsync(string email, string otp)
         {
             var filter = Builders<EmailVerification>.Filter.Where(x =>
                 x.Email == email &&
@@ -35,8 +35,12 @@ namespace AuthApi.Repositories
             var update = Builders<EmailVerification>.Update
                 .Set(x => x.IsVerified, true);
 
-            var result = await _collection.UpdateOneAsync(filter, update);
-            return result.ModifiedCount > 0;
+            var options = new FindOneAndUpdateOptions<EmailVerification>
+            {
+                ReturnDocument = ReturnDocument.After
+            };
+
+            return await _collection.FindOneAndUpdateAsync(filter, update, options);
         }
     }
 }

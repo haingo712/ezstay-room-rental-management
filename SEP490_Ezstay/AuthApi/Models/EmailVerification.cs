@@ -13,5 +13,6 @@ namespace AuthApi.Models
         public string OtpCode { get; set; } = null!;
         public DateTime ExpiredAt { get; set; }
         public bool IsVerified { get; set; } = false;
+        public string UserPayload { get; set; } = null!; // Store serialized user data
     }
 }
