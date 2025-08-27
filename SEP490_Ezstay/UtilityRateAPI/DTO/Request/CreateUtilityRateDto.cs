@@ -6,9 +6,7 @@ namespace UtilityRateAPI.DTO.Request;
 
 public class CreateUtilityRateDto
 {
-    public Guid OwnerId { get; set; } 
-  //  [RegularExpression("^(Electricity|Water)$", ErrorMessage = "Type must be either 'Electricity' or 'Water'.")]
-   // public string Type { get; set; } 
+  //  public Guid OwnerId { get; set; } 
    [JsonConverter(typeof(JsonStringEnumConverter))]
    public UtilityType Type { get; set; }
   //  [Required]

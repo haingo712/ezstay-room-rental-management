@@ -23,18 +23,27 @@ public class AmenityService: IAmenityService
         _httpContextAccessor = httpContextAccessor;
      
     }
-    
-     public async Task<ApiResponse<IEnumerable<AmenityDto>>> GetAllByStaffId(Guid staffId)
+    private Guid GetStaffIdFromToken()
+    {
+        var staffIdStr = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(staffIdStr))
+            throw new UnauthorizedAccessException("Không xác định được StaffId từ token.");
+        return Guid.Parse(staffIdStr);
+    }
+     // public async Task<ApiResponse<IEnumerable<AmenityDto>>> GetAllByStaffId(Guid staffId)
+     //  {
+     //      var staffIdStr = GetStaffIdFromToken();
+     //       var amenity =  await _amenityRepository.GetAllByStaffId(staffIdStr);
+     //  var c=  _mapper.Map<IEnumerable<AmenityDto>>(amenity);
+     //  return ApiResponse<IEnumerable<AmenityDto>>.Success(c, "ok");
+     //  }
+      public async Task<ApiResponse<IEnumerable<AmenityDto>>> GetAllByStaffId()
       {
-          var staffIdStr = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-          if (string.IsNullOrEmpty(staffIdStr))
-              return ApiResponse<IEnumerable<AmenityDto>>.Fail("Không xác định được StaffId từ token.");
-      
-           var amenity =  await _amenityRepository.GetAllByStaffId(Guid.Parse(staffIdStr));
-      var c=  _mapper.Map<IEnumerable<AmenityDto>>(amenity);
-      return ApiResponse<IEnumerable<AmenityDto>>.Success(c, "ok");
+          var staffId = GetStaffIdFromToken();
+          var amenity =  await _amenityRepository.GetAllByStaffId(staffId);
+          var c=  _mapper.Map<IEnumerable<AmenityDto>>(amenity);
+          return ApiResponse<IEnumerable<AmenityDto>>.Success(c, "ok");
       }
-  
       public async Task<ApiResponse<IEnumerable<AmenityDto>>> GetAll()
       {
          var result =  _mapper.Map<IEnumerable<AmenityDto>>(await _amenityRepository.GetAll()) ;
@@ -50,12 +59,20 @@ public class AmenityService: IAmenityService
       
           return amenity.ProjectTo<AmenityDto>(_mapper.ConfigurationProvider);
       }
-    public IQueryable<AmenityDto> GetAllByStaffIdOdata(Guid staffId)
+    public IQueryable<AmenityDto> GetAllByStaffIdOdata()
     {
+        var staffId = GetStaffIdFromToken();
         var amenity =   _amenityRepository.GetAllOdata().Where(x=> x.StaffId == staffId);
       
         return amenity.ProjectTo<AmenityDto>(_mapper.ConfigurationProvider);
     }
+    // public IQueryable<AmenityDto> GetAllByStaffIdOdata(Guid staffId)
+    // {
+    //     var staffIdStr = GetStaffIdFromToken();
+    //     var amenity =   _amenityRepository.GetAllOdata().Where(x=> x.StaffId == staffId);
+    //   
+    //     return amenity.ProjectTo<AmenityDto>(_mapper.ConfigurationProvider);
+    // }
 
     public async Task<AmenityDto> GetByIdAsync(Guid id)
     {
@@ -73,11 +90,9 @@ public class AmenityService: IAmenityService
             return ApiResponse<AmenityDto>.Fail("Tiện ích đã có rồi.");
         var amenity = _mapper.Map<Amenity>(request);
         amenity.CreatedAt = DateTime.UtcNow;
-        var staffIdStr = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(staffIdStr))
-            return ApiResponse<AmenityDto>.Fail("Không xác định được StaffId từ token.");
+        var staffIdStr = GetStaffIdFromToken();
 
-        amenity.StaffId = Guid.Parse(staffIdStr);
+        amenity.StaffId = staffIdStr;
 
         await _amenityRepository.AddAsync(amenity);
         var result =_mapper.Map<AmenityDto>(amenity);
