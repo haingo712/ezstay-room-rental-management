@@ -24,21 +24,36 @@ namespace AmenityAPI.Controllers
         {
             _amenityService = amenityService;
         }
-        [Authorize(Roles = "Admin,Staff")]
-        [HttpGet("ByStaffId/odata/{staffId}")]
+       
+        // [HttpGet("ByStaffId/odata/{staffId}")]
+        // [Authorize(Roles = "Staff")]
+        // [EnableQuery]
+        // public IQueryable<AmenityDto> GetAmenitiesByOwnerIdOdata(Guid staffId)
+        // {
+        //    
+        //     return _amenityService.GetAllByStaffIdOdata(staffId);
+        // }
+        [HttpGet("ByStaffId/odata/")]
+        [Authorize(Roles = "Staff")]
         [EnableQuery]
-        public IQueryable<AmenityDto> GetAmenitiesByOwnerIdOdata(Guid staffId)
+        public IQueryable<AmenityDto> GetAmenitiesByOwnerIdOdata( )
         {
            
-            return _amenityService.GetAllByStaffIdOdata(staffId);
+            return _amenityService.GetAllByStaffIdOdata();
         }
-       [Authorize(Roles = "Admin,Staff")]
-        [HttpGet("ByStaffId/{staffId}")]
-        public async Task<ActionResult<AmenityDto>> GetAmenitiesByStaffId(Guid staffId)
+       
+        // [HttpGet("ByStaffId/{staffId}")]
+        // [Authorize(Roles = "Staff")]
+        // public async Task<ActionResult<AmenityDto>> GetAmenitiesByStaffId(Guid staffId)
+        // {
+        //     return Ok( await _amenityService.GetAllByStaffId(staffId));
+        // }
+        [HttpGet("ByStaffId")]
+        [Authorize(Roles = "Staff")]
+        public async Task<ActionResult<AmenityDto>> GetAmenitiesByStaffId( )
         {
-            return Ok( await _amenityService.GetAllByStaffId(staffId));
+            return Ok( await _amenityService.GetAllByStaffId());
         }
-
         [HttpGet("odata")]
         [EnableQuery]
         public IQueryable<AmenityDto> GetAmenitiesOdata()
@@ -68,7 +83,7 @@ namespace AmenityAPI.Controllers
 
         // PUT: api/Amenity/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> PutAmenity(Guid id, UpdateAmenityDto request)
         {
             try
@@ -87,7 +102,7 @@ namespace AmenityAPI.Controllers
         }
         
         [HttpPost]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Staff")]
         public async Task<ActionResult<AmenityDto>> PostAmenity(CreateAmenityDto request)
         {
             try
@@ -108,7 +123,7 @@ namespace AmenityAPI.Controllers
         }
         // DELETE: api/Amenity/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> DeleteAmenity(Guid id)
         {
             try
