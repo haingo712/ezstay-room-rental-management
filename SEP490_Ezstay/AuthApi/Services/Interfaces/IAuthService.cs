@@ -7,5 +7,7 @@ namespace AuthApi.Services.Interfaces
     {
         Task<RegisterResponseDto> RegisterAsync(RegisterRequestDto dto);
         Task<LoginResponseDto> LoginAsync(LoginRequestDto dto);
+        Task<RegisterResponseDto> ResendOtpAsync(string email);
+        Task<RegisterResponseDto> CreateStaffAsync(CreateStaffRequestDto dto);
     }
 }

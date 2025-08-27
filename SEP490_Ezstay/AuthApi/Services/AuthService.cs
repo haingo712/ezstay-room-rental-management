@@ -6,6 +6,7 @@ using AuthApi.Services.Interfaces;
 using AuthApi.Utils;
 using AutoMapper;
 using System.Net.Http.Json;
+using BCrypt.Net;
 
 namespace AuthApi.Services
 {
@@ -37,15 +38,8 @@ namespace AuthApi.Services
             if (existingPhone != null)
                 return new RegisterResponseDto { Success = false, Message = "Phone already exists" };
 
-            // ❌ Không còn gọi verify-email giả lập nữa
-
-            // ✅ Tạo tài khoản nhưng chưa xác minh
-            var account = _mapper.Map<Account>(dto);
-            account.IsVerified = false; // thêm thuộc tính này trong model Account
-            await _repo.CreateAsync(account);
-
-            // ✅ Gửi OTP qua email
-            await _emailVerificationService.SendOtpAsync(dto.Email);
+            // Temporarily store user data and send OTP
+            await _emailVerificationService.SendOtpAsync(dto);
 
             return new RegisterResponseDto
             {
@@ -54,18 +48,33 @@ namespace AuthApi.Services
             };
         }
 
+        public async Task<RegisterResponseDto> ResendOtpAsync(string email)
+        {
+            var verification = await _emailVerificationService.GetVerificationByEmail(email);
+            if (verification == null || string.IsNullOrEmpty(verification.UserPayload))
+                return new RegisterResponseDto { Success = false, Message = "Cannot find original registration data to resend OTP." };
+
+            await _emailVerificationService.SendOtpAsync(verification.UserPayload);
+            return new RegisterResponseDto
+            {
+                Success = true,
+                Message = "OTP resent to email. Please check your inbox."
+            };
+        }
+
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto dto)
         {
             var account = await _repo.GetByEmailAsync(dto.Email);
 
             if (account == null)
-                return new LoginResponseDto { Success = false, Message = "Email not found" };
+                return new LoginResponseDto { Success = false, Message = "Account not found." };
+
+            if (!BCrypt.Net.BCrypt.Verify(dto.Password, account.Password))
+                return new LoginResponseDto { Success = false, Message = "Incorrect password." };
 
             if (!account.IsVerified)
-                return new LoginResponseDto { Success = false, Message = "Email not verified" };
+                return new LoginResponseDto { Success = false, Message = "Account has not been verified." };
 
-            if (account.Password != dto.Password)
-                return new LoginResponseDto { Success = false, Message = "Invalid password" };
 
             // ✅ Tạo token
             var token = _tokenGenerator.CreateToken(
@@ -79,6 +88,30 @@ namespace AuthApi.Services
                 Success = true,
                 Token = token,
                 Message = "Login successful"
+            };
+        }
+
+        public async Task<RegisterResponseDto> CreateStaffAsync(CreateStaffRequestDto dto)
+        {
+            var existingEmail = await _repo.GetByEmailAsync(dto.Email);
+            if (existingEmail != null)
+                return new RegisterResponseDto { Success = false, Message = "Email already exists" };
+
+            var existingPhone = await _repo.GetByPhoneAsync(dto.Phone);
+            if (existingPhone != null)
+                return new RegisterResponseDto { Success = false, Message = "Phone already exists" };
+
+            var account = _mapper.Map<Account>(dto);
+            account.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            account.Role = AuthApi.Enums.RoleEnum.Staff;
+            account.IsVerified = true; // Staff accounts are created by admin and are verified by default
+
+            await _repo.CreateAsync(account);
+
+            return new RegisterResponseDto
+            {
+                Success = true,
+                Message = "Staff account created successfully"
             };
         }
 

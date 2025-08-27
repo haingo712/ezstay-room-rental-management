@@ -1,6 +1,8 @@
-﻿using AuthApi.Models;
+﻿using AuthApi.DTO.Request;
+using AuthApi.Models;
 using AuthApi.Repositories.Interfaces;
 using AuthApi.Services.Interfaces;
+using System.Text.Json;
 
 namespace AuthApi.Services
 {
@@ -15,15 +17,17 @@ namespace AuthApi.Services
             _http = factory.CreateClient("MailApi");
         }
 
-        public async Task SendOtpAsync(string email)
+        public async Task SendOtpAsync(RegisterRequestDto dto)
         {
             var otp = new Random().Next(100000, 999999).ToString();
+            var payload = JsonSerializer.Serialize(dto);
 
             var verification = new EmailVerification
             {
-                Email = email,
+                Email = dto.Email,
                 OtpCode = otp,
-                ExpiredAt = DateTime.UtcNow.AddMinutes(1000)
+                ExpiredAt = DateTime.UtcNow.AddMinutes(10),
+                UserPayload = payload
             };
 
             await _repo.CreateAsync(verification);
@@ -31,14 +35,28 @@ namespace AuthApi.Services
             // Gửi OTP qua mail
             await _http.PostAsJsonAsync("/api/mail/send-verification", new
             {
-                Email = email,
+                Email = dto.Email,
                 Otp = otp
             });
         }
 
-        public async Task<bool> ConfirmOtpAsync(string email, string otp)
+        public async Task SendOtpAsync(string userPayload)
+        {
+            var dto = JsonSerializer.Deserialize<RegisterRequestDto>(userPayload);
+            if (dto != null)
+            {
+                await SendOtpAsync(dto);
+            }
+        }
+
+        public async Task<EmailVerification?> ConfirmOtpAsync(string email, string otp)
         {
             return await _repo.VerifyOtpAsync(email, otp);
+        }
+
+        public async Task<EmailVerification> GetVerificationByEmail(string email)
+        {
+            return await _repo.GetByEmailAsync(email);
         }
     }
 }

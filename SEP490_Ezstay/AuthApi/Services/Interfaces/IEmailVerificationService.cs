@@ -1,8 +1,13 @@
-﻿namespace AuthApi.Services.Interfaces
+﻿using AuthApi.DTO.Request;
+using AuthApi.Models;
+
+namespace AuthApi.Services.Interfaces
 {
     public interface IEmailVerificationService
     {
-        Task SendOtpAsync(string email);
-        Task<bool> ConfirmOtpAsync(string email, string otp);
+        Task SendOtpAsync(RegisterRequestDto dto);
+        Task SendOtpAsync(string userPayload);
+        Task<EmailVerification?> ConfirmOtpAsync(string email, string otp);
+        Task<EmailVerification> GetVerificationByEmail(string email);
     }
 }

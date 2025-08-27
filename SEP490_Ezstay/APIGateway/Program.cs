@@ -26,6 +26,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
 // Add Ocelot service
 builder.Services.AddOcelot();
 
@@ -33,10 +42,12 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
+app.UseCors("AllowAll");
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-app.UseAuthorization();                        
+app.UseAuthorization();
 
 await app.UseOcelot();
 
