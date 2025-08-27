@@ -45,26 +45,32 @@ builder.Services.AddControllers().AddOData(options =>
         .OrderBy()
         .Expand()
         .Select());
-// builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); 
 builder.Services.AddAutoMapper(typeof(MappingAmenity).Assembly);
 
-var jwt = builder.Configuration.GetSection("Jwt");
-var key = jwt["Key"];
-var issuer = jwt["Issuer"];
-var audience = jwt["Audience"];
+// builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//     .AddJwtBearer(options =>
+//     {
+//         options.Authority = jwtSettings["Authority"];
+//         options.Audience = jwtSettings["Audience"];
+//         options.RequireHttpsMetadata = bool.Parse(jwtSettings["RequireHttpsMetadata"] ?? "true");
+//     });
+var jwtSettings = builder.Configuration.GetSection("Jwt");
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) // "Bearer" mặc định
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = issuer,
+            ValidIssuer = jwtSettings["Issuer"],
+
             ValidateAudience = true,
-            ValidAudience = audience,
+            ValidAudience = jwtSettings["Audience"],
+
             ValidateLifetime = true,
+
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
         };
     });
 

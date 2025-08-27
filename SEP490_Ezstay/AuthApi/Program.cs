@@ -4,6 +4,9 @@ using AuthApi.Repositories.Interfaces;
 using AuthApi.Services;
 using AuthApi.Services.Interfaces;
 using AuthApi.Utils;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<MongoSettings>(
     builder.Configuration.GetSection("MongoSettings"));
-builder.Services.AddSingleton<MongoDbService>(); // ? thêm dòng này
+builder.Services.AddSingleton<MongoDbService>(); // ? thï¿½m dï¿½ng nï¿½y
 
 
 builder.Services.AddHttpClient("MailApi", client =>
@@ -42,7 +45,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();
