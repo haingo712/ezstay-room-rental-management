@@ -6,6 +6,9 @@ using AuthApi.Repositories.Interfaces;
 using AuthApi.Services;
 using AuthApi.Services.Interfaces;
 using AuthApi.Utils;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using BCrypt.Net;
 
 var builder = WebApplication.CreateBuilder(args);
