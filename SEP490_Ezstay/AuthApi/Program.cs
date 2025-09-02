@@ -76,6 +76,29 @@ using (var scope = app.Services.CreateScope())
         {
             logger.LogInformation("Admin user already exists.");
         }
+
+        // Seed staff user
+        var staffUser = await accountRepo.GetByEmailAsync("staff1@gmail.com");
+        if (staffUser == null)
+        {
+            logger.LogInformation("Staff user 'staff1@gmail.com' not found, creating one.");
+            var newStaff = new Account
+            {
+                FullName = "Staff One",
+                Email = "staff1@gmail.com",
+                Password = BCrypt.Net.BCrypt.HashPassword("123"),
+                Phone = "1234567890",
+                Role = RoleEnum.Staff,
+                IsVerified = true,
+                CreateAt = DateTime.UtcNow
+            };
+            await accountRepo.CreateAsync(newStaff);
+            logger.LogInformation("Staff user 'staff1@gmail.com' created successfully.");
+        }
+        else
+        {
+            logger.LogInformation("Staff user 'staff1@gmail.com' already exists.");
+        }
     }
     catch (Exception ex)
     {

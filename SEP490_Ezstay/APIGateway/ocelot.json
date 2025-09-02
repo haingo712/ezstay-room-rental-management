@@ -87,7 +87,7 @@
     },
     {
       "DownstreamPathTemplate": "/api/Rooms/{everything}",
-      "DownstreamScheme": "httpshttps",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -107,7 +107,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7202
+          "Port": 7111
         }
       ],
       "UpstreamPathTemplate": "/api/Amenity/{everything}",
