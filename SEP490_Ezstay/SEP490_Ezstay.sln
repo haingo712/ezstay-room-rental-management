@@ -34,6 +34,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailApi", "MailApi\MailApi.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthApi", "AuthApi\AuthApi.csproj", "{BF096E8C-4D91-4F8F-9A1A-35D70C48F956}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityRate.GrpcContracts", "UtilityRate.GrpcContracts\UtilityRate.GrpcContracts.csproj", "{D56342AF-C208-4F4B-984F-DDC2735087FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregatorAPI", "AggregatorAPI\AggregatorAPI.csproj", "{A528FFE3-3331-4710-8231-CAFD04AF3E59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +96,14 @@ Global
 		{BF096E8C-4D91-4F8F-9A1A-35D70C48F956}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF096E8C-4D91-4F8F-9A1A-35D70C48F956}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF096E8C-4D91-4F8F-9A1A-35D70C48F956}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D56342AF-C208-4F4B-984F-DDC2735087FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D56342AF-C208-4F4B-984F-DDC2735087FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D56342AF-C208-4F4B-984F-DDC2735087FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D56342AF-C208-4F4B-984F-DDC2735087FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A528FFE3-3331-4710-8231-CAFD04AF3E59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A528FFE3-3331-4710-8231-CAFD04AF3E59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A528FFE3-3331-4710-8231-CAFD04AF3E59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A528FFE3-3331-4710-8231-CAFD04AF3E59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

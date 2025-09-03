@@ -7,9 +7,9 @@ namespace UtilityReadingAPI.Model;
 public class UtilityReading
 {
     [BsonId]
-    [BsonRepresentation(BsonType.String)]
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid Id { get; set; } = Guid.NewGuid();
-    [BsonRepresentation(BsonType.String)]
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid RoomId { get; set; }
     
     public UtilityType Type { get; set; }

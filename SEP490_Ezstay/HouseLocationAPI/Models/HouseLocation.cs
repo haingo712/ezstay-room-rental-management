@@ -6,9 +6,9 @@ namespace HouseLocationAPI.Models
     public class HouseLocation
     {
         [BsonId]
-        [BsonRepresentation(BsonType.String)]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; }
-        [BsonRepresentation(BsonType.String)]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid HouseId { get; set; }
         public string FullAddress { get; set; } = null!;
 

@@ -7,9 +7,9 @@ namespace AmenityAPI.Models;
 public class Amenity
 {
     [BsonId] 
-    [BsonRepresentation(BsonType.String)] 
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid Id { get; set; } = Guid.NewGuid();
-    [BsonRepresentation(BsonType.String)]
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid StaffId { get; set; }
     public string AmenityName { get; set; } = null!;
     public DateTime CreatedAt { get; set; }

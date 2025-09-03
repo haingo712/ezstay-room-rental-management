@@ -9,6 +9,7 @@ public class MappingProfile:Profile
     public MappingProfile()
     {
         CreateMap<CreateRentalRequestDto, RentalRequest>();
+        CreateMap<UpdateRentalRequestByOwnerDto, RentalRequest>();
         CreateMap<UpdateRentalRequestDto, RentalRequest>();
         CreateMap<RentalRequest, RentalRequestDto>();
     }

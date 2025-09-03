@@ -6,7 +6,7 @@ namespace AuthApi.Models
     public class EmailVerification
     {
         [BsonId]
-        [BsonRepresentation(BsonType.String)]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public string Email { get; set; } = null!;

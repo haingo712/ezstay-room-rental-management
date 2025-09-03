@@ -20,40 +20,48 @@ public class RentalRequestService: IRentalRequestService
         _httpClient = httpClient;
     }
     
-     public async Task<IEnumerable<RentalRequestDto>> GetAllByStaffId(Guid staffId)
-      {
-           var amenity =  await _rentalRequestRepository.GetAllByStaffId(staffId);
-      return _mapper.Map<IEnumerable<RentalRequestDto>>(amenity);
-      }
+     // public async Task<IEnumerable<RentalRequestDto>> GetAllById(Guid staffId)
+     //  {
+     //       var amenity =  await _rentalRequestRepository.GetAllByStaffId(staffId);
+     //  return _mapper.Map<IEnumerable<RentalRequestDto>>(amenity);
+     //  }
   
-      public async Task<ApiResponse<IEnumerable<RentalRequestDto>>> GetAll()
-      {
-         var result =  _mapper.Map<IEnumerable<RentalRequestDto>>(await _rentalRequestRepository.GetAll()) ;
-         if (result == null || !result.Any())
-         {
-             return ApiResponse<IEnumerable<RentalRequestDto>>.Fail("Không có tiện ích nào.");
-         }
-           return ApiResponse<IEnumerable<RentalRequestDto>>.Success(result);
-      }
-      public IQueryable<RentalRequestDto> GetAllOdata()
-      {
-          var amenity = _rentalRequestRepository.GetAllOdata();
-      
-          return amenity.ProjectTo<RentalRequestDto>(_mapper.ConfigurationProvider);
-      }
-    public IQueryable<RentalRequestDto> GetAllByStaffIdOdata(Guid staffId)
+      // public async Task<ApiResponse<IEnumerable<RentalRequestDto>>> GetAll()
+      // {
+      //    var result =  _mapper.Map<IEnumerable<RentalRequestDto>>(await _rentalRequestRepository.GetAll()) ;
+      //    if (result == null || !result.Any())
+      //    {
+      //        return ApiResponse<IEnumerable<RentalRequestDto>>.Fail("Không có tiện ích nào.");
+      //    }
+      //      return ApiResponse<IEnumerable<RentalRequestDto>>.Success(result);
+      // }
+    // public IQueryable<RentalRequestDto> GetAllByOwnerIdOdata(Guid ownerId, int pageNumber, int pageSize)
+    // {
+    //     var query = _rentalRequestRepository.GetAllByOwnerIdOdata(ownerId);
+    //
+    //     // áp dụng phân trang
+    //     query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+    //
+    //     return query.ProjectTo<RentalRequestDto>(_mapper.ConfigurationProvider);
+    // }
+    public IQueryable<RentalRequestDto> GetAllByOwnerIdOdata(Guid ownerId)
     {
-        var amenity =   _rentalRequestRepository.GetAllOdata().Where(x=> x.UserId == staffId);
-      
-        return amenity.ProjectTo<RentalRequestDto>(_mapper.ConfigurationProvider);
+        var rental =   _rentalRequestRepository.GetAllByOwnerIdOdata(ownerId);
+        return rental.ProjectTo<RentalRequestDto>(_mapper.ConfigurationProvider);
+    }
+
+    public IQueryable<RentalRequestDto> GetAllByUserIdOdata(Guid userId)
+    {
+        var rental =   _rentalRequestRepository.GetAllByUserIdOdata(userId);
+        return rental.ProjectTo<RentalRequestDto>(_mapper.ConfigurationProvider);
     }
 
     public async Task<RentalRequestDto> GetByIdAsync(Guid id)
     {
-        var amenity = await _rentalRequestRepository.GetByIdAsync(id);
-        if (amenity == null)
-            throw new KeyNotFoundException("AmentityId not found");
-      return   _mapper.Map<RentalRequestDto>(amenity);
+        var rental = await _rentalRequestRepository.GetByIdAsync(id);
+        if (rental == null)
+            throw new KeyNotFoundException("Rental Request Id not found");
+      return   _mapper.Map<RentalRequestDto>(rental);
     }
 
     public async  Task<ApiResponse<RentalRequestDto>> AddAsync(CreateRentalRequestDto request)
@@ -61,31 +69,31 @@ public class RentalRequestService: IRentalRequestService
         // var exist = await _rentalRequestRepository.AmenityNameExistsAsync(request.AmenityName);
         // if (exist)
         //     return ApiResponse<RentalRequestDto>.Fail("Tiện ích đã có rồi.");
-        var amenity = _mapper.Map<RentalRequest>(request);
-        await _rentalRequestRepository.AddAsync(amenity);
-        var result =_mapper.Map<RentalRequestDto>(amenity);
-        return  ApiResponse<RentalRequestDto>.Success(result,"Thêm tiện ích thành công");
+        var rentalRequest = _mapper.Map<RentalRequest>(request);
+        await _rentalRequestRepository.AddAsync(rentalRequest);
+        var result =_mapper.Map<RentalRequestDto>(rentalRequest);
+        return  ApiResponse<RentalRequestDto>.Success(result,"Thêm Rental Request thành công");
     }
 
     public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateRentalRequestDto request)
     {
-        var amenity =await _rentalRequestRepository.GetByIdAsync(id);
+        var rentalRequest =await _rentalRequestRepository.GetByIdAsync(id);
         // if (amenity == null)
         //     throw new KeyNotFoundException("AmentityId not found");
         // var existAmentityName = await _rentalRequestRepository.AmenityNameExistsAsync(request.AmenityName);
    //     if(existAmentityName)
       //      return ApiResponse<bool>.Fail("Tiện ích đã có rồi.");
            // throw new Exception("Tiện ích đã có tại trong nhà trọ.");
-         _mapper.Map(request, amenity);
-         await _rentalRequestRepository.UpdateAsync(amenity);
-        var result = _mapper.Map<RentalRequestDto>(amenity);
-        return ApiResponse<bool>.Success(true,"Cập nhật tiện ích thành công");
+         _mapper.Map(request, rentalRequest);
+         await _rentalRequestRepository.UpdateAsync(rentalRequest);
+        var result = _mapper.Map<RentalRequestDto>(rentalRequest);
+        return ApiResponse<bool>.Success(true,"Cập nhật Rental Request thành công");
     }
-    public async Task DeleteAsync(Guid id)
-    {
-        var amenity = await _rentalRequestRepository.GetByIdAsync(id);
-        if (amenity==null) 
-            throw new KeyNotFoundException("AmentityId not found");
-        await _rentalRequestRepository.DeleteAsync(amenity);
-    }
+    // public async Task DeleteAsync(Guid id)
+    // {
+    //     var amenity = await _rentalRequestRepository.GetByIdAsync(id);
+    //     if (amenity==null) 
+    //         throw new KeyNotFoundException("AmentityId not found");
+    //     await _rentalRequestRepository.DeleteAsync(amenity);
+    // }
 }

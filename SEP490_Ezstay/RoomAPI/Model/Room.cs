@@ -3,23 +3,25 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using RoomAPI.Enum;
 
 namespace RoomAPI.Model
 {
     public class Room
     {
         [BsonId] 
-        [BsonRepresentation(BsonType.String)] 
+        [BsonGuidRepresentation(GuidRepresentation.Standard)] 
         public Guid Id { get; set; } = Guid.NewGuid();
-        [BsonRepresentation(BsonType.String)] 
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid HouseId { get; set; }
-        [BsonRepresentation(BsonType.String)] 
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid HouseLocationId { get; set; }
         public string RoomName { get; set; } = null!;
       
         public decimal? Area { get; set; }
         public decimal Price { get; set; }
-        public bool IsAvailable { get; set; } = true;
+        public RoomStatus RoomStatus { get; set; }
+        
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }

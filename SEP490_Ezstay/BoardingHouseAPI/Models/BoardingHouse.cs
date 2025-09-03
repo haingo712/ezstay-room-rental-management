@@ -6,9 +6,9 @@ namespace BoardingHouseAPI.Models
     public class BoardingHouse
     {
         [BsonId]
-        [BsonRepresentation(BsonType.String)]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; }
-        [BsonRepresentation(BsonType.String)]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid OwnerId { get; set; }
         public string HouseName { get; set; } = null!;
         public string? Description { get; set; }

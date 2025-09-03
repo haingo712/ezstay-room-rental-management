@@ -285,7 +285,7 @@ public class UtilityRateService : IUtilityRateService
             var previousTier = await _utilityRateRepository.GetByOwnerTypeAndTierAsync(ownerId, request.Type, maxTier);
             from = previousTier.To + 1;
             if (request.To <= from)
-                return ApiResponse<UtilityRateDto>.Fail($"Giá trị To {request.To} phải lớn hơn {from}");
+                return ApiResponse<UtilityRateDto>.Fail($"Giá trị To {request.To} phải lớn hơn mức {previousTier.Tier} với To {from}");
         }
         var utilityRate = _mapper.Map<UtilityRate>(request);
         utilityRate.Tier = nextTier;
@@ -347,4 +347,5 @@ public class UtilityRateService : IUtilityRateService
 
         await _utilityRateRepository.DeleteAsync(entity);
     }
+    
 }

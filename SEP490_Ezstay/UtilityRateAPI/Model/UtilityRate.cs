@@ -7,9 +7,9 @@ namespace UtilityRateAPI.Model;
 public class UtilityRate
 {
     [BsonId]
-    [BsonRepresentation(BsonType.String)]
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid Id { get; set; } = Guid.NewGuid();
-    [BsonRepresentation(BsonType.String)]
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid OwnerId { get; set; } 
     public UtilityType Type { get; set; }
     public int Tier { get; set; }

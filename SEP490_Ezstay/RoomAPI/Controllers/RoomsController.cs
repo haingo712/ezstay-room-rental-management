@@ -23,13 +23,13 @@ namespace RoomAPI.Controllers
         {
             _roomService = roomService;
         }
-
+// trang user guest
         // GET: api/Rooms
         [HttpGet]
         [EnableQuery]
         public IQueryable<RoomDto> GetRooms()
         {
-            return _roomService.GetAll();
+            return _roomService.GetAllOdata();
         }
         [HttpGet("ByHouseId/{houseId}")]
         [EnableQuery]
@@ -80,24 +80,39 @@ namespace RoomAPI.Controllers
             return NotFound(new { message = e.Message });
         }
     }
-    //     // POST: api/Rooms
-    [HttpPost]
-   //  [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> PostRoom(CreateRoomDto request)
+   //  [HttpPost]
+   // //  [Authorize(Roles = "Owner")]
+   //  public async Task<IActionResult> PostRoom(CreateRoomDto request)
+   //  {
+   //      try
+   //      {
+   //       var createRoom =   await  _roomService.Add(request);
+   //       if (!createRoom.IsSuccess)
+   //           return BadRequest(new { message = createRoom.Message });
+   //       
+   //       return CreatedAtAction("GetRoomById", new { id = createRoom.Data.HouseId }, createRoom);
+   //
+   //      }catch (Exception e) {
+   //          return Conflict(new { message = e.Message });
+   //      }
+   //    }
+    
+    [HttpPost("House/{houseId}/Location/{houseLocationId}")]
+    //  [Authorize(Roles = "Owner")]
+    public async Task<IActionResult> PostRoom(Guid houseId, Guid houseLocationId, CreateRoomDto request)
     {
         try
         {
-         var createRoom =   await  _roomService.Add(request);
-         if (!createRoom.IsSuccess)
-             return BadRequest(new { message = createRoom.Message });
+            var createRoom =   await  _roomService.Add( houseId,houseLocationId,request);
+            if (!createRoom.IsSuccess)
+                return BadRequest(new { message = createRoom.Message });
          
-         return CreatedAtAction("GetRoomById", new { id = createRoom.Data.HouseId }, createRoom);
+            return CreatedAtAction("GetRoomById", new { id = createRoom.Data.HouseId }, createRoom);
 
         }catch (Exception e) {
             return Conflict(new { message = e.Message });
         }
-      }
-    
+    }
     //     // DELETE: api/Rooms/5
    // [Authorize(Roles = "Owner")]
     [HttpDelete("{id}")]

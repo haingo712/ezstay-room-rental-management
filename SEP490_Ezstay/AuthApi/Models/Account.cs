@@ -7,7 +7,7 @@ namespace AuthApi.Models
     public class Account
     {
         [BsonId]
-        [BsonRepresentation(BsonType.String)]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public string FullName { get; set; } = null!;

@@ -5,7 +5,7 @@ namespace RoomAPI.Repository.Interface;
 
 public interface IRoomRepository
 {
-    IQueryable<Room> GetAll();
+    IQueryable<Room> GetAllOdata();
   //Task<IEnumerable<Room>> GetAllByHouseId(int houseId);
     Task<Room?> GetById(Guid id);
     Task Add(Room request);

@@ -111,3 +111,38 @@ services:
       context: .
       dockerfile: UtilityRateAPI/Dockerfile
 
+services:
+  grpcservice:
+    image: grpcservice
+    build:
+      context: .
+      dockerfile: GrpcService/Dockerfile
+
+services:
+  utilityreading.grpccontracts:
+    image: utilityreading.grpccontracts
+    build:
+      context: .
+      dockerfile: UtilityReading.GrpcContracts/Dockerfile
+
+services:
+  utilityrate.grpccontracts:
+    image: utilityrate.grpccontracts
+    build:
+      context: .
+      dockerfile: UtilityRate.GrpcContracts/Dockerfile
+
+services:
+  aggregatorapi:
+    image: aggregatorapi
+    build:
+      context: .
+      dockerfile: AggregatorAPI/Dockerfile
+
+services:
+  aggregatorapi:
+    image: aggregatorapi
+    build:
+      context: .
+      dockerfile: AggregatorAPI/Dockerfile
+
