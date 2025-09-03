@@ -45,6 +45,28 @@ public class UtilityReadingController : ControllerBase
                 return NotFound(new { message = e.Message });
             }
         }
+        
+        
+        [HttpPost]
+        //  [Authorize(Roles = "Owner")]
+        public async Task<ActionResult<UtilityReadingDto>> PostUtilityReading(CreateUtilityReadingDto request)
+        {
+            try
+            {
+                var create =   await  _utilityReadingService.AddAsync(request);
+                if (!create.IsSuccess)
+                {
+                    return BadRequest(new { message = create.Message });
+                }
+                return CreatedAtAction("GetUtilityReading", new { id = create.Data.Id }, create);
+            }
+            catch (Exception e)
+            {
+                return Conflict(new { message = e.Message }); 
+            }
+          
+        }
+        
         // PUT: api/Amenity/5
         [HttpPut("{id}")]
    //     [Authorize(Roles = "Owner")]
@@ -65,25 +87,7 @@ public class UtilityReadingController : ControllerBase
             }
         }
         
-        [HttpPost]
-      //  [Authorize(Roles = "Owner")]
-        public async Task<ActionResult<UtilityReadingDto>> PostUtilityReading(CreateUtilityReadingDto request)
-        {
-            try
-            {
-                var create =   await  _utilityReadingService.AddAsync(request);
-                if (!create.IsSuccess)
-                {
-                    return BadRequest(new { message = create.Message });
-                }
-                return CreatedAtAction("GetUtilityReading", new { id = create.Data.Id }, create);
-            }
-            catch (Exception e)
-            {
-                return Conflict(new { message = e.Message }); 
-            }
-          
-        }
+     
         // DELETE: api/Amenity/5
         // [HttpDelete("{id}")]
         // public async Task<IActionResult> DeleteAmenity(Guid id)

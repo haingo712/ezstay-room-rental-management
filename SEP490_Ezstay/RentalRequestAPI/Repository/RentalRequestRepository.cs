@@ -14,20 +14,14 @@ public class RentalRequestRepository:IRentalRequestRepository
     {
         _amenities = database.GetCollection<RentalRequest>("RentalRequests");
     }
-   
-
-    public IQueryable<RentalRequest> GetAllOdata()=> _amenities.AsQueryable();
-    public async Task<IEnumerable<RentalRequest>> GetAll()
-    {
-        return await _amenities.Find(_ => true).ToListAsync();
-    }
     
-    // public async Task<IEnumerable<Amenity>> GetAll()
-    // {
-    //     return await _amenities.AsQueryable().ToListAsync();
-    // }
-    //
-    public async Task<IEnumerable<RentalRequest>> GetAllByStaffId(Guid userId)
+    public IQueryable<RentalRequest> GetAllByOwnerIdOdata(Guid ownerId)=> _amenities.AsQueryable().Where(a=> a.OwnerId==ownerId);
+    public IQueryable<RentalRequest> GetAllByUserIdOdata(Guid userId)=> _amenities.AsQueryable().Where(a=> a.UserId==userId);
+    public async Task<IEnumerable<RentalRequest>> GetAllByOwnerId(Guid ownerId)
+    {
+        return await _amenities.Find(a=> a.OwnerId == ownerId).ToListAsync();
+    }
+    public async Task<IEnumerable<RentalRequest>> GetAllByUserId(Guid userId)
     {
         return await _amenities.Find(a=> a.UserId==userId).ToListAsync();
     }
@@ -40,6 +34,10 @@ public class RentalRequestRepository:IRentalRequestRepository
     public async Task AddAsync(RentalRequest rentalRequest)
     {
         await _amenities.InsertOneAsync(rentalRequest);
+    }
+    public async Task UpdateAsync(RentalRequest rentalRequest)
+    {
+        await _amenities.ReplaceOneAsync(a => a.Id == rentalRequest.Id, rentalRequest);
     }
     // public async Task<bool> AmenityNameExistsAsync(string amenityNameExists)
     // {
@@ -58,18 +56,13 @@ public class RentalRequestRepository:IRentalRequestRepository
 
 
 
-    public async Task UpdateAsync(RentalRequest rentalRequest)
-    {
-        // var filter = Builders<Amenity>.Filter.Eq(a => a.AmenityId, amenity.AmenityId);
-        // await _amenities.ReplaceOneAsync(filter, amenity);
-        await _amenities.ReplaceOneAsync(a => a.Id == rentalRequest.Id, rentalRequest);
-    }
-    public async Task DeleteAsync(RentalRequest rentalRequest)
-    {
-        // var filter = Builders<Amenity>.Filter.Eq(a => a.AmenityId, amenity.AmenityId);
-        // await _amenities.DeleteOneAsync(filter);
-        await _amenities.DeleteOneAsync(a => a.Id == rentalRequest.Id);
-    }
+  
+    // public async Task DeleteAsync(RentalRequest rentalRequest)
+    // {
+    //     // var filter = Builders<Amenity>.Filter.Eq(a => a.AmenityId, amenity.AmenityId);
+    //     // await _amenities.DeleteOneAsync(filter);
+    //     await _amenities.DeleteOneAsync(a => a.Id == rentalRequest.Id);
+    // }
 
    
 }

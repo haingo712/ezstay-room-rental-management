@@ -4,9 +4,10 @@ namespace RentalRequestAPI.DTO.Request;
 
 public class UpdateRentalRequestDto
 {
+    public string? FullName { get; set; }
     [Required]
+    [Phone]
+    public string NumberPhone { get; set; }
     [StringLength(100, ErrorMessage = "Amenity name cannot exceed 100 characters.")]
-    public string AmenityName { get; set; } 
-    [Required]
-    public Guid StaffId { get; set; }
+    public string? Notes { get; set; }
 }

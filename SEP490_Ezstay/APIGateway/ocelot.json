@@ -87,11 +87,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Rooms/{everything}",
-      "DownstreamScheme": "httpshttps",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7231
+          "Port": 7086
         }
       ],
       "UpstreamPathTemplate": "/api/Rooms/{everything}",
@@ -107,13 +107,14 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7202
+          "Port": 7111
         }
       ],
       "UpstreamPathTemplate": "/api/Amenity/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "AuthenticationOptions": { 
-        "AuthenticationProviderKey": "Bearer"
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
        }
     },
     {

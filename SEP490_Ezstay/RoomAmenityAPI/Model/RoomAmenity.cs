@@ -7,12 +7,12 @@ namespace RoomAmenityAPI.Model
 {
     public class RoomAmenity
     {
-     [BsonId]
-     [BsonRepresentation(BsonType.String)] 
+        [BsonId]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; }
-        [BsonRepresentation(BsonType.String)] 
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid RoomId { get; set; }
-        [BsonRepresentation(BsonType.String)] 
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid AmenityId { get; set; }
         
     }

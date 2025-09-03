@@ -1,0 +1,28 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using TenantAPI.Enum;
+
+namespace TenantAPI.Model
+{
+    public class Tenant
+    {
+        [BsonId] 
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid Id { get; set; } = Guid.NewGuid();
+       [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        
+        public Guid UserId { get; set; }
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid RoomId { get; set; }
+        public DateTime CheckinDate { get; set; }
+        public DateTime CheckoutDate { get; set; }
+        public TenantStatus  TenantStatus{ get; set; }
+        public int NumberOfOccupants { get; set; }
+        public string? Notes { get; set; }
+        public DateTime CreatedAt {get;set;}
+        public DateTime UpdatedAt {get;set;}
+    }
+}
+
