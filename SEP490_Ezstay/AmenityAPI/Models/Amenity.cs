@@ -12,6 +12,8 @@ public class Amenity
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid StaffId { get; set; }
     public string AmenityName { get; set; } = null!;
+    
+    public string ImageUrl { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
