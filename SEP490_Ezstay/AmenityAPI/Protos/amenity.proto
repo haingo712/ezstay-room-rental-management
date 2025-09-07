@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option csharp_namespace = "AmenityAPI.Grpc";
+
+package amenity;
+
+service AmenityService {
+  rpc GetAmenityById (GetAmenityRequest) returns (GetAmenityResponse);
+}
+
+message GetAmenityRequest {
+  string id = 1;
+}
+
+message GetAmenityResponse {
+  string id = 1;
+  string name = 2;
+}

@@ -34,10 +34,10 @@ namespace RoomAmenityAPI.Controllers
         }
         
         // GET: api/RoomAmenity
-          [Authorize(Roles = "Owner")]
-        [HttpGet("ByRoomId/{roonId}")]
+        //  [Authorize(Roles = "Owner")]
+        [HttpGet("/Odata/ByRoomId/{roonId}")]
         [EnableQuery]
-        public IQueryable<RoomAmenityDto> GetRoomAmenitiesByRoomId(Guid roonId)
+        public IQueryable<RoomAmenityDto> GetRoomAmenitiesByRoomIdOdata(Guid roonId)
         {
             return  _roomAmenityService.GetAllByRoomId(roonId);
         }
@@ -47,6 +47,12 @@ namespace RoomAmenityAPI.Controllers
         public async Task<ActionResult<RoomAmenityDto>> GetRoomAmenity(Guid id)
         {
             var roomAmenity = await _roomAmenityService.GetByIdAsync(id);
+            return Ok(roomAmenity);
+        }
+        [HttpGet("ByRoomId/{roomId}")]
+        public async Task<ActionResult<RoomAmenityDto>> GetRoomAmenitiesByRoomId(Guid roomId)
+        {
+            var roomAmenity = await _roomAmenityService.GetRoomAmenitiesByRoomIdAsync(roomId);
             return Ok(roomAmenity);
         }
         

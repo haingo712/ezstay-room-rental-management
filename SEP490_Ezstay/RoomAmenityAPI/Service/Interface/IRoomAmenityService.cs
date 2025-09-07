@@ -9,6 +9,7 @@ public interface IRoomAmenityService
     IQueryable<RoomAmenityDto> GetAll();
   //  IQueryable<RoomAmenityDto> GetAllByOwnerId(Guid ownerId);
     Task<RoomAmenityDto> GetByIdAsync(Guid id);
+    Task<List<RoomAmenityDto>> GetRoomAmenitiesByRoomIdAsync(Guid roomId);
     Task<ApiResponse<RoomAmenityDto>> AddAsync(Guid roomId, CreateRoomAmenityDto request);
     Task<ApiResponse<bool>> UpdateAsync(Guid id,UpdateRoomAmenityDto request);
     Task DeleteAsync(Guid id);

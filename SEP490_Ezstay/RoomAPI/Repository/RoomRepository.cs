@@ -15,7 +15,7 @@ public class RoomRepository:IRoomRepository
         _rooms = database.GetCollection<Room>("Rooms");
     }
 
-    public IQueryable<Room> GetAllOdata()=> _rooms.AsQueryable();
+    public IQueryable<Room>  GetAllQueryable()=> _rooms.AsQueryable();
     public async Task<Room?> GetById(Guid id)
     {
       return await _rooms.Find(a => a.Id == id).FirstOrDefaultAsync();

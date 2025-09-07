@@ -21,7 +21,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddGrpc();
 // Add services to the container.
 
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
@@ -114,5 +114,5 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
             app.MapControllers();
-
+            app.MapGrpcService<RoomAmenityGrpcService>();
             app.Run();

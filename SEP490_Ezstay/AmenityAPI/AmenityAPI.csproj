@@ -20,6 +20,13 @@
         <PackageReference Include="MongoDB.Driver" Version="3.4.2" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+
+
+        <PackageReference Include="Grpc.AspNetCore" Version="2.56.0" />
+        <PackageReference Include="Google.Protobuf" Version="3.23.4" />
+        <PackageReference Include="Grpc.Tools" Version="2.56.0">
+            <PrivateAssets>All</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
@@ -27,5 +34,8 @@
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
-
+    <ItemGroup>
+        <Protobuf Include="Protos\amenity.proto" GrpcServices="Server" />
+    </ItemGroup>
+ 
 </Project>

@@ -4,9 +4,9 @@ namespace TenantAPI.Repository.Interface;
 
 public interface ITenantRepository
 {
-    IQueryable<Tenant> GetAllOdata();
-    Task<IEnumerable<Tenant>> GetAll();
-    Task<IEnumerable<Tenant>> GetAllById(Guid staffId);
+    IQueryable<Tenant> GetAllQueryable();
+    Task<IEnumerable<Tenant>> GetAllByOwnerIdAsync(Guid ownerId);
+    Task<IEnumerable<Tenant>> GetAllByUserIdAsync(Guid userId);
     Task<Tenant?> GetByIdAsync(Guid id);
     Task AddAsync(Tenant tenant);
     Task UpdateAsync(Tenant tenant);

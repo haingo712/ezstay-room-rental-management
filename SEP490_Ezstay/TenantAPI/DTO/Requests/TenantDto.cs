@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using TenantAPI.Enum;
 using TenantAPI.Model;
 
-namespace TenantAPI.DTO.Request;
+namespace TenantAPI.DTO.Requests;
 
 public class TenantDto
 {
