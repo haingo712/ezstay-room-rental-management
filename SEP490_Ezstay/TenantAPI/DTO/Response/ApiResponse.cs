@@ -1,4 +1,4 @@
-namespace AmenityAPI.DTO.Response;
+namespace TenantAPI.DTO.Response;
 
 public class ApiResponse<T>
 {

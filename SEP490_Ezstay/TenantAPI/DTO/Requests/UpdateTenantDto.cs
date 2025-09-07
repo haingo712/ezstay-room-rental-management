@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using TenantAPI.Enum;
 
-namespace TenantAPI.DTO.Request;
+namespace TenantAPI.DTO.Requests;
 
 public class UpdateTenantDto
 {

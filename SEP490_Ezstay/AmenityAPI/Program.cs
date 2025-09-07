@@ -26,11 +26,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddGrpc();
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
 builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
 
 builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
 builder.Services.AddScoped<IAmenityService, AmenityService>();
@@ -125,5 +124,5 @@ builder.Services.AddAuthorization();
 
 
             app.MapControllers();
-
+            app.MapGrpcService<AmenityGrpcService>();
             app.Run();

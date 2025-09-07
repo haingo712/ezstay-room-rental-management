@@ -20,21 +20,22 @@ public class RoomService: IRoomService
         _roomRepository = roomRepository;
     }
 
-    public IQueryable<RoomDto> GetAllByHouseLocationId(Guid houseLocationId)
-    {
-        var rooms = _roomRepository.GetAllOdata().Where(x => x.HouseLocationId == houseLocationId);
-     
-        return rooms.ProjectTo<RoomDto>(_mapper.ConfigurationProvider);
-    }
+    // public IQueryable<RoomDto> GetAllByHouseLocationId(Guid houseLocationId)
+    // {
+    //     var rooms = _roomRepository. GetAllQueryable().Where(x => x.HouseLocationId == houseLocationId);
+    //  
+    //     return rooms.ProjectTo<RoomDto>(_mapper.ConfigurationProvider);
+    // }
     public IQueryable<RoomDto> GetAllByHouseId(Guid houseId)
     {
-        var rooms = _roomRepository.GetAllOdata().Where(x => x.HouseId == houseId);
+        var rooms = _roomRepository. GetAllQueryable().Where(x => x.HouseId == houseId);
      
         return rooms.ProjectTo<RoomDto>(_mapper.ConfigurationProvider);
     }
-    public IQueryable<RoomDto> GetAllOdata()
+    public IQueryable<RoomDto>  GetAllQueryable()
     {
-        var book =   _roomRepository.GetAllOdata().Where(r=> r.RoomStatus == RoomStatus.Available);
+        var book =   _roomRepository. GetAllQueryable().Where(r=> r.RoomStatus == RoomStatus.Available 
+                                                                  && r.RoomStatus == RoomStatus.Available);
     return book.ProjectTo<RoomDto>(_mapper.ConfigurationProvider);
     }
 

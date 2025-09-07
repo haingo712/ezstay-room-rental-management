@@ -43,11 +43,6 @@ builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-
-
-
-
-builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

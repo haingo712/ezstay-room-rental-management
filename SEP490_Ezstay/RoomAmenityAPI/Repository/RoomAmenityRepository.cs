@@ -21,6 +21,10 @@ public class RoomAmenityRepository:IRoomAmenityRepository
     {
         return await _roomAmenities.Find(r => r.Id == id).FirstOrDefaultAsync();
     }
+    public async Task<IEnumerable<RoomAmenity?>> GetRoomAmenitiesByRoomIdAsync(Guid roomId)
+    {
+        return await _roomAmenities.Find(r => r.RoomId == roomId).ToListAsync();
+    }
 
     public async Task AddAsync(RoomAmenity roomAmenity)
     {

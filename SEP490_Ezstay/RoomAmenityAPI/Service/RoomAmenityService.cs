@@ -1,6 +1,7 @@
 using RoomAmenityAPI.Service.Interface;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using RoomAmenityAPI.DTO.Request;
 using RoomAmenityAPI.DTO.Response;
 using RoomAmenityAPI.Model;
@@ -30,7 +31,13 @@ public class RoomAmenityService: IRoomAmenityService
         return book.ProjectTo<RoomAmenityDto>(_mapper.ConfigurationProvider);
     }
 
-   
+    public async Task<List<RoomAmenityDto>> GetRoomAmenitiesByRoomIdAsync(Guid roomId)
+    {
+        var roomAmenity = await _roomAmenityRepository.GetRoomAmenitiesByRoomIdAsync(roomId);
+        if (roomAmenity == null)
+            throw new KeyNotFoundException("RoomAmentityId not found");
+        return   _mapper.Map<List<RoomAmenityDto>>(roomAmenity);
+    }
 
     public async Task<RoomAmenityDto> GetByIdAsync(Guid id)
     {
@@ -46,6 +53,7 @@ public class RoomAmenityService: IRoomAmenityService
         if (exist)
             return  ApiResponse<RoomAmenityDto>.Fail("Tiện ích đã có tại trong nhà trọ. vui long them tien ich khac");
         var roomAmenity = _mapper.Map<RoomAmenity>(request);
+        roomAmenity.RoomId = roomId;
         await _roomAmenityRepository.AddAsync(roomAmenity);
         return ApiResponse<RoomAmenityDto>.Success(_mapper.Map<RoomAmenityDto>(roomAmenity), "Thêm tiện ích vào trọ thành công");
         

@@ -29,7 +29,7 @@ namespace RoomAPI.Controllers
         [EnableQuery]
         public IQueryable<RoomDto> GetRooms()
         {
-            return _roomService.GetAllOdata();
+            return _roomService.GetAllQueryable();
         }
         [HttpGet("ByHouseId/{houseId}")]
         [EnableQuery]
@@ -38,13 +38,13 @@ namespace RoomAPI.Controllers
         {
             return _roomService.GetAllByHouseId(houseId);
         }
-        [HttpGet("ByHouseLocationId/{houseLocationId}")]
-        [EnableQuery]
-     //   [Authorize(Roles = "Owner")]
-        public IQueryable<RoomDto> GetRoomsByHouseLocationId(Guid houseLocationId)
-        {
-            return _roomService.GetAllByHouseLocationId(houseLocationId);
-        }
+     //    [HttpGet("ByHouseLocationId/{houseLocationId}")]
+     //    [EnableQuery]
+     // //   [Authorize(Roles = "Owner")]
+     //    public IQueryable<RoomDto> GetRoomsByHouseLocationId(Guid houseLocationId)
+     //    {
+     //        return _roomService.GetAllByHouseLocationId(houseLocationId);
+     //    }
         // GET: api/Rooms/5
         [HttpGet("{id}")]
         public async Task<ActionResult<RoomDto>> GetRoomById(Guid id)

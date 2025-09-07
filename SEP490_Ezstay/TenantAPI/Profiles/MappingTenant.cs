@@ -1,8 +1,8 @@
 using AutoMapper;
-using TenantAPI.DTO.Request;
+using TenantAPI.DTO.Requests;
 using TenantAPI.Model;
 
-namespace TenantAPI.Mapping;
+namespace TenantAPI.Profiles;
 
 public class MappingTenant:Profile
 {

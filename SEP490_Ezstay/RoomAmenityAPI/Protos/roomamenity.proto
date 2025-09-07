@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option csharp_namespace = "RoomAmenityAPI.Grpc";
+
+package roomamenity;
+
+service RoomAmenityService {
+  rpc GetRoomAmenity (GetRoomAmenityRequest) returns (GetRoomAmenityResponse);
+  rpc GetRoomAmenitiesByRoomId (GetRoomAmenitiesByRoomIdRequest) returns (GetRoomAmenitiesByRoomIdResponse);
+}
+
+message GetRoomAmenityRequest {
+  string id = 1;
+}
+message GetRoomAmenitiesByRoomIdRequest {
+  string roomId = 1;
+}
+
+message GetRoomAmenitiesByRoomIdResponse {
+  repeated GetRoomAmenityResponse amenities = 1;
+}
+message GetRoomAmenityResponse {
+  string id = 1;
+  string roomId = 2;
+  string amenityId = 3;
+}
