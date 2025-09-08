@@ -50,6 +50,7 @@ namespace HouseLocationAPI.Controllers
 
         // POST: api/HouseLocations
         [HttpPost]
+        [Authorize(Roles = "Owner")]
         public async Task<ActionResult<HouseLocationDTO>> Create([FromBody] CreateHouseLocationDTO dto)
         {
             try
@@ -69,6 +70,7 @@ namespace HouseLocationAPI.Controllers
 
         // PUT: api/HouseLocations/1111-1111-1111-1111
         [HttpPut("{id}")]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateHouseLocationDTO dto)
         {
             try
@@ -88,6 +90,7 @@ namespace HouseLocationAPI.Controllers
 
         // DELETE: api/HouseLocations/1111-1111-1111-1111
         [HttpDelete("{id}")]
+        [Authorize (Roles = "Owner")]
         public async Task<IActionResult> Delete(Guid id)
         {
             try

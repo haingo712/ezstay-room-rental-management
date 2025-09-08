@@ -18,10 +18,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TenantAPI", "TenantAPI\Tena
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIGateway", "APIGateway\APIGateway.csproj", "{099E219C-4AC3-4AE9-8773-6C0E4752BF42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardingHouseAPI", "BoardingHouseAPI\BoardingHouseAPI.csproj", "{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HouseLocationAPI", "HouseLocationAPI\HouseLocationAPI.csproj", "{A81BE5A2-6DCB-0926-1D32-7653DB429A17}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityReadingAPI", "UtilityReadingAPI\UtilityReadingAPI.csproj", "{8FF16158-13C2-4B54-A30D-4F680279F0CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRHubAPI", "SignalRHubAPI\SignalRHubAPI.csproj", "{360A8EF8-3D1F-41AD-B373-897855427F5F}"
@@ -37,6 +33,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityRate.GrpcContracts", "UtilityRate.GrpcContracts\UtilityRate.GrpcContracts.csproj", "{D56342AF-C208-4F4B-984F-DDC2735087FC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregatorAPI", "AggregatorAPI\AggregatorAPI.csproj", "{A528FFE3-3331-4710-8231-CAFD04AF3E59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardingHouseAPI", "BoardingHouseAPI\BoardingHouseAPI.csproj", "{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HouseLocationAPI", "HouseLocationAPI\HouseLocationAPI.csproj", "{A81BE5A2-6DCB-0926-1D32-7653DB429A17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,14 +64,6 @@ Global
 		{099E219C-4AC3-4AE9-8773-6C0E4752BF42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{099E219C-4AC3-4AE9-8773-6C0E4752BF42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{099E219C-4AC3-4AE9-8773-6C0E4752BF42}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A81BE5A2-6DCB-0926-1D32-7653DB429A17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A81BE5A2-6DCB-0926-1D32-7653DB429A17}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A81BE5A2-6DCB-0926-1D32-7653DB429A17}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A81BE5A2-6DCB-0926-1D32-7653DB429A17}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8FF16158-13C2-4B54-A30D-4F680279F0CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8FF16158-13C2-4B54-A30D-4F680279F0CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FF16158-13C2-4B54-A30D-4F680279F0CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -104,6 +96,14 @@ Global
 		{A528FFE3-3331-4710-8231-CAFD04AF3E59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A528FFE3-3331-4710-8231-CAFD04AF3E59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A528FFE3-3331-4710-8231-CAFD04AF3E59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A81BE5A2-6DCB-0926-1D32-7653DB429A17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A81BE5A2-6DCB-0926-1D32-7653DB429A17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A81BE5A2-6DCB-0926-1D32-7653DB429A17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A81BE5A2-6DCB-0926-1D32-7653DB429A17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

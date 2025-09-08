@@ -6,10 +6,12 @@ namespace HouseLocationAPI.DTO.Request
     {
         [Required]
         public Guid HouseId { get; set; }
-
         [Required]
-        [StringLength(500, ErrorMessage = "Address cannot exceed 500 characters.")]
-        public string FullAddress { get; set; } = null!;
-
+        public string ProvinceId { get; set; } = null!;      
+        [Required]
+        public string CommuneId { get; set; } = null!;     
+        [Required]
+        [StringLength(300, ErrorMessage = "Address detail cannot exceed 300 characters.")]
+        public string AddressDetail { get; set; } = null!;        
     }
 }

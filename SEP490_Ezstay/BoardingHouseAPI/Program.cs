@@ -29,6 +29,12 @@ namespace BoardingHouseAPI
              builder.Configuration.GetSection("ConnectionStrings"));
             builder.Services.AddSingleton<MongoDbService>();
 
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddHttpClient("RoomAPI", client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:5058");
+            });
+
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IBoardingHouseRepository, BoardingHouseRepository>();            
             builder.Services.AddScoped<IBoardingHouseService, BoardingHouseService>();
@@ -46,12 +52,7 @@ namespace BoardingHouseAPI
                 .Select());
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-
-            builder.Services.AddHttpClient("AuthorAPI", client =>
-            {
-                client.BaseAddress = new Uri("https://localhost:7152"); // đổi đúng cổng AuthorAPI
-            });
+            builder.Services.AddEndpointsApiExplorer();         
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -67,8 +68,7 @@ namespace BoardingHouseAPI
                         ValidIssuer = jwtSettings["Issuer"],
                         ValidAudience = jwtSettings["Audience"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!)),
-
-                        // ✅ Bổ sung dòng này
+                       
                         RoleClaimType = ClaimTypes.Role,
                         NameClaimType = ClaimTypes.NameIdentifier
                     };

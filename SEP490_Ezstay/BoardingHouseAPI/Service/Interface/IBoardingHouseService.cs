@@ -7,6 +7,7 @@ namespace BoardingHouseAPI.Service.Interface
     {        
         IQueryable<BoardingHouseDTO> GetAll();
         IQueryable<BoardingHouseDTO> GetByOwnerId(Guid ownerId);
+        IQueryable<BoardingHouseDTO> GetByOwnerId(); 
         Task<BoardingHouseDTO?> GetByIdAsync(Guid id);
         Task<ApiResponse<BoardingHouseDTO>> CreateAsync(CreateBoardingHouseDTO createDto);
         Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateBoardingHouseDTO updateDto);

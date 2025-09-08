@@ -27,12 +27,21 @@ namespace BoardingHouseAPI.Controllers
         }
 
         // GET: api/BoardingHouses/owner/1111-1111-1111-1111
-        [HttpGet("owner/{ownerId}")]
+        /*[HttpGet("owner/{ownerId}")]
         [EnableQuery]
-        /*[Authorize(Roles = "Owner")]*/
+        [Authorize(Roles = "Owner")]
         public IQueryable<BoardingHouseDTO> GetBoardingHousesByOwner(Guid ownerId)
         {
             return _boardingHouseService.GetByOwnerId(ownerId);
+        }*/
+
+        // GET: api/BoardingHouses/owner
+        [HttpGet("owner")]
+        [EnableQuery]
+        [Authorize(Roles = "Owner")]
+        public IQueryable<BoardingHouseDTO> GetBoardingHousesByOwner()
+        {
+            return _boardingHouseService.GetByOwnerId();
         }
 
         // GET: api/BoardingHouses/1111-1111-1111-1111
@@ -52,7 +61,7 @@ namespace BoardingHouseAPI.Controllers
 
         // PUT: api/BoardingHouses/1111-1111-1111-1111
         [HttpPut("{id}")]
-        /*[Authorize(Roles = "Owner")]*/
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> PutBoardingHouse(Guid id, UpdateBoardingHouseDTO dto)
         {
             try
@@ -72,7 +81,7 @@ namespace BoardingHouseAPI.Controllers
 
         // POST: api/BoardingHouses
         [HttpPost]
-        /*[Authorize(Roles = "Owner")]*/
+        [Authorize(Roles = "Owner")]
         public async Task<ActionResult<BoardingHouseDTO>> PostBoardingHouse(CreateBoardingHouseDTO dto)
         {
             try
@@ -92,7 +101,7 @@ namespace BoardingHouseAPI.Controllers
 
         // DELETE: api/BoardingHouses/1111-1111-1111-1111
         [HttpDelete("{id}")]
-        /*[Authorize(Roles = "Owner")]*/
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> DeleteBoardingHouse(Guid id)
         {
             try
