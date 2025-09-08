@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BoardingHouseAPI.DTO.Request
+﻿namespace BoardingHouseAPI.DTO.Request
 {
     public class BoardingHouseDTO
     {

@@ -13,7 +13,7 @@ namespace BoardingHouseAPI.Models
         public string HouseName { get; set; } = null!;
         public string? Description { get; set; }
         [BsonRepresentation(BsonType.DateTime)]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; }
         
     }
 }
