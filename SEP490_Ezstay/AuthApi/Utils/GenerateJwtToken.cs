@@ -19,14 +19,19 @@ namespace AuthApi.Utils
             _audience = config["Jwt:Audience"];
         }
 
-        public string CreateToken(string email, string role, string userId)
+        public string CreateToken(string email, string role, string userId,string fullName,string phone
+        )
         {
             var keyBytes = Encoding.UTF8.GetBytes(_key);
             var claims = new[]
             {
                 new Claim(ClaimTypes.Email, email),
                 new Claim(ClaimTypes.Role, role),
-                new Claim(ClaimTypes.NameIdentifier, userId)
+                new Claim(ClaimTypes.NameIdentifier, userId) ,
+               new Claim("fullName", fullName),
+                new Claim("phone", phone)
+
+
             };
 
             var token = new JwtSecurityToken(

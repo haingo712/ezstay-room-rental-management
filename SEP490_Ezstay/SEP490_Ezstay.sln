@@ -3,40 +3,42 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmenityAPI", "AmenityAPI\AmenityAPI.csproj", "{2879C737-2F8F-4D71-ACB1-44C3DC273CC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmenityAPI", "AmenityAPI\AmenityAPI.csproj", "{2879C737-2F8F-4D71-ACB1-44C3DC273CC3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DA3EEAD8-13EC-4575-A786-1999AB6E06E4}"
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAmenityAPI", "RoomAmenityAPI\RoomAmenityAPI.csproj", "{756C34C4-2DBC-4D2B-A83D-2A32E831285F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoomAmenityAPI", "RoomAmenityAPI\RoomAmenityAPI.csproj", "{756C34C4-2DBC-4D2B-A83D-2A32E831285F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAPI", "RoomAPI\RoomAPI.csproj", "{BF280EF3-8BFB-4270-9676-ACA08A8D2EEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoomAPI", "RoomAPI\RoomAPI.csproj", "{BF280EF3-8BFB-4270-9676-ACA08A8D2EEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TenantAPI", "TenantAPI\TenantAPI.csproj", "{AA00DBD1-BAC7-4714-8ECE-0F85C4BBB55E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TenantAPI", "TenantAPI\TenantAPI.csproj", "{AA00DBD1-BAC7-4714-8ECE-0F85C4BBB55E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIGateway", "APIGateway\APIGateway.csproj", "{099E219C-4AC3-4AE9-8773-6C0E4752BF42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIGateway", "APIGateway\APIGateway.csproj", "{099E219C-4AC3-4AE9-8773-6C0E4752BF42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardingHouseAPI", "BoardingHouseAPI\BoardingHouseAPI.csproj", "{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoardingHouseAPI", "BoardingHouseAPI\BoardingHouseAPI.csproj", "{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HouseLocationAPI", "HouseLocationAPI\HouseLocationAPI.csproj", "{A81BE5A2-6DCB-0926-1D32-7653DB429A17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HouseLocationAPI", "HouseLocationAPI\HouseLocationAPI.csproj", "{A81BE5A2-6DCB-0926-1D32-7653DB429A17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityReadingAPI", "UtilityReadingAPI\UtilityReadingAPI.csproj", "{8FF16158-13C2-4B54-A30D-4F680279F0CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UtilityReadingAPI", "UtilityReadingAPI\UtilityReadingAPI.csproj", "{8FF16158-13C2-4B54-A30D-4F680279F0CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRHubAPI", "SignalRHubAPI\SignalRHubAPI.csproj", "{360A8EF8-3D1F-41AD-B373-897855427F5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRHubAPI", "SignalRHubAPI\SignalRHubAPI.csproj", "{360A8EF8-3D1F-41AD-B373-897855427F5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentalRequestAPI", "RentalRequestAPI\RentalRequestAPI.csproj", "{8941DBEC-F946-4F9B-97D7-4E75E16FA548}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RentalRequestAPI", "RentalRequestAPI\RentalRequestAPI.csproj", "{8941DBEC-F946-4F9B-97D7-4E75E16FA548}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityRateAPI", "UtilityRateAPI\UtilityRateAPI.csproj", "{369BBD2D-47B5-4F45-A814-38C0BB216B0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UtilityRateAPI", "UtilityRateAPI\UtilityRateAPI.csproj", "{369BBD2D-47B5-4F45-A814-38C0BB216B0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailApi", "MailApi\MailApi.csproj", "{7267655E-AFBF-49A0-AF84-CCF55F5A5CC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MailApi", "MailApi\MailApi.csproj", "{7267655E-AFBF-49A0-AF84-CCF55F5A5CC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthApi", "AuthApi\AuthApi.csproj", "{BF096E8C-4D91-4F8F-9A1A-35D70C48F956}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthApi", "AuthApi\AuthApi.csproj", "{BF096E8C-4D91-4F8F-9A1A-35D70C48F956}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityRate.GrpcContracts", "UtilityRate.GrpcContracts\UtilityRate.GrpcContracts.csproj", "{D56342AF-C208-4F4B-984F-DDC2735087FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UtilityRate.GrpcContracts", "UtilityRate.GrpcContracts\UtilityRate.GrpcContracts.csproj", "{D56342AF-C208-4F4B-984F-DDC2735087FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AggregatorAPI", "AggregatorAPI\AggregatorAPI.csproj", "{A528FFE3-3331-4710-8231-CAFD04AF3E59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AggregatorAPI", "AggregatorAPI\AggregatorAPI.csproj", "{A528FFE3-3331-4710-8231-CAFD04AF3E59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountAPI", "AccountAPI\AccountAPI.csproj", "{82F32741-7F1F-41AA-A5B9-D4732655B620}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,6 +106,10 @@ Global
 		{A528FFE3-3331-4710-8231-CAFD04AF3E59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A528FFE3-3331-4710-8231-CAFD04AF3E59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A528FFE3-3331-4710-8231-CAFD04AF3E59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82F32741-7F1F-41AA-A5B9-D4732655B620}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82F32741-7F1F-41AA-A5B9-D4732655B620}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82F32741-7F1F-41AA-A5B9-D4732655B620}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82F32741-7F1F-41AA-A5B9-D4732655B620}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
