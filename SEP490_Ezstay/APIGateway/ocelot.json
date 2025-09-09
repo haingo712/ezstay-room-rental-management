@@ -1,6 +1,22 @@
 {
   "Routes": [
     {
+      "DownstreamPathTemplate": "/api/Account/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7211
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Account/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
       "DownstreamPathTemplate": "/api/Amenity/{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -68,7 +84,7 @@
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
       }
-    },    
+    },
     {
       "DownstreamPathTemplate": "/api/RoomAmenity/{everything}",
       "DownstreamScheme": "https",
