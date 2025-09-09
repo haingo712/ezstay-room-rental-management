@@ -146,3 +146,15 @@ services:
       context: .
       dockerfile: AggregatorAPI/Dockerfile
 
+services:
+  reviewapi:
+    image: reviewapi
+    build:
+      context: .
+      dockerfile: ReviewAPI/Dockerfile
+services:
+  reviewresponseapi:
+    image: reviewresponseapi
+    build:
+      context: .
+      dockerfile: ReviewResponseAPI/Dockerfile
