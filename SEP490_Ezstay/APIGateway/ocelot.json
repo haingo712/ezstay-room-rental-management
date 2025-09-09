@@ -1,183 +1,207 @@
 {
-  "Routes": [
-    {
-      "DownstreamPathTemplate": "/api/Account/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
+    "Routes": [
         {
-          "Host": "localhost",
-          "Port": 7211
-        }
-      ],
-      "UpstreamPathTemplate": "/api/Account/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
-    },
-    {
-      "DownstreamPathTemplate": "/api/Amenity/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
+     "DownstreamPathTemplate": "/api/Account/{everything}",
+     "DownstreamScheme": "https",
+     "DownstreamHostAndPorts": [
+       {
+         "Host": "localhost",
+         "Port": 7211
+       }
+     ],
+     "UpstreamPathTemplate": "/api/Account/{everything}",
+     "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+     "AuthenticationOptions": {
+       "AuthenticationProviderKey": "Bearer",
+       "AllowedScopes": []
+     }
+   },
         {
-          "Host": "localhost",
-          "Port": 7111
-        }
-      ],
-      "UpstreamPathTemplate": "/api/Amenity/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
-    },
-    {
-      "DownstreamPathTemplate": "/api/RentalRequest/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
+            "DownstreamPathTemplate": "/api/Amenity/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7111
+                }
+            ],
+            "UpstreamPathTemplate": "/api/Amenity/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
         {
-          "Host": "localhost",
-          "Port": 7171
-        }
-      ],
-      "UpstreamPathTemplate": "/api/RentalRequest/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
-      "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer" }
-    },
-    {
-      "DownstreamPathTemplate": "/api/Auth/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
+            "DownstreamPathTemplate": "/api/RentalRequest/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7171
+                }
+            ],
+            "UpstreamPathTemplate": "/api/RentalRequest/{everything}",
+            "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
+            "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer" }
+        },
         {
-          "Host": "localhost",
-          "Port": 7009
-        }
-      ],
-      "UpstreamPathTemplate": "/api/Auth/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ]
-    },
-    {
-      "DownstreamPathTemplate": "/api/signalR",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
+            "DownstreamPathTemplate": "/api/Auth/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7009
+                }
+            ],
+            "UpstreamPathTemplate": "/api/Auth/{everything}",
+            "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ]
+        },
         {
-          "Host": "localhost",
-          "Port": 7123
-        }
-      ],
-      "UpstreamPathTemplate": "/signalR",
-      "UpstreamHttpMethod": [ "Get", "Post" ]
-    },
-    {
-      "DownstreamPathTemplate": "/api/HouseLocations/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
+            "DownstreamPathTemplate": "/api/signalR",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7123
+                }
+            ],
+            "UpstreamPathTemplate": "/signalR",
+            "UpstreamHttpMethod": [ "Get", "Post" ]
+        },
         {
-          "Host": "localhost",
-          "Port": 7278
-        }
-      ],
-      "UpstreamPathTemplate": "/api/HouseLocations/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
-    },
-    {
-      "DownstreamPathTemplate": "/api/RoomAmenity/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
+            "DownstreamPathTemplate": "/api/HouseLocations/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7278
+                }
+            ],
+            "UpstreamPathTemplate": "/api/HouseLocations/{everything}",
+            "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
         {
-          "Host": "localhost",
-          "Port": 7152
-        }
-      ],
-      "UpstreamPathTemplate": "/api/RoomAmenity/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
-    },
-    {
-      "DownstreamPathTemplate": "/api/Rooms/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
+            "DownstreamPathTemplate": "/api/RoomAmenity/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7152
+                }
+            ],
+            "UpstreamPathTemplate": "/api/RoomAmenity/{everything}",
+            "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
         {
-          "Host": "localhost",
-          "Port": 7086
-        }
-      ],
-      "UpstreamPathTemplate": "/api/Rooms/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
-    },
-    {
-      "DownstreamPathTemplate": "/api/BoardingHouses/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
+            "DownstreamPathTemplate": "/api/Rooms/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7086
+                }
+            ],
+            "UpstreamPathTemplate": "/api/Rooms/{everything}",
+            "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
         {
-          "Host": "localhost",
-          "Port": 7186
-        }
-      ],
-      "UpstreamPathTemplate": "/api/BoardingHouses/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
-    },
-    {
-      "DownstreamPathTemplate": "/api/RentalPosts/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
+            "DownstreamPathTemplate": "/api/BoardingHouses/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7186
+                }
+            ],
+            "UpstreamPathTemplate": "/api/BoardingHouses/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
         {
-          "Host": "localhost",
-          "Port": 7179
-        }
-      ],
-      "UpstreamPathTemplate": "/api/RentalPosts/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
-    },
-    {
-      "DownstreamPathTemplate": "/api/UtilityRate/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
+            "DownstreamPathTemplate": "/api/RentalPosts/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7179
+                }
+            ],
+            "UpstreamPathTemplate": "/api/RentalPosts/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
         {
-          "Host": "localhost",
-          "Port": 7160
-        }
-      ],
-      "UpstreamPathTemplate": "/api/UtilityRate/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
-      "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer" }
-    },
-    {
-      "DownstreamPathTemplate": "/api/UtilityReading/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
+            "DownstreamPathTemplate": "/api/UtilityRate/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7160
+                }
+            ],
+            "UpstreamPathTemplate": "/api/UtilityRate/{everything}",
+            "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
+            "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer" }
+        },
         {
-          "Host": "localhost",
-          "Port": 7006
+            "DownstreamPathTemplate": "/api/UtilityReading/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7006
+                }
+            ],
+            "UpstreamPathTemplate": "/api/UtilityReading/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer"
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/address-kit/latest/provinces",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "production.cas.so",
+                    "Port": 443
+                }
+            ],
+            "UpstreamPathTemplate": "/api/provinces",
+            "UpstreamHttpMethod": [ "Get" ]
+        },
+        {
+            "DownstreamPathTemplate": "/address-kit/latest/provinces/{provinceId}/communes",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "production.cas.so",
+                    "Port": 443
+                }
+            ],
+            "UpstreamPathTemplate": "/api/provinces/{provinceId}/communes",
+            "UpstreamHttpMethod": [ "Get" ]
         }
-      ],
-      "UpstreamPathTemplate": "/api/UtilityReading/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      }
-    }
-  ],
+    ],
 
     "GlobalConfiguration": {
         "BaseUrl": "https://localhost:7000"
