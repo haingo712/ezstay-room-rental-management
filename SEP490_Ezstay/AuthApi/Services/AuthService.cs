@@ -80,7 +80,7 @@ namespace AuthApi.Services
             var token = _tokenGenerator.CreateToken(
                 email: account.Email,
                 role: account.Role.ToString(),
-                userId: account.Id.ToString()
+                userId: account.Id.ToString(),fullName:account.FullName.ToString(),phone:account.Phone
             );
 
             return new LoginResponseDto
