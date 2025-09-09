@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using RoomAPI.DTO.Request;
 using RoomAPI.Model;
+using RoomAPI.Service;
 using RoomAPI.Service.Interface;
 
 namespace RoomAPI.Controllers
@@ -18,10 +19,11 @@ namespace RoomAPI.Controllers
     public class RoomsController : ControllerBase
     {
         private readonly IRoomService _roomService;
-
-        public RoomsController(IRoomService roomService)
+        private readonly ITokenService _tokenService;
+        public RoomsController(IRoomService roomService, TokenService tokenService)
         {
             _roomService = roomService;
+            _tokenService = tokenService;
         }
 // trang user guest
         // GET: api/Rooms
@@ -33,7 +35,7 @@ namespace RoomAPI.Controllers
         }
         [HttpGet("ByHouseId/{houseId}")]
         [EnableQuery]
-      //  [Authorize(Roles = "Owner")]
+        [Authorize(Roles = "Owner")]
         public IQueryable<RoomDto> GetRoomsByHouseId(Guid houseId)
         {
             return _roomService.GetAllByHouseId(houseId);
@@ -63,7 +65,7 @@ namespace RoomAPI.Controllers
 
         // PUT: api/Rooms/5
     [HttpPut("{id}")] 
-   // [Authorize(Roles = "Owner")]
+    [Authorize(Roles = "Owner")]
     public async Task<IActionResult> PutRoom(Guid id, UpdateRoomDto request)
     {
         try
@@ -98,12 +100,13 @@ namespace RoomAPI.Controllers
    //    }
     
     [HttpPost("House/{houseId}/Location/{houseLocationId}")]
-    //  [Authorize(Roles = "Owner")]
+      [Authorize(Roles = "Owner")]
     public async Task<IActionResult> PostRoom(Guid houseId, Guid houseLocationId, CreateRoomDto request)
     {
         try
         {
-            var createRoom =   await  _roomService.Add( houseId,houseLocationId,request);
+            var staffId = _tokenService.GetUserIdFromClaims(User);
+            var createRoom =   await  _roomService.Add(houseId,houseLocationId,request);
             if (!createRoom.IsSuccess)
                 return BadRequest(new { message = createRoom.Message });
          
@@ -114,7 +117,7 @@ namespace RoomAPI.Controllers
         }
     }
     //     // DELETE: api/Rooms/5
-   // [Authorize(Roles = "Owner")]
+    [Authorize(Roles = "Owner")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteRoom(Guid id)
     {

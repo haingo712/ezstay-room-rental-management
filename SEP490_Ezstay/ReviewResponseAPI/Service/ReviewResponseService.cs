@@ -30,10 +30,10 @@ public class ReviewResponseService : IReviewResponseService
         return Guid.Parse(idStr);
     }
 
-    public async Task<ApiResponse<IEnumerable<ReviewResponseDto>>> GetAllByOwnerId()
+    public async Task<ApiResponse<IEnumerable<ReviewResponseDto>>> GetAllByOwnerId(Guid accountId)
     {
-        var ownerId = GetOwnerIdFromToken();
-        var entities = await _repository.GetAllByOwnerId(ownerId);
+       // var ownerId = GetOwnerIdFromToken();
+        var entities = await _repository.GetAllByOwnerId(accountId);
         var dtos = _mapper.Map<IEnumerable<ReviewResponseDto>>(entities);
 
         if (!dtos.Any())
@@ -64,25 +64,26 @@ public class ReviewResponseService : IReviewResponseService
         return _mapper.Map<ReviewResponseDto>(entity);
     }
 
-    public async Task<ApiResponse<ReviewResponseDto>> AddAsync(Guid reviewId, CreateReviewResponseDto request)
+    public async Task<ApiResponse<ReviewResponseDto>> AddAsync(Guid reviewId,Guid accountId, CreateReviewResponseDto request)
     {
-        var ownerId = GetOwnerIdFromToken();
+       // var ownerId = GetOwnerIdFromToken();
+       
         var entity = _mapper.Map<ReviewResponse>(request);
-        entity.OwnerId = ownerId;
+        entity.OwnerId = accountId;
         entity.ReviewId = reviewId;
         entity.CreatedAt = DateTime.UtcNow;
         await _repository.AddAsync(entity);
         var dto = _mapper.Map<ReviewResponseDto>(entity);
         return ApiResponse<ReviewResponseDto>.Success(dto, "Thêm phản hồi thành công");
     }
-    public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateReviewResponseDto request)
+    public async Task<ApiResponse<bool>> UpdateAsync(Guid id,Guid accountId,  UpdateReviewResponseDto request)
     {
         var entity = await _repository.GetByIdAsync(id);
         if (entity == null)
             return ApiResponse<bool>.Fail("Không tìm thấy phản hồi");
 
-        var ownerId = GetOwnerIdFromToken();
-        if (entity.OwnerId != ownerId)
+       // var ownerId = GetOwnerIdFromToken();
+        if (entity.OwnerId != accountId)
             return ApiResponse<bool>.Fail("Bạn không có quyền cập nhật phản hồi này");
 
         _mapper.Map(request, entity);
@@ -91,14 +92,14 @@ public class ReviewResponseService : IReviewResponseService
         await _repository.UpdateAsync(entity);
         return ApiResponse<bool>.Success(true, "Cập nhật thành công");
     }
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, Guid accountId)
     {
         var entity = await _repository.GetByIdAsync(id);
         if (entity == null)
             throw new KeyNotFoundException("ReviewResponse not found");
 
-        var ownerId = GetOwnerIdFromToken();
-        if (entity.OwnerId != ownerId)
+      //  var ownerId = GetOwnerIdFromToken();
+        if (entity.OwnerId != accountId)
             throw new UnauthorizedAccessException("Bạn không có quyền xóa phản hồi này");
         await _repository.DeleteAsync(entity);
     }

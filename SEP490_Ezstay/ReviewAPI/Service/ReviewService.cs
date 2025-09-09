@@ -22,13 +22,13 @@ public class ReviewService : IReviewService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    private Guid GetUserIdFromToken()
-    {
-        var userIdStr = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userIdStr))
-            throw new UnauthorizedAccessException("Không xác định được UserId từ token.");
-        return Guid.Parse(userIdStr);
-    }
+    // private Guid GetUserIdFromToken()
+    // {
+    //     var userIdStr = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    //     if (string.IsNullOrEmpty(userIdStr))
+    //         throw new UnauthorizedAccessException("Không xác định được UserId từ token.");
+    //     return Guid.Parse(userIdStr);
+    // }
 
     public async Task<ApiResponse<IEnumerable<ReviewDto>>> GetAll()
     {
@@ -61,9 +61,9 @@ public class ReviewService : IReviewService
         return _mapper.Map<ReviewDto>(entity);
     }
 
-    public async Task<ApiResponse<ReviewDto>> AddAsync(Guid postId, CreateReviewDto request)
+    public async Task<ApiResponse<ReviewDto>> AddAsync(Guid userId,Guid postId, CreateReviewDto request)
     {
-         var userId = GetUserIdFromToken();
+      //   var userId = GetUserIdFromToken();
         var review = _mapper.Map<Review>(request);
         review.UserId = userId;
         review.PostId = postId;
@@ -73,13 +73,13 @@ public class ReviewService : IReviewService
         return ApiResponse<ReviewDto>.Success(dto, "Thêm review thành công");
     }
 
-    public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateReviewDto request)
+    public async Task<ApiResponse<bool>> UpdateAsync(Guid id,Guid userId, UpdateReviewDto request)
     {
         var entity = await _reviewRepository.GetByIdAsync(id);
         if (entity == null)
             return ApiResponse<bool>.Fail("Không tìm thấy review");
 
-        var userId = GetUserIdFromToken();
+       // var userId = GetUserIdFromToken();
         if (entity.UserId != userId)
             return ApiResponse<bool>.Fail("Bạn không có quyền cập nhật review này");
         
