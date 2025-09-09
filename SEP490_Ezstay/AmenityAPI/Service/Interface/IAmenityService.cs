@@ -15,12 +15,12 @@ public interface IAmenityService
     // Task<ApiResponse<AmenityDto>> AddAsync(CreateAmenityDto request);
     // Task<ApiResponse<bool>> UpdateAsync(Guid id,UpdateAmenityDto request);
     // Task DeleteAsync(Guid id);
-    Task<ApiResponse<IEnumerable<AmenityDto>>>  GetAllByStaffId( );
-    IQueryable<AmenityDto> GetAllByStaffIdOdata();
+    Task<ApiResponse<IEnumerable<AmenityDto>>>  GetAllByStaffId(Guid staffId);
+    IQueryable<AmenityDto> GetAllByStaffIdOdata(Guid staffId);
     IQueryable<AmenityDto> GetAllOdata();
     Task<ApiResponse<IEnumerable<AmenityDto>>> GetAll();
     Task<AmenityDto> GetByIdAsync(Guid id);
-    Task<ApiResponse<AmenityDto>> AddAsync(CreateAmenityDto request);
+    Task<ApiResponse<AmenityDto>> AddAsync(Guid staffId, CreateAmenityDto request);
     Task<ApiResponse<bool>> UpdateAsync(Guid id,UpdateAmenityDto request);
     Task DeleteAsync(Guid id);
     

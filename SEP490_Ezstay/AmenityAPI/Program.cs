@@ -30,9 +30,10 @@ builder.Services.AddGrpc();
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
 builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
 builder.Services.AddScoped<IAmenityService, AmenityService>();
+
 var odatabuilder = new ODataConventionModelBuilder();
 odatabuilder.EntitySet<AmenityDto>("Amenities");
 var odata = odatabuilder.GetEdmModel();

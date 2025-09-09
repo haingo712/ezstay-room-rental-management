@@ -25,6 +25,7 @@ var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:Conne
 builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 ;
