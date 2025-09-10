@@ -5,6 +5,8 @@ using AccountAPI.Service.Interfaces;
 using AccountAPI.Service;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using APIGateway.Helper;
+using APIGateway.Helper.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -12,64 +14,59 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
 builder.Services.AddSingleton(mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IImageService, ImageService>();
-builder.Services.AddHttpClient(); // Để gọi AccountAPI
+builder.Services.AddScoped<IUserClaimHelper, UserClaimHelper>();
+
+builder.Services.AddHttpClient();
 builder.Services.AddAutoMapper(typeof(UserMappingProfile));
 
-
-builder.Services.AddAuthorization();
-
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-
+// ✅ Không cần jwtSettings và AddJwtBearer nữa
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        var config = builder.Configuration;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = jwtSettings["Issuer"],
-
+            ValidIssuer = config["Jwt:Issuer"],
             ValidateAudience = true,
-            ValidAudience = jwtSettings["Audience"],
-
+            ValidAudience = config["Jwt:Audience"],
             ValidateLifetime = true,
-
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(config["Jwt:Key"]))
         };
     });
 
-
 builder.Services.AddAuthorization();
 
+
+
+// Swagger config (vẫn giữ để test token trong UI)
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "AmenityAPI", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "AccountAPI", Version = "v1" });
 
-    // Thêm JWT Security
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = @"Nhập vào JWT token theo định dạng: Bearer {token}",
+        Description = @"Nhập JWT token dạng: Bearer {token}",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -88,10 +85,9 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -99,9 +95,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
+app.UseAuthentication(); // Cần để nhận Claims từ Gateway
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();
