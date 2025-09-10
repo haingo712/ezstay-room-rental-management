@@ -23,6 +23,13 @@ namespace AccountAPI.Service
 
         public async Task<bool> CreateProfileAsync(Guid userId, UserDTO userDto)
         {
+            var existingUser = await _userRepository.GetByUserIdAsync(userId);
+            if (existingUser != null)
+            {
+                // Nếu tồn tại rồi thì return false hoặc throw exception tuỳ nhu cầu
+                return false;
+                // hoặc: throw new Exception("UserId đã tồn tại");
+            }
             var user = _mapper.Map<User>(userDto);
             user.UserId = userId;
 
@@ -37,8 +44,6 @@ namespace AccountAPI.Service
 
             var userResponse = _mapper.Map<UserResponseDTO>(user);
 
-            // Không cần gọi Account nữa
-            // Giữ nguyên logic nếu cần thêm sau này
             return userResponse;
         }
 
