@@ -158,3 +158,9 @@ services:
     build:
       context: .
       dockerfile: ReviewResponseAPI/Dockerfile
+services:
+  paymentapi:
+    image: paymentapi
+    build:
+      context: .
+      dockerfile: PaymentAPI/Dockerfile
