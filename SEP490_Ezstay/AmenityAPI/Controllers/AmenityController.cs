@@ -92,7 +92,8 @@ namespace AmenityAPI.Controllers
         {
             try
             {
-                var updateAmentity =  await _amenityService.UpdateAsync(id, request);
+                var accountId = _tokenService.GetUserIdFromClaims(User);
+                var updateAmentity =  await _amenityService.UpdateAsync(accountId ,id, request);
                 if (!updateAmentity.IsSuccess)
                 {
                     return BadRequest(new { message = updateAmentity.Message });
@@ -132,7 +133,8 @@ namespace AmenityAPI.Controllers
         {
             try
             { 
-                await _amenityService.DeleteAsync(id);
+                var staffId = _tokenService.GetUserIdFromClaims(User);
+                await _amenityService.DeleteAsync(staffId ,id);
                 return NoContent();
             }
             catch (KeyNotFoundException e)
