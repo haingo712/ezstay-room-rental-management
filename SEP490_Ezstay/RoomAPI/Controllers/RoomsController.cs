@@ -105,8 +105,8 @@ namespace RoomAPI.Controllers
     {
         try
         {
-            var staffId = _tokenService.GetUserIdFromClaims(User);
-            var createRoom =   await  _roomService.Add(houseId,houseLocationId,request);
+            var ownerId = _tokenService.GetUserIdFromClaims(User);
+            var createRoom =   await  _roomService.Add( houseId,houseLocationId,request);
             if (!createRoom.IsSuccess)
                 return BadRequest(new { message = createRoom.Message });
          
@@ -122,7 +122,8 @@ namespace RoomAPI.Controllers
     public async Task<IActionResult> DeleteRoom(Guid id)
     {
         try
-        {     
+        {    
+            
             await  _roomService.Delete(id);
             return NoContent();
         }

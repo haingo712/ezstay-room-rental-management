@@ -84,23 +84,32 @@ public class AmenityService: IAmenityService
     public async  Task<ApiResponse<AmenityDto>> AddAsync(Guid staffId, CreateAmenityDto request )
     { 
        
+       
         var exist = await _amenityRepository.AmenityNameExistsAsync(request.AmenityName);
         if (exist)
             return ApiResponse<AmenityDto>.Fail("Tiện ích đã có rồi.");
+        
         var amenity = _mapper.Map<Amenity>(request);
+        
+        if (amenity.StaffId != staffId)
+            return ApiResponse<AmenityDto>.Fail("Bạn không có quyền cập nhật Amenity này");
+
         amenity.CreatedAt = DateTime.UtcNow;
-       
         amenity.StaffId = staffId;
         await _amenityRepository.AddAsync(amenity);
         var result =_mapper.Map<AmenityDto>(amenity);
         return  ApiResponse<AmenityDto>.Success(result,"Thêm tiện ích thành công");
     }
 
-    public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateAmenityDto request)
+    public async Task<ApiResponse<bool>> UpdateAsync(Guid accountId,Guid id, UpdateAmenityDto request)
     {
         var amenity =await _amenityRepository.GetByIdAsync(id);
         if (amenity == null)
             throw new KeyNotFoundException("AmentityId not found");
+       
+        if (amenity.StaffId != accountId)
+            return ApiResponse<bool>.Fail("Bạn không có quyền cập nhật Amenity này");
+
         var existAmentityName = await _amenityRepository.AmenityNameExistsAsync(request.AmenityName);
         if(existAmentityName)
             return ApiResponse<bool>.Fail("Tiện ích đã có rồi.");
@@ -111,11 +120,16 @@ public class AmenityService: IAmenityService
         var result = _mapper.Map<AmenityDto>(amenity);
         return ApiResponse<bool>.Success(true,"Cập nhật tiện ích thành công");
     }
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid accountId,Guid id)
     {
         var amenity = await _amenityRepository.GetByIdAsync(id);
+        
         if (amenity==null) 
             throw new KeyNotFoundException("AmentityId not found");
+        
+        // if (amenity.StaffId != accountId)
+        //     return ApiResponse<bool>.Fail("Bạn không có quyền cập nhật Amenity này");
+
         await _amenityRepository.DeleteAsync(amenity);
     }
 }

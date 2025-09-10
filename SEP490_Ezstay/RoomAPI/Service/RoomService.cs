@@ -58,13 +58,15 @@ public class RoomService: IRoomService
     //     var result = _mapper.Map<RoomDto>(room);
     //     return ApiResponse<RoomDto>.Success(result, "Thêm phòng thành công");
     // }
-    public async Task<ApiResponse<RoomDto>> Add(Guid houseId, Guid houseLocationId,  CreateRoomDto request)
+    public async Task<ApiResponse<RoomDto>> Add( Guid houseId, Guid houseLocationId,  CreateRoomDto request)
     { 
         
         var exist = await _roomRepository.RoomNameExistsInHouse(houseId, request.RoomName, houseLocationId);
         if (exist)
             return ApiResponse<RoomDto>.Fail("Tên phòng đã tồn tại trong nhà trọ.");
         var room = _mapper.Map<Room>(request);
+        room.HouseId = houseId;
+        room.HouseLocationId = houseLocationId;
         room.RoomStatus= RoomStatus.Available;
         room.CreatedAt = DateTime.UtcNow;
         await _roomRepository.Add(room);
