@@ -1,4 +1,6 @@
 using System.Text;
+using APIGateway.Helper.Interfaces;
+using APIGateway.Helper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
@@ -32,15 +34,18 @@ builder.Services.AddAuthentication("Bearer")
             ValidateIssuer = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
 
-            ValidateAudience = false, 
-            ValidateLifetime = true,
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
 
+            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
             )
         };
     });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddAuthorization();
 
@@ -54,6 +59,7 @@ builder.Services.AddCors(options =>
 
 // Add Ocelot service
 builder.Services.AddOcelot();
+
 
 var app = builder.Build();            
 
