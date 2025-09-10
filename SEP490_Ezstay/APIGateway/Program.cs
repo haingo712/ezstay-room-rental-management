@@ -55,6 +55,7 @@ builder.Services.AddCors(options =>
 // Add Ocelot service
 builder.Services.AddOcelot();
 
+
 var app = builder.Build();            
 
 // Configure the HTTP request pipeline.
