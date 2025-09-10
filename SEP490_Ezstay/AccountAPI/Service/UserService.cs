@@ -1,7 +1,7 @@
 ﻿using AccountAPI.Data;
 using AccountAPI.DTO.Reponse;
 using AccountAPI.DTO.Request;
-
+using AccountAPI.DTO.Resquest;
 using AccountAPI.Repositories.Interfaces;
 using AccountAPI.Service.Interfaces;
 using AutoMapper;
@@ -12,11 +12,13 @@ namespace AccountAPI.Service
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly IImageService _imageService;
 
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper, IImageService imageService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _imageService = imageService;
         }
 
         public async Task<bool> CreateProfileAsync(Guid userId, UserDTO userDto)
@@ -38,6 +40,25 @@ namespace AccountAPI.Service
             // Không cần gọi Account nữa
             // Giữ nguyên logic nếu cần thêm sau này
             return userResponse;
+        }
+
+        public async Task<bool> UpdateProfileAsync(Guid userId, UpdateUserDTO dto)
+        {
+            var user = await _userRepository.GetByUserIdAsync(userId);
+            if (user == null) return false;
+
+            // map các field cơ bản
+            _mapper.Map(dto, user);
+
+            // xử lý avatar (nếu có upload)
+            if (dto.Avatar != null)
+            {
+                var avatarUrl = await _imageService.UploadImageAsync(dto.Avatar);
+                user.Avata = avatarUrl;
+            }
+
+            await _userRepository.UpdateAsync(user);
+            return true;
         }
     }
 }

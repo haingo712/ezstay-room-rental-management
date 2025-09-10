@@ -22,6 +22,11 @@ namespace AccountAPI.Repositories
         {
             return await _collection.Find(u => u.UserId == userId).FirstOrDefaultAsync();
         }
-    
+
+        public async Task UpdateAsync(User user)
+        {
+            await _collection.ReplaceOneAsync(u => u.Id == user.Id, user);
+        }
+
     }
 }

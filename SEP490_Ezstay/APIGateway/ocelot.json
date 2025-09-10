@@ -162,21 +162,36 @@
             "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
             "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer" }
         },
-        {
-            "DownstreamPathTemplate": "/api/UtilityReading/{everything}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7006
-                }
-            ],
-            "UpstreamPathTemplate": "/api/UtilityReading/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer"
-            }
-        },
+      {
+        "DownstreamPathTemplate": "/api/UtilityReading/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7006
+          }
+        ],
+        "UpstreamPathTemplate": "/api/UtilityReading/{everything}",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer"
+        }
+      },
+      {
+        "DownstreamPathTemplate": "/api/Image/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7080
+          }
+        ],
+        "UpstreamPathTemplate": "/api/Image/{everything}",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer"
+        }
+      },
         {
             "DownstreamPathTemplate": "/address-kit/latest/provinces",
             "DownstreamScheme": "https",
