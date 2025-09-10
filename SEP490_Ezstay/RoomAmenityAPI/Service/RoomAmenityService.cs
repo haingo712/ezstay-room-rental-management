@@ -56,7 +56,6 @@ public class RoomAmenityService: IRoomAmenityService
         roomAmenity.RoomId = roomId;
         await _roomAmenityRepository.AddAsync(roomAmenity);
         return ApiResponse<RoomAmenityDto>.Success(_mapper.Map<RoomAmenityDto>(roomAmenity), "Thêm tiện ích vào trọ thành công");
-        
     }
 
     public async  Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateRoomAmenityDto request)

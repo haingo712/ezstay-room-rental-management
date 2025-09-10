@@ -11,23 +11,25 @@ namespace ReviewResponseAPI.Controllers;
 public class ReviewResponseController : ControllerBase
 {
     private readonly IReviewResponseService _service;
-
-    public ReviewResponseController(IReviewResponseService service)
+    private readonly ITokenService _tokenService;
+    public ReviewResponseController(IReviewResponseService service, ITokenService tokenService)
     {
         _service = service;
+        _tokenService = tokenService;
     }
     
-    [HttpGet("mine")]
+    [HttpGet("ByOwnerId")]
+    [Authorize(Roles = "Owner")]
     public async Task<IActionResult> GetAllByOwnerId()
     {
-        var result = await _service.GetAllByOwnerId();
+        var accountId = _tokenService.GetUserIdFromClaims(User);
+        var result = await _service.GetAllByOwnerId(accountId);
         return Ok(result);
     }
 
     
     [HttpGet]
-    [Authorize(Roles = "Staff")]
-    public async Task<IActionResult> GetAllByStaffId()
+    public async Task<IActionResult> GetAll()
     {
         var result = await _service.GetAll();
         return Ok(result);
@@ -45,15 +47,17 @@ public class ReviewResponseController : ControllerBase
     [Authorize(Roles = "Owner")]
     public async Task<IActionResult> Create(Guid reviewId, [FromBody] CreateReviewResponseDto request)
     {
-        var result = await _service.AddAsync(reviewId, request);
+        var accountId = _tokenService.GetUserIdFromClaims(User);
+        var result = await _service.AddAsync(reviewId, accountId , request);
         return Ok(result);
     }
     
     [HttpPut("{id}")]
     [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateReviewResponseDto request)
+    public async Task<IActionResult> Update(Guid id,[FromBody] UpdateReviewResponseDto request)
     {
-        var result = await _service.UpdateAsync(id, request);
+        var accountId = _tokenService.GetUserIdFromClaims(User);
+        var result = await _service.UpdateAsync(id, accountId,  request);
         return Ok(result);
     }
 
@@ -61,8 +65,8 @@ public class ReviewResponseController : ControllerBase
     [HttpDelete("{id}")]
     [Authorize(Roles = "Owner")]
     public async Task<IActionResult> Delete(Guid id)
-    {
-        await _service.DeleteAsync(id);
+    {   var accountId = _tokenService.GetUserIdFromClaims(User);
+        await _service.DeleteAsync(id, accountId);
         return NoContent();
     }
 }

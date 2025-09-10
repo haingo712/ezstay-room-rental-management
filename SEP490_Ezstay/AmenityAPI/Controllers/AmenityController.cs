@@ -19,10 +19,12 @@ namespace AmenityAPI.Controllers
     public class AmenityController : ControllerBase
     {
         private readonly IAmenityService _amenityService;
+        private readonly ITokenService _tokenService;
 
-        public AmenityController(IAmenityService amenityService)
+        public AmenityController(IAmenityService amenityService, ITokenService tokenService)
         {
             _amenityService = amenityService;
+            _tokenService = tokenService;
         }
        
         // [HttpGet("ByStaffId/odata/{staffId}")]
@@ -38,8 +40,8 @@ namespace AmenityAPI.Controllers
         [EnableQuery]
         public IQueryable<AmenityDto> GetAmenitiesByOwnerIdOdata( )
         {
-           
-            return _amenityService.GetAllByStaffIdOdata();
+            var staffId = _tokenService.GetUserIdFromClaims(User);
+            return _amenityService.GetAllByStaffIdOdata(staffId);
         }
        
         // [HttpGet("ByStaffId/{staffId}")]
@@ -50,9 +52,10 @@ namespace AmenityAPI.Controllers
         // }
         [HttpGet("ByStaffId")]
         [Authorize(Roles = "Staff")]
-        public async Task<ActionResult<AmenityDto>> GetAmenitiesByStaffId( )
+        public async Task<ActionResult<AmenityDto>> GetAmenitiesByStaffId()
         {
-            return Ok( await _amenityService.GetAllByStaffId());
+            var staffId = _tokenService.GetUserIdFromClaims(User);
+            return Ok( await _amenityService.GetAllByStaffId(staffId));
         }
         [HttpGet("odata")]
         [EnableQuery]
@@ -108,8 +111,8 @@ namespace AmenityAPI.Controllers
         {
             try
             {
-              
-                var createAmentity =   await  _amenityService.AddAsync(request );
+                var staffId = _tokenService.GetUserIdFromClaims(User);
+                var createAmentity =   await  _amenityService.AddAsync(staffId, request);
                 if (!createAmentity.IsSuccess)
                 {
                     return BadRequest(new { message = createAmentity.Message });

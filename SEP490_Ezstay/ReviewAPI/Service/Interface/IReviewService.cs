@@ -8,7 +8,7 @@ public interface IReviewService
     Task<ApiResponse<IEnumerable<ReviewDto>>> GetAll();
     Task<ApiResponse<IEnumerable<ReviewDto>>> GetAllByPostId(Guid postId);
     Task<ReviewDto> GetByIdAsync(Guid id);
-    Task<ApiResponse<ReviewDto>> AddAsync(Guid postId, CreateReviewDto request);
-    Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateReviewDto request);
+    Task<ApiResponse<ReviewDto>> AddAsync(Guid userId,Guid postId, CreateReviewDto request);
+    Task<ApiResponse<bool>> UpdateAsync(Guid id, Guid userId, UpdateReviewDto request);
    // Task DeleteAsync(Guid id);
 }
