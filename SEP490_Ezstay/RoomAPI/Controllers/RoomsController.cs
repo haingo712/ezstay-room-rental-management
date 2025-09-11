@@ -20,19 +20,19 @@ namespace RoomAPI.Controllers
     {
         private readonly IRoomService _roomService;
         private readonly ITokenService _tokenService;
-        public RoomsController(IRoomService roomService, TokenService tokenService)
+        public RoomsController(IRoomService roomService, ITokenService tokenService)
         {
             _roomService = roomService;
             _tokenService = tokenService;
         }
-// trang user guest
-        // GET: api/Rooms
+        
         [HttpGet]
         [EnableQuery]
         public IQueryable<RoomDto> GetRooms()
         {
             return _roomService.GetAllQueryable();
         }
+        
         [HttpGet("ByHouseId/{houseId}")]
         [EnableQuery]
         [Authorize(Roles = "Owner")]
@@ -40,13 +40,7 @@ namespace RoomAPI.Controllers
         {
             return _roomService.GetAllByHouseId(houseId);
         }
-     //    [HttpGet("ByHouseLocationId/{houseLocationId}")]
-     //    [EnableQuery]
-     // //   [Authorize(Roles = "Owner")]
-     //    public IQueryable<RoomDto> GetRoomsByHouseLocationId(Guid houseLocationId)
-     //    {
-     //        return _roomService.GetAllByHouseLocationId(houseLocationId);
-     //    }
+    
         // GET: api/Rooms/5
         [HttpGet("{id}")]
         public async Task<ActionResult<RoomDto>> GetRoomById(Guid id)
@@ -64,10 +58,11 @@ namespace RoomAPI.Controllers
         }
 
         // PUT: api/Rooms/5
-    [HttpPut("{id}")] 
-    [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> PutRoom(Guid id, UpdateRoomDto request)
-    {
+   
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Owner")]
+    
+        public async Task<IActionResult> PutRoom(Guid id, UpdateRoomDto request) {
         try
         {
           var result =  await _roomService.Update(id, request);
@@ -99,14 +94,31 @@ namespace RoomAPI.Controllers
    //      }
    //    }
     
-    [HttpPost("House/{houseId}/Location/{houseLocationId}")]
-      [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> PostRoom(Guid houseId, Guid houseLocationId, CreateRoomDto request)
+    // [HttpPost("House/{houseId}/Location/{houseLocationId}")]
+    //    [Authorize(Roles = "Owner")]
+    // public async Task<IActionResult> PostRoom(Guid houseId, Guid houseLocationId, CreateRoomDto request)
+    // {
+    //     try
+    //     {
+    //       //  var ownerId = _tokenService.GetUserIdFromClaims(User);
+    //         var createRoom =   await  _roomService.Add( houseId,houseLocationId,request);
+    //         if (!createRoom.IsSuccess)
+    //             return BadRequest(new { message = createRoom.Message });
+    //      
+    //         return CreatedAtAction("GetRoomById", new { id = createRoom.Data.HouseId }, createRoom);
+    //
+    //     }catch (Exception e) {
+    //         return Conflict(new { message = e.Message });
+    //     }
+    //}
+    [HttpPost("House/{houseId}")]
+    [Authorize(Roles = "Owner")]
+    public async Task<IActionResult> PostRoom(Guid houseId, CreateRoomDto request)
     {
         try
         {
-            var ownerId = _tokenService.GetUserIdFromClaims(User);
-            var createRoom =   await  _roomService.Add( houseId,houseLocationId,request);
+            //  var ownerId = _tokenService.GetUserIdFromClaims(User);
+            var createRoom =   await  _roomService.Add( houseId,request);
             if (!createRoom.IsSuccess)
                 return BadRequest(new { message = createRoom.Message });
          
@@ -123,7 +135,6 @@ namespace RoomAPI.Controllers
     {
         try
         {    
-            
             await  _roomService.Delete(id);
             return NoContent();
         }

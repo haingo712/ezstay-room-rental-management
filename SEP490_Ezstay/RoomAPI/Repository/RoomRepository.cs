@@ -28,14 +28,21 @@ public class RoomRepository:IRoomRepository
     public async Task<bool> RoomNameExists(string roomName)
     => await _rooms.AsQueryable().AnyAsync(r => r.RoomName.ToLower() == roomName.ToLower());
     
-    public async Task<bool> RoomNameExistsInHouse(Guid houseId, string roomName ,Guid houseLocationId)
+    public async Task<bool> RoomNameExistsInHouse(Guid houseId, string roomName)
     {
         return await _rooms.AsQueryable()
             .AnyAsync(r => r.HouseId == houseId 
                            && r.RoomName.ToLower() == roomName.ToLower()
-                           && r.HouseLocationId == houseLocationId
-                           );
+            );
     }
+    // public async Task<bool> RoomNameExistsInHouse(Guid houseId, string roomName ,Guid houseLocationId)
+    // {
+    //     return await _rooms.AsQueryable()
+    //         .AnyAsync(r => r.HouseId == houseId 
+    //                        && r.RoomName.ToLower() == roomName.ToLower()
+    //                        && r.HouseLocationId == houseLocationId
+    //                        );
+    // }
     public async Task<bool> RoomNameExistsInHouseRoom(Guid houseId, string roomName, Guid roomId)
     {
         return await _rooms.AsQueryable()

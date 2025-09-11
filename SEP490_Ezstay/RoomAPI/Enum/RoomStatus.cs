@@ -3,6 +3,6 @@ namespace RoomAPI.Enum;
 public enum RoomStatus
 {
     Available = 0,
-    Occupied=1,  // có người thuê
-    Maintenance=2   // sửa chữa
+    Maintenance=1 ,  // sửa chữa
+    Occupied=2  // có người thuê
 }
