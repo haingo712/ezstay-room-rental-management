@@ -11,7 +11,7 @@ public interface ITenantService
     IQueryable<TenantDto> GetAllByOwnerId(Guid ownerId);
   //  IQueryable<TenantDto> GetAllByRoomId(Guid roomId);
     Task<TenantDto?> GetByIdAsync(Guid id);
-    Task<ApiResponse<TenantDto>> AddAsync(CreateTenantDto request);
-  //  Task<ApiResponse<TenantDto>> UpdateAsync(Guid id, UpdateTenantDto request);
+    Task<ApiResponse<TenantDto>> AddAsync(Guid ownerId ,CreateTenantDto request);
+    Task<ApiResponse<TenantDto>> UpdateAsync(Guid id, UpdateTenantDto request);
     
 }
