@@ -2,6 +2,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using TenantAPI.DTO.Requests;
 using TenantAPI.DTO.Response;
+using TenantAPI.Enum;
 using TenantAPI.Model;
 using TenantAPI.Repository.Interface;
 using TenantAPI.Service.Interface;
@@ -46,42 +47,47 @@ public class TenantService: ITenantService
       return   _mapper.Map<TenantDto>(tenant);
     }
 
-    public async Task<ApiResponse<TenantDto>> AddAsync(CreateTenantDto request)
+    public async Task<ApiResponse<TenantDto>> AddAsync(Guid ownerId ,CreateTenantDto request)
     { 
-         var exist = await _tenantRepository.TenantRoomIsActiveAsync(request.RoomId);
-         if (exist)
-             return ApiResponse<TenantDto>.Fail("Phòng trọ này đã có người thuê");
+         // var exist = await _tenantRepository.TenantRoomIsActiveAsync(request.RoomId);
+         // if (exist)
+         //     return ApiResponse<TenantDto>.Fail("Phòng trọ này đã có người thuê");
          if(request.CheckinDate < DateTime.Now)
             return ApiResponse<TenantDto>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
+         if (request.CheckoutDate <  request.CheckinDate.AddMonths(1))
+             return ApiResponse<TenantDto>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
            var tenant = _mapper.Map<Tenant>(request);
+        tenant.OwnerId = ownerId;
         tenant.CreatedAt = DateTime.Now;
+        tenant.TenantStatus = TenantStatus.Active;
         await _tenantRepository.AddAsync(tenant);
         var result = _mapper.Map<TenantDto>(tenant);
         return ApiResponse<TenantDto>.Success(result, "thuê  thành công.");
     }
 
-    // public async Task<ApiResponse<TenantDto>> UpdateAsync(int id, UpdateTenantDto request)
-    // {
-    //     var  tenant =await _tenantRepository.GetByIdAsync(id);
-    //     if (tenant == null)
-    //         throw new KeyNotFoundException("Tenant Id not found");
-    //     if (!tenant.IsActive  && request.IsActive)
-    //         return ApiResponse<TenantDto>.Fail("Is Active false nên k thể cập nhật. vui lòng làm lại đơn mới");
-    //     if (!tenant.IsActive )
-    //     {
-    //         return ApiResponse<TenantDto>.Fail("Is Active false nên k thể cập nhật. vui lòng làm lại đơn mới");
-    //     }
-    //     if(request.CheckinDate < DateTime.Now)
-    //         return ApiResponse<TenantDto>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
-    //
-    //     if (!request.IsActive)
-    //         tenant.CheckoutDate = DateTime.Now;
-    //     
-    //     _mapper.Map(request, tenant);
-    //     await _tenantRepository.UpdateAsync(tenant);
-    //     var result= _mapper.Map<TenantDto>(tenant);
-    //      return ApiResponse<TenantDto>.Success(result, "Cập nhật đơn  thành công.");
-    // }
+    public async Task<ApiResponse<TenantDto>> UpdateAsync(Guid id, UpdateTenantDto request)
+    {
+        var  tenant =await _tenantRepository.GetByIdAsync(id);
+        if (tenant == null)
+            throw new KeyNotFoundException("Tenant Id not found");
+        // if (!tenant.IsActive  && request.IsActive)
+        //     return ApiResponse<TenantDto>.Fail("Is Active false nên k thể cập nhật. vui lòng làm lại đơn mới");
+        if (DateTime.Now - tenant.CreatedAt > TimeSpan.FromHours(1))
+            return ApiResponse<TenantDto>.Fail("Đơn này đã quá 1 giờ, không thể cập nhật nữa.");
+
+        if(request.CheckinDate < DateTime.Now)
+            return ApiResponse<TenantDto>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
+        if (request.CheckoutDate <  request.CheckinDate.AddMonths(1))
+            return ApiResponse<TenantDto>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
+        
+        // if (!request.IsActive)
+        //     tenant.CheckoutDate = DateTime.Now;
+        
+        _mapper.Map(request, tenant);
+        await _tenantRepository.UpdateAsync(tenant);
+        var result= _mapper.Map<TenantDto>(tenant);
+         return ApiResponse<TenantDto>.Success(result, "Cập nhật đơn  thành công.");
+    }
 
     // public async Task DeleteAsync(int id)
     // {
