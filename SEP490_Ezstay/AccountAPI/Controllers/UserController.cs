@@ -1,6 +1,4 @@
 ﻿using AccountAPI.DTO.Request;
-using AccountAPI.DTO.Response;
-using AccountAPI.DTO.Resquest;
 using AccountAPI.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +27,14 @@ namespace AccountAPI.Controllers
             return success ? Ok("Tạo profile thành công.") : BadRequest("Không tạo được profile.");
         }
 
+        [HttpPut("update-profile")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UserDTO userDto)
+        {
+            var userId = _tokenService.GetUserIdFromClaims(User);
+            var success = await _userService.UpdateProfileAsync(userId, userDto);
+            return success ? Ok("Cập nhật profile thành công.") : BadRequest("Không cập nhật được profile.");
+        }
+
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
         {
@@ -43,18 +49,6 @@ namespace AccountAPI.Controllers
             profile.Phone = _tokenService.GetPhoneFromClaims(User);
 
             return Ok(profile);
-        }
-
-        [HttpPut("update-profile")]
-        public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserDTO dto)
-        {
-            var userId = _tokenService.GetUserIdFromClaims(User);
-            var success = await _userService.UpdateProfileAsync(userId, dto);
-          
-            
-            return success
-                ? Ok(ApiResponse<string>.Ok(null, "Cập nhật profile thành công."))
-                : BadRequest(ApiResponse<string>.Fail("Cập nhật thất bại."));
         }
 
     }

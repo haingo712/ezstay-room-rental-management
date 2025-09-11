@@ -23,10 +23,11 @@ namespace AccountAPI.Repositories
             return await _collection.Find(u => u.UserId == userId).FirstOrDefaultAsync();
         }
 
-        public async Task UpdateAsync(User user)
+        public async Task UpdateUserAsync(User user)
         {
-            await _collection.ReplaceOneAsync(u => u.Id == user.Id, user);
+            var filter = Builders<User>.Filter.Eq(u => u.UserId, user.UserId);
+            await _collection.ReplaceOneAsync(filter, user);
         }
-
+    
     }
 }

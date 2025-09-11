@@ -1,5 +1,4 @@
 ﻿using AccountAPI.Data;
-using AccountAPI.DTO.Resquest;
 
 namespace AccountAPI.Repositories.Interfaces
 {
@@ -7,7 +6,6 @@ namespace AccountAPI.Repositories.Interfaces
     {
         Task CreateUserAsync(User user);
         Task<User?> GetByUserIdAsync(Guid userId);
-        Task UpdateAsync(User user);
-
+        Task UpdateUserAsync(User user);
     }
 }

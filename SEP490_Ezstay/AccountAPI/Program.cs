@@ -25,7 +25,6 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddHttpClient(); // Để gọi AccountAPI
 builder.Services.AddAutoMapper(typeof(UserMappingProfile));
 
