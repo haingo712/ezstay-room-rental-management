@@ -26,30 +26,15 @@ namespace AmenityAPI.Controllers
             _amenityService = amenityService;
             _tokenService = tokenService;
         }
-       
-        // [HttpGet("ByStaffId/odata/{staffId}")]
-        // [Authorize(Roles = "Staff")]
-        // [EnableQuery]
-        // public IQueryable<AmenityDto> GetAmenitiesByOwnerIdOdata(Guid staffId)
-        // {
-        //    
-        //     return _amenityService.GetAllByStaffIdOdata(staffId);
-        // }
         [HttpGet("ByStaffId/odata/")]
         [Authorize(Roles = "Staff")]
         [EnableQuery]
         public IQueryable<AmenityDto> GetAmenitiesByOwnerIdOdata( )
         {
             var staffId = _tokenService.GetUserIdFromClaims(User);
-            return _amenityService.GetAllByStaffIdOdata(staffId);
+            return _amenityService.GetAllByStaffIdAsQueryable(staffId);
         }
-       
-        // [HttpGet("ByStaffId/{staffId}")]
-        // [Authorize(Roles = "Staff")]
-        // public async Task<ActionResult<AmenityDto>> GetAmenitiesByStaffId(Guid staffId)
-        // {
-        //     return Ok( await _amenityService.GetAllByStaffId(staffId));
-        // }
+        
         [HttpGet("ByStaffId")]
         [Authorize(Roles = "Staff")]
         public async Task<ActionResult<AmenityDto>> GetAmenitiesByStaffId()
@@ -61,8 +46,9 @@ namespace AmenityAPI.Controllers
         [EnableQuery]
         public IQueryable<AmenityDto> GetAmenitiesOdata()
         {
-            return  _amenityService.GetAllOdata();
+            return  _amenityService.GetAllAsQueryable();
         }
+        
         [HttpGet]
         [Authorize(Roles = "Staff")]
         public  async Task<ActionResult<AmenityDto>> GetAmenities()
@@ -133,8 +119,8 @@ namespace AmenityAPI.Controllers
         {
             try
             { 
-                var staffId = _tokenService.GetUserIdFromClaims(User);
-                await _amenityService.DeleteAsync(staffId ,id);
+               // var staffId = _tokenService.GetUserIdFromClaims(User);
+                await _amenityService.DeleteAsync( id);
                 return NoContent();
             }
             catch (KeyNotFoundException e)
