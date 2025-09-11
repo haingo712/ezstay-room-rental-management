@@ -13,18 +13,19 @@ public class ReviewController : ControllerBase
 {
     private readonly IReviewService _reviewService;
     private readonly ITokenService _tokenService;
-    public ReviewController(IReviewService reviewService, TokenService tokenService)
+    public ReviewController(IReviewService reviewService, ITokenService tokenService)
     {
         _reviewService = reviewService;
         _tokenService = tokenService;
     }
     
-    // [HttpGet]
-    // public async Task<IActionResult> GetAll()
-    // {
-    //     var result = await _reviewService.GetAll();
-    //     return Ok(result);
-    // }
+    [HttpGet]
+    [Authorize(Roles = "Staff")]
+    public async Task<IActionResult> GetAll()
+    {
+        var result = await _reviewService.GetAll();
+        return Ok(result);
+    }
     
     // [HttpGet("post/{postId}")]
     // public async Task<IActionResult> GetByPostId(Guid postId)
@@ -39,8 +40,7 @@ public class ReviewController : ControllerBase
         var result = await _reviewService.GetByIdAsync(id);
         return Ok(result);
     }
-
-   
+    
     [Authorize(Roles = "User")]
     [HttpPost("{postId}")]
     public async Task<IActionResult> Create(Guid postId, [FromBody] CreateReviewDto request)
@@ -65,11 +65,11 @@ public class ReviewController : ControllerBase
         return Ok(result);
     }
     
-    // [Authorize]
-    // [HttpDelete("{id}")]
-    // public async Task<IActionResult> Delete(Guid id)
-    // {
-    //     await _reviewService.DeleteAsync(id);
-    //     return NoContent();
-    // }
+    [Authorize(Roles = "Staff")]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _reviewService.DeleteAsync(id);
+        return NoContent();
+    }
 }

@@ -62,7 +62,6 @@ public class ReviewService : IReviewService
 
     public async Task<ApiResponse<ReviewDto>> AddAsync(Guid userId,Guid postId, CreateReviewDto request)
     {
-      //   var userId = GetUserIdFromToken();
         var review = _mapper.Map<Review>(request);
         review.UserId = userId;
         review.PostId = postId;
@@ -88,16 +87,15 @@ public class ReviewService : IReviewService
         return ApiResponse<bool>.Success(true, "Cập nhật review thành công");
     }
 
-    // public async Task DeleteAsync(Guid id)
-    // {
-    //     var entity = await _reviewRepository.GetByIdAsync(id);
-    //     if (entity == null)
-    //         throw new KeyNotFoundException("ReviewId not found");
-    //
-    //     var userId = GetUserIdFromToken();
-    //     if (entity.UserId != userId)
-    //         throw new UnauthorizedAccessException("Bạn không có quyền xóa review này");
-    //
-    //     await _reviewRepository.DeleteAsync(entity);
-    // }
+    public async Task DeleteAsync(Guid id)
+    {
+        var entity = await _reviewRepository.GetByIdAsync(id);
+        if (entity == null)
+            throw new KeyNotFoundException("ReviewId not found");
+    
+        // var userId = GetUserIdFromToken();
+        // if (entity.UserId != userId)
+        //     throw new UnauthorizedAccessException("Bạn không có quyền xóa review này");
+        await _reviewRepository.DeleteAsync(entity);
+    }
 }
