@@ -54,6 +54,7 @@ builder.Services.AddAutoMapper(typeof(MappingAmenity).Assembly);
 //         options.Audience = jwtSettings["Audience"];
 //         options.RequireHttpsMetadata = bool.Parse(jwtSettings["RequireHttpsMetadata"] ?? "true");
 //     });
+
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

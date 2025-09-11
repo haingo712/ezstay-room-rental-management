@@ -16,7 +16,7 @@ public class AmenityRepository:IAmenityRepository
     }
    
 
-    public IQueryable<Amenity> GetAllOdata()=> _amenities.AsQueryable();
+    public IQueryable<Amenity> GetAllAsQueryable()=> _amenities.AsQueryable();
     public async Task<IEnumerable<Amenity>> GetAll()
     {
         return await _amenities.Find(_ => true).ToListAsync();
@@ -26,7 +26,6 @@ public class AmenityRepository:IAmenityRepository
     // {
     //     return await _amenities.AsQueryable().ToListAsync();
     // }
-    //
     public async Task<IEnumerable<Amenity>> GetAllByStaffId(Guid staffId)
     {
         return await _amenities.Find(a=> a.StaffId == staffId).ToListAsync();
@@ -55,19 +54,14 @@ public class AmenityRepository:IAmenityRepository
         .AnyAsync(a => a.AmenityName.ToLower() == amenityNameExists.ToLower());
       // return await _amenities.Find(a => a.AmenityName.ToLower() == amenityNameExists.ToLower()).AnyAsync();
     }
-
-
+    
 
     public async Task UpdateAsync(Amenity amenity)
     {
-        // var filter = Builders<Amenity>.Filter.Eq(a => a.AmenityId, amenity.AmenityId);
-        // await _amenities.ReplaceOneAsync(filter, amenity);
         await _amenities.ReplaceOneAsync(a => a.Id == amenity.Id, amenity);
     }
     public async Task DeleteAsync(Amenity amenity)
     {
-        // var filter = Builders<Amenity>.Filter.Eq(a => a.AmenityId, amenity.AmenityId);
-        // await _amenities.DeleteOneAsync(filter);
         await _amenities.DeleteOneAsync(a => a.Id == amenity.Id);
     }
 
