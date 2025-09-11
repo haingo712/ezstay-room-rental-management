@@ -9,7 +9,7 @@ public class RoomDto
     [Key]
     public Guid Id { get; set; }
     public Guid HouseId { get; set; }
-    public Guid HouseLocationId { get; set; }
+  //  public Guid HouseLocationId { get; set; }
     public string RoomName { get; set; } 
     public decimal Area { get; set; }
     public decimal Price { get; set; }

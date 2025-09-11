@@ -14,8 +14,8 @@ namespace RoomAPI.Model
         public Guid Id { get; set; } = Guid.NewGuid();
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid HouseId { get; set; }
-        [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid HouseLocationId { get; set; }
+      //  [BsonGuidRepresentation(GuidRepresentation.Standard)]
+      //  public Guid HouseLocationId { get; set; }
         public string RoomName { get; set; } = null!;
       
         public decimal? Area { get; set; }

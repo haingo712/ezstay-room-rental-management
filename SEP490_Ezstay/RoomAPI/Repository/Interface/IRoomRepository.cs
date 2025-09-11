@@ -12,7 +12,8 @@ public interface IRoomRepository
     Task Update(Room room);
     Task Delete(Room room);
     Task<bool> RoomNameExists(string roomName);
-    Task<bool> RoomNameExistsInHouse(Guid houseId, string roomName, Guid houseLocationId);
+    // Task<bool> RoomNameExistsInHouse(Guid houseId, string roomName, Guid houseLocationId);
+    Task<bool> RoomNameExistsInHouse(Guid houseId, string roomName);
     Task<bool> RoomNameExistsInHouseRoom(Guid houseId, string roomName, Guid roomId);
 
 

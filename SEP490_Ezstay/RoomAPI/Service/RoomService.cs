@@ -34,8 +34,7 @@ public class RoomService: IRoomService
     }
     public IQueryable<RoomDto>  GetAllQueryable()
     {
-        var book =   _roomRepository. GetAllQueryable().Where(r=> r.RoomStatus == RoomStatus.Available 
-                                                                  && r.RoomStatus == RoomStatus.Available);
+        var book = _roomRepository.GetAllQueryable();
     return book.ProjectTo<RoomDto>(_mapper.ConfigurationProvider);
     }
 
@@ -58,15 +57,28 @@ public class RoomService: IRoomService
     //     var result = _mapper.Map<RoomDto>(room);
     //     return ApiResponse<RoomDto>.Success(result, "Thêm phòng thành công");
     // }
-    public async Task<ApiResponse<RoomDto>> Add( Guid houseId, Guid houseLocationId,  CreateRoomDto request)
+    // public async Task<ApiResponse<RoomDto>> Add(  Guid houseId, Guid houseLocationId,  CreateRoomDto request)
+    // { 
+    //     var exist = await _roomRepository.RoomNameExistsInHouse(houseId, request.RoomName, houseLocationId);
+    //     if (exist)
+    //         return ApiResponse<RoomDto>.Fail("Tên phòng đã tồn tại trong nhà trọ.");
+    //     var room = _mapper.Map<Room>(request);
+    //     room.HouseId = houseId;
+    //     room.HouseLocationId = houseLocationId;
+    //     room.RoomStatus= RoomStatus.Available;
+    //     room.CreatedAt = DateTime.UtcNow;
+    //     await _roomRepository.Add(room);
+    //     var result = _mapper.Map<RoomDto>(room);
+    //     return ApiResponse<RoomDto>.Success(result, "Thêm phòng thành công");
+    // }
+    
+    public async Task<ApiResponse<RoomDto>> Add(  Guid houseId,  CreateRoomDto request)
     { 
-        
-        var exist = await _roomRepository.RoomNameExistsInHouse(houseId, request.RoomName, houseLocationId);
+        var exist = await _roomRepository.RoomNameExistsInHouse(houseId, request.RoomName);
         if (exist)
             return ApiResponse<RoomDto>.Fail("Tên phòng đã tồn tại trong nhà trọ.");
         var room = _mapper.Map<Room>(request);
         room.HouseId = houseId;
-        room.HouseLocationId = houseLocationId;
         room.RoomStatus= RoomStatus.Available;
         room.CreatedAt = DateTime.UtcNow;
         await _roomRepository.Add(room);
@@ -82,6 +94,8 @@ public class RoomService: IRoomService
         // var existRoomName = await _roomRepository.RoomNameExistsInHouse(checkRoom.HouseId, request.RoomName, id);
         // if(existRoomName)
         //     return ApiResponse<bool>.Fail("Tên phòng đã tồn tại trong nhà trọ.");    
+        if (request.RoomStatus == RoomStatus.Occupied)
+            return ApiResponse<bool>.Fail("K dc set trang thai nay");  
          _mapper.Map(request, checkRoom);
          checkRoom.UpdatedAt = DateTime.UtcNow;
          await _roomRepository.Update(checkRoom);
