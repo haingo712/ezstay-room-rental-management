@@ -5,6 +5,8 @@ namespace RoomAmenityAPI.DTO.Request;
 public class UpdateRoomAmenityDto
 {
   //  public Guid RoomId { get; set; }
-    public Guid AmenityId { get; set; }
+   // public Guid AmenityId { get; set; }
+   [Required]
+    public string Notes { get; set; }
     
 }

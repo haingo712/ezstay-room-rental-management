@@ -32,8 +32,7 @@ public class RoomAmenityRepository:IRoomAmenityRepository
     }
     public async  Task<bool> AmenityIdExistsInRoomAsync(Guid roomId, Guid amenityId)
     =>    await _roomAmenities
-        .Find(r => r.RoomId == roomId && r.AmenityId == amenityId)
-    .AnyAsync();
+        .Find(r => r.RoomId == roomId && r.AmenityId == amenityId).AnyAsync();
   
     public async  Task UpdateAsync(RoomAmenity roomAmenity)
     {

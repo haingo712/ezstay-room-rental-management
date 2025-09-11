@@ -1,7 +1,6 @@
 using RoomAmenityAPI.Service.Interface;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Microsoft.EntityFrameworkCore;
 using RoomAmenityAPI.DTO.Request;
 using RoomAmenityAPI.DTO.Response;
 using RoomAmenityAPI.Model;
@@ -54,6 +53,7 @@ public class RoomAmenityService: IRoomAmenityService
             return  ApiResponse<RoomAmenityDto>.Fail("Tiện ích đã có tại trong nhà trọ. vui long them tien ich khac");
         var roomAmenity = _mapper.Map<RoomAmenity>(request);
         roomAmenity.RoomId = roomId;
+        roomAmenity.CreatedAt = DateTime.Now;
         await _roomAmenityRepository.AddAsync(roomAmenity);
         return ApiResponse<RoomAmenityDto>.Success(_mapper.Map<RoomAmenityDto>(roomAmenity), "Thêm tiện ích vào trọ thành công");
     }
@@ -69,6 +69,7 @@ public class RoomAmenityService: IRoomAmenityService
        //    return ApiResponse<bool>.Fail("Tiện ích đã có tại trong nhà trọ. Vui lòng thêm tiện ích khác");
       //  }
          _mapper.Map(request, roomAmenity);
+         roomAmenity.UpdatedAt = DateTime.Now;
          await _roomAmenityRepository.UpdateAsync(roomAmenity);
       //  var result =_mapper.Map<RoomAmenityDto>(roomAmenity);
            return ApiResponse<bool>.Success(true,"Cập nhật thành công");

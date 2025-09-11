@@ -19,36 +19,39 @@ namespace RoomAmenityAPI.Controllers
     public class RoomAmenityController : ControllerBase
     {
         private readonly IRoomAmenityService _roomAmenityService;
-
         public RoomAmenityController(IRoomAmenityService roomAmenityService)
         {
             _roomAmenityService = roomAmenityService;
+        
         }
         
-        // get all k có phân quyền ai cũng dc
         [HttpGet]
         [EnableQuery]
+        [Authorize(Roles = "Staff")]
         public IQueryable<RoomAmenityDto> GetRoomAmenities( )
         {
             return  _roomAmenityService.GetAll();
         }
-        
         // GET: api/RoomAmenity
-        //  [Authorize(Roles = "Owner")]
+          [Authorize(Roles = "Owner")]
+        //  uu tien lam 
         [HttpGet("/Odata/ByRoomId/{roonId}")]
         [EnableQuery]
         public IQueryable<RoomAmenityDto> GetRoomAmenitiesByRoomIdOdata(Guid roonId)
         {
             return  _roomAmenityService.GetAllByRoomId(roonId);
         }
-        
         // GET: api/RoomAmenity/5
+        //  ****
+        [Authorize(Roles = "Owner")]
         [HttpGet("{id}")]
         public async Task<ActionResult<RoomAmenityDto>> GetRoomAmenity(Guid id)
         {
             var roomAmenity = await _roomAmenityService.GetByIdAsync(id);
             return Ok(roomAmenity);
         }
+        //  uu tien lam 
+        [Authorize(Roles = "Owner")]
         [HttpGet("ByRoomId/{roomId}")]
         public async Task<ActionResult<RoomAmenityDto>> GetRoomAmenitiesByRoomId(Guid roomId)
         {
@@ -56,7 +59,7 @@ namespace RoomAmenityAPI.Controllers
             return Ok(roomAmenity);
         }
         
-        
+        //  ****
       [HttpPut("{id}")]
       [Authorize(Roles = "Owner")]
         public async Task<IActionResult> PutRoomAmenity(Guid id, UpdateRoomAmenityDto roomAmenity)
@@ -68,6 +71,7 @@ namespace RoomAmenityAPI.Controllers
            }
            return Ok(createdRoomAmenity);
         }
+        //  ****
         // Add: api/RoomAmenity/5/Amenity
         [HttpPost("{roomId}/Amenity")]
         [Authorize(Roles = "Owner")]
@@ -80,12 +84,13 @@ namespace RoomAmenityAPI.Controllers
            }
             return CreatedAtAction("GetRoomAmenity", new { id = roomAmenity.AmenityId }, roomAmenity);
         }
-        
+        //  ****
         // DELETE: api/RoomAmenity/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "Owner")]
         public async Task<IActionResult> DeleteRoomAmenity(Guid id)
         {
+           
             await _roomAmenityService.DeleteAsync(id);
             return NoContent();
         }
