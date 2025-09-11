@@ -2,11 +2,11 @@ using AutoMapper;
 using RoomAmenityAPI.DTO.Request;
 using RoomAmenityAPI.Model;
 using RoomAmenityAPI.Grpc;
-namespace RoomAmenityAPI.Mapping;
+namespace RoomAmenityAPI.Profiles;
 
-public class MappingRoomAmenity:Profile
+public class RoomAmenityProfile:Profile
 {
-    public MappingRoomAmenity()
+    public RoomAmenityProfile()
     {
         CreateMap<CreateRoomAmenityDto, RoomAmenity>();
         CreateMap<UpdateRoomAmenityDto, RoomAmenity>();

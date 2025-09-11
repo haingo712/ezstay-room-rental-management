@@ -11,8 +11,7 @@ public interface IRoomAmenityService
     Task<RoomAmenityDto> GetByIdAsync(Guid id);
     Task<List<RoomAmenityDto>> GetRoomAmenitiesByRoomIdAsync(Guid roomId);
     Task<ApiResponse<RoomAmenityDto>> AddAsync(Guid roomId, CreateRoomAmenityDto request);
-    Task<ApiResponse<bool>> UpdateAsync(Guid id,UpdateRoomAmenityDto request);
+    Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateRoomAmenityDto request);
     Task DeleteAsync(Guid id);
-    
     
 }
