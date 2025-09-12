@@ -62,5 +62,36 @@ namespace AuthApi.Utils
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key))
             };
         }
+
+        public ClaimsPrincipal? ValidateToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var keyBytes = Encoding.UTF8.GetBytes(_key);
+
+            try
+            {
+                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = _issuer,
+
+                    ValidateAudience = true,
+                    ValidAudience = _audience,
+
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero, // Không cho phép lệch thời gian
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
+
+                }, out SecurityToken validatedToken);
+
+                return principal;
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

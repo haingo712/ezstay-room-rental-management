@@ -28,5 +28,11 @@ namespace AuthApi.Repositories
             await _accounts.UpdateOneAsync(a => a.Email == email, update);
         }
 
+        public async Task UpdateAsync(Guid id, Account account)
+        {
+            await _accounts.ReplaceOneAsync(a => a.Id == id, account);
+        }
+
+
     }
 }

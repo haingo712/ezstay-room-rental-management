@@ -7,6 +7,7 @@ using AuthApi.Utils;
 using AutoMapper;
 using System.Net.Http.Json;
 using BCrypt.Net;
+using System.Security.Claims;
 
 namespace AuthApi.Services
 {
@@ -114,6 +115,57 @@ namespace AuthApi.Services
                 Message = "Staff account created successfully"
             };
         }
+
+
+        public async Task<RegisterResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto dto)
+        {
+            var account = await _repo.GetByEmailAsync(dto.Email);
+            if (account == null)
+                return new RegisterResponseDto { Success = false, Message = "Email not found." };
+
+            // Gửi OTP (dùng lại hàm SendOtpAsync)
+            await _emailVerificationService.SendOtpAsync(new RegisterRequestDto
+            {
+                Email = dto.Email,
+                FullName = account.FullName,
+                Phone = account.Phone,
+            });
+
+            return new RegisterResponseDto
+            {
+                Success = true,
+                Message = "OTP sent to email. Please check your inbox."
+            };
+        }
+
+        public async Task<RegisterResponseDto> ResetPasswordAsync(ResetPasswordRequestDto dto)
+        {
+            // Giải mã token để lấy email
+            var principal = _tokenGenerator.ValidateToken(dto.Token);
+            if (principal == null)
+                return new RegisterResponseDto { Success = false, Message = "Invalid or expired token." };
+
+            var email = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(email))
+                return new RegisterResponseDto { Success = false, Message = "Invalid token data." };
+
+            var account = await _repo.GetByEmailAsync(email);
+            if (account == null)
+                return new RegisterResponseDto { Success = false, Message = "Account not found." };
+
+            account.Password = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            await _repo.UpdateAsync(account.Id, account);
+
+            return new RegisterResponseDto
+            {
+                Success = true,
+                Message = "Password reset successfully"
+            };
+        }
+
+
+
+
 
 
 

@@ -9,5 +9,7 @@ namespace AuthApi.Services.Interfaces
         Task<LoginResponseDto> LoginAsync(LoginRequestDto dto);
         Task<RegisterResponseDto> ResendOtpAsync(string email);
         Task<RegisterResponseDto> CreateStaffAsync(CreateStaffRequestDto dto);
+        Task<RegisterResponseDto> ResetPasswordAsync(ResetPasswordRequestDto dto);
+        Task<RegisterResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto dto);
     }
 }
