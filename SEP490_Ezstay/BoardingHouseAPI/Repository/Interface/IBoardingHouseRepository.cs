@@ -10,6 +10,7 @@ namespace BoardingHouseAPI.Repository.Interface
         Task AddAsync(BoardingHouse house);
         Task UpdateAsync(BoardingHouse house);
         Task DeleteAsync(BoardingHouse house);
-        Task<bool> BoardingHouseExistsByOwnerAndNameAsync(Guid ownerId, string houseName);
+        Task<bool> LocationExistsWithHouseName(string houseName, string address);
+        Task<bool> LocationExists(string address);
     }
 }

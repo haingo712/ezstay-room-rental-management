@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+﻿using System.Text.Json;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BoardingHouseAPI.DTO.Request;
@@ -6,7 +6,6 @@ using BoardingHouseAPI.DTO.Response;
 using BoardingHouseAPI.Models;
 using BoardingHouseAPI.Repository.Interface;
 using BoardingHouseAPI.Service.Interface;
-using System.Text.Json;
 
 namespace BoardingHouseAPI.Service
 {
@@ -14,24 +13,32 @@ namespace BoardingHouseAPI.Service
     {
         private readonly IBoardingHouseRepository _boardingHouseRepo;        
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly HttpClient _http;
+        private readonly HttpClient _httpRoom;
 
         public BoardingHouseService(IBoardingHouseRepository boardingHouseRepo, IMapper mapper, 
-            IHttpContextAccessor httpContextAccessor, IHttpClientFactory factory)
+           IHttpClientFactory factory)
         {
             _boardingHouseRepo = boardingHouseRepo;            
             _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
-            _http = factory.CreateClient("RoomAPI");
+            _http = factory.CreateClient("Gateway");  
+            _httpRoom = factory.CreateClient("RoomAPI");
         }
 
-        private Guid GetOwnerIdFromToken()
+        private async Task<string?> GetProvinceNameAsync(string provinceId)
         {
-            var ownerIdStr = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(ownerIdStr))
-                throw new UnauthorizedAccessException("Không xác định được OwnerId từ token.");
-            return Guid.Parse(ownerIdStr);
+            var response = await _http.GetFromJsonAsync<JsonElement>("/api/provinces");
+            var provinces = response.GetProperty("provinces").EnumerateArray();
+            return provinces.FirstOrDefault(p => p.GetProperty("code").GetString() == provinceId)
+                            .GetProperty("name").GetString();
+        }
+
+        private async Task<string?> GetCommuneNameAsync(string provinceId, string communeId)
+        {
+            var response = await _http.GetFromJsonAsync<JsonElement>($"/api/provinces/{provinceId}/communes");
+            var communes = response.GetProperty("communes").EnumerateArray();
+            return communes.FirstOrDefault(c => c.GetProperty("code").GetString() == communeId)
+                           .GetProperty("name").GetString();
         }
 
         public IQueryable<BoardingHouseDTO> GetAll()
@@ -44,13 +51,7 @@ namespace BoardingHouseAPI.Service
         {
             return _boardingHouseRepo.GetBoardingHousesByOwnerId(ownerId)
                 .ProjectTo<BoardingHouseDTO>(_mapper.ConfigurationProvider);
-        }
-        public IQueryable<BoardingHouseDTO> GetByOwnerId()
-        {
-            var ownerId = GetOwnerIdFromToken();
-            return _boardingHouseRepo.GetBoardingHousesByOwnerId(ownerId)
-                .ProjectTo<BoardingHouseDTO>(_mapper.ConfigurationProvider);
-        }
+        }      
 
         public async Task<BoardingHouseDTO?> GetByIdAsync(Guid id)
         {
@@ -59,15 +60,28 @@ namespace BoardingHouseAPI.Service
                 _mapper.Map<BoardingHouseDTO>(house);
         }
 
-        public async Task<ApiResponse<BoardingHouseDTO>> CreateAsync(CreateBoardingHouseDTO createDto)
+        public async Task<ApiResponse<BoardingHouseDTO>> CreateAsync(Guid ownerId, CreateBoardingHouseDTO createDto)
         {
-            var ownerId = GetOwnerIdFromToken();
-            createDto.OwnerId = ownerId;
-            var exist = await _boardingHouseRepo.BoardingHouseExistsByOwnerAndNameAsync(createDto.OwnerId, createDto.HouseName);
+
+            var houseLocation = _mapper.Map<HouseLocation>(createDto.Location);
+
+            houseLocation.ProvinceName = await GetProvinceNameAsync(houseLocation.ProvinceId) ?? "";            
+            houseLocation.CommuneName = await GetCommuneNameAsync(houseLocation.ProvinceId, houseLocation.CommuneId) ?? "";
+
+            houseLocation.FullAddress = $"{houseLocation.AddressDetail}, {houseLocation.CommuneName}, {houseLocation.ProvinceName}";
+
+            // check trùng địa chỉ
+            var locationExist = await _boardingHouseRepo.LocationExists(houseLocation.FullAddress);
+            if (locationExist)
+                return ApiResponse<BoardingHouseDTO>.Fail("Địa chỉ này đã tồn tại.");
+
+            var exist = await _boardingHouseRepo.LocationExistsWithHouseName(createDto.HouseName, houseLocation.FullAddress);
             if (exist)
-                return ApiResponse<BoardingHouseDTO>.Fail("Bạn đã có nhà trọ với tên này rồi.");
+                return ApiResponse<BoardingHouseDTO>.Fail("Nhà trọ với tên và địa chỉ này đã tồn tại.");
             var house = _mapper.Map<BoardingHouse>(createDto);
+            house.OwnerId = ownerId;
             house.CreatedAt = DateTime.UtcNow;            
+            house.Location = houseLocation;
 
             await _boardingHouseRepo.AddAsync(house);
             return ApiResponse<BoardingHouseDTO>.Success(
@@ -75,39 +89,48 @@ namespace BoardingHouseAPI.Service
         }
 
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateBoardingHouseDTO updateDto)
-        {           
+        {            
             var exist = await _boardingHouseRepo.GetByIdAsync(id);
-            if (exist == null) throw new KeyNotFoundException("HouseId not found!");
-
-            var existName = await _boardingHouseRepo.BoardingHouseExistsByOwnerAndNameAsync(exist.OwnerId, updateDto.HouseName);
-            if (existName && exist.HouseName != updateDto.HouseName)
-                return ApiResponse<bool>.Fail("Bạn đã có nhà trọ với tên này rồi.");
-
+            if (exist == null) throw new KeyNotFoundException("HouseId not found!");            
+            var oldAddress = exist.Location?.FullAddress ?? "";
             _mapper.Map(updateDto, exist);
+            if (exist.Location != null && updateDto.Location != null)
+            {
+                _mapper.Map(updateDto.Location, exist.Location);
+                
+                exist.Location.ProvinceName = await GetProvinceNameAsync(exist.Location.ProvinceId) ?? "";
+                exist.Location.CommuneName = await GetCommuneNameAsync(exist.Location.ProvinceId, exist.Location.CommuneId) ?? "";
+                
+                exist.Location.FullAddress =
+                    $"{exist.Location.AddressDetail}, {exist.Location.CommuneName}, {exist.Location.ProvinceName}";
+
+                // check trùng địa chỉ (nếu địa chỉ thay đổi)
+                var existLocation = await _boardingHouseRepo.LocationExists(exist.Location.FullAddress);
+                if (existLocation && exist.Location.FullAddress != oldAddress)
+                    return ApiResponse<bool>.Fail("Địa chỉ này đã tồn tại.");
+
+                // Check trùng địa chỉ + tên
+                var existAddress = await _boardingHouseRepo.LocationExistsWithHouseName(updateDto.HouseName, exist.Location.FullAddress);
+                if (existAddress && (exist.HouseName != updateDto.HouseName || exist.Location.FullAddress != oldAddress))
+                    return ApiResponse<bool>.Fail("Nhà trọ với tên và địa chỉ này đã tồn tại.");
+            }
             await _boardingHouseRepo.UpdateAsync(exist);
             return ApiResponse<bool>.Success(true, "Cập nhật trọ thành công");
-        }
-
-        /*public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
-        {
-            var house = await _boardingHouseRepo.GetByIdAsync(id);
-            if (house == null) throw new KeyNotFoundException("HouseId not found!");
-
-            await _boardingHouseRepo.DeleteAsync(house);
-            return ApiResponse<bool>.Success(true, "Xoá trọ thành công");
-        }*/
+        }        
 
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var house = await _boardingHouseRepo.GetByIdAsync(id);
             if (house == null) throw new KeyNotFoundException("HouseId not found!");
           
-            var response = await _http.GetAsync($"/api/Rooms/ByHouseId/{id}");
+            var response = await _httpRoom.GetAsync($"/api/Rooms/ByHouseId/{id}");            
+            var content = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
-                return ApiResponse<bool>.Fail("Không thể kiểm tra phòng trong nhà trọ!");
+            {
+                return ApiResponse<bool>.Fail($"Không thể kiểm tra phòng trong nhà trọ! (API trả về {response.StatusCode}: {content})");
+            }
 
-            var roomsJson = await response.Content.ReadAsStringAsync();
-            // Nếu RoomAPI trả về danh sách phòng dạng JSON array
+            var roomsJson = await response.Content.ReadAsStringAsync();            
             var rooms = JsonSerializer.Deserialize<List<object>>(roomsJson);
 
             if (rooms != null && rooms.Count > 0)

@@ -18,4 +18,5 @@ public class MongoDbService
     }
 
     public IMongoCollection<BoardingHouse> BoardingHouses => _database.GetCollection<BoardingHouse>("BoardingHouses");
+    public IMongoCollection<HouseLocation> HouseLocations => _database.GetCollection<HouseLocation>("HouseLocations");
 }

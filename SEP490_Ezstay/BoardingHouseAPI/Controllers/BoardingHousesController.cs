@@ -12,10 +12,11 @@ namespace BoardingHouseAPI.Controllers
     public class BoardingHousesController : ControllerBase
     {
         private readonly IBoardingHouseService _boardingHouseService;
-
-        public BoardingHousesController(IBoardingHouseService boardingHouseService)
+        private readonly ITokenService _tokenService;
+        public BoardingHousesController(IBoardingHouseService boardingHouseService, ITokenService tokenService)
         {
             _boardingHouseService = boardingHouseService;
+            _tokenService = tokenService;
         }
        
         // GET: api/BoardingHouses
@@ -24,16 +25,7 @@ namespace BoardingHouseAPI.Controllers
         public IQueryable<BoardingHouseDTO> GetBoardingHouses()
         {
             return _boardingHouseService.GetAll();            
-        }
-
-        // GET: api/BoardingHouses/owner/1111-1111-1111-1111
-        /*[HttpGet("owner/{ownerId}")]
-        [EnableQuery]
-        [Authorize(Roles = "Owner")]
-        public IQueryable<BoardingHouseDTO> GetBoardingHousesByOwner(Guid ownerId)
-        {
-            return _boardingHouseService.GetByOwnerId(ownerId);
-        }*/
+        }        
 
         // GET: api/BoardingHouses/owner
         [HttpGet("owner")]
@@ -41,10 +33,11 @@ namespace BoardingHouseAPI.Controllers
         [Authorize(Roles = "Owner")]
         public IQueryable<BoardingHouseDTO> GetBoardingHousesByOwner()
         {
-            return _boardingHouseService.GetByOwnerId();
+            var ownerId = _tokenService.GetUserIdFromClaims(User);
+            return _boardingHouseService.GetByOwnerId(ownerId);
         }
 
-        // GET: api/BoardingHouses/1111-1111-1111-1111
+        // GET: api/BoardingHouses/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<BoardingHouseDTO>> GetBoardingHouse(Guid id)
         {
@@ -53,13 +46,13 @@ namespace BoardingHouseAPI.Controllers
                 var house = await _boardingHouseService.GetByIdAsync(id);
                 return Ok(house);
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException ex)
             {
-                return NotFound();
+                return NotFound(ex.Message);
             }
         }
 
-        // PUT: api/BoardingHouses/1111-1111-1111-1111
+        // PUT: api/BoardingHouses/{id}
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner")]
         public async Task<IActionResult> PutBoardingHouse(Guid id, UpdateBoardingHouseDTO dto)
@@ -84,9 +77,10 @@ namespace BoardingHouseAPI.Controllers
         [Authorize(Roles = "Owner")]
         public async Task<ActionResult<BoardingHouseDTO>> PostBoardingHouse(CreateBoardingHouseDTO dto)
         {
+            var ownerId = _tokenService.GetUserIdFromClaims(User);            
             try
             {
-                var response = await _boardingHouseService.CreateAsync(dto);
+                var response = await _boardingHouseService.CreateAsync(ownerId, dto);
                 if (!response.IsSuccess)
                 {
                     return BadRequest(new { message = response.Message });
@@ -99,7 +93,7 @@ namespace BoardingHouseAPI.Controllers
             }
         }
 
-        // DELETE: api/BoardingHouses/1111-1111-1111-1111
+        // DELETE: api/BoardingHouses/{id}
         [HttpDelete("{id}")]
         [Authorize(Roles = "Owner")]
         public async Task<IActionResult> DeleteBoardingHouse(Guid id)

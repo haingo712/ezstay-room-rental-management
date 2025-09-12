@@ -30,6 +30,10 @@ namespace BoardingHouseAPI
             builder.Services.AddSingleton<MongoDbService>();
 
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddHttpClient("Gateway", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7000");
+            });
             builder.Services.AddHttpClient("RoomAPI", client =>
             {
                 client.BaseAddress = new Uri("http://localhost:5058");
@@ -38,6 +42,11 @@ namespace BoardingHouseAPI
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IBoardingHouseRepository, BoardingHouseRepository>();            
             builder.Services.AddScoped<IBoardingHouseService, BoardingHouseService>();
+            /*builder.Services.AddHttpClient<IBoardingHouseService, BoardingHouseService>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7000"); // Gateway
+            });*/
+            builder.Services.AddScoped<ITokenService, TokenService>();
 
             var odataBuilder = new ODataConventionModelBuilder();
             odataBuilder.EntitySet<BoardingHouseDTO>("BoardingHouses");

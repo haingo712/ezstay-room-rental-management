@@ -58,5 +58,17 @@ namespace AuthApi.Services
         {
             return await _repo.GetByEmailAsync(email);
         }
+
+        public async Task SendResetPasswordEmailAsync(string email, string token)
+        {
+            var resetLink = $"https://your-frontend-url/reset-password?token={token}";
+
+            await _http.PostAsJsonAsync("/api/mail/send", new
+            {
+                ToEmail = email,
+                Subject = "Reset your password",
+                Body = $"Click the link below to reset your password:\n{resetLink}"
+            });
+        }
     }
 }

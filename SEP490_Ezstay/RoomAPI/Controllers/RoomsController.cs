@@ -34,8 +34,7 @@ namespace RoomAPI.Controllers
         }
         
         [HttpGet("ByHouseId/{houseId}")]
-        [EnableQuery]
-        [Authorize(Roles = "Owner")]
+        [EnableQuery]        
         public IQueryable<RoomDto> GetRoomsByHouseId(Guid houseId)
         {
             return _roomService.GetAllByHouseId(houseId);
