@@ -111,5 +111,20 @@ namespace AuthApi.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto dto)
+        {
+            var result = await _authService.ForgotPasswordAsync(dto);
+            return Ok(result);
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto dto)
+        {
+            var result = await _authService.ResetPasswordAsync(dto);
+            return Ok(result);
+        }
+
     }
 }

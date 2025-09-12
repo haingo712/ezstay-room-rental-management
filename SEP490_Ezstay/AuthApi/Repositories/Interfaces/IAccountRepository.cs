@@ -8,5 +8,7 @@ namespace AuthApi.Repositories.Interfaces
         Task<Account?> GetByPhoneAsync(string phone);
         Task CreateAsync(Account account);
         Task MarkAsVerified(string email);
+        Task UpdateAsync(Guid id, Account account);
+
     }
 }
