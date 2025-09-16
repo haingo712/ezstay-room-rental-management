@@ -52,9 +52,9 @@ public class TenantService: ITenantService
          // var exist = await _tenantRepository.TenantRoomIsActiveAsync(request.RoomId);
          // if (exist)
          //     return ApiResponse<TenantDto>.Fail("Phòng trọ này đã có người thuê");
-         if(request.CheckinDate < DateTime.Now)
+        if(request.CheckinDate < DateTime.Now)
             return ApiResponse<TenantDto>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
-         if (request.CheckoutDate <  request.CheckinDate.AddMonths(1))
+        if (request.CheckoutDate <  request.CheckinDate.AddMonths(1))
              return ApiResponse<TenantDto>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
            var tenant = _mapper.Map<Tenant>(request);
         tenant.OwnerId = ownerId;
@@ -74,7 +74,6 @@ public class TenantService: ITenantService
         //     return ApiResponse<TenantDto>.Fail("Is Active false nên k thể cập nhật. vui lòng làm lại đơn mới");
         if (DateTime.Now - tenant.CreatedAt > TimeSpan.FromHours(1))
             return ApiResponse<TenantDto>.Fail("Đơn này đã quá 1 giờ, không thể cập nhật nữa.");
-
         if(request.CheckinDate < DateTime.Now)
             return ApiResponse<TenantDto>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
         if (request.CheckoutDate <  request.CheckinDate.AddMonths(1))

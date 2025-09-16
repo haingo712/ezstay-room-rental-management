@@ -18,11 +18,11 @@ namespace TenantAPI.Model
         public Guid UserId { get; set; }
         
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid RoomId { get; set; }
+        public Guid RoomId {get; set;}
         
-        public DateTime CheckinDate { get; set; }
-        public DateTime CheckoutDate { get; set; }
-        public TenantStatus  TenantStatus{ get; set; }
+        public DateTime CheckinDate { get; set;}
+        public DateTime CheckoutDate { get; set;}
+        public TenantStatus  TenantStatus{ get; set;}
         public int NumberOfOccupants { get; set; }
         public string? Notes { get; set; }
         public DateTime CreatedAt {get;set;}
