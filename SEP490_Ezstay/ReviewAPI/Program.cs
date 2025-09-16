@@ -25,6 +25,20 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 
+// var serviceUrls = builder.Configuration.GetSection("ServiceUrls");
+//
+// builder.Services.AddHttpClient<IAmenityClientService, AmenityClientService>(client =>
+// {
+//     client.BaseAddress = new Uri(serviceUrls["AmenityApi"]);
+// });
+//
+// builder.Services.AddHttpClient<IRoomAmenityClientService, RoomAmenityClientService>(client =>
+// {
+//     client.BaseAddress = new Uri(serviceUrls["RoomAmenityApi"]);
+// });
+
+
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

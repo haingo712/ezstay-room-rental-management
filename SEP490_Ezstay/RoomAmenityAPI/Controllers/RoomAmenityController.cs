@@ -51,7 +51,7 @@ namespace RoomAmenityAPI.Controllers
             return Ok(roomAmenity);
         }
         //  uu tien lam 
-        [Authorize(Roles = "Owner")]
+        // [Authorize(Roles = "Owner")]
         [HttpGet("ByRoomId/{roomId}")]
         public async Task<ActionResult<RoomAmenityDto>> GetRoomAmenitiesByRoomId(Guid roomId)
         {

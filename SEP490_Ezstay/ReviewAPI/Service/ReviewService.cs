@@ -56,7 +56,6 @@ public class ReviewService : IReviewService
         var entity = await _reviewRepository.GetByIdAsync(id);
         if (entity == null)
             throw new KeyNotFoundException("ReviewId not found");
-
         return _mapper.Map<ReviewDto>(entity);
     }
 
