@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using RoomAPI.DTO.Request;
+using RoomAPI.DTO.Response;
 using RoomAPI.Model;
 using RoomAPI.Service;
 using RoomAPI.Service.Interface;
@@ -20,11 +21,58 @@ namespace RoomAPI.Controllers
     {
         private readonly IRoomService _roomService;
         private readonly ITokenService _tokenService;
-        public RoomsController(IRoomService roomService, ITokenService tokenService)
+        private readonly IRoomAmenityClientService _roomAmenityClient;
+        private readonly IAmenityClientService _amenityClient;
+        public RoomsController(IRoomService roomService, ITokenService tokenService, IRoomAmenityClientService roomAmenityClient, IAmenityClientService amenityClient)
         {
             _roomService = roomService;
             _tokenService = tokenService;
+            _roomAmenityClient = roomAmenityClient;
+            _amenityClient = amenityClient;
         }
+        
+        // [HttpGet("{id}/WithAmenities")]
+        // public async Task<ActionResult<RoomWithAmenitiesDto>> GetRoomWithAmenities(Guid id)
+        // {
+        //     try
+        //     {
+        //         var room = await _roomService.GetRoomWithAmenities(id);
+        //         return Ok(room);
+        //     }
+        //     catch (KeyNotFoundException e)
+        //     {
+        //         return NotFound(new { message = e.Message });
+        //     }
+        // }
+        // [HttpGet("{id}/WithAmenities")]
+        // public async Task<ActionResult<RoomWithAmenitiesDto>> GetRoomWithAmenities(Guid id)
+        // {
+        //     try
+        //     {
+        //         var result = await _roomService.GetRoomWithAmenities(id);
+        //         return Ok(result);
+        //     }
+        //     catch (KeyNotFoundException e)
+        //     {
+        //         return NotFound(new { message = e.Message });
+        //     }
+        // }
+
+        [HttpGet("{id}/WithAmenities")]
+        public async Task<ActionResult<RoomWithAmenitiesDto>> GetRoomWithAmenities(Guid id)
+        {
+            try
+            {
+                var result = await _roomService.GetRoomWithAmenitiesAsync(id);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
+            }
+        }
+
+
         
         [HttpGet]
         [EnableQuery]
