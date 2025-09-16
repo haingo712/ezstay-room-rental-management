@@ -1,4 +1,4 @@
-namespace BoardingHouseAPI.DTO.Response;
+namespace RentalPostsAPI.DTO.Response;
 
 public class ApiResponse<T>
 {

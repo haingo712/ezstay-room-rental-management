@@ -7,13 +7,13 @@ namespace RentalPostsAPI.Models
     {
 
         [BsonId]
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid AuthorId { get; set; }
 
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid RoomId { get; set; }
 
         public string Title { get; set; } = null!;
@@ -30,9 +30,8 @@ namespace RentalPostsAPI.Models
         public DateTime? DeletedAt { get; set; }
 
         public int? IsApproved { get; set; }
-
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
-        public Guid? ApprovedBy { get; set; }
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid? ApprovedByStaff { get; set; }
 
         public DateTime? ApprovedAt { get; set; }
 

@@ -1,33 +1,39 @@
-﻿using BoardingHouseAPI.DTO.Response;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RentalPostsAPI.DTO.Request;
-
+using RentalPostsAPI.DTO.Response;
 using RentalPostsAPI.Service.Interface;
+using System.Security.Claims;
 
 namespace RentalPostsAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Owner")]
     public class RentalPostsController : ControllerBase
     {
         private readonly IRentalPostService _service;
+        private readonly ITokenService _tokenService;
 
-        public RentalPostsController(IRentalPostService service)
+        public RentalPostsController(IRentalPostService service, ITokenService tokenService)
         {
             _service = service;
+            _tokenService = tokenService;
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRentalPostDTO dto)
         {
-            var result = await _service.CreateAsync(dto);
-            return Ok(ApiResponse<RentalpostDTO>.Success(result, "Tạo bài viết thành công"));
+            var result = await _service.CreateAsync(dto, User);
+            return Ok(result);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var result = await _service.GetAllAsync();
+            
             return Ok(ApiResponse<IEnumerable<RentalpostDTO>>.Success(result));
         }
 

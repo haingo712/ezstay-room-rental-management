@@ -3,9 +3,9 @@
     public class RentalpostDTO
     {
         public Guid Id { get; set; }
-        public Guid AuthorId { get; set; }
-        public Guid RoomId { get; set; }
-
+        public string AuthorName { get; set; } = null!;
+        public string RoomName { get; set; } = null!;
+        public string HouseName { get; set; } = null!;
         public string Title { get; set; } = null!;
         public string? Description { get; set; }
         public string ContactPhone { get; set; } = null!;

@@ -1,11 +1,14 @@
-﻿using RentalPostsAPI.DTO.Request;
+﻿
+using RentalPostsAPI.DTO.Request;
+using RentalPostsAPI.DTO.Response;
+using System.Security.Claims;
 
 
 namespace RentalPostsAPI.Service.Interface
 {
     public interface IRentalPostService
     {
-        Task<RentalpostDTO> CreateAsync(CreateRentalPostDTO dto);
+        Task<ApiResponse<RentalpostDTO>> CreateAsync(CreateRentalPostDTO dto, ClaimsPrincipal user);
         Task<IEnumerable<RentalpostDTO>> GetAllAsync();
         Task<RentalpostDTO?> GetByIdAsync(Guid id);
         Task<RentalpostDTO?> UpdateAsync(Guid id, UpdateRentalPostDTO dto);
