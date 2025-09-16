@@ -52,6 +52,8 @@ public class UtilityReadingService: IUtilityReadingService
         {
             return ApiResponse<bool>.Fail("CurrentIndex k dc nho hon PreviousIndex");
         }
+        if (DateTime.Now - utilityReading.ReadingDate > TimeSpan.FromHours(1))
+            return ApiResponse<bool>.Fail("Đơn này đã quá 1 giờ, không thể cập nhật nữa.");
          _mapper.Map(request,utilityReading);
          utilityReading.UpdatedAt = DateTime.UtcNow;
          await _utilityReadingRepository.UpdateAsync(utilityReading);
