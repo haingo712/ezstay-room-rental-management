@@ -17,10 +17,43 @@ var builder = WebApplication.CreateBuilder(args);
 
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
 builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+//builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
+
+// builder.Services.AddScoped<IRoomAmenityClientService, RoomAmenityClientService>();
+// builder.Services.AddScoped<IAmenityClientService, AmenityClientService>();
+// builder.Services.AddHttpClient("Gateway", client =>
+// {
+//     client.BaseAddress = new Uri("https://localhost:7000/"); // hoặc domain của RoomAmenityAPI
+// });
+
+
+// var gatewayUrl = builder.Configuration["ServiceUrls:Gateway"];
+//
+// builder.Services.AddHttpClient<IAmenityClientService, AmenityClientService>(client =>
+// {
+//     client.BaseAddress = new Uri($"{gatewayUrl}");
+// });
+//
+// builder.Services.AddHttpClient<IRoomAmenityClientService, RoomAmenityClientService>(client =>
+// {
+//     client.BaseAddress = new Uri($"{gatewayUrl}");
+// });
+
+var serviceUrls = builder.Configuration.GetSection("ServiceUrls");
+
+builder.Services.AddHttpClient<IAmenityClientService, AmenityClientService>(client =>
+{
+    client.BaseAddress = new Uri(serviceUrls["AmenityApi"]);
+});
+
+builder.Services.AddHttpClient<IRoomAmenityClientService, RoomAmenityClientService>(client =>
+{
+    client.BaseAddress = new Uri(serviceUrls["RoomAmenityApi"]);
+});
+
 
 
 builder.Services.AddControllers();
