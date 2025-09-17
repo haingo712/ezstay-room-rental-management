@@ -6,9 +6,12 @@ namespace AuthApi.Repositories.Interfaces
     {
         Task<Account?> GetByEmailAsync(string email);
         Task<Account?> GetByPhoneAsync(string phone);
+        Task<Account?> GetByIdAsync(Guid id);
+        Task<List<Account>> GetAllAsync();
         Task CreateAsync(Account account);
+        Task<Account?> UpdateAsync(Account account);
         Task MarkAsVerified(string email);
-        Task UpdateAsync(Guid id, Account account);
+        Task BanAccountAsync(Guid id, bool isBanned);
 
     }
 }

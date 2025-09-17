@@ -38,10 +38,14 @@ builder.Services.AddHttpClient("MailApi", client =>
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
+
 builder.Services.AddSingleton<GenerateJwtToken>();
 
 

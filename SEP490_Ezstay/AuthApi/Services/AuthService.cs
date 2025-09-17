@@ -154,7 +154,7 @@ namespace AuthApi.Services
                 return new RegisterResponseDto { Success = false, Message = "Account not found." };
 
             account.Password = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
-            await _repo.UpdateAsync(account.Id, account);
+            await _repo.UpdateAsync(account);
 
             return new RegisterResponseDto
             {
