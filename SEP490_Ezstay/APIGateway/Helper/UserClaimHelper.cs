@@ -22,5 +22,10 @@ namespace APIGateway.Helper
         {
             return user.FindFirst("phone")?.Value;
         }
+        public string? GetEmail(ClaimsPrincipal user)
+        {
+            return user.FindFirst(ClaimTypes.Email)?.Value ?? user.FindFirst("email")?.Value;
+        }
+
     }
 }
