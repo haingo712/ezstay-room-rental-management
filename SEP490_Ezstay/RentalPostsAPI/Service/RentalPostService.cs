@@ -28,7 +28,7 @@ namespace RentalPostsAPI.Service
         {
             // 1. Lấy ownerId từ token
             var ownerId = _tokenService.GetUserIdFromClaims(user);
-
+          
             // 2. Lấy room
             var room = await _externalService.GetRoomByIdAsync(dto.RoomId);
             if (room == null)
@@ -105,6 +105,6 @@ namespace RentalPostsAPI.Service
             return await _repo.DeleteAsync(id, deletedBy);
         }
 
-       
+        
     }
 }
