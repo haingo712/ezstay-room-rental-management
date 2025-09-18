@@ -83,15 +83,14 @@ namespace TenantAPI.Controllers
             }
         }
         
-        [Authorize(Roles = "Owner")]
+         [Authorize(Roles = "Owner")]
         [HttpPost]
         public async Task<ActionResult<TenantDto>> PostTenant(CreateTenantDto request)
         {
             try
-            {
+            { 
                 var ownerId = _tokenService.GetUserIdFromClaims(User);
              var createTenant=  await _tenantService.AddAsync(ownerId, request);
-           
              if (!createTenant.IsSuccess ) // || createTenant.Data == null)
              {
                  return BadRequest(new { message = createTenant.Message });
@@ -102,7 +101,6 @@ namespace TenantAPI.Controllers
             {
                 return NotFound(new { message = e.Message });
             }
-
         }
 
         // // DELETE: api/Tenant/5

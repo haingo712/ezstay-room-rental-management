@@ -12,8 +12,8 @@ public class CreateTenantDto {
   public DateTime CheckinDate { get; set; }
   [Required]
   public DateTime CheckoutDate { get; set; }
-  [Required]
-  public TenantStatus  TenantStatus{ get; set; }
+  // [Required]
+  // public TenantStatus  TenantStatus{ get; set; }
   [Required]
   [Range(1, 9, ErrorMessage = "Number of occupants must be between 1 and 9.")]
   public int NumberOfOccupants { get; set; }

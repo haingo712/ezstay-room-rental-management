@@ -13,11 +13,12 @@ public class TenantService: ITenantService
 {
     private readonly IMapper _mapper;
     private readonly ITenantRepository _tenantRepository;
-
-    public TenantService(IMapper mapper, ITenantRepository tenantRepository)
+    private readonly IRoomClientService _roomClient; 
+    public TenantService(IMapper mapper, ITenantRepository tenantRepository, IRoomClientService roomClient)
     {
         _mapper = mapper;
         _tenantRepository = tenantRepository;
+        _roomClient = roomClient;
     }
 
     public IQueryable<TenantDto> GetAllQueryable()
@@ -52,15 +53,27 @@ public class TenantService: ITenantService
          // var exist = await _tenantRepository.TenantRoomIsActiveAsync(request.RoomId);
          // if (exist)
          //     return ApiResponse<TenantDto>.Fail("Phòng trọ này đã có người thuê");
-        if(request.CheckinDate < DateTime.Now)
+         
+        if(request.CheckinDate < DateTime.UtcNow.Date)
             return ApiResponse<TenantDto>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
         if (request.CheckoutDate <  request.CheckinDate.AddMonths(1))
              return ApiResponse<TenantDto>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
-           var tenant = _mapper.Map<Tenant>(request);
+        
+        var room = await _roomClient.GetRoomByIdAsync(request.RoomId);
+        if (room == null)
+            return ApiResponse<TenantDto>.Fail("Không tìm thấy phòng");
+        if (room.RoomStatus == "Occupied")
+             return ApiResponse<TenantDto>.Fail("Phòng đã có người thuê");
+        
+        var tenant = _mapper.Map<Tenant>(request);
         tenant.OwnerId = ownerId;
-        tenant.CreatedAt = DateTime.Now;
+        tenant.CreatedAt = DateTime.UtcNow;
         tenant.TenantStatus = TenantStatus.Active;
+        
+        await _roomClient.UpdateRoomStatusAsync(request.RoomId, "Occupied" );
+        
         await _tenantRepository.AddAsync(tenant);
+        
         var result = _mapper.Map<TenantDto>(tenant);
         return ApiResponse<TenantDto>.Success(result, "thuê  thành công.");
     }
@@ -72,16 +85,19 @@ public class TenantService: ITenantService
             throw new KeyNotFoundException("Tenant Id not found");
         // if (!tenant.IsActive  && request.IsActive)
         //     return ApiResponse<TenantDto>.Fail("Is Active false nên k thể cập nhật. vui lòng làm lại đơn mới");
-        if (DateTime.Now - tenant.CreatedAt > TimeSpan.FromHours(1))
+        if (DateTime.UtcNow - tenant.CreatedAt > TimeSpan.FromHours(1))
             return ApiResponse<TenantDto>.Fail("Đơn này đã quá 1 giờ, không thể cập nhật nữa.");
-        if(request.CheckinDate < DateTime.Now)
+        if(tenant.CheckinDate < DateTime.UtcNow)
             return ApiResponse<TenantDto>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
-        if (request.CheckoutDate <  request.CheckinDate.AddMonths(1))
+        if (request.CheckoutDate <  tenant.CheckinDate.AddMonths(1))
             return ApiResponse<TenantDto>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
-        
+        if (tenant.TenantStatus != TenantStatus.Active )
+        {
+            await _roomClient.UpdateRoomStatusAsync(tenant.RoomId, "Available");
+        }
         // if (!request.IsActive)
         //     tenant.CheckoutDate = DateTime.Now;
-        
+        tenant.UpdatedAt = DateTime.UtcNow;
         _mapper.Map(request, tenant);
         await _tenantRepository.UpdateAsync(tenant);
         var result= _mapper.Map<TenantDto>(tenant);
