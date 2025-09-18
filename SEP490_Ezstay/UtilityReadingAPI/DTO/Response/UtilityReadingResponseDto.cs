@@ -1,16 +1,16 @@
 using System.Text.Json.Serialization;
 using UtilityReadingAPI.Enum;
 
-namespace UtilityReadingAPI.DTO.Request;
+namespace UtilityReadingAPI.DTO.Response;
 
-public class UtilityReadingDto
+public class UtilityReadingResponseDto
 {
     
   
     public Guid Id { get; set; }
   
     public Guid RoomId { get; set; }
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    // [JsonConverter(typeof(JsonStringEnumConverter))]
     public UtilityType Type { get; set; }
     
     public DateTime ReadingDate  { get; set;}

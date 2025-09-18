@@ -1,6 +1,7 @@
 
 using UtilityReadingAPI.DTO.Request;
 using UtilityReadingAPI.DTO.Response;
+using UtilityReadingAPI.Enum;
 using UtilityReadingAPI.Model;
 
 
@@ -9,10 +10,10 @@ namespace UtilityReadingAPI.Service.Interface;
 public interface IUtilityReadingService
 {
     // Task<IEnumerable<ElectricityReadingDto>> GetAllByOwnerId(Guid ownerId);
-  //  IQueryable<ElectricityReadingDto> GetAllByOwnerIdOdata(Guid ownerId);
-    Task<UtilityReadingDto> GetByIdAsync(Guid id);
-    Task<ApiResponse<UtilityReadingDto>> AddAsync(CreateUtilityReadingDto request);
+    IQueryable<UtilityReadingResponseDto> GetAllByOwnerId(Guid roomId,  UtilityType type);
+    Task<UtilityReadingResponseDto> GetByIdAsync(Guid id);
+    Task<ApiResponse<UtilityReadingResponseDto>> AddAsync(Guid roomId, CreateUtilityReadingDto request);
     Task<ApiResponse<bool>> UpdateAsync(Guid id,UpdateUtilityReadingDto request);
-   // Task DeleteAsync(Guid id);
+    Task DeleteAsync(Guid id);
     
 }

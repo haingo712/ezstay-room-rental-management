@@ -16,7 +16,7 @@ public class UtilityReadingRepository:IUtilityReadingRepository
         _utilityReadings=database.GetCollection<UtilityReading>("UtilityReadings");
     }
 
-    public IQueryable<UtilityReading> GetAllOdata()=> _utilityReadings.AsQueryable();
+    public IQueryable<UtilityReading> GetAllAsQueryable()=> _utilityReadings.AsQueryable();
 
     public async Task<bool> ExistsUtilityReadingInMonthAsync(Guid roomId, UtilityType type, DateTime readingDate)
     {
@@ -29,7 +29,6 @@ public class UtilityReadingRepository:IUtilityReadingRepository
             Builders<UtilityReading>.Filter.Gte(r => r.ReadingDate, startOfMonth),
             Builders<UtilityReading>.Filter.Lte(r => r.ReadingDate, endOfMonth)
         );
-
         return await _utilityReadings.Find(filter).AnyAsync();
     }
     
