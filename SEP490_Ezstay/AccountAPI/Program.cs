@@ -25,12 +25,17 @@ builder.Services.AddHttpClient<IAuthApiClient, AuthApiClient>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7000"); // gọi qua API Gateway
 });
+builder.Services.AddHttpClient<UserService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7000"); // API Gateway URL
+});
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IUserClaimHelper, UserClaimHelper>();
 builder.Services.AddScoped<IUserClaimHelper, UserClaimHelper>();
+builder.Services.AddHttpClient<IPhoneOtpClient, PhoneOtpClient>();
 
 
 builder.Services.AddHttpClient();

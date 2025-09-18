@@ -19,5 +19,8 @@ public class MongoDbService
     public IMongoCollection<Account> Account => _database.GetCollection<Account>("Account");
     public IMongoCollection<EmailVerification> EmailVerifications => 
         _database.GetCollection<EmailVerification>("EmailVerification");
+    public IMongoCollection<PhoneVerification> PhoneVerifications =>
+    _database.GetCollection<PhoneVerification>("PhoneVerifications");
+
 
 }

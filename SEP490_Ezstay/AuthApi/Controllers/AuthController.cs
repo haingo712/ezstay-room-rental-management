@@ -209,6 +209,23 @@ namespace AuthApi.Controllers
         }
 
 
+        [HttpPost("send-phone-otp")]
+        public async Task<IActionResult> SendPhoneOtp([FromBody] PhoneVerificationRequestDto dto)
+        {
+            var result = await _authService.SendPhoneOtpAsync(dto.Phone);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
+
+        [HttpPost("verify-phone-otp")]
+        public async Task<IActionResult> VerifyPhoneOtp([FromBody] VerifyPhoneOtpRequestDto dto)
+        {
+            var result = await _authService.VerifyPhoneOtpAsync(dto.Phone, dto.Otp);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
+
+
 
 
 

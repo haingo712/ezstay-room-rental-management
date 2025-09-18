@@ -10,7 +10,7 @@ namespace AccountAPI.Data
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public string Adrress {get; set;} 
+     
 
         public GenderEnum Gender { get; set; } 
 
@@ -22,5 +22,8 @@ namespace AccountAPI.Data
         public Guid UserId { get; set; }
         public string FullName { get; set; }
         public string Phone { get; set; }
+
+        public string? Province { get; set; }   // Tên tỉnh/thành
+        public string? Commune { get; set; }    // Tên xã/phường
     }   
 }

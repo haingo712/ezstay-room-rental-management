@@ -17,5 +17,8 @@ namespace AccountAPI.DTO.Resquest
 
         public string? NewEmail { get; set; }
         public string? Otp { get; set; }
+
+        public string ProvinceId { get; set; }
+        public string CommuneId { get; set; }
     }
 }
