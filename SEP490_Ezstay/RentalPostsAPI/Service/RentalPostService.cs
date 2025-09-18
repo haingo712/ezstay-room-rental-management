@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using RentalPostsAPI.DTO.Request;
 
 using RentalPostsAPI.Models;
@@ -16,6 +17,11 @@ namespace RentalPostsAPI.Service
         {
             _repo = repo;
             _mapper = mapper;
+        }
+        public IQueryable<RentalpostDTO> GetAllAsQueryable()
+        {
+            var entity = _repo.GetAllAsQueryable();
+            return entity.ProjectTo<RentalpostDTO>(_mapper.ConfigurationProvider);
         }
 
         public async Task<RentalpostDTO> CreateAsync(CreateRentalPostDTO dto)
@@ -55,6 +61,12 @@ namespace RentalPostsAPI.Service
         public async Task<bool> DeleteAsync(Guid id, Guid deletedBy)
         {
             return await _repo.DeleteAsync(id, deletedBy);
+        }
+
+        public async Task<IEnumerable<RentalpostDTO>> GetByRoomIdAsync(Guid roomId)
+        {
+            var entity= await _repo.GetByRoomIdAsync(roomId);
+            return   _mapper.Map<IEnumerable<RentalpostDTO>>(entity);
         }
     }
 }

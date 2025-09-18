@@ -1,14 +1,16 @@
 ﻿using BoardingHouseAPI.DTO.Response;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 using RentalPostsAPI.DTO.Request;
 
 using RentalPostsAPI.Service.Interface;
 
 namespace RentalPostsAPI.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("api/[controller]")]
-    public class RentalPostsController : ControllerBase
+    public class RentalPostsController : ODataController
     {
         private readonly IRentalPostService _service;
 
@@ -17,6 +19,13 @@ namespace RentalPostsAPI.Controllers
             _service = service;
         }
 
+        [HttpGet]
+        [EnableQuery]
+        [Route("/odata/RentalPosts")]
+        public IQueryable<RentalpostDTO> GetOdata()
+        {
+            return _service.GetAllAsQueryable();
+        }
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRentalPostDTO dto)
         {
