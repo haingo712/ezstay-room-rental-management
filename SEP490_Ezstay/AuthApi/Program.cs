@@ -51,6 +51,9 @@ builder.Services.Configure<GoogleAuthSettings>(
     builder.Configuration.GetSection("GoogleAuth"));
 builder.Services.Configure<FacebookAuthSettings>(
     builder.Configuration.GetSection("FacebookAuth"));
+builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("TwilioSettings"));
+builder.Services.AddSingleton<IPhoneVerificationService, TwilioPhoneVerificationService>();
+
 
 builder.Services.AddScoped<IFacebookAuthService, FacebookAuthService>();
 

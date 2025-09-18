@@ -20,14 +20,24 @@ namespace AuthApi.Services
         private readonly GenerateJwtToken _tokenGenerator;
 
 
-        public AuthService(IAccountRepository repo, IMapper mapper, IHttpClientFactory factory, IEmailVerificationService emailVerificationService,GenerateJwtToken generateJwtToken)
+        private readonly IPhoneVerificationService _phoneVerificationService;
+
+        public AuthService(
+            IAccountRepository repo,
+            IMapper mapper,
+            IHttpClientFactory factory,
+            IEmailVerificationService emailVerificationService,
+            GenerateJwtToken generateJwtToken,
+            IPhoneVerificationService phoneVerificationService)  // thêm đây
         {
             _repo = repo;
             _mapper = mapper;
             _httpClient = factory.CreateClient("MailApi");
             _emailVerificationService = emailVerificationService;
             _tokenGenerator = generateJwtToken;
+            _phoneVerificationService = phoneVerificationService; // lưu vào field
         }
+
 
         public async Task<RegisterResponseDto> RegisterAsync(RegisterRequestDto dto)
         {
@@ -162,6 +172,39 @@ namespace AuthApi.Services
                 Message = "Password reset successfully"
             };
         }
+
+
+        public async Task<RegisterResponseDto> SendPhoneOtpAsync(string phone)
+        {
+            // Kiểm tra số điện thoại đã tồn tại trong DB chưa
+            var existingPhone = await _repo.GetByPhoneAsync(phone);
+            if (existingPhone != null)
+                return new RegisterResponseDto { Success = false, Message = "Phone already exists" };
+
+            // Gửi OTP thật bằng Twilio
+            await _phoneVerificationService.SendOtpAsync(phone);
+
+            return new RegisterResponseDto { Success = true, Message = "OTP sent to phone." };
+        }
+
+        public async Task<RegisterResponseDto> VerifyPhoneOtpAsync(string phone, string otp)
+        {
+            var verified = await _phoneVerificationService.VerifyOtpAsync(phone, otp);
+
+            if (!verified)
+                return new RegisterResponseDto { Success = false, Message = "Invalid or expired OTP." };
+
+            // Nếu muốn, bạn có thể đánh dấu account đã verify phone
+            var account = await _repo.GetByPhoneAsync(phone);
+            if (account != null)
+            {
+                account.IsVerified = true;
+                await _repo.UpdateAsync(account);
+            }
+
+            return new RegisterResponseDto { Success = true, Message = "Phone verified successfully." };
+        }
+
 
 
 

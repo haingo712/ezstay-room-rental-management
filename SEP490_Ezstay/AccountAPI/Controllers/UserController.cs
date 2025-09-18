@@ -46,16 +46,37 @@ namespace AccountAPI.Controllers
             return Ok(profile);
         }
 
+        [HttpPut("update-phone")]
+        public async Task<IActionResult> UpdatePhone([FromBody] UpdatePhoneRequestDto dto)
+        {
+            var userId = _userClaimHelper.GetUserId(User);
+
+            // ✅ Bước 1: xác thực OTP
+            var isValidOtp = await _userService.VerifyPhoneOtpAsync(dto.Phone, dto.Otp);
+            if (!isValidOtp)
+                return BadRequest(ApiResponse<string>.Fail("OTP sai hoặc hết hạn"));
+
+            // ✅ Bước 2: cập nhật số điện thoại
+            var updated = await _userService.UpdatePhoneAsync(userId, dto.Phone);
+            return updated
+                ? Ok(ApiResponse<string>.Ok(null, "Cập nhật số điện thoại thành công"))
+                : BadRequest(ApiResponse<string>.Fail("Không cập nhật được số điện thoại"));
+        }
+
         [HttpPut("update-profile")]
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserDTO dto)
         {
             var userId = _userClaimHelper.GetUserId(User);
-            var success = await _userService.UpdateProfileAsync(userId, dto, User); // 👈 Truyền ClaimsPrincipal vào
 
-            return success
-                ? Ok(ApiResponse<string>.Ok(null, "Cập nhật profile thành công."))
-                : BadRequest(ApiResponse<string>.Fail("Cập nhật thất bại."));
+            var updated = await _userService.UpdateProfileAsync(userId, dto, User);
+
+            return updated
+                ? Ok(ApiResponse<string>.Ok(null, "Cập nhật thông tin thành công"))
+                : BadRequest(ApiResponse<string>.Fail("Cập nhật thất bại"));
         }
+
+
+
 
 
     }
