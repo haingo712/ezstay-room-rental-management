@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OData;
 using Microsoft.IdentityModel.Tokens;
@@ -6,6 +7,7 @@ using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using TenantAPI.DTO.Requests;
+using TenantAPI.Profiles;
 using TenantAPI.Repository.Interface;
 using TenantAPI.Repository;
 using TenantAPI.Service;
@@ -22,6 +24,25 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
 builder.Services.AddScoped<ITenantService, TenantService>();
 
+// var serviceUrls = builder.Configuration.GetSection("ServiceUrls");
+
+builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RoomApi"]);
+});
+
+
+// builder.Services.AddHttpClient<IAmenityClientService, AmenityClientService>(client =>
+// {
+//     client.BaseAddress = new Uri(serviceUrls["AmenityApi"]);
+// });
+
+
+builder.Services.AddAutoMapper(typeof(MappingTenant).Assembly);
+
+
+
+
 
 var odatabuilder = new ODataConventionModelBuilder();
 odatabuilder.EntitySet<TenantDto>("Tenants");
@@ -34,6 +55,7 @@ builder.Services.AddControllers().AddOData(options =>
         .OrderBy()
         .Expand()
         .Select());
+
 
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
@@ -93,7 +115,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    // Cho phép nhận string -> enum và khi trả ra thì enum thành string
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

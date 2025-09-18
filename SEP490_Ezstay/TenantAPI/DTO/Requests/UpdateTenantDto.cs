@@ -5,8 +5,8 @@ namespace TenantAPI.DTO.Requests;
 
 public class UpdateTenantDto
 {
-    public DateTime UpdatedAt {get;set;}
-    public DateTime CheckinDate { get; set; }
+    // public DateTime UpdatedAt {get;set;}
+    // public DateTime CheckinDate { get; set; }
     public DateTime CheckoutDate { get; set; }
     public TenantStatus  TenantStatus{ get; set; }
     
