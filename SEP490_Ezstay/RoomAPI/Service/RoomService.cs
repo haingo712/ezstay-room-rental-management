@@ -15,14 +15,16 @@ public class RoomService: IRoomService
     private readonly IRoomRepository _roomRepository;
     private readonly IRoomAmenityClientService _roomAmenityClient;
     private readonly IAmenityClientService _amenityClient;
+    private readonly IRentalPostClientService _rentalPostClient;
     private readonly IMapper _mapper;
 
-    public RoomService(IRoomRepository roomRepository, IRoomAmenityClientService roomAmenityClient, IAmenityClientService amenityClient, IMapper mapper)
+    public RoomService(IRoomRepository roomRepository, IRoomAmenityClientService roomAmenityClient, IAmenityClientService amenityClient, IMapper mapper, IRentalPostClientService rentalPostClient)
     {
         _roomRepository = roomRepository;
         _roomAmenityClient = roomAmenityClient;
         _amenityClient = amenityClient;
         _mapper = mapper;
+        _rentalPostClient = rentalPostClient;
     }
 
     
@@ -88,39 +90,19 @@ public class RoomService: IRoomService
          // return _mapper.Map<RoomDto>(checkRoom);
          return  ApiResponse<bool>.Success(true, "Cặp nhật phòng thành công");
     }
-    public async Task Delete(Guid id)
+    public async Task<ApiResponse<bool>> Delete(Guid id)
     {
         var room = await _roomRepository.GetById(id);
         if (room==null) 
             throw new KeyNotFoundException("k tim thay phong tro");
+        var hasPosts = await _rentalPostClient.HasPostsForRoomAsync(room.Id);
+        Console.WriteLine("sss"+ hasPosts);
+        Console.WriteLine("sss"+ hasPosts.GetHashCode());
+        if (hasPosts)
+            return  ApiResponse<bool>.Fail("Không thể xóa phòng vì đang có bài đăng");
         await _roomRepository.Delete(room);
+        return ApiResponse<bool>.Success(true, "Xoá phòng thành công");
     }
-    
-    
-    // public async Task<RoomWithAmenitiesDto> GetRoomWithAmenities(Guid roomId)
-    // {
-    //     // 1. Lấy room từ DB
-    //     var room = await _roomRepository.GetById(roomId);
-    //     if (room == null) throw new KeyNotFoundException("Room not found");
-    //
-    //     // 2. Lấy danh sách amenityId
-    //     var amenityIds = await _roomAmenityClient.GetAmenityIdsByRoomId(roomId);
-    //
-    //     // 3. Gọi sang AmenityAPI lấy chi tiết AmenityDto
-    //     var amenities = new List<AmenityDto>();
-    //     foreach (var amenityId in amenityIds)
-    //     {
-    //         var amenity = await _amenityClient.GetAmenityById(amenityId);
-    //         if (amenity != null) amenities.Add(amenity);
-    //     }
-    //
-    //     // 4. Map sang RoomWithAmenitiesDto
-    //     var roomDto = _mapper.Map<RoomWithAmenitiesDto>(room);
-    //     roomDto.Amenities = amenities;
-    //
-    //     return roomDto;
-    // }
-    
     public async Task<RoomWithAmenitiesDto> GetRoomWithAmenitiesAsync(Guid id)
     {
         var roomId = await _roomRepository.GetById(id);
@@ -132,12 +114,29 @@ public class RoomService: IRoomService
             var amenity = await _amenityClient.GetAmenityById(x.AmenityId);
             amenities.Add(amenity);
         }
-
-        return new RoomWithAmenitiesDto
-        {
-            Room = room,
-            Amenities = amenities
-        };
+        var roomDto =   _mapper.Map<RoomWithAmenitiesDto>(room);
+        //return new RoomWithAmenitiesDto
+       // {
+        //    Room = room,
+        roomDto.Amenities = amenities;
+        return roomDto;
+          //  Amenities = amenities
+       // };
     }
+    
+    public async Task<ApiResponse<bool>> UpdateStatusAsync(Guid roomId,string roomStatus)
+    {
+        var room = await _roomRepository.GetById(roomId);
+        if (room == null)
+            throw new KeyNotFoundException("Room not found");
+      
+        // Chuyển string -> Enum
+        if (!Enum.RoomStatus.TryParse<RoomStatus>(roomStatus, true, out var roomStatuss))
+            return ApiResponse<bool>.Fail("Invalid room status");
 
+        room.RoomStatus = roomStatuss;
+        room.UpdatedAt = DateTime.UtcNow;
+        await _roomRepository.Update(room);
+        return ApiResponse<bool>.Success(true, "Cập nhật trạng thái phòng thành công");
+    }
 }
