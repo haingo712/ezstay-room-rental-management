@@ -25,7 +25,10 @@ namespace RentalPostsAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRentalPostDTO dto)
         {
-            var result = await _service.CreateAsync(dto, User);
+
+ 
+            var result = await _service.CreateAsync (dto, User);
+
             return Ok(result);
         }
 

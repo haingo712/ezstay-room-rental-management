@@ -18,7 +18,7 @@ namespace RentalPostsAPI.Service
 
         public async Task<RoomDto?> GetRoomByIdAsync(Guid roomId)
         {
-            var url = $"{_settings.RoomApiBaseUrl}/api/Rooms/{roomId}";
+            var url = $"{_settings.RoomApiBaseUrl}api/Rooms/{roomId}";
             var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode) return null;
 
@@ -27,7 +27,7 @@ namespace RentalPostsAPI.Service
 
         public async Task<BoardingHouseDTO?> GetBoardingHouseByIdAsync(Guid houseId)
         {
-            var url = $"{_settings.BoardingHouseApiBaseUrl}/api/BoardingHouseAPI/{houseId}";
+            var url = $"{_settings.BoardingHouseApiBaseUrl}api/BoardingHouses/{houseId}";
             var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode) return null;
 
@@ -36,7 +36,7 @@ namespace RentalPostsAPI.Service
 
         public async Task<AccountDto?> GetAccountByIdAsync(Guid Id)
         {
-            var url = $"{_settings.AuthApiBaseUrl}/api/AccountAPI/{Id}";
+            var url = $"{_settings.AuthApiBaseUrl}api/AccountAPI/{Id}";
             var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode) return null;
 
