@@ -28,7 +28,8 @@
             "UpstreamPathTemplate": "/api/Amenity/{everything}",
             "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
             "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer"
+                "AuthenticationProviderKey": "Bearer",
+              "AllowedScopes": []
             }
         },
         {
@@ -80,7 +81,8 @@
             "UpstreamPathTemplate": "/api/RoomAmenity/{everything}",
             "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
             "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer"
+                "AuthenticationProviderKey": "Bearer",
+              "AllowedScopes": []
             }
         },
         {
@@ -95,7 +97,8 @@
             "UpstreamPathTemplate": "/api/Rooms/{everything}",
             "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
             "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer"
+                "AuthenticationProviderKey": "Bearer",
+              "AllowedScopes": []
             }
         },
         {
@@ -141,7 +144,9 @@
             ],
             "UpstreamPathTemplate": "/api/UtilityRate/{everything}",
             "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
-            "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer" }
+            "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer",
+              "AllowedScopes": []
+            }
         },
       {
         "DownstreamPathTemplate": "/api/UtilityReading/{everything}",
@@ -155,7 +160,8 @@
         "UpstreamPathTemplate": "/api/UtilityReading/{everything}",
         "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
         "AuthenticationOptions": {
-          "AuthenticationProviderKey": "Bearer"
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
         }
       },
       {
@@ -170,7 +176,8 @@
         "UpstreamPathTemplate": "/api/Image/{everything}",
         "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
         "AuthenticationOptions": {
-          "AuthenticationProviderKey": "Bearer"
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
         }
       },
         {
@@ -196,7 +203,23 @@
             ],
             "UpstreamPathTemplate": "/api/provinces/{provinceId}/communes",
             "UpstreamHttpMethod": [ "Get" ]
+        },
+      {
+        "DownstreamPathTemplate": "/api/Tenant/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7168
+          }
+        ],
+        "UpstreamPathTemplate": "/api/Tenant/{everything}",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
         }
+      }
     ],
 
     "GlobalConfiguration": {
