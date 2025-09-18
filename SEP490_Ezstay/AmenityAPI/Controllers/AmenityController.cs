@@ -11,12 +11,13 @@ using AmenityAPI.Models;
 using AmenityAPI.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace AmenityAPI.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
-    public class AmenityController : ControllerBase
+     // [ApiController]
+    public class AmenityController : ODataController
     {
         private readonly IAmenityService _amenityService;
         private readonly ITokenService _tokenService;
@@ -42,8 +43,9 @@ namespace AmenityAPI.Controllers
             var staffId = _tokenService.GetUserIdFromClaims(User);
             return Ok( await _amenityService.GetAllByStaffId(staffId));
         }
-        [HttpGet("odata")]
-        [EnableQuery]
+        
+        [HttpGet("/odata/Amenities")]
+        [EnableQuery(PageSize = 3)]
         public IQueryable<AmenityDto> GetAmenitiesOdata()
         {
             return  _amenityService.GetAllAsQueryable();
