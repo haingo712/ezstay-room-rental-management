@@ -2,6 +2,6 @@ namespace UtilityReadingAPI.Enum;
 
 public enum UtilityType
 {
-    Water =1,
-    Electric =2
+    Water =0,
+    Electric =1
 }
