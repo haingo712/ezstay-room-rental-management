@@ -21,11 +21,17 @@ builder.Services.AddSwaggerGen();
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
 builder.Services.AddSingleton(mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddHttpClient<IAuthApiClient, AuthApiClient>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7000"); // gọi qua API Gateway
+});
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IUserClaimHelper, UserClaimHelper>();
+builder.Services.AddScoped<IUserClaimHelper, UserClaimHelper>();
+
 
 builder.Services.AddHttpClient();
 builder.Services.AddAutoMapper(typeof(UserMappingProfile));

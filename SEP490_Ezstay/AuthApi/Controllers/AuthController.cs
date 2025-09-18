@@ -20,18 +20,24 @@ namespace AuthApi.Controllers
         private readonly IEmailVerificationService _emailVerificationService;
         private readonly IAccountRepository _accountRepo;
         private readonly IMapper _mapper;
+        private readonly IGoogleAuthService _googleAuthService;
+        private readonly IFacebookAuthService _facebookAuthService;
 
 
         public AuthController(
             IAuthService authService,
             IEmailVerificationService emailVerificationService,
             IAccountRepository accountRepo,
-            IMapper mapper)
+            IMapper mapper,
+            IGoogleAuthService googleAuthService,
+            IFacebookAuthService facebookAuthService)
         {
             _authService = authService;
             _emailVerificationService = emailVerificationService;
             _accountRepo = accountRepo;
             _mapper = mapper;
+            _googleAuthService = googleAuthService;
+            _facebookAuthService = facebookAuthService;
         }
 
         [HttpPost("register")]
@@ -125,6 +131,86 @@ namespace AuthApi.Controllers
             var result = await _authService.ResetPasswordAsync(dto);
             return Ok(result);
         }
+
+        [HttpPost("confirm-otp")]
+        public async Task<IActionResult> ConfirmOtp([FromBody] ConfirmOtpRequest request)
+        {
+            var result = await _emailVerificationService.ConfirmOtpAsync(request.Email, request.Otp);
+            if (result == null || result.ExpiredAt < DateTime.UtcNow)
+                return BadRequest("OTP sai hoặc hết hạn");
+
+            return Ok("Xác thực thành công");
+        }
+
+        [HttpPut("update-email")]
+        [Authorize]
+        public async Task<IActionResult> UpdateEmail([FromBody] UpdateEmailRequest dto)
+        {
+            var account = await _accountRepo.GetByEmailAsync(dto.OldEmail);
+            if (account == null)
+                return NotFound("Account not found.");
+
+            // Update email
+            account.Email = dto.NewEmail;
+            await _accountRepo.UpdateAsync(account);
+
+            return Ok("Email updated successfully.");
+        }
+
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
+        {
+            try
+            {
+                var user = await _googleAuthService.GoogleLoginAsync(request.IdToken);
+
+                return Ok(new
+                {
+                    message = "Đăng nhập thành công",
+                    user = new
+                    {
+                        user.Id,
+                        user.FullName,
+                        user.Email,
+                        user.Role
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+        [HttpPost("facebook-login")]
+        public async Task<IActionResult> FacebookLogin([FromBody] FacebookLoginRequest request)
+        {
+            try
+            {
+                var user = await _facebookAuthService.FacebookLoginAsync(request.AccessToken);
+
+                return Ok(new
+                {
+                    message = "Login thành công",
+                    user = new
+                    {
+                        user.Id,
+                        user.FullName,
+                        user.Email,
+                        user.Role
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+
+
 
     }
 }

@@ -14,5 +14,8 @@ namespace AccountAPI.DTO.Resquest
 
         public string? FullName { get; set; }
         public string? Phone { get; set; }
+
+        public string? NewEmail { get; set; }
+        public string? Otp { get; set; }
     }
 }

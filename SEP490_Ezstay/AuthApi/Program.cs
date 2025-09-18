@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using BCrypt.Net;
+using AuthApi.DTO.Request;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,10 +39,21 @@ builder.Services.AddHttpClient("MailApi", client =>
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
+builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+builder.Services.Configure<GoogleAuthSettings>(
+    builder.Configuration.GetSection("GoogleAuth"));
+builder.Services.Configure<FacebookAuthSettings>(
+    builder.Configuration.GetSection("FacebookAuth"));
+
+builder.Services.AddScoped<IFacebookAuthService, FacebookAuthService>();
+
 builder.Services.AddSingleton<GenerateJwtToken>();
 
 

@@ -50,11 +50,13 @@ namespace AccountAPI.Controllers
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserDTO dto)
         {
             var userId = _userClaimHelper.GetUserId(User);
-            var success = await _userService.UpdateProfileAsync(userId, dto);
+            var success = await _userService.UpdateProfileAsync(userId, dto, User); // 👈 Truyền ClaimsPrincipal vào
 
             return success
                 ? Ok(ApiResponse<string>.Ok(null, "Cập nhật profile thành công."))
                 : BadRequest(ApiResponse<string>.Fail("Cập nhật thất bại."));
         }
+
+
     }
 }

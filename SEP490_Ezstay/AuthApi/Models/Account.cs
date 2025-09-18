@@ -24,6 +24,7 @@ namespace AuthApi.Models
 
         public bool IsVerified { get; set; } = false;
 
+        public bool IsBanned { get; set; } = false;
 
     }
 
