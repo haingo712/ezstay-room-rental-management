@@ -1,3 +1,4 @@
+using RoomAPI.DTO.Request;
 using RoomAPI.DTO.Response;
 using RoomAPI.Service.Interface;
 
@@ -19,17 +20,11 @@ public class RoomAmenityClientService: IRoomAmenityClientService
 
          return response ??  new List<RoomAmenityDto>();
      }
-    //
-    // public RoomAmenityClientService(IHttpClientFactory factory)
-    // {
-    //     _httpClient = factory.CreateClient("RoomAmenity");
-    // }
-    //
-    // public async Task<List<Guid>> GetAmenityIdsByRoomId(Guid roomId)
-    // {
-    //     var response = await _httpClient.GetFromJsonAsync<List<Guid>>(
-    //         $"api/RoomAmenity/ByRoomId/{roomId}");
-    //
-    //     return response ?? new List<Guid>();
-    // }
+     public async Task AddAsync(Guid roomId, List<CreateRoomAmenityDto> request)
+     {
+         var response = await _httpClient.PostAsJsonAsync($"api/RoomAmenity/{roomId}/Amenity", request);
+         response.EnsureSuccessStatusCode();
+     }
+
+   
 }

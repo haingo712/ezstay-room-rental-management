@@ -69,7 +69,9 @@ public class RoomService: IRoomService
         room.HouseId = houseId;
         room.RoomStatus= RoomStatus.Available;
         room.CreatedAt = DateTime.UtcNow;
+        
         await _roomRepository.Add(room);
+        
         var result = _mapper.Map<RoomDto>(room);
         return ApiResponse<RoomDto>.Success(result, "Thêm phòng thành công");
     }
