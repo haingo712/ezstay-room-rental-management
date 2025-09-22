@@ -22,6 +22,11 @@ namespace RentalPostsAPI.Service
             _externalService = externalService;
             _tokenService = tokenService;
         }
+        public IQueryable<RentalpostDTO> GetAllAsQueryable()
+        {
+            var entity = _repo.GetAllAsQueryable();
+            return entity.ProjectTo<RentalpostDTO>(_mapper.ConfigurationProvider);
+        }
 
         public async Task<ApiResponse<RentalpostDTO>> CreateAsync(
             CreateRentalPostDTO dto, ClaimsPrincipal user)
