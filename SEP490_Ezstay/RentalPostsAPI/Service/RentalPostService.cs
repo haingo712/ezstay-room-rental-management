@@ -1,10 +1,11 @@
-﻿using AutoMapper;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using RentalPostsAPI.DTO.Request;
-
+using RentalPostsAPI.DTO.Response;
 using RentalPostsAPI.Models;
 using RentalPostsAPI.Repository.Interface;
 using RentalPostsAPI.Service.Interface;
+using System.Security.Claims;
 
 namespace RentalPostsAPI.Service
 {
