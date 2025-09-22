@@ -9,6 +9,7 @@ public class RoomAmenityProfile:Profile
     public RoomAmenityProfile()
     {
         CreateMap<CreateRoomAmenityDto, RoomAmenity>();
+        CreateMap<List<CreateRoomAmenityDto>, RoomAmenity>();
         CreateMap<UpdateRoomAmenityDto, RoomAmenity>();
         CreateMap<RoomAmenity, RoomAmenityDto>();
         CreateMap<RoomAmenityDto, GetRoomAmenityResponse>()
