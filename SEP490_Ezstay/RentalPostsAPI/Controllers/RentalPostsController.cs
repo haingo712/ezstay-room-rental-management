@@ -1,6 +1,8 @@
 ﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 using RentalPostsAPI.DTO.Request;
 using RentalPostsAPI.DTO.Response;
 using RentalPostsAPI.Service.Interface;
@@ -8,10 +10,9 @@ using System.Security.Claims;
 
 namespace RentalPostsAPI.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("api/[controller]")]
- 
-    public class RentalPostsController : ControllerBase
+    public class RentalPostsController : ODataController
     {
         private readonly IRentalPostService _service;
         private readonly ITokenService _tokenService;
