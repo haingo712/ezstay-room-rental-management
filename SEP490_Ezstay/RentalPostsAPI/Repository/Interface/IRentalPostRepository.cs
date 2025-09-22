@@ -13,6 +13,5 @@ namespace RentalPostsAPI.Repository.Interface
         Task<bool> DeleteAsync(Guid id, Guid deletedBy);
         
         Task<IEnumerable<RentalPosts>> GetByRoomIdAsync(Guid roomId);
-        
     }
 }
