@@ -34,8 +34,6 @@ public class UtilityReadingService: IUtilityReadingService
             throw new KeyNotFoundException(" UtilityReading Id not found");
          return   _mapper.Map<UtilityReadingResponseDto>(utilityReading);
     }
-   
-    
     
     public async Task<ApiResponse<UtilityReadingResponseDto>> AddAsync(Guid roomId, CreateUtilityReadingDto request)
     {
@@ -61,6 +59,7 @@ public class UtilityReadingService: IUtilityReadingService
             // utilityReading.PreviousIndex = lastReading?.CurrentIndex ?? request.CurrentIndex;
             utilityReading.PreviousIndex = lastReading.CurrentIndex;
             utilityReading.CurrentIndex = request.CurrentIndex;
+            utilityReading.Total = request.Price * utilityReading.Consumption;
         }
 
         //Console.W("ss"  + utilityReading.CurrentIndex);
@@ -85,6 +84,7 @@ public class UtilityReadingService: IUtilityReadingService
         
          _mapper.Map(request,utilityReading);
          utilityReading.UpdatedAt = DateTime.UtcNow;
+         utilityReading.Total = request.Price * utilityReading.Consumption;
          await _utilityReadingRepository.UpdateAsync(utilityReading);
         var result = _mapper.Map<UtilityReadingResponseDto>(utilityReading);
         return ApiResponse<bool>.Success(true,"Cập nhật thành công");

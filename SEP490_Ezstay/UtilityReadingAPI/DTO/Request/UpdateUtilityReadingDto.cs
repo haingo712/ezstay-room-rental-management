@@ -7,6 +7,7 @@ namespace UtilityReadingAPI.DTO.Request;
 public class UpdateUtilityReadingDto
 {
     
+    public decimal Price { get; set; }
     [StringLength(100, ErrorMessage = "Note cannot exceed 100 characters.")]
     public string Note { get; set; }
     [Required]

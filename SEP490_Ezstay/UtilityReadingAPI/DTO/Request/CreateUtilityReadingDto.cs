@@ -9,6 +9,7 @@ public class CreateUtilityReadingDto
     // [Required]
     // public Guid RoomId { get; set; }
     // [JsonConverter(typeof(JsonStringEnumConverter))]
+    public decimal Price { get; set; }
     public UtilityType Type { get; set; }
     
     [StringLength(100, ErrorMessage = "Note cannot exceed 100 characters.")]

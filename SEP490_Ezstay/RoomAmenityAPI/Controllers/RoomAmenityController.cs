@@ -60,29 +60,30 @@ namespace RoomAmenityAPI.Controllers
         }
         
         //  ****
-      [HttpPut("{id}")]
-      [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> PutRoomAmenity(Guid id, UpdateRoomAmenityDto roomAmenity)
-        {
-        var createdRoomAmenity=   await   _roomAmenityService.UpdateAsync(id,roomAmenity);
-           if (!createdRoomAmenity.IsSuccess ) 
-           {
-               return BadRequest(new { message = createdRoomAmenity.Message });
-           }
-           return Ok(createdRoomAmenity);
-        }
+      // [HttpPut("{id}")]
+      // [Authorize(Roles = "Owner")]
+      //   public async Task<IActionResult> PutRoomAmenity(Guid id, UpdateRoomAmenityDto roomAmenity)
+      //   {
+      //   var createdRoomAmenity=   await   _roomAmenityService.UpdateAsync(id,roomAmenity);
+      //      if (!createdRoomAmenity.IsSuccess ) 
+      //      {
+      //          return BadRequest(new { message = createdRoomAmenity.Message });
+      //      }
+      //      return Ok(createdRoomAmenity);
+      //   }
         //  ****
         // Add: api/RoomAmenity/5/Amenity
         [HttpPost("{roomId}/Amenity")]
         [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> PostRoomAmenity(Guid roomId, CreateRoomAmenityDto roomAmenity)
+        public async Task<IActionResult> PostRoomAmenity(Guid roomId, List<CreateRoomAmenityDto> roomAmenity)
         {
-           var createdRoomAmenity = await _roomAmenityService.AddAsync( roomId,roomAmenity);
-           if (!createdRoomAmenity.IsSuccess ) 
-           {
-               return BadRequest(new { message = createdRoomAmenity.Message });
-           }
-            return CreatedAtAction("GetRoomAmenity", new { id = roomAmenity.AmenityId }, roomAmenity);
+            var createdRoomAmenity = await _roomAmenityService.AddAsync( roomId,roomAmenity);
+            if (!createdRoomAmenity.IsSuccess ) 
+            {
+                return BadRequest(new { message = createdRoomAmenity.Message });
+            }
+            return Ok(createdRoomAmenity);
+            // return CreatedAtAction("GetRoomAmenity", new { roomId = roomId }, createdRoomAmenity.Data);
         }
         //  ****
         // DELETE: api/RoomAmenity/5

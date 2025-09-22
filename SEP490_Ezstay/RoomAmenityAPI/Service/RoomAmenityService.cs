@@ -46,16 +46,63 @@ public class RoomAmenityService: IRoomAmenityService
         return   _mapper.Map<RoomAmenityDto>(roomAmenity);
     }
     
-    public async  Task<ApiResponse<RoomAmenityDto>> AddAsync(Guid roomId,CreateRoomAmenityDto request)
+    // public async  Task<ApiResponse<List<RoomAmenityDto>>> AddAsync(Guid roomId, List<CreateRoomAmenityDto> request)
+    // {
+    //     var existing = await _roomAmenityRepository.GetRoomAmenitiesByRoomIdAsync(roomId);
+    //   
+    //     var result = new List<RoomAmenityDto>();
+    //     var toAdd = request
+    //         .Where(r => !existing.Any(e => e.AmenityId == r.AmenityId))
+    //         .ToList();
+    //
+    //     
+    //     foreach (var r in request)
+    //     {
+    //         var exist = await _roomAmenityRepository.AmenityIdExistsInRoomAsync(roomId, r.AmenityId);
+    //         if (exist)
+    //             continue; // bỏ qua nếu đã tồn tại trong room
+    //         var roomAmenity = _mapper.Map<RoomAmenity>(r);
+    //         roomAmenity.RoomId = roomId;
+    //         roomAmenity.CreatedAt = DateTime.UtcNow;
+    //         await _roomAmenityRepository.AddAsync(roomAmenity);
+    //         result.Add(_mapper.Map<RoomAmenityDto>(roomAmenity));
+    //     }
+      //  var exist = await _roomAmenityRepository.AmenityIdExistsInRoomAsync(roomId, request.AmenityId);
+        // if (exist)
+        //     return  ApiResponse<RoomAmenityDto>.Fail("Tiện ích đã có tại trong nhà trọ. vui long them tien ich khac");
+       // var roomAmenity = _mapper.Map<RoomAmenity>(request);
+     //   roomAmenity.RoomId = roomId;
+      //  roomAmenity.CreatedAt = DateTime.Now;
+      //  await _roomAmenityRepository.AddAsync(roomAmenity);
+    //    return ApiResponse<List<RoomAmenityDto>>.Success(result, "Thêm tiện ích vào trọ thành công");
+  //  }
+    public async  Task<ApiResponse<List<RoomAmenityDto>>> AddAsync(Guid roomId, List<CreateRoomAmenityDto> request)
     {
-        var exist = await _roomAmenityRepository.AmenityIdExistsInRoomAsync(roomId, request.AmenityId);
-        if (exist)
-            return  ApiResponse<RoomAmenityDto>.Fail("Tiện ích đã có tại trong nhà trọ. vui long them tien ich khac");
-        var roomAmenity = _mapper.Map<RoomAmenity>(request);
-        roomAmenity.RoomId = roomId;
-        roomAmenity.CreatedAt = DateTime.Now;
-        await _roomAmenityRepository.AddAsync(roomAmenity);
-        return ApiResponse<RoomAmenityDto>.Success(_mapper.Map<RoomAmenityDto>(roomAmenity), "Thêm tiện ích vào trọ thành công");
+        var existing = await _roomAmenityRepository.GetRoomAmenitiesByRoomIdAsync(roomId);
+        var result = new List<RoomAmenityDto>();
+        var toAdd = request
+            .Where(r => !existing.Any(e => e.AmenityId == r.AmenityId))
+            .ToList();
+        foreach (var r in toAdd)
+        {
+            var exist = await _roomAmenityRepository.AmenityIdExistsInRoomAsync(roomId, r.AmenityId);
+            if (exist)
+                continue; 
+            var roomAmenity = _mapper.Map<RoomAmenity>(r);
+            roomAmenity.RoomId = roomId;
+            roomAmenity.CreatedAt = DateTime.UtcNow;
+            await _roomAmenityRepository.AddAsync(roomAmenity);
+            result.Add(_mapper.Map<RoomAmenityDto>(roomAmenity));
+        }
+        var requestAmenityIds = request.Select(r => r.AmenityId).ToHashSet();
+        var toRemove = existing
+            .Where(x => !requestAmenityIds.Contains(x.AmenityId))
+            .ToList();
+        foreach (var r in toRemove)
+        {
+            await _roomAmenityRepository.DeleteAsync(r);
+        }
+        return ApiResponse<List<RoomAmenityDto>>.Success(result, "Thêm tiện ích vào trọ thành công");
     }
 
     public async  Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateRoomAmenityDto request)
