@@ -29,7 +29,6 @@ namespace RentalPostsAPI.Models
         public DateTime? DeletedAt { get; set; }
 
         public int? IsApproved { get; set; }
-        
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid? ApprovedByStaff { get; set; }
 
