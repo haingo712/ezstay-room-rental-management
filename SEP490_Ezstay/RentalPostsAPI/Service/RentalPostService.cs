@@ -8,7 +8,6 @@ using System.Security.Claims;
 
 namespace RentalPostsAPI.Service
 {
-
     public class RentalPostService : IRentalPostService
     {
         private readonly IRentalPostRepository _repo;
