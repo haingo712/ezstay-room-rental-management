@@ -12,11 +12,14 @@ namespace RentalPostsAPI.Service
     {
         private readonly IRentalPostRepository _repo;
         private readonly IMapper _mapper;
-
-        public RentalPostService(IRentalPostRepository repo, IMapper mapper)
+        private readonly ExternalService _externalService;
+        private readonly ITokenService _tokenService;
+        public RentalPostService(IRentalPostRepository repo, IMapper mapper, ExternalService externalService, ITokenService tokenService)
         {
             _repo = repo;
             _mapper = mapper;
+            _externalService = externalService;
+            _tokenService = tokenService;
         }
         public IQueryable<RentalpostDTO> GetAllAsQueryable()
         {
