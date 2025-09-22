@@ -31,6 +31,7 @@ namespace RentalPostsAPI.Controllers
             return _service.GetAllAsQueryable();
         }
         [HttpPost]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Create([FromBody] CreateRentalPostDTO dto)
         {
 
@@ -41,13 +42,19 @@ namespace RentalPostsAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllForUser()
         {
-            var result = await _service.GetAllAsync();
-            
-            return Ok(ApiResponse<IEnumerable<RentalpostDTO>>.Success(result));
+            var result = await _service.GetAllForUserAsync();
+            return Ok(result);
         }
-
+        [HttpGet("owner")]
+        [Authorize(Roles = "Owner")] 
+        public async Task<IActionResult> GetAllForOwner()
+        {
+           
+            var result = await _service.GetAllForOwnerAsync(User);
+            return Ok(result);
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -58,6 +65,7 @@ namespace RentalPostsAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRentalPostDTO dto)
         {
             var result = await _service.UpdateAsync(id, dto);
@@ -67,6 +75,7 @@ namespace RentalPostsAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Delete(Guid id, [FromQuery] Guid deletedBy)
         {
             var success = await _service.DeleteAsync(id, deletedBy);

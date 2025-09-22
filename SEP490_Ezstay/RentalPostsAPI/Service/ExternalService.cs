@@ -36,11 +36,12 @@ namespace RentalPostsAPI.Service
 
         public async Task<AccountDto?> GetAccountByIdAsync(Guid Id)
         {
-            var url = $"{_settings.AuthApiBaseUrl}api/AccountAPI/{Id}";
+            var url = $"{_settings.AccountApiBaseUrl}api/User/{Id}";
             var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode) return null;
 
             return await response.Content.ReadFromJsonAsync<AccountDto>();
         }
+      
     }
 }

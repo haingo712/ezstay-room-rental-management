@@ -25,6 +25,10 @@ namespace RentalPostsAPI.Repository
         {
             return await _collection.Find(_ => true).ToListAsync();
         }
+        public async Task<IEnumerable<RentalPosts>> GetAllByOwnerIdAsync(Guid ownerId)
+        {
+            return await _collection.Find(x => !x.IsActive && x.AuthorId == ownerId).ToListAsync();
+        }
 
         public async Task<RentalPosts?> GetByIdAsync(Guid id)
         {
