@@ -10,8 +10,7 @@ namespace RentalPostsAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Owner")]
-    public class RentalPostsController : ControllerBase
+    public class RentalPostsController : ODataController
     {
         private readonly IRentalPostService _service;
         private readonly ITokenService _tokenService;
