@@ -114,6 +114,6 @@ namespace RentalPostsAPI.Service
         // {
         //     var entity= await _repo.GetByRoomIdAsync(roomId);
         //     return   _mapper.Map<IEnumerable<RentalpostDTO>>(entity);
-        // }
+        // }       
     }
 }
