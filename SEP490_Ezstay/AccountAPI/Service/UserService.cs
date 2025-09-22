@@ -21,6 +21,8 @@ namespace AccountAPI.Service
         private readonly HttpClient _http;
         private readonly IUserClaimHelper _userClaimHelper;
 
+        private readonly IAddressApiClient _addressClient;
+
         public UserService(
             IUserRepository userRepository,
             IMapper mapper,
@@ -28,16 +30,17 @@ namespace AccountAPI.Service
             IAuthApiClient authApiClient,
             IUserClaimHelper userClaimHelper,
             IPhoneOtpClient otpClient,
-            HttpClient http) // 👈 thêm dòng này
+            IAddressApiClient addressClient) // 👈 inject đúng
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _imageService = imageService;
             _authApiClient = authApiClient;
-            _userClaimHelper = userClaimHelper; // 👈 gán vào
+            _userClaimHelper = userClaimHelper;
             _otpClient = otpClient;
-            _http = http;
+            _addressClient = addressClient;
         }
+
 
         public async Task<bool> CreateProfileAsync(Guid userId, UserDTO userDto)
         {
@@ -60,28 +63,10 @@ namespace AccountAPI.Service
             return userResponse;
         }
 
-        public async Task<bool> UpdateProfileAsync(Guid userId, UpdateUserDTO dto, ClaimsPrincipal user)
+        public async Task<bool> UpdateProfileAsync(Guid userId, UpdateUserDTO dto)
         {
             var userEntity = await _userRepository.GetByUserIdAsync(userId);
             if (userEntity == null) return false;
-
-            // 🟡 Lấy email hiện tại từ token
-            var currentEmail = _userClaimHelper.GetEmail(user);
-
-            // ✅ Xác thực & cập nhật Email nếu có yêu cầu đổi
-            if (!string.IsNullOrEmpty(dto.NewEmail))
-            {
-                if (string.IsNullOrEmpty(dto.Otp))
-                    return false; // Thiếu OTP
-
-                var verified = await _authApiClient.ConfirmOtpAsync(dto.NewEmail, dto.Otp);
-                if (!verified)
-                    return false; // OTP sai hoặc hết hạn
-
-                var updateSuccess = await _authApiClient.UpdateEmailAsync(currentEmail, dto.NewEmail);
-                if (!updateSuccess)
-                    return false; // Gọi AuthAPI thất bại
-            }
 
             // ✅ Cập nhật các field khác từ DTO
             _mapper.Map(dto, userEntity);
@@ -96,8 +81,9 @@ namespace AccountAPI.Service
             // ✅ Cập nhật địa chỉ nếu có ProvinceId & CommuneId
             if (!string.IsNullOrEmpty(dto.ProvinceId) && !string.IsNullOrEmpty(dto.CommuneId))
             {
-                var provinceName = await GetProvinceNameAsync(dto.ProvinceId);
-                var communeName = await GetCommuneNameAsync(dto.ProvinceId, dto.CommuneId);
+                var provinceName = await _addressClient.GetProvinceNameAsync(dto.ProvinceId);
+                var communeName = await _addressClient.GetCommuneNameAsync(dto.ProvinceId, dto.CommuneId);
+
 
                 if (provinceName != null && communeName != null)
                 {
@@ -109,6 +95,7 @@ namespace AccountAPI.Service
             await _userRepository.UpdateAsync(userEntity);
             return true;
         }
+
 
 
         public async Task<bool> SendOtpToPhoneAsync(string phone)
@@ -131,21 +118,31 @@ namespace AccountAPI.Service
             return true;
         }
 
-        private async Task<string?> GetProvinceNameAsync(string provinceId)
-        {
-            var response = await _http.GetFromJsonAsync<JsonElement>("/api/provinces");
-            var provinces = response.GetProperty("provinces").EnumerateArray();
-            return provinces.FirstOrDefault(p => p.GetProperty("code").GetString() == provinceId)
-                            .GetProperty("name").GetString();
-        }
+        //private async Task<string?> GetProvinceNameAsync(string provinceId)
+        //{
+        //    var response = await _http.GetFromJsonAsync<JsonElement>("/api/provinces");
+        //    var provinces = response.GetProperty("provinces").EnumerateArray();
+        //    return provinces.FirstOrDefault(p => p.GetProperty("code").GetString() == provinceId)
+        //                    .GetProperty("name").GetString();
+        //}
 
 
-        private async Task<string?> GetCommuneNameAsync(string provinceId, string communeId)
+        //private async Task<string?> GetCommuneNameAsync(string provinceId, string communeId)
+        //{
+        //    var response = await _http.GetFromJsonAsync<JsonElement>($"/api/provinces/{provinceId}/communes");
+        //    var communes = response.GetProperty("communes").EnumerateArray();
+        //    return communes.FirstOrDefault(c => c.GetProperty("code").GetString() == communeId)
+        //                   .GetProperty("name").GetString();
+        //}
+
+
+        public async Task<bool> UpdateEmailAsync(string currentEmail, string newEmail, string otp)
         {
-            var response = await _http.GetFromJsonAsync<JsonElement>($"/api/provinces/{provinceId}/communes");
-            var communes = response.GetProperty("communes").EnumerateArray();
-            return communes.FirstOrDefault(c => c.GetProperty("code").GetString() == communeId)
-                           .GetProperty("name").GetString();
+            var verified = await _authApiClient.ConfirmOtpAsync(newEmail, otp);
+            if (!verified) return false;
+
+            var updated = await _authApiClient.UpdateEmailAsync(currentEmail, newEmail);
+            return updated;
         }
 
 
