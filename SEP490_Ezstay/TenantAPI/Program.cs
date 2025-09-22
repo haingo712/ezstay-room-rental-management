@@ -6,12 +6,12 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
-using TenantAPI.DTO.Requests;
+using TenantAPI.DTO.Response;
 using TenantAPI.Profiles;
 using TenantAPI.Repository.Interface;
 using TenantAPI.Repository;
-using TenantAPI.Service;
-using TenantAPI.Service.Interface;
+using TenantAPI.Services;
+using TenantAPI.Services.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +24,8 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
 builder.Services.AddScoped<ITenantService, TenantService>();
 
+builder.Services.AddScoped<IIdentityProfileService, IIdentityProfileService>();
+builder.Services.AddScoped<IIdentityProfileRepository, IIdentityProfileRepository>();
 // var serviceUrls = builder.Configuration.GetSection("ServiceUrls");
 
 builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
@@ -40,12 +42,9 @@ builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
 
 builder.Services.AddAutoMapper(typeof(MappingTenant).Assembly);
 
-
-
-
-
 var odatabuilder = new ODataConventionModelBuilder();
 odatabuilder.EntitySet<TenantDto>("Tenants");
+odatabuilder.EntitySet<IdentityProfileResponseDto>("IdentityProfiles");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>
     options.AddRouteComponents("odata", odata)
@@ -55,8 +54,6 @@ builder.Services.AddControllers().AddOData(options =>
         .OrderBy()
         .Expand()
         .Select());
-
-
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 

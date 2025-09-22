@@ -2,7 +2,7 @@
 using TenantAPI.DTO.Requests;
 using TenantAPI.DTO.Response;
 
-namespace TenantAPI.Service.Interface;
+namespace TenantAPI.Services.Interface;
 
 public interface ITenantService
 {

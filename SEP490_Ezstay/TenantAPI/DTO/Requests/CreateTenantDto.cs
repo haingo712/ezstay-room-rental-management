@@ -8,6 +8,8 @@ public class CreateTenantDto {
   public Guid UserId { get; set; }
   [Required]
   public Guid RoomId { get; set; }
+  public Guid IdentityProfileId {get; set;}
+
   [Required]
   public DateTime CheckinDate { get; set; }
   [Required]

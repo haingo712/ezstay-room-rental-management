@@ -1,9 +1,9 @@
 ﻿ 
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
-    using TenantAPI.Service.Interface;
+    using TenantAPI.Services.Interface;
 
-    namespace TenantAPI.Service
+    namespace TenantAPI.Services
     {
         public class TokenService : ITokenService
         {
