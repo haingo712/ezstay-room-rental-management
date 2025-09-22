@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using RentalPostsAPI.DTO.Request;
 using RentalPostsAPI.DTO.Response;
 using RentalPostsAPI.Models;
