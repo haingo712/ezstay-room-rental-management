@@ -10,7 +10,7 @@ namespace AccountAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles ="User")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -67,13 +67,27 @@ namespace AccountAPI.Controllers
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserDTO dto)
         {
             var userId = _userClaimHelper.GetUserId(User);
-
-            var updated = await _userService.UpdateProfileAsync(userId, dto, User);
+            var updated = await _userService.UpdateProfileAsync(userId, dto);
 
             return updated
                 ? Ok(ApiResponse<string>.Ok(null, "Cập nhật thông tin thành công"))
                 : BadRequest(ApiResponse<string>.Fail("Cập nhật thất bại"));
         }
+
+
+        [HttpPut("update-email")]
+        public async Task<IActionResult> UpdateEmail([FromBody] UpdateEmailRequestDto dto)
+        {
+            var currentEmail = _userClaimHelper.GetEmail(User);
+            if (string.IsNullOrEmpty(currentEmail))
+                return Unauthorized(ApiResponse<string>.Fail("Không tìm thấy email người dùng"));
+
+            var result = await _userService.UpdateEmailAsync(currentEmail, dto.NewEmail, dto.Otp);
+            return result
+                ? Ok(ApiResponse<string>.Ok(null, "Cập nhật email thành công"))
+                : BadRequest(ApiResponse<string>.Fail("Cập nhật email thất bại"));
+        }
+
 
 
 

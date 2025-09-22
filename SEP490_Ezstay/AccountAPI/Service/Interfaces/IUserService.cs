@@ -9,11 +9,11 @@ namespace AccountAPI.Service.Interfaces
     {
         Task<bool> CreateProfileAsync(Guid userId, UserDTO userDto);
         Task<UserResponseDTO?> GetProfileAsync(Guid userId);
-        Task<bool> UpdateProfileAsync(Guid userId, UpdateUserDTO dto, ClaimsPrincipal user);
-
+        Task<bool> UpdateProfileAsync(Guid userId, UpdateUserDTO dto);
         Task<bool> UpdatePhoneAsync(Guid userId, string newPhone);
         Task<bool> VerifyPhoneOtpAsync(string phone, string otp);
         Task<bool> SendOtpToPhoneAsync(string phone);
+        Task<bool> UpdateEmailAsync(string currentEmail, string newEmail, string otp);
 
 
 

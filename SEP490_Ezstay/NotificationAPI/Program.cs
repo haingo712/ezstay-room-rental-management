@@ -1,53 +1,34 @@
-﻿using AccountAPI.Mapping;
-using AccountAPI.Repositories.Interfaces;
-using AccountAPI.Repositories;
-using AccountAPI.Service.Interfaces;
-using AccountAPI.Service;
-using Microsoft.OpenApi.Models;
-using MongoDB.Driver;
-using APIGateway.Helper;
+﻿using APIGateway.Helper;
 using APIGateway.Helper.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
+using NotificationAPI.Repositories.Interfaces;
+using NotificationAPI.Repositories;
+using NotificationAPI.Service.Interfaces;
+using NotificationAPI.Service;
 using System.Text;
+using NotificationAPI.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
 builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
 builder.Services.AddSingleton(mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddHttpClient<IAuthApiClient, AuthApiClient>(client =>
-{
-    client.BaseAddress = new Uri("https://localhost:7000"); // gọi qua API Gateway
-});
-
-builder.Services.AddHttpClient<IAddressApiClient, AddressApiClient>(client =>
-{
-    client.BaseAddress = new Uri("https://localhost:7000"); // API Gateway
-});
-
-builder.Services.AddHttpClient<UserService>(client =>
-{
-    client.BaseAddress = new Uri("https://localhost:7000"); // API Gateway URL
-});
-
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IUserClaimHelper, UserClaimHelper>();
-builder.Services.AddScoped<IUserClaimHelper, UserClaimHelper>();
-builder.Services.AddHttpClient<IPhoneOtpClient, PhoneOtpClient>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 
-builder.Services.AddHttpClient();
-builder.Services.AddAutoMapper(typeof(UserMappingProfile));
+builder.Services.AddAutoMapper(typeof(NotificationProfile));
 
-// ✅ Không cần jwtSettings và AddJwtBearer nữa
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -72,7 +53,7 @@ builder.Services.AddAuthorization();
 // Swagger config (vẫn giữ để test token trong UI)
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "AccountAPI", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Notifitication", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -101,10 +82,9 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-
 var app = builder.Build();
 
-// Configure middleware
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -112,8 +92,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication(); // Cần để nhận Claims từ Gateway
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.Run();
