@@ -32,6 +32,7 @@ namespace TenantAPI.Controllers
             return  _tenantService.GetAllQueryable();
         }
         
+        
         [Authorize(Roles = "Owner")]
         [HttpGet("ByUserId/{userId}")]
         [EnableQuery]
@@ -101,6 +102,24 @@ namespace TenantAPI.Controllers
             {
                 return NotFound(new { message = e.Message });
             }
+        }
+        [HttpPut("{id}/extendtenant")]
+        public async Task<IActionResult> Extend(Guid id, [FromBody] ExtendTenantDto dto)
+        {
+            try
+            {
+                var result = await _tenantService.ExtendContractAsync(id, dto);
+                if (!result.IsSuccess  )
+                {
+                    return BadRequest(new { message = result.Message });
+                }
+                return Ok(result);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
+            }
+            
         }
 
         // // DELETE: api/Tenant/5

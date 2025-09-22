@@ -12,6 +12,10 @@ public class CreateTenantDto {
   public DateTime CheckinDate { get; set; }
   [Required]
   public DateTime CheckoutDate { get; set; }
+  
+  [Range(0, double.MaxValue, ErrorMessage = "Tiền cọc phải >= 0")]
+  public decimal DepositAmount { get; set; }
+
   // [Required]
   // public TenantStatus  TenantStatus{ get; set; }
   [Required]

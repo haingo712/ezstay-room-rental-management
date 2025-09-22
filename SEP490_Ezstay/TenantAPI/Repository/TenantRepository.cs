@@ -40,6 +40,14 @@ namespace TenantAPI.Repository
             await _tenants.ReplaceOneAsync(t => t.Id == tenant.Id, tenant);
         }
         
+       
+        public async Task DeleteAsync(Tenant tenant)
+        { 
+            //  var ids = roomAmenity.Select(x => x.Id).ToList();
+            // var filter = Builders<RoomAmenity>.Filter.In(x => x.Id, roomAmenity);
+            //  await _collection.DeleteManyAsync(filter);
+            await _tenants.DeleteOneAsync(r => r.Id == tenant.Id);
+        }
         public async Task<bool> TenantRoomIsActiveAsync(Guid roomId)
         {
             var filter = Builders<Tenant>.Filter.Eq(t => t.RoomId, roomId) &

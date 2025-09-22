@@ -53,7 +53,6 @@ public class TenantService: ITenantService
          // var exist = await _tenantRepository.TenantRoomIsActiveAsync(request.RoomId);
          // if (exist)
          //     return ApiResponse<TenantDto>.Fail("Phòng trọ này đã có người thuê");
-         
         if(request.CheckinDate < DateTime.UtcNow.Date)
             return ApiResponse<TenantDto>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
         if (request.CheckoutDate <  request.CheckinDate.AddMonths(1))
@@ -77,6 +76,26 @@ public class TenantService: ITenantService
         var result = _mapper.Map<TenantDto>(tenant);
         return ApiResponse<TenantDto>.Success(result, "thuê  thành công.");
     }
+    
+    public async Task<ApiResponse<TenantDto>> CancelTenantAsync(Guid tenantId, string reason)
+    {
+        var tenant = await _tenantRepository.GetByIdAsync(tenantId);
+        if (tenant == null)
+            return ApiResponse<TenantDto>.Fail("Không tìm thấy hợp đồng thuê");
+
+        if (tenant.TenantStatus != TenantStatus.Active)
+            return ApiResponse<TenantDto>.Fail("Chỉ hợp đồng đang hoạt động mới có thể huỷ");
+
+        tenant.TenantStatus = TenantStatus.Cancelled;
+        tenant.UpdatedAt = DateTime.UtcNow;
+        tenant.reason = reason;
+        
+        await _roomClient.UpdateRoomStatusAsync(tenant.RoomId, "Available");
+        await _tenantRepository.UpdateAsync(tenant);
+        var dto = _mapper.Map<TenantDto>(tenant);
+        return ApiResponse<TenantDto>.Success(dto, "Huỷ hợp đồng thành công");
+    }
+
 
     public async Task<ApiResponse<TenantDto>> UpdateAsync(Guid id, UpdateTenantDto request)
     {
@@ -103,14 +122,37 @@ public class TenantService: ITenantService
         var result= _mapper.Map<TenantDto>(tenant);
          return ApiResponse<TenantDto>.Success(result, "Cập nhật đơn  thành công.");
     }
+    public async Task<ApiResponse<TenantDto>> ExtendContractAsync(Guid tenantId, ExtendTenantDto request)
+    {
+        var tenant = await _tenantRepository.GetByIdAsync(tenantId);
+        if (tenant == null)
+            return ApiResponse<TenantDto>.Fail("Không tìm thấy hợp đồng thuê");
+        
+        if (tenant.TenantStatus != TenantStatus.Active)
+            return ApiResponse<TenantDto>.Fail("Chỉ hợp đồng đang hoạt động mới được gia hạn");
 
-    // public async Task DeleteAsync(int id)
-    // {
-    //     var room = await _tenantRepository.GetByIdAsync(id);
-    //     if (room==null) 
-    //         throw new KeyNotFoundException("k tim thay phong tro");
-    //     await _tenantRepository.DeleteAsync(room);
-    // }
+        if (request.CheckoutDate <= tenant.CheckoutDate)
+            return ApiResponse<TenantDto>.Fail("Ngày trả phòng mới phải lớn hơn ngày trả phòng hiện tại");
+
+        if (request.CheckoutDate < DateTime.UtcNow.Date)
+            return ApiResponse<TenantDto>.Fail("Ngày trả phòng mới phải lớn hơn ngày hiện tại");
+        
+        if (request.CheckoutDate < tenant.CheckinDate.AddMonths(1))
+            return ApiResponse<TenantDto>.Fail("Ngày trả phòng mới phải cách ngày nhận phòng ít nhất 1 tháng");
+      
+        tenant.UpdatedAt = DateTime.UtcNow;
+        await _tenantRepository.UpdateAsync(tenant);
+        var result = _mapper.Map<TenantDto>(tenant);
+        return ApiResponse<TenantDto>.Success(result, "Gia hạn hợp đồng thành công");
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        var room = await _tenantRepository.GetByIdAsync(id);
+        if (room==null) 
+            throw new KeyNotFoundException("k tim thay phong tro");
+        await _tenantRepository.DeleteAsync(room);
+    }
 }
 
   
