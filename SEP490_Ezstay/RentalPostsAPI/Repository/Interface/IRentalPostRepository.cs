@@ -4,6 +4,7 @@ namespace RentalPostsAPI.Repository.Interface
 {
     public interface IRentalPostRepository
     {
+        Task<IEnumerable<RentalPosts>> GetAllByOwnerIdAsync(Guid ownerId);
         IQueryable<RentalPosts> GetAllAsQueryable();
         Task<RentalPosts> CreateAsync(RentalPosts post);
         Task<RentalPosts?> GetByIdAsync(Guid id);
