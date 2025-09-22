@@ -12,7 +12,7 @@ public class UtilityReadingResponseDto
     public Guid RoomId { get; set; }
     // [JsonConverter(typeof(JsonStringEnumConverter))]
     public UtilityType Type { get; set; }
-    
+    public decimal Price { get; set; }
     public DateTime ReadingDate  { get; set;}
     public DateTime UpdatedAt  { get; set;}
   

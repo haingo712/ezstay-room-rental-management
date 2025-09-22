@@ -14,6 +14,8 @@ public class UtilityReading
     
     public UtilityType Type { get; set; }
     
+    public decimal Price { get; set; }
+    
     public DateTime ReadingDate  { get; set;}
     public DateTime UpdatedAt  { get; set;}
 
