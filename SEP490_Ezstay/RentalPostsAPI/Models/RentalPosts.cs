@@ -31,7 +31,7 @@ namespace RentalPostsAPI.Models
         public int? IsApproved { get; set; }
 
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid? ApprovedBy { get; set; }
+        public Guid? ApprovedByStaff { get; set; }
 
         public DateTime? ApprovedAt { get; set; }
 
