@@ -10,5 +10,6 @@ public interface ITenantRepository
     Task<Tenant?> GetByIdAsync(Guid id);
     Task AddAsync(Tenant tenant);
     Task UpdateAsync(Tenant tenant);
+    Task DeleteAsync(Tenant tenant);
     Task<bool> TenantRoomIsActiveAsync(Guid roomId);
 }

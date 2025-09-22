@@ -13,5 +13,7 @@ public interface ITenantService
     Task<TenantDto?> GetByIdAsync(Guid id);
     Task<ApiResponse<TenantDto>> AddAsync(Guid ownerId ,CreateTenantDto request);
     Task<ApiResponse<TenantDto>> UpdateAsync(Guid id, UpdateTenantDto request);
-    
+    Task<ApiResponse<TenantDto>> ExtendContractAsync(Guid tenantId, ExtendTenantDto request);
+    Task<ApiResponse<TenantDto>> CancelTenantAsync(Guid tenantId, string reason);
+
 }

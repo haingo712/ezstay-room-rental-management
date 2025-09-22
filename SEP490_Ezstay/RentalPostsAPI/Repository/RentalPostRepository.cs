@@ -13,6 +13,7 @@ namespace RentalPostsAPI.Repository
         {
             _collection = dbService.RentalPosts;
         }
+        public IQueryable<RentalPosts> GetAllAsQueryable()=> _collection.AsQueryable();
 
         public async Task<RentalPosts> CreateAsync(RentalPosts post)
         {
@@ -47,6 +48,11 @@ namespace RentalPostsAPI.Repository
 
             var result = await _collection.UpdateOneAsync(p => p.Id == id, update);
             return result.ModifiedCount > 0;
+        }
+        
+        public async Task<IEnumerable<RentalPosts>> GetByRoomIdAsync(Guid roomId)
+        {
+            return await _collection.Find(x => x.RoomId == roomId).ToListAsync();
         }
     }
 }

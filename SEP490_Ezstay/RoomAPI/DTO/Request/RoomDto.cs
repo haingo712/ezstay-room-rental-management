@@ -13,7 +13,7 @@ public class RoomDto
     public string RoomName { get; set; } 
     public decimal Area { get; set; }
     public decimal Price { get; set; }
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    // [JsonConverter(typeof(JsonStringEnumConverter))]
     public RoomStatus RoomStatus { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

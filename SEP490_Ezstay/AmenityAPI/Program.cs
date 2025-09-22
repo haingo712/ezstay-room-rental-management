@@ -21,11 +21,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddGrpc();
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
 builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
@@ -33,18 +28,6 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
 builder.Services.AddScoped<IAmenityService, AmenityService>();
-
-var odatabuilder = new ODataConventionModelBuilder();
-odatabuilder.EntitySet<AmenityDto>("Amenities");
-var odata = odatabuilder.GetEdmModel();
-builder.Services.AddControllers().AddOData(options =>
-    options.AddRouteComponents("odata", odata)
-        .SetMaxTop(100)
-        .Count()
-        .Filter()
-        .OrderBy()
-        .Expand()
-        .Select());
 builder.Services.AddAutoMapper(typeof(MappingAmenity).Assembly);
 
 // builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -109,6 +92,21 @@ builder.Services.AddAuthorization();
                     }
                 });
             });
+
+builder.Services.AddControllers()
+    .AddOData(opt =>
+    {
+        opt.Select().Filter().OrderBy().Expand().Count().SetMaxTop(100).SkipToken();
+        var edmBuilder = new ODataConventionModelBuilder();
+        edmBuilder.EntitySet<AmenityDto>("Amenities"); 
+        opt.AddRouteComponents("odata", edmBuilder.GetEdmModel());
+    });
+// builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+
 
             var app = builder.Build();
 

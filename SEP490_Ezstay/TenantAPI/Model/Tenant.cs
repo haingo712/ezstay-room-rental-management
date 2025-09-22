@@ -21,9 +21,13 @@ namespace TenantAPI.Model
         public Guid RoomId {get; set;}
         public DateTime CheckinDate { get; set;}
         public DateTime CheckoutDate { get; set;}
+        
         public TenantStatus  TenantStatus{ get; set;}
         public int NumberOfOccupants { get; set; }
         public string? Notes { get; set; }
+        public string reason { get; set; }
+        
+        public decimal DepositAmount { get; set; }  //  Tiền cọc
         public DateTime CreatedAt {get;set;}
         public DateTime UpdatedAt {get;set;}
     }

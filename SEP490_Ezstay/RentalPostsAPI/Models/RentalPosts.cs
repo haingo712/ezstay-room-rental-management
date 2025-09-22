@@ -1,11 +1,10 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
 namespace RentalPostsAPI.Models
 {
     public class RentalPosts
     {
-
         [BsonId]
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; } = Guid.NewGuid();
@@ -24,7 +23,7 @@ namespace RentalPostsAPI.Models
 
         public bool IsActive { get; set; } = true;
 
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid? DeletedBy { get; set; }
 
         public DateTime? DeletedAt { get; set; }

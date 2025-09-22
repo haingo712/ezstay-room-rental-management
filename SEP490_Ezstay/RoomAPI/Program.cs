@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OData;
 using Microsoft.IdentityModel.Tokens;
@@ -54,9 +55,18 @@ builder.Services.AddHttpClient<IRoomAmenityClientService, RoomAmenityClientServi
     client.BaseAddress = new Uri(serviceUrls["RoomAmenityApi"]);
 });
 
+builder.Services.AddHttpClient<IRentalPostClientService, RentalPostClientService>(client =>
+{
+    client.BaseAddress = new Uri(serviceUrls["RentalPostApi"]);
+   // client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RentalPostApi"]);
+});
 
 
-builder.Services.AddControllers();
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

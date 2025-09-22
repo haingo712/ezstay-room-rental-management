@@ -31,32 +31,22 @@ namespace RoomAPI.Controllers
             _amenityClient = amenityClient;
         }
         
-        // [HttpGet("{id}/WithAmenities")]
-        // public async Task<ActionResult<RoomWithAmenitiesDto>> GetRoomWithAmenities(Guid id)
-        // {
-        //     try
-        //     {
-        //         var room = await _roomService.GetRoomWithAmenities(id);
-        //         return Ok(room);
-        //     }
-        //     catch (KeyNotFoundException e)
-        //     {
-        //         return NotFound(new { message = e.Message });
-        //     }
-        // }
-        // [HttpGet("{id}/WithAmenities")]
-        // public async Task<ActionResult<RoomWithAmenitiesDto>> GetRoomWithAmenities(Guid id)
-        // {
-        //     try
-        //     {
-        //         var result = await _roomService.GetRoomWithAmenities(id);
-        //         return Ok(result);
-        //     }
-        //     catch (KeyNotFoundException e)
-        //     {
-        //         return NotFound(new { message = e.Message });
-        //     }
-        // }
+        [HttpPut("{id}/RoomStatus/{roomStatus}")]
+        // [Authorize(Roles = "Owner")]
+        public async Task<IActionResult> UpdateStatus(Guid id, string roomStatus)
+        {
+            try
+            {
+                var result = await _roomService.UpdateStatusAsync(id, roomStatus);
+                if (!result.IsSuccess)
+                    return BadRequest(new { message = result.Message });
+                return Ok(result);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
+            }
+        }
 
         [HttpGet("{id}/WithAmenities")]
         public async Task<ActionResult<RoomWithAmenitiesDto>> GetRoomWithAmenities(Guid id)
@@ -71,8 +61,7 @@ namespace RoomAPI.Controllers
                 return NotFound(new { message = e.Message });
             }
         }
-
-
+        
         
         [HttpGet]
         [EnableQuery]
@@ -80,6 +69,8 @@ namespace RoomAPI.Controllers
         {
             return _roomService.GetAllQueryable();
         }
+        
+        
         
         [HttpGet("ByHouseId/{houseId}")]
         [EnableQuery]        
@@ -124,40 +115,7 @@ namespace RoomAPI.Controllers
             return NotFound(new { message = e.Message });
         }
     }
-   //  [HttpPost]
-   // //  [Authorize(Roles = "Owner")]
-   //  public async Task<IActionResult> PostRoom(CreateRoomDto request)
-   //  {
-   //      try
-   //      {
-   //       var createRoom =   await  _roomService.Add(request);
-   //       if (!createRoom.IsSuccess)
-   //           return BadRequest(new { message = createRoom.Message });
-   //       
-   //       return CreatedAtAction("GetRoomById", new { id = createRoom.Data.HouseId }, createRoom);
-   //
-   //      }catch (Exception e) {
-   //          return Conflict(new { message = e.Message });
-   //      }
-   //    }
-    
-    // [HttpPost("House/{houseId}/Location/{houseLocationId}")]
-    //    [Authorize(Roles = "Owner")]
-    // public async Task<IActionResult> PostRoom(Guid houseId, Guid houseLocationId, CreateRoomDto request)
-    // {
-    //     try
-    //     {
-    //       //  var ownerId = _tokenService.GetUserIdFromClaims(User);
-    //         var createRoom =   await  _roomService.Add( houseId,houseLocationId,request);
-    //         if (!createRoom.IsSuccess)
-    //             return BadRequest(new { message = createRoom.Message });
-    //      
-    //         return CreatedAtAction("GetRoomById", new { id = createRoom.Data.HouseId }, createRoom);
-    //
-    //     }catch (Exception e) {
-    //         return Conflict(new { message = e.Message });
-    //     }
-    //}
+        
     [HttpPost("House/{houseId}")]
     [Authorize(Roles = "Owner")]
     public async Task<IActionResult> PostRoom(Guid houseId, CreateRoomDto request)
@@ -176,20 +134,21 @@ namespace RoomAPI.Controllers
         }
     }
     //     // DELETE: api/Rooms/5
-    [Authorize(Roles = "Owner")]
+    // [Authorize(Roles = "Owner")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteRoom(Guid id)
     {
         try
         {    
-            await  _roomService.Delete(id);
+          var room=  await  _roomService.Delete(id);
+            if (!room.IsSuccess)
+                return BadRequest(new { message = room.Message });
             return NoContent();
         }
         catch (KeyNotFoundException e)
         {
             return NotFound(new { message = e.Message });
         }
-     
     }
     }
 }

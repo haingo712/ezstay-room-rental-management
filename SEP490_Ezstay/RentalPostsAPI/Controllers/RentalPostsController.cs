@@ -1,6 +1,8 @@
 ﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 using RentalPostsAPI.DTO.Request;
 using RentalPostsAPI.DTO.Response;
 using RentalPostsAPI.Service.Interface;
@@ -8,7 +10,7 @@ using System.Security.Claims;
 
 namespace RentalPostsAPI.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("api/[controller]")]
     public class RentalPostsController : ODataController
     {
@@ -21,6 +23,13 @@ namespace RentalPostsAPI.Controllers
             _tokenService = tokenService;
         }
 
+        [HttpGet]
+        [EnableQuery]
+        [Route("/odata/RentalPosts")]
+        public IQueryable<RentalpostDTO> GetOdata()
+        {
+            return _service.GetAllAsQueryable();
+        }
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRentalPostDTO dto)
         {
