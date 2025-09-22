@@ -4,7 +4,7 @@ namespace RoomAPI.DTO.Request;
 
 public class CreateRoomDto
 {
-     [Required]
+    [Required]
     public string RoomName { get; set; } 
     [Range(0.01, double.MaxValue, ErrorMessage = "Area must be greater than zero.")]
     public decimal Area { get; set; }
