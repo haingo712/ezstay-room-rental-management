@@ -5,9 +5,9 @@ using TenantAPI.DTO.Response;
 using TenantAPI.Enum;
 using TenantAPI.Model;
 using TenantAPI.Repository.Interface;
-using TenantAPI.Service.Interface;
+using TenantAPI.Services.Interface;
 
-namespace TenantAPI.Service;
+namespace TenantAPI.Services;
 
 public class TenantService: ITenantService
 {
@@ -139,7 +139,6 @@ public class TenantService: ITenantService
         
         if (request.CheckoutDate < tenant.CheckinDate.AddMonths(1))
             return ApiResponse<TenantDto>.Fail("Ngày trả phòng mới phải cách ngày nhận phòng ít nhất 1 tháng");
-      
         tenant.UpdatedAt = DateTime.UtcNow;
         await _tenantRepository.UpdateAsync(tenant);
         var result = _mapper.Map<TenantDto>(tenant);

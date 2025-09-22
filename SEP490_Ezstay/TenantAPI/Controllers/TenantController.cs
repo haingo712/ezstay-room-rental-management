@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using TenantAPI.DTO.Requests;
+using TenantAPI.DTO.Response;
 using TenantAPI.Model;
-using TenantAPI.Service;
-using TenantAPI.Service.Interface;
+using TenantAPI.Services;
+using TenantAPI.Services.Interface;
 
 namespace TenantAPI.Controllers
 {

@@ -1,9 +1,9 @@
 using MongoDB.Bson.IO;
 using TenantAPI.DTO.Response;
-using TenantAPI.Service.Interface;
+using TenantAPI.Services.Interface;
 using JsonConvert = Newtonsoft.Json.JsonConvert;
 
-namespace TenantAPI.Service;
+namespace TenantAPI.Services;
 
 public class RoomClientService : IRoomClientService
 {
