@@ -5,6 +5,7 @@ using RentalPostsAPI.Models;
 using RentalPostsAPI.Repository.Interface;
 using RentalPostsAPI.Service.Interface;
 using System.Security.Claims;
+using ZstdSharp.Unsafe;
 
 namespace RentalPostsAPI.Service
 {
@@ -76,12 +77,62 @@ namespace RentalPostsAPI.Service
         }
 
 
-        public async Task<IEnumerable<RentalpostDTO>> GetAllAsync()
+        public async Task<IEnumerable<RentalpostDTO>> GetAllForUserAsync()
         {
             var entities = await _repo.GetAllAsync();
-            return _mapper.Map<IEnumerable<RentalpostDTO>>(entities);
+            var dtos = _mapper.Map<List<RentalpostDTO>>(entities);
+
+            for (int i = 0; i < entities.Count(); i++)
+            {
+                var entity = entities.ElementAt(i);
+                var dto = dtos[i];
+
+                // lấy thông tin chủ bài đăng
+                var owner = await _externalService.GetAccountByIdAsync(entity.AuthorId);
+         
+
+                var room = await _externalService.GetRoomByIdAsync(entity.RoomId);
+                var house = room != null
+                    ? await _externalService.GetBoardingHouseByIdAsync(room.HouseId)
+                    : null;
+
+                dto.AuthorName = owner?.FullName ?? "Unknown";
+                dto.ContactPhone = owner?.Phone ?? "";
+                dto.RoomName = room?.RoomName ?? "";
+                dto.HouseName = house?.HouseName ?? "";
+            }
+
+            return dtos;
         }
 
+    
+
+        // Lấy tất cả bài post của Owner hiện tại
+        public async Task<IEnumerable<RentalpostDTO>> GetAllForOwnerAsync(ClaimsPrincipal user)
+        {
+            var ownerId = _tokenService.GetUserIdFromClaims(user);
+
+            var entities = await _repo.GetAllByOwnerIdAsync(ownerId);
+            var dtos = _mapper.Map<List<RentalpostDTO>>(entities);
+
+            for (int i = 0; i < entities.Count(); i++)
+            {
+                var entity = entities.ElementAt(i);
+                var dto = dtos[i];
+
+                var room = await _externalService.GetRoomByIdAsync(entity.RoomId);
+                var house = room != null
+                    ? await _externalService.GetBoardingHouseByIdAsync(room.HouseId)
+                    : null;
+
+                dto.AuthorName = _tokenService.GetFullNameFromClaims(user) ?? "Unknown";
+                dto.ContactPhone = _tokenService.GetPhoneFromClaims(user) ?? "";
+                dto.RoomName = room?.RoomName ?? "";
+                dto.HouseName = house?.HouseName ?? "";
+            }
+
+            return dtos;
+        }
         public async Task<RentalpostDTO?> GetByIdAsync(Guid id)
         {
             var entity = await _repo.GetByIdAsync(id);
