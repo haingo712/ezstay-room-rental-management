@@ -8,6 +8,7 @@ namespace RentalPostsAPI.Service.Interface
 {
     public interface IRentalPostService
     {
+        IQueryable<RentalpostDTO> GetAllAsQueryable();
         Task<ApiResponse<RentalpostDTO>> CreateAsync(CreateRentalPostDTO dto, ClaimsPrincipal user);
         Task<IEnumerable<RentalpostDTO>> GetAllAsync();
         Task<RentalpostDTO?> GetByIdAsync(Guid id);
