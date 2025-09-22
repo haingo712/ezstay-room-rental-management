@@ -63,10 +63,10 @@ namespace RentalPostsAPI.Service
             return await _repo.DeleteAsync(id, deletedBy);
         }
 
-        public async Task<IEnumerable<RentalpostDTO>> GetByRoomIdAsync(Guid roomId)
-        {
-            var entity= await _repo.GetByRoomIdAsync(roomId);
-            return   _mapper.Map<IEnumerable<RentalpostDTO>>(entity);
-        }
+        // public async Task<IEnumerable<RentalpostDTO>> GetByRoomIdAsync(Guid roomId)
+        // {
+        //     var entity= await _repo.GetByRoomIdAsync(roomId);
+        //     return   _mapper.Map<IEnumerable<RentalpostDTO>>(entity);
+        // }
     }
 }
