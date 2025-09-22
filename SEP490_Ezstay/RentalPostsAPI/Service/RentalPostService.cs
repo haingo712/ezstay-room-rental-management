@@ -24,15 +24,58 @@ namespace RentalPostsAPI.Service
             return entity.ProjectTo<RentalpostDTO>(_mapper.ConfigurationProvider);
         }
 
-        public async Task<RentalpostDTO> CreateAsync(CreateRentalPostDTO dto)
+        public async Task<ApiResponse<RentalpostDTO>> CreateAsync(
+            CreateRentalPostDTO dto, ClaimsPrincipal user)
         {
-            var entity = _mapper.Map<RentalPosts>(dto);
-            entity.CreatedAt = DateTime.UtcNow;
-            entity.UpdatedAt = DateTime.UtcNow;
+            // 1. Lấy ownerId từ token
+            var ownerId = _tokenService.GetUserIdFromClaims(user);
+          
+            // 2. Lấy room
+            var room = await _externalService.GetRoomByIdAsync(dto.RoomId);
+            if (room == null)
+                return ApiResponse<RentalpostDTO>.Fail("Room not found");
 
-            var created = await _repo.CreateAsync(entity);
-            return _mapper.Map<RentalpostDTO>(created);
+            // 3. Lấy boarding house từ room.HouseId
+            var house = await _externalService.GetBoardingHouseByIdAsync(room.HouseId);
+            if (house == null)
+                return ApiResponse<RentalpostDTO>.Fail("Boarding house not found");
+
+            // 4. Check quyền: house.OwnerId phải bằng ownerId trong token
+            if (house.OwnerId != ownerId)
+                return ApiResponse<RentalpostDTO>.Fail("You are not the owner of this house");
+
+            // 5. Map DTO → Entity
+            var entity = _mapper.Map<RentalPosts>(dto);
+            entity.Id = Guid.NewGuid();
+            entity.AuthorId = ownerId;
+            entity.CreatedAt = entity.UpdatedAt = DateTime.UtcNow;
+            entity.IsActive = true;
+            entity.IsApproved = 0;
+
+            // 6. Lưu vào DB
+            await _repo.CreateAsync(entity);
+
+            // 7. Tạo DTO trả về (không dùng AutoMapper nữa)
+            var result = new RentalpostDTO
+            {
+                Id = entity.Id,
+                Title = entity.Title,
+                Description = entity.Description,
+                CreatedAt = entity.CreatedAt,
+                UpdatedAt = entity.UpdatedAt,
+                IsActive = entity.IsActive,
+                IsApproved = entity.IsApproved,
+
+                AuthorName = _tokenService.GetFullNameFromClaims(user) ?? "Unknown",
+                ContactPhone = _tokenService.GetPhoneFromClaims(user) ?? "",
+                HouseName = house.HouseName,
+                RoomName = room.RoomName
+            };
+
+            // 8. Trả về
+            return ApiResponse<RentalpostDTO>.Success(result, "Post created successfully");
         }
+
 
         public async Task<IEnumerable<RentalpostDTO>> GetAllAsync()
         {
