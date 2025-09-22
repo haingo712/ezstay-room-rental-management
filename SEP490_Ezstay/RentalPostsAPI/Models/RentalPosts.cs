@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
 namespace RentalPostsAPI.Models
@@ -29,7 +29,7 @@ namespace RentalPostsAPI.Models
         public DateTime? DeletedAt { get; set; }
 
         public int? IsApproved { get; set; }
-
+        
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid? ApprovedByStaff { get; set; }
 
