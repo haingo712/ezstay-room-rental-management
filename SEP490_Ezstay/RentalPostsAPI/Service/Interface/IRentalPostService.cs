@@ -5,8 +5,8 @@ namespace RentalPostsAPI.Service.Interface
 {
     public interface IRentalPostService
     {
-        public IQueryable<RentalpostDTO> GetAllAsQueryable();
-        Task<RentalpostDTO> CreateAsync(CreateRentalPostDTO dto);
+        IQueryable<RentalpostDTO> GetAllAsQueryable();
+        Task<ApiResponse<RentalpostDTO>> CreateAsync(CreateRentalPostDTO dto, ClaimsPrincipal user);
         Task<IEnumerable<RentalpostDTO>> GetAllAsync();
         Task<RentalpostDTO?> GetByIdAsync(Guid id);
         Task<RentalpostDTO?> UpdateAsync(Guid id, UpdateRentalPostDTO dto);
