@@ -26,10 +26,10 @@ public class AmenityRepository:IAmenityRepository
     // {
     //     return await _amenities.AsQueryable().ToListAsync();
     // }
-    public async Task<IEnumerable<Amenity>> GetAllByStaffId(Guid staffId)
-    {
-        return await _amenities.Find(a=> a.StaffId == staffId).ToListAsync();
-    }
+    // public async Task<IEnumerable<Amenity>> GetAllByStaffId(Guid staffId)
+    // {
+    //     return await _amenities.Find(a=> a.StaffId == staffId).ToListAsync();
+    // }
     
     public async Task<Amenity?> GetByIdAsync(Guid id)
     {
