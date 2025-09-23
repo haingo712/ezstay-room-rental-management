@@ -52,7 +52,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoardingHouseAPI", "Boardin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagerAPI", "UserManagerAPI\UserManagerAPI.csproj", "{D67B53F6-BFF1-4BF2-9D89-0275148D3173}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationAPI", "NotificationAPI\NotificationAPI.csproj", "{4507CEDC-2655-4DB9-8299-EAAFA1DD5125}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationAPI", "NotificationAPI\NotificationAPI.csproj", "{4507CEDC-2655-4DB9-8299-EAAFA1DD5125}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FavoritePostAPI", "FavoritePostAPI\FavoritePostAPI.csproj", "{8F902F76-5BFA-47B0-9B8D-2CCFAE3388AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -152,6 +154,10 @@ Global
 		{4507CEDC-2655-4DB9-8299-EAAFA1DD5125}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4507CEDC-2655-4DB9-8299-EAAFA1DD5125}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4507CEDC-2655-4DB9-8299-EAAFA1DD5125}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F902F76-5BFA-47B0-9B8D-2CCFAE3388AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F902F76-5BFA-47B0-9B8D-2CCFAE3388AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F902F76-5BFA-47B0-9B8D-2CCFAE3388AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F902F76-5BFA-47B0-9B8D-2CCFAE3388AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
