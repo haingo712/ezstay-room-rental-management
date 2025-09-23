@@ -1,5 +1,6 @@
 using AutoMapper;
 using AmenityAPI.DTO.Request;
+using AmenityAPI.DTO.Response;
 using AmenityAPI.Models;
 
 namespace AmenityAPI.Mapping;
@@ -10,6 +11,6 @@ public class MappingAmenity:Profile
     {
         CreateMap<CreateAmenityDto, Amenity>();
         CreateMap<UpdateAmenityDto, Amenity>();
-        CreateMap<Amenity, AmenityDto>();
+        CreateMap<Amenity, AmenityResponseDto>();
     }
 }

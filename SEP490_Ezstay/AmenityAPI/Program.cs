@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using System.Text;
 using AmenityAPI.DTO.Request;
+using AmenityAPI.DTO.Response;
 using AmenityAPI.Mapping;
 using AmenityAPI.Repository;
 using AmenityAPI.Repository.Interface;
@@ -98,7 +99,7 @@ builder.Services.AddControllers()
     {
         opt.Select().Filter().OrderBy().Expand().Count().SetMaxTop(100).SkipToken();
         var edmBuilder = new ODataConventionModelBuilder();
-        edmBuilder.EntitySet<AmenityDto>("Amenities"); 
+        edmBuilder.EntitySet<AmenityResponseDto>("Amenities"); 
         opt.AddRouteComponents("odata", edmBuilder.GetEdmModel());
     });
 // builder.Services.AddControllers();

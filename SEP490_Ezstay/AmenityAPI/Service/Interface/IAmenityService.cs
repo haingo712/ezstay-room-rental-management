@@ -7,21 +7,14 @@ namespace AmenityAPI.Service.Interface;
 
 public interface IAmenityService
 {
-    // Task<ApiResponse<IEnumerable<AmenityDto>>>  GetAllByStaffId(Guid staffId);
-    // IQueryable<AmenityDto> GetAllByStaffIdOdata(Guid staffId);
-    // IQueryable<AmenityDto> GetAllOdata();
-    // Task<ApiResponse<IEnumerable<AmenityDto>>> GetAll();
-    // Task<AmenityDto> GetByIdAsync(Guid id);
-    // Task<ApiResponse<AmenityDto>> AddAsync(CreateAmenityDto request);
-    // Task<ApiResponse<bool>> UpdateAsync(Guid id,UpdateAmenityDto request);
-    // Task DeleteAsync(Guid id);
-    Task<ApiResponse<IEnumerable<AmenityDto>>>  GetAllByStaffId(Guid staffId);
-    IQueryable<AmenityDto> GetAllByStaffIdAsQueryable(Guid staffId);
-    IQueryable<AmenityDto> GetAllAsQueryable();
-    Task<ApiResponse<IEnumerable<AmenityDto>>> GetAll();
-    Task<AmenityDto> GetByIdAsync(Guid id);
-    Task<ApiResponse<AmenityDto>> AddAsync(Guid staffId, CreateAmenityDto request);
-    Task<ApiResponse<bool>> UpdateAsync(Guid accountId,Guid id,UpdateAmenityDto request);
+  //  Task<ApiResponse<IEnumerable<AmenityResponseDto>>>  GetAllByStaffId(Guid staffId);
+  //  IQueryable<AmenityResponseDto> GetAllByStaffIdAsQueryable(Guid staffId);
+    IQueryable<AmenityResponseDto> GetAllAsQueryable();
+    Task<ApiResponse<IEnumerable<AmenityResponseDto>>> GetAll();
+    Task<AmenityResponseDto> GetByIdAsync(Guid id);
+   // Task<ApiResponse<AmenityResponseDto>> AddAsync(Guid staffId, CreateAmenityDto request);
+    Task<ApiResponse<AmenityResponseDto>> AddAsync(CreateAmenityDto request);
+    Task<ApiResponse<bool>> UpdateAsync(Guid id,UpdateAmenityDto request);
     Task DeleteAsync(Guid id);
     
 }

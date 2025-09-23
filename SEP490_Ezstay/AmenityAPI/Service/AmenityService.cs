@@ -15,93 +15,78 @@ public class AmenityService: IAmenityService
 {
     private readonly IMapper _mapper;
     private readonly IAmenityRepository _amenityRepository;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    public AmenityService(IMapper mapper, IAmenityRepository amenityRepository, IHttpContextAccessor httpContextAccessor)
+    public AmenityService(IMapper mapper, IAmenityRepository amenityRepository)
     {
         _mapper = mapper;
         _amenityRepository = amenityRepository;
-        _httpContextAccessor = httpContextAccessor;
-     
     }
-    
-      public async Task<ApiResponse<IEnumerable<AmenityDto>>> GetAllByStaffId(Guid staffId)
+      // public async Task<ApiResponse<IEnumerable<AmenityResponseDto>>> GetAllByStaffId(Guid staffId)
+      // {
+      //     var amenity =  await _amenityRepository.GetAllByStaffId(staffId);
+      //     var c=  _mapper.Map<IEnumerable<AmenityResponseDto>>(amenity);
+      //     return ApiResponse<IEnumerable<AmenityResponseDto>>.Success(c, "ok");
+      // }
+      public async Task<ApiResponse<IEnumerable<AmenityResponseDto>>> GetAll()
       {
-          var amenity =  await _amenityRepository.GetAllByStaffId(staffId);
-          var c=  _mapper.Map<IEnumerable<AmenityDto>>(amenity);
-          return ApiResponse<IEnumerable<AmenityDto>>.Success(c, "ok");
-      }
-      
-
-      public async Task<ApiResponse<IEnumerable<AmenityDto>>> GetAll()
-      {
-         var result =  _mapper.Map<IEnumerable<AmenityDto>>(await _amenityRepository.GetAll()) ;
-         if (result == null || !result.Any())
+         var result =  _mapper.Map<IEnumerable<AmenityResponseDto>>(await _amenityRepository.GetAll()) ;
+         if (result == null)
          {
-             return ApiResponse<IEnumerable<AmenityDto>>.Fail("Không có tiện ích nào.");
+             return ApiResponse<IEnumerable<AmenityResponseDto>>.Fail("Không có tiện ích nào.");
          }
-           return ApiResponse<IEnumerable<AmenityDto>>.Success(result);
+           return ApiResponse<IEnumerable<AmenityResponseDto>>.Success(result);
       }
-      public IQueryable<AmenityDto> GetAllAsQueryable()
+      public IQueryable<AmenityResponseDto> GetAllAsQueryable()
       {
           var amenity = _amenityRepository.GetAllAsQueryable();
       
-          return amenity.ProjectTo<AmenityDto>(_mapper.ConfigurationProvider);
+          return amenity.ProjectTo<AmenityResponseDto>(_mapper.ConfigurationProvider);
       }
-    public IQueryable<AmenityDto> GetAllByStaffIdAsQueryable(Guid staffId)
-    {
-         
-        var amenity =   _amenityRepository.GetAllAsQueryable().Where(x=> x.StaffId == staffId);
-      
-        return amenity.ProjectTo<AmenityDto>(_mapper.ConfigurationProvider);
-    }
-    public async Task<AmenityDto> GetByIdAsync(Guid id)
+    // public IQueryable<AmenityResponseDto> GetAllByStaffIdAsQueryable(Guid staffId)
+    // {
+    //      
+    //     var amenity =   _amenityRepository.GetAllAsQueryable().Where(x=> x.StaffId == staffId);
+    //   
+    //     return amenity.ProjectTo<AmenityResponseDto>(_mapper.ConfigurationProvider);
+    // }
+    public async Task<AmenityResponseDto> GetByIdAsync(Guid id)
     {
         var amenity = await _amenityRepository.GetByIdAsync(id);
         if (amenity == null)
             throw new KeyNotFoundException("AmentityId not found");
-      return   _mapper.Map<AmenityDto>(amenity);
+        return   _mapper.Map<AmenityResponseDto>(amenity);
     }
-
-    public async  Task<ApiResponse<AmenityDto>> AddAsync(Guid staffId, CreateAmenityDto request )
+    public async  Task<ApiResponse<AmenityResponseDto>> AddAsync(CreateAmenityDto request )
     { 
         var exist = await _amenityRepository.AmenityNameExistsAsync(request.AmenityName);
         if (exist)
-            return ApiResponse<AmenityDto>.Fail("Tiện ích đã có rồi.");
+            return ApiResponse<AmenityResponseDto>.Fail("Tiện ích đã có rồi.");
         var amenity = _mapper.Map<Amenity>(request);
         amenity.CreatedAt = DateTime.UtcNow;
-        amenity.StaffId = staffId;
         await _amenityRepository.AddAsync(amenity);
-        var result =_mapper.Map<AmenityDto>(amenity);
-        return  ApiResponse<AmenityDto>.Success(result,"Thêm tiện ích thành công");
+        var result =_mapper.Map<AmenityResponseDto>(amenity);
+        return  ApiResponse<AmenityResponseDto>.Success(result,"Thêm tiện ích thành công");
     }
 
-    public async Task<ApiResponse<bool>> UpdateAsync(Guid accountId,Guid id, UpdateAmenityDto request)
+    public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateAmenityDto request)
     {
         var amenity =await _amenityRepository.GetByIdAsync(id);
         if (amenity == null)
             throw new KeyNotFoundException("AmentityId not found");
-        // if (amenity.StaffId != accountId)
-        //     return ApiResponse<bool>.Fail("Bạn không có quyền cập nhật Amenity này");
-
         var existAmentityName = await _amenityRepository.AmenityNameExistsAsync(request.AmenityName);
         if(existAmentityName)
             return ApiResponse<bool>.Fail("Tiện ích đã có rồi.");
+        
          _mapper.Map(request, amenity);
          amenity.UpdatedAt = DateTime.UtcNow;
          await _amenityRepository.UpdateAsync(amenity);
-        var result = _mapper.Map<AmenityDto>(amenity);
+        var result = _mapper.Map<AmenityResponseDto>(amenity);
         return ApiResponse<bool>.Success(true,"Cập nhật tiện ích thành công");
     }
     public async Task DeleteAsync(Guid id)
     {
         var amenity = await _amenityRepository.GetByIdAsync(id);
-        
         if (amenity==null) 
             throw new KeyNotFoundException("AmentityId not found");
-        
-        // if (amenity.StaffId != accountId)
-        //     return ApiResponse<bool>.Fail("Bạn không có quyền cập nhật Amenity này");
-
         await _amenityRepository.DeleteAsync(amenity);
     }
 }

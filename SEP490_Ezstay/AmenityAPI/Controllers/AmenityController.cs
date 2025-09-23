@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AmenityAPI.DTO.Request;
+using AmenityAPI.DTO.Response;
 using AmenityAPI.Models;
 using AmenityAPI.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
@@ -20,40 +21,43 @@ namespace AmenityAPI.Controllers
     public class AmenityController : ODataController
     {
         private readonly IAmenityService _amenityService;
-        private readonly ITokenService _tokenService;
-
-        public AmenityController(IAmenityService amenityService, ITokenService tokenService)
+      //  private readonly ITokenService _tokenService;
+      // public AmenityController(IAmenityService amenityService, ITokenService tokenService)
+      // {
+      //     _amenityService = amenityService;
+      //     _tokenService = tokenService;
+      // }
+        public AmenityController(IAmenityService amenityService)
         {
             _amenityService = amenityService;
-            _tokenService = tokenService;
         }
-        [HttpGet("ByStaffId/odata/")]
-        [Authorize(Roles = "Staff")]
-        [EnableQuery]
-        public IQueryable<AmenityDto> GetAmenitiesByOwnerIdOdata( )
-        {
-            var staffId = _tokenService.GetUserIdFromClaims(User);
-            return _amenityService.GetAllByStaffIdAsQueryable(staffId);
-        }
+        // [HttpGet("ByStaffId/odata/")]
+        // [Authorize(Roles = "Staff")]
+        // [EnableQuery]
+        // public IQueryable<AmenityResponseDto> GetAmenitiesByOwnerIdOdata( )
+        // {
+        //     var staffId = _tokenService.GetUserIdFromClaims(User);
+        //     return _amenityService.GetAllByStaffIdAsQueryable(staffId);
+        // }
         
-        [HttpGet("ByStaffId")]
-        [Authorize(Roles = "Staff")]
-        public async Task<ActionResult<AmenityDto>> GetAmenitiesByStaffId()
-        {
-            var staffId = _tokenService.GetUserIdFromClaims(User);
-            return Ok( await _amenityService.GetAllByStaffId(staffId));
-        }
-        
+        // [HttpGet("ByStaffId")]
+        // [Authorize(Roles = "Staff")]
+        // public async Task<ActionResult<AmenityResponseDto>> GetAmenitiesByStaffId()
+        // {
+        //     var staffId = _tokenService.GetUserIdFromClaims(User);
+        //     return Ok( await _amenityService.GetAllByStaffId(staffId));
+        // }
+        //
         [HttpGet("/odata/Amenities")]
         [EnableQuery(PageSize = 3)]
-        public IQueryable<AmenityDto> GetAmenitiesOdata()
+        public IQueryable<AmenityResponseDto> GetAmenitiesOdata()
         {
             return  _amenityService.GetAllAsQueryable();
         }
         
         [HttpGet]
         [Authorize(Roles = "Staff")]
-        public  async Task<ActionResult<AmenityDto>> GetAmenities()
+        public  async Task<ActionResult<AmenityResponseDto>> GetAmenities()
         {
             return Ok(await _amenityService.GetAll());
         }
@@ -72,16 +76,15 @@ namespace AmenityAPI.Controllers
                 return NotFound(new { message = e.Message });
             }
         }
-
+        
         // PUT: api/Amenity/5
         [HttpPut("{id}")]
         [Authorize(Roles = "Staff")]
-        public async Task<IActionResult> PutAmenity(Guid id, UpdateAmenityDto request)
+        public async Task<IActionResult> PutAmenity(Guid id, [FromBody] UpdateAmenityDto request)
         {
             try
             {
-                var accountId = _tokenService.GetUserIdFromClaims(User);
-                var updateAmentity =  await _amenityService.UpdateAsync(accountId ,id, request);
+                var updateAmentity =  await _amenityService.UpdateAsync(id, request);
                 if (!updateAmentity.IsSuccess)
                 {
                     return BadRequest(new { message = updateAmentity.Message });
@@ -96,12 +99,12 @@ namespace AmenityAPI.Controllers
         
         [HttpPost]
         [Authorize(Roles = "Staff")]
-        public async Task<ActionResult<AmenityDto>> PostAmenity(CreateAmenityDto request)
+        public async Task<ActionResult<AmenityResponseDto>> PostAmenity([FromBody] CreateAmenityDto request)
         {
             try
             {
-                var staffId = _tokenService.GetUserIdFromClaims(User);
-                var createAmentity =   await  _amenityService.AddAsync(staffId, request);
+                // var staffId = _tokenService.GetUserIdFromClaims(User);
+                var createAmentity =   await  _amenityService.AddAsync(request);
                 if (!createAmentity.IsSuccess)
                 {
                     return BadRequest(new { message = createAmentity.Message });
@@ -121,7 +124,6 @@ namespace AmenityAPI.Controllers
         {
             try
             { 
-               // var staffId = _tokenService.GetUserIdFromClaims(User);
                 await _amenityService.DeleteAsync( id);
                 return NoContent();
             }
