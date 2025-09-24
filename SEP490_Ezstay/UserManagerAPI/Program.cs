@@ -1,19 +1,24 @@
-﻿using UserManagerAPI.Service.Interfaces;
-using UserManagerAPI.Service;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using UserManagerAPI.Service.Interfaces;
+using UserManagerAPI.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddHttpClient<IAccountApiClient, AccountApiClient>();
 
-// ✅ Thêm Authentication
+// Đăng ký HttpClient để gọi sang AuthApi
+builder.Services.AddHttpClient<IAccountApiClient, AccountApiClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:AccountApiBaseUrl"]!);
+});
+
+// JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -32,13 +37,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// Swagger với JWT
+// Swagger with JWT support
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserManager", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "UserManager API", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = @"Nhập vào JWT token theo định dạng: Bearer {token}",
+        Description = @"Nhập JWT token theo định dạng: Bearer {token}",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
@@ -53,10 +58,7 @@ builder.Services.AddSwaggerGen(c =>
                 {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
-                },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header
+                }
             },
             new List<string>()
         }
@@ -65,7 +67,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Configure middleware
+// Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -74,7 +76,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// ✅ Đặt Authentication trước Authorization
+// Auth pipeline
 app.UseAuthentication();
 app.UseAuthorization();
 
