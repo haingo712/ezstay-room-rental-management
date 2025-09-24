@@ -70,14 +70,24 @@ namespace RoomAPI.Controllers
             return _roomService.GetAllQueryable();
         }
         
-        
-        
         [HttpGet("ByHouseId/{houseId}")]
         [EnableQuery]        
         public IQueryable<RoomDto> GetRoomsByHouseId(Guid houseId)
         {
             return _roomService.GetAllByHouseId(houseId);
         }
+        [HttpGet("ByHouseId/{houseId}/Status")]
+        [EnableQuery]        
+        public IQueryable<RoomDto> GetRoomsStatusByHouseId(Guid houseId)
+        {
+            return _roomService.GetAllStatusActiveByHouseId(houseId);
+        }
+        // [HttpGet("ByHouseId/{houseId}")]
+        // [EnableQuery]        
+        // public IQueryable<RoomDto> GetRoomsStatusActiveByHouseId(Guid houseId)
+        // {
+        //     return _roomService.GetAllByHouseId(houseId);
+        // }
     
         // GET: api/Rooms/5
         [HttpGet("{id}")]
