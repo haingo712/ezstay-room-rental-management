@@ -1,6 +1,38 @@
 {
     "Routes": [
       {
+        "DownstreamPathTemplate": "/api/IdentityProfile/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7046
+          }
+        ],
+        "UpstreamPathTemplate": "/api/IdentityProfile/{everything}",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        }
+      },
+      {
+        "DownstreamPathTemplate": "/api/Contract/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7153
+          }
+        ],
+        "UpstreamPathTemplate": "/api/Contract/{everything}",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        }
+      },
+      {
         "DownstreamPathTemplate": "/api/User/{everything}",
         "DownstreamScheme": "https",
         "DownstreamHostAndPorts": [
