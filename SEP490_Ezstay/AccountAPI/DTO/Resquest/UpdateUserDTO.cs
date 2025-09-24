@@ -5,7 +5,7 @@ namespace AccountAPI.DTO.Request
 {
     public class UpdateUserDTO
     {
-        public GenderEnum? Gender { get; set; } // dùng ? cho nullable để tránh lỗi FormData
+        public GenderEnum? Gender { get; set; }
         public string? Bio { get; set; }
         public DateTime? DateOfBirth { get; set; }
 
@@ -14,7 +14,8 @@ namespace AccountAPI.DTO.Request
         public string? FullName { get; set; }
         public string? Phone { get; set; }
 
-        public string? ProvinceId { get; set; }
-        public string? CommuneId { get; set; }
+        public string? ProvinceCode { get; set; }
+        public string? CommuneCode { get; set; }
+
     }
 }

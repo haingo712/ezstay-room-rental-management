@@ -62,17 +62,18 @@ namespace AccountAPI.Controllers
                 ? Ok(ApiResponse<string>.Ok(null, "Cập nhật số điện thoại thành công"))
                 : BadRequest(ApiResponse<string>.Fail("Không cập nhật được số điện thoại"));
         }
-
         [HttpPut("update-profile")]
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserDTO dto)
         {
             var userId = _userClaimHelper.GetUserId(User);
             var updated = await _userService.UpdateProfileAsync(userId, dto);
 
-            return updated
-                ? Ok(ApiResponse<string>.Ok(null, "Cập nhật thông tin thành công"))
-                : BadRequest(ApiResponse<string>.Fail("Cập nhật thất bại"));
+            if (!updated)
+                return BadRequest(ApiResponse<string>.Fail("ProvinceCode hoặc CommuneCode không hợp lệ"));
+
+            return Ok(ApiResponse<string>.Ok(null, "Cập nhật thông tin thành công"));
         }
+
 
 
         [HttpPut("update-email")]
