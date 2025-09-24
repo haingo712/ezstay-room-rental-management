@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using ContractAPI.DTO.Requests;
 using ContractAPI.DTO.Response;
+using ContractAPI.Enum;
 using ContractAPI.Model;
 using ContractAPI.Services;
 using ContractAPI.Services.Interfaces;
@@ -42,11 +43,20 @@ namespace ContractAPI.Controllers
        }
        
        [Authorize(Roles = "Owner")]
-       [HttpGet("ByOwnerId/{ownerId}")]
+       [HttpGet("ByOwnerId")]
        [EnableQuery]
-       public IQueryable<ContractResponseDto> GetContractsByOwnerId(Guid ownerId)
+       public IQueryable<ContractResponseDto> GetContractsByOwnerId()
        {
+         var ownerId=  _tokenService.GetUserIdFromClaims(User);
            return _contractService.GetAllByOwnerId(ownerId);
+       }
+       [Authorize(Roles = "Owner")]
+       [HttpGet("ContractStatus")]
+       [EnableQuery]
+       public IQueryable<ContractResponseDto> GetContractsStatusByOwnerId(ContractStatus contractStatus)
+       {
+           var ownerId=  _tokenService.GetUserIdFromClaims(User);
+           return _contractService.GetAllByOwnerId(ownerId, contractStatus);
        }
         
         // [Authorize(Roles = "Owner")]
