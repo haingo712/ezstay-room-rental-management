@@ -8,6 +8,7 @@ public interface IRoomService
     IQueryable<RoomDto>  GetAllQueryable();
     //Task<IEnumerable<RoomDto>> GetAllByHouseId(int houseId);
     IQueryable<RoomDto> GetAllByHouseId(Guid houseId);
+    IQueryable<RoomDto> GetAllStatusActiveByHouseId(Guid houseId);
     Task<RoomDto> GetById(Guid id);
    // Task<ApiResponse<RoomDto>> Add(CreateRoomDto request);
     // Task<ApiResponse<RoomDto>> Add(Guid houseId, Guid houseLocationId, CreateRoomDto request);

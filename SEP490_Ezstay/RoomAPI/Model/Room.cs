@@ -14,14 +14,10 @@ namespace RoomAPI.Model
         public Guid Id { get; set; } = Guid.NewGuid();
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid HouseId { get; set; }
-      //  [BsonGuidRepresentation(GuidRepresentation.Standard)]
-      //  public Guid HouseLocationId { get; set; }
-      public string RoomName { get; set; } = null!;
-      
+        public string RoomName { get; set; } = null!;
         public decimal? Area { get; set; }
         public decimal Price { get; set; }
         public RoomStatus RoomStatus { get; set; }
-        
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
