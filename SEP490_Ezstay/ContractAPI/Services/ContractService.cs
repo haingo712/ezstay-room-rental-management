@@ -27,19 +27,17 @@ public class ContractService : IContractService
 
     public IQueryable<ContractResponseDto> GetAllByTenantId(Guid tenantId)
         => _contractRepository.GetAllQueryable()
-                              .Where(x => x.TenantId == tenantId)
+                              .Where(x => x.TenantId == tenantId).OrderByDescending(d => d.CreatedAt)
                               .ProjectTo<ContractResponseDto>(_mapper.ConfigurationProvider);
 
     public IQueryable<ContractResponseDto> GetAllByOwnerId(Guid ownerId)
         => _contractRepository.GetAllQueryable()
-                              .Where(x => x.OwnerId == ownerId)
+                              .Where(x => x.OwnerId == ownerId).OrderByDescending(d => d.CreatedAt)
                               .ProjectTo<ContractResponseDto>(_mapper.ConfigurationProvider);
 
     public async Task<ContractResponseDto?> GetByIdAsync(Guid id)
-    {
-        var contract = await _contractRepository.GetByIdAsync(id);
-        return _mapper.Map<ContractResponseDto>(contract);
-    }
+    => _mapper.Map<ContractResponseDto>(await _contractRepository.GetByIdAsync(id));
+    
 
     public async Task<ApiResponse<ContractResponseDto>> AddAsync(Guid ownerId, CreateContractDto request)
     {
@@ -60,7 +58,6 @@ public class ContractService : IContractService
         contract.OwnerId = ownerId;
         contract.CreatedAt = DateTime.UtcNow;
         contract.ContractStatus = ContractStatus.Active;
-        
         await _roomClient.UpdateRoomStatusAsync(request.RoomId, "Occupied");
         await _contractRepository.AddAsync(contract);
         
@@ -136,7 +133,7 @@ public class ContractService : IContractService
         contract.UpdatedAt = DateTime.UtcNow;
         contract.CheckoutDate = request.CheckoutDate;
         await _contractRepository.UpdateAsync(contract);
-
+        
         var result = _mapper.Map<ContractResponseDto>(contract);
         return ApiResponse<ContractResponseDto>.Success(result, "Gia hạn hợp đồng thành công");
     }

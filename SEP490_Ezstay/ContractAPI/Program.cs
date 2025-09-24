@@ -1,5 +1,11 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using ContractAPI.DTO.Response;
+using ContractAPI.Profiles;
+using ContractAPI.Repository;
+using ContractAPI.Repository.Interface;
+using ContractAPI.Services;
+using ContractAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OData;
 using Microsoft.IdentityModel.Tokens;
@@ -14,40 +20,34 @@ var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:Conne
 builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-// builder.Services.AddScoped<ITokenService, TokenService>();
-// builder.Services.AddScoped<ITenantRepository, TenantRepository>();
-// builder.Services.AddScoped<ITenantService, TenantService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IContractRepository, ContractRepository>();
+builder.Services.AddScoped<IContractService, ContractService>();
 
 // builder.Services.AddScoped<IIdentityProfileService, IIdentityProfileService>();
 // builder.Services.AddScoped<IIdentityProfileRepository, IIdentityProfileRepository>();
 // var serviceUrls = builder.Configuration.GetSection("ServiceUrls");
 
-// builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
-// {
-//     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RoomApi"]);
-// });
+builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RoomApi"]);
+});
 
 
-// builder.Services.AddHttpClient<IAmenityClientService, AmenityClientService>(client =>
-// {
-//     client.BaseAddress = new Uri(serviceUrls["AmenityApi"]);
-// });
 
+ builder.Services.AddAutoMapper(typeof(MappingContract).Assembly);
 
-// builder.Services.AddAutoMapper(typeof(MappingTenant).Assembly);
-
-// var odatabuilder = new ODataConventionModelBuilder();
-// odatabuilder.EntitySet<TenantDto>("Tenants");
-// odatabuilder.EntitySet<IdentityProfileResponseDto>("IdentityProfiles");
-// var odata = odatabuilder.GetEdmModel();
-// builder.Services.AddControllers().AddOData(options =>
-//     options.AddRouteComponents("odata", odata)
-//         .SetMaxTop(100)
-//         .Count()
-//         .Filter()
-//         .OrderBy()
-//         .Expand()
-//         .Select());
+var odatabuilder = new ODataConventionModelBuilder();
+odatabuilder.EntitySet<ContractResponseDto>("Contract");
+var odata = odatabuilder.GetEdmModel();
+builder.Services.AddControllers().AddOData(options =>
+    options.AddRouteComponents("odata", odata)
+        .SetMaxTop(100)
+        .Count()
+        .Filter()
+        .OrderBy()
+        .Expand()
+        .Select());
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
@@ -73,7 +73,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TenantAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ContractAPI", Version = "v1" });
 
                 // Thêm JWT Security
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

@@ -21,9 +21,6 @@ namespace ContractAPI.Model
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid RoomId {get; set;}
         
-        [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid IdentityProfileId {get; set;}
-        
         public DateTime CheckinDate { get; set;}
         public DateTime CheckoutDate { get; set;}
         public ContractStatus  ContractStatus{ get; set;}
@@ -34,6 +31,9 @@ namespace ContractAPI.Model
         public decimal DepositAmount { get; set; }  //  Tiền cọc
         public DateTime CreatedAt {get;set;}
         public DateTime UpdatedAt {get;set;}
+        
+        public DateTime CanceledAt { get; set; }
+
     }
 }
 

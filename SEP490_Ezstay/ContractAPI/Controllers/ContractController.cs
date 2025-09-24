@@ -32,13 +32,21 @@ namespace ContractAPI.Controllers
        {
            return _contractService.GetAllQueryable();
        }
-        
-       [Authorize(Roles = "Owner")]
+       
+       [Authorize(Roles = "User")]
        [HttpGet("ByTenantId/{tenantId}")]
        [EnableQuery]
        public IQueryable<ContractResponseDto> GetContractsByTenantId(Guid tenantId)
        {
            return _contractService.GetAllByTenantId(tenantId);
+       }
+       
+       [Authorize(Roles = "Owner")]
+       [HttpGet("ByOwnerId/{ownerId}")]
+       [EnableQuery]
+       public IQueryable<ContractResponseDto> GetContractsByOwnerId(Guid ownerId)
+       {
+           return _contractService.GetAllByOwnerId(ownerId);
        }
         
         // [Authorize(Roles = "Owner")]
@@ -65,7 +73,25 @@ namespace ContractAPI.Controllers
                 return NotFound(new { message = e.Message });
             }
         }
+        [Authorize(Roles = "Owner")]
+        [HttpPost]
+        public async Task<ActionResult<ContractResponseDto>> PostContract(CreateContractDto request)
+        {
+            try
+            {
+                var ownerId = _tokenService.GetUserIdFromClaims(User);
+                var createContract = await _contractService.AddAsync(ownerId, request);
 
+                if (!createContract.IsSuccess)
+                    return BadRequest(new { message = createContract.Message });
+
+                return CreatedAtAction("GetContractById", new { id = createContract.Data.Id }, createContract);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
+            }
+        }
         
         [Authorize(Roles = "Owner")]
         [HttpPut("{id}")]
@@ -86,25 +112,8 @@ namespace ContractAPI.Controllers
             }
         }
         
+       
         [Authorize(Roles = "Owner")]
-        [HttpPost]
-        public async Task<ActionResult<ContractResponseDto>> PostContract(CreateContractDto request)
-        {
-            try
-            {
-                var ownerId = _tokenService.GetUserIdFromClaims(User);
-                var createContract = await _contractService.AddAsync(ownerId, request);
-
-                if (!createContract.IsSuccess)
-                    return BadRequest(new { message = createContract.Message });
-
-                return CreatedAtAction("GetContractById", new { id = createContract.Data.Id }, createContract);
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(new { message = e.Message });
-            }
-        }
         [HttpPut("{id}/extendcontract")]
         public async Task<IActionResult> ExtendContract(Guid id, [FromBody] ExtendContractDto dto)
         {
@@ -121,20 +130,36 @@ namespace ContractAPI.Controllers
                 return NotFound(new { message = e.Message });
             }
         }
+        [Authorize(Roles = "Owner, User")]
+        [HttpPut("{id}/cancelcontract")]
+        public async Task<IActionResult> CancelContract(Guid id, [FromBody] string reason )
+        {
+            try
+            {
+                var result = await _contractService.CancelContractAsync(id, reason);
+                if (!result.IsSuccess)
+                    return BadRequest(new { message = result.Message });
+                return Ok(result);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
+            }
+        }
 
         // // DELETE: api/Tenant/5
-        // [HttpDelete("{id}")]
-        // public async Task<IActionResult> DeleteTenant(int id)
-        // {
-        //     try
-        //     {
-        //         await _tenantService.DeleteAsync(id);
-        //         return NoContent();
-        //     }
-        //     catch (KeyNotFoundException e)
-        //     {
-        //         return NotFound(new { message = e.Message });
-        //     }
-        // }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteContract(Guid id)
+        {
+            try
+            {
+                await _contractService.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
+            }
+        }
     }
 }
