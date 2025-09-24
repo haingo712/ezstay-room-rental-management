@@ -24,8 +24,8 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IContractRepository, ContractRepository>();
 builder.Services.AddScoped<IContractService, ContractService>();
 
-// builder.Services.AddScoped<IIdentityProfileService, IIdentityProfileService>();
-// builder.Services.AddScoped<IIdentityProfileRepository, IIdentityProfileRepository>();
+builder.Services.AddScoped<IIdentityProfileService, IdentityProfileService>();
+builder.Services.AddScoped<IIdentityProfileRepository, IdentityProfileRepository>();
 // var serviceUrls = builder.Configuration.GetSection("ServiceUrls");
 
 builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
@@ -39,6 +39,7 @@ builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
 
 var odatabuilder = new ODataConventionModelBuilder();
 odatabuilder.EntitySet<ContractResponseDto>("Contract");
+odatabuilder.EntitySet<IdentityProfileResponseDto>("IdentityProfile");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>
     options.AddRouteComponents("odata", odata)

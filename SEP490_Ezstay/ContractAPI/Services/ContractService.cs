@@ -35,6 +35,12 @@ public class ContractService : IContractService
                               .Where(x => x.OwnerId == ownerId).OrderByDescending(d => d.CreatedAt)
                               .ProjectTo<ContractResponseDto>(_mapper.ConfigurationProvider);
 
+        
+    public IQueryable<ContractResponseDto> GetAllByOwnerId(Guid ownerId, ContractStatus contractStatus)
+        => _contractRepository.GetAllQueryable()
+            .Where(x => x.OwnerId == ownerId && x.ContractStatus == contractStatus).OrderByDescending(d => d.CreatedAt)
+            .ProjectTo<ContractResponseDto>(_mapper.ConfigurationProvider);
+
     public async Task<ContractResponseDto?> GetByIdAsync(Guid id)
     => _mapper.Map<ContractResponseDto>(await _contractRepository.GetByIdAsync(id));
     
@@ -143,7 +149,8 @@ public class ContractService : IContractService
         var contract = await _contractRepository.GetByIdAsync(id);
         if (contract == null) 
             throw new KeyNotFoundException("Không tìm thấy hợp đồng");
-        
+        if (contract.ContractStatus != ContractStatus.Active)
+            return ApiResponse<bool>.Fail("Phòng k thể xoá vì hợp đồng đã kí");
         await _contractRepository.DeleteAsync(contract);
         return ApiResponse<bool>.Success(true, "Xoá hợp đồng thành công");
     }
