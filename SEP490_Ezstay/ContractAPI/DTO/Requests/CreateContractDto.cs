@@ -7,7 +7,6 @@ public class CreateContractDto
     public Guid TenantId { get; set; }
     [Required]
     public Guid RoomId { get; set; }
-    public Guid IdentityProfileId { get; set; }
 
     [Required]
     public DateTime CheckinDate { get; set; }
