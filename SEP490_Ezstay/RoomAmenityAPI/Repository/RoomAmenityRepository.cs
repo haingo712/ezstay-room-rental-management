@@ -41,9 +41,6 @@ public class RoomAmenityRepository:IRoomAmenityRepository
     
     public async Task DeleteAsync(RoomAmenity roomAmenity)
     { 
-        //  var ids = roomAmenity.Select(x => x.Id).ToList();
-        // var filter = Builders<RoomAmenity>.Filter.In(x => x.Id, roomAmenity);
-        //  await _collection.DeleteManyAsync(filter);
         await _roomAmenities.DeleteOneAsync(r => r.Id == roomAmenity.Id);
     }
 }

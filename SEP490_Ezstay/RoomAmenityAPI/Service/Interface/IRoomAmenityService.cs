@@ -5,13 +5,11 @@ namespace RoomAmenityAPI.Service.Interface;
 
 public interface IRoomAmenityService
 {
-    IQueryable<RoomAmenityDto> GetAllByRoomId(Guid roonId);
-    IQueryable<RoomAmenityDto> GetAll();
+    IQueryable<RoomAmenityResponseDto> GetAllByRoomId(Guid roonId);
+    IQueryable<RoomAmenityResponseDto> GetAll();
   //  IQueryable<RoomAmenityDto> GetAllByOwnerId(Guid ownerId);
-    Task<RoomAmenityDto> GetByIdAsync(Guid id);
-    Task<List<RoomAmenityDto>> GetRoomAmenitiesByRoomIdAsync(Guid roomId);
-    Task<ApiResponse<List<RoomAmenityDto>>> AddAsync(Guid roomId, List<CreateRoomAmenityDto> request);
-    Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateRoomAmenityDto request);
-    Task DeleteAsync(Guid id);
+    Task<RoomAmenityResponseDto> GetByIdAsync(Guid id);
+    Task<List<RoomAmenityResponseDto>> GetRoomAmenitiesByRoomIdAsync(Guid roomId);
+    Task<ApiResponse<List<RoomAmenityResponseDto>>> AddAsync(Guid roomId, List<CreateRoomAmenityDto> request);
     
 }
