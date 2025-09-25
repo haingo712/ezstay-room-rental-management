@@ -23,6 +23,15 @@ namespace AuthApi.Services
         public async Task<AccountResponse> CreateAsync(AccountRequest request)
         {
             var account = _mapper.Map<Account>(request);
+
+            // Rule xử lý Role
+            if (request.Role == RoleEnum.Admin)
+                account.Role = RoleEnum.Staff;
+            else if (request.Role == RoleEnum.Staff)
+                account.Role = RoleEnum.Owner;
+            else
+                account.Role = RoleEnum.User;
+
             account.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
             account.IsVerified = false;
             account.IsBanned = false;
@@ -53,13 +62,32 @@ namespace AuthApi.Services
             acc.Phone = request.Phone;
             acc.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
+            // Rule Role
+            if (request.Role == RoleEnum.Admin)
+                acc.Role = RoleEnum.Staff;
+            else if (request.Role == RoleEnum.Staff)
+                acc.Role = RoleEnum.Owner;
+            else
+                acc.Role = RoleEnum.User;
+
             var updated = await _repo.UpdateAsync(acc);
             return updated == null ? null : _mapper.Map<AccountResponse>(updated);
         }
 
-        public async Task VerifyAsync(string email) => await _repo.MarkAsVerified(email);
-        public async Task BanAsync(Guid id) => await _repo.BanAccountAsync(id, true);
-        public async Task UnbanAsync(Guid id) => await _repo.BanAccountAsync(id, false);
+        public async Task VerifyAsync(string email)
+        {
+            await _repo.MarkAsVerified(email);
+        }
+
+        public async Task BanAsync(Guid id)
+        {
+            await _repo.BanAccountAsync(id, true);
+        }
+
+        public async Task UnbanAsync(Guid id)
+        {
+            await _repo.BanAccountAsync(id, false); 
+        }
 
 
     }

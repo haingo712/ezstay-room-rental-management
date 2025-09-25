@@ -10,8 +10,7 @@ namespace AccountAPI.DTO.Response
         public string FullName { get; set; }
         public string Phone { get; set; }
 
-        public string? Province { get; set; }   // Tên tỉnh/thành
-        public string? Commune { get; set; }    // Tên xã/phường
+        public string Address { get; set; }
         public GenderEnum Gender { get; set; }
         public string Bio { get; set; }
         public DateTime DateOfBirth { get; set; }
