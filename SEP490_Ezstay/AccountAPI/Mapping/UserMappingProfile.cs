@@ -12,16 +12,8 @@ namespace AccountAPI.Mapping
         {
             CreateMap<UserDTO, User>();
             CreateMap<User, UserResponseDTO>();
-
             CreateMap<UpdateUserDTO, User>()
-                 .ForMember(dest => dest.ProvinceName, opt => opt.Ignore())
-                 .ForMember(dest => dest.CommuneName, opt => opt.Ignore())
-                 .ForMember(dest => dest.Avatar, opt => opt.Ignore());
-
-
-
-
-
+                .ForMember(dest => dest.Avata, opt => opt.Ignore());
         }
     }
 }

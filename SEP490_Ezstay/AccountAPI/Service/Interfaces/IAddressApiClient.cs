@@ -2,11 +2,7 @@
 {
     public interface IAddressApiClient
     {
-        
-            Task LoadAsync(); // Gọi 1 lần duy nhất
-            string? GetProvinceName(string code);
-            string? GetCommuneName(string provinceCode, string communeCode);
-        
-
+        Task<string?> GetProvinceNameAsync(string provinceId);
+        Task<string?> GetCommuneNameAsync(string provinceId, string communeId);
     }
 }

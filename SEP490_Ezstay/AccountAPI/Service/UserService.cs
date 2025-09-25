@@ -6,6 +6,7 @@ using AccountAPI.Repositories.Interfaces;
 using AccountAPI.Service.Interfaces;
 using APIGateway.Helper.Interfaces;
 using AutoMapper;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace AccountAPI.Service
@@ -17,7 +18,9 @@ namespace AccountAPI.Service
         private readonly IImageService _imageService;
         private readonly IAuthApiClient _authApiClient;
         private readonly IPhoneOtpClient _otpClient;
+        private readonly HttpClient _http;
         private readonly IUserClaimHelper _userClaimHelper;
+
         private readonly IAddressApiClient _addressClient;
 
         public UserService(
@@ -27,7 +30,7 @@ namespace AccountAPI.Service
             IAuthApiClient authApiClient,
             IUserClaimHelper userClaimHelper,
             IPhoneOtpClient otpClient,
-            IAddressApiClient addressClient)
+            IAddressApiClient addressClient) // 👈 inject đúng
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -37,6 +40,7 @@ namespace AccountAPI.Service
             _otpClient = otpClient;
             _addressClient = addressClient;
         }
+
 
         public async Task<bool> CreateProfileAsync(Guid userId, UserDTO userDto)
         {
@@ -56,10 +60,6 @@ namespace AccountAPI.Service
             if (user == null) return null;
 
             var userResponse = _mapper.Map<UserResponseDTO>(user);
-
-            userResponse.ProvinceName = user.ProvinceName;
-            userResponse.CommuneName = user.CommuneName;
-
             return userResponse;
         }
 
@@ -68,32 +68,35 @@ namespace AccountAPI.Service
             var userEntity = await _userRepository.GetByUserIdAsync(userId);
             if (userEntity == null) return false;
 
+            // ✅ Cập nhật các field khác từ DTO
             _mapper.Map(dto, userEntity);
 
+            // ✅ Cập nhật avatar nếu có
             if (dto.Avatar != null)
             {
                 var avatarUrl = await _imageService.UploadImageAsync(dto.Avatar);
-                userEntity.Avatar = avatarUrl;
+                userEntity.Avata = avatarUrl;
             }
 
-            // 🔁 Load address cache (chỉ 1 lần nếu chưa load)
-            await _addressClient.LoadAsync();
-
-            if (!string.IsNullOrEmpty(dto.ProvinceCode))
+            // ✅ Cập nhật địa chỉ nếu có ProvinceId & CommuneId
+            if (!string.IsNullOrEmpty(dto.ProvinceId) && !string.IsNullOrEmpty(dto.CommuneId))
             {
-                userEntity.ProvinceCode = dto.ProvinceCode;
-                userEntity.ProvinceName = _addressClient.GetProvinceName(dto.ProvinceCode) ?? dto.ProvinceCode;
-            }
+                var provinceName = await _addressClient.GetProvinceNameAsync(dto.ProvinceId);
+                var communeName = await _addressClient.GetCommuneNameAsync(dto.ProvinceId, dto.CommuneId);
 
-            if (!string.IsNullOrEmpty(dto.ProvinceCode) && !string.IsNullOrEmpty(dto.CommuneCode))
-            {
-                userEntity.CommuneCode = dto.CommuneCode;
-                userEntity.CommuneName = _addressClient.GetCommuneName(dto.ProvinceCode, dto.CommuneCode) ?? dto.CommuneCode;
+
+                if (provinceName != null && communeName != null)
+                {
+                    userEntity.Province = provinceName;
+                    userEntity.Commune = communeName;
+                }
             }
 
             await _userRepository.UpdateAsync(userEntity);
             return true;
         }
+
+
 
         public async Task<bool> SendOtpToPhoneAsync(string phone)
         {
@@ -115,6 +118,24 @@ namespace AccountAPI.Service
             return true;
         }
 
+        //private async Task<string?> GetProvinceNameAsync(string provinceId)
+        //{
+        //    var response = await _http.GetFromJsonAsync<JsonElement>("/api/provinces");
+        //    var provinces = response.GetProperty("provinces").EnumerateArray();
+        //    return provinces.FirstOrDefault(p => p.GetProperty("code").GetString() == provinceId)
+        //                    .GetProperty("name").GetString();
+        //}
+
+
+        //private async Task<string?> GetCommuneNameAsync(string provinceId, string communeId)
+        //{
+        //    var response = await _http.GetFromJsonAsync<JsonElement>($"/api/provinces/{provinceId}/communes");
+        //    var communes = response.GetProperty("communes").EnumerateArray();
+        //    return communes.FirstOrDefault(c => c.GetProperty("code").GetString() == communeId)
+        //                   .GetProperty("name").GetString();
+        //}
+
+
         public async Task<bool> UpdateEmailAsync(string currentEmail, string newEmail, string otp)
         {
             var verified = await _authApiClient.ConfirmOtpAsync(newEmail, otp);
@@ -123,5 +144,11 @@ namespace AccountAPI.Service
             var updated = await _authApiClient.UpdateEmailAsync(currentEmail, newEmail);
             return updated;
         }
+
+
+
+
     }
+
+
 }

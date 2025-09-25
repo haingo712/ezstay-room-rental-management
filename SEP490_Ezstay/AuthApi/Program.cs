@@ -37,7 +37,8 @@ builder.Services.AddHttpClient("MailApi", client =>
     client.BaseAddress = new Uri("http://localhost:5004");
 });
 
-builder.Services.AddAutoMapper(typeof(AuthApi.Mapping.AccountProfile));
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -130,7 +131,6 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

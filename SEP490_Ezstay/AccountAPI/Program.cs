@@ -26,7 +26,10 @@ builder.Services.AddHttpClient<IAuthApiClient, AuthApiClient>(client =>
     client.BaseAddress = new Uri("https://localhost:7000"); // gọi qua API Gateway
 });
 
-
+builder.Services.AddHttpClient<IAddressApiClient, AddressApiClient>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7000"); // API Gateway
+});
 
 builder.Services.AddHttpClient<UserService>(client =>
 {
@@ -39,13 +42,6 @@ builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IUserClaimHelper, UserClaimHelper>();
 builder.Services.AddScoped<IUserClaimHelper, UserClaimHelper>();
 builder.Services.AddHttpClient<IPhoneOtpClient, PhoneOtpClient>();
-
-builder.Services.AddHttpClient<IAddressApiClient, AddressService>(client =>
-{
-    client.BaseAddress = new Uri("https://provinces.open-api.vn/");
-});
-
-
 
 
 builder.Services.AddHttpClient();
