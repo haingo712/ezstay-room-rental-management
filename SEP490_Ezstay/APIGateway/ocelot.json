@@ -1,6 +1,22 @@
 {
     "Routes": [
       {
+        "DownstreamPathTemplate": "/odata/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7006
+          }
+        ],
+        "UpstreamPathTemplate": "/odata/{everything}",
+        "UpstreamHttpMethod": [ "GET" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        }
+      },
+      {
         "DownstreamPathTemplate": "/api/IdentityProfile/{everything}",
         "DownstreamScheme": "https",
         "DownstreamHostAndPorts": [
