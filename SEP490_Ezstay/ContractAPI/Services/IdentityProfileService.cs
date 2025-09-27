@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ContractAPI.DTO.Requests;
@@ -12,13 +13,30 @@ public class IdentityProfileService: IIdentityProfileService
 {
     private readonly IMapper _mapper;
     private readonly IIdentityProfileRepository _identityProfileRepository;
+    private readonly HttpClient _httpClientLocation;
 
-    public IdentityProfileService(IMapper mapper, IIdentityProfileRepository identityProfileRepository)
+   
+    public IdentityProfileService(IMapper mapper, IIdentityProfileRepository identityProfileRepository, HttpClient httpClient)
     {
         _mapper = mapper;
         _identityProfileRepository = identityProfileRepository;
+        _httpClientLocation = httpClient;
+    }
+    private async Task<string?> GetProvinceNameAsync(string provinceId)
+    {
+        var response = await _httpClientLocation.GetFromJsonAsync<JsonElement>("/api/provinces");
+        var provinces = response.GetProperty("provinces").EnumerateArray();
+        return provinces.FirstOrDefault(p => p.GetProperty("code").GetString() == provinceId)
+            .GetProperty("name").GetString();
     }
 
+    private async Task<string?> GetCommuneNameAsync(string provinceId, string communeId)
+    {
+        var response = await _httpClientLocation.GetFromJsonAsync<JsonElement>($"/api/provinces/{provinceId}/communes");
+        var communes = response.GetProperty("communes").EnumerateArray();
+        return communes.FirstOrDefault(c => c.GetProperty("code").GetString() == communeId)
+            .GetProperty("name").GetString();
+    }
     // public async Task<List<IdentityProfileResponseDto>> GetAllByTenantId(Guid tenantId)
     // {
     //    var identityProfile=  _identityProfileRepository.GetAllQueryable().Where(x => x.Id == tenantId);

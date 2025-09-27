@@ -6,9 +6,8 @@ public class UpdateIdentityProfileResponse
     public DateTime DateOfBirth { get; set; }         
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
-    public string Province { get; set; }
-    public string District { get; set; }
-    public string Ward { get; set; }
+    public string ProvinceId { get; set; }     
+    public string WardId { get; set; }        
     public string Address { get; set; }
     public string TemporaryResidence { get; set; }     // Tạm trú
     public string CitizenIdNumber { get; set; }        // CMND/CCCD
