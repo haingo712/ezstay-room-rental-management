@@ -14,12 +14,13 @@ public class ContractService : IContractService
     private readonly IMapper _mapper;
     private readonly IContractRepository _contractRepository;
     private readonly IRoomClientService _roomClient; 
-    
-    public ContractService(IMapper mapper, IContractRepository contractRepository, IRoomClientService roomClient)
+    private readonly IIdentityProfileService _identityProfileService; 
+    public ContractService(IMapper mapper, IContractRepository contractRepository, IRoomClientService roomClient, IIdentityProfileService identityProfileService)
     {
         _mapper = mapper;
         _contractRepository = contractRepository;
         _roomClient = roomClient;
+        _identityProfileService = identityProfileService;
     }
 
     public IQueryable<ContractResponseDto> GetAllQueryable()
