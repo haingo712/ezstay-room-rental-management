@@ -3,6 +3,7 @@ using FavoritePostAPI.Data;
 using FavoritePostAPI.Repository;
 using FavoritePostAPI.Repository.Interface;
 using FavoritePostAPI.Service;
+using FavoritePostAPI.Service.Interface;
 
 namespace FavoritePostAPI
 {
@@ -17,12 +18,6 @@ namespace FavoritePostAPI
             builder.Services.AddScoped<IFavoritePostRepository, FavoritePostRepository>();
             builder.Services.AddScoped<IFavoritePostService, FavoritePostService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
-            builder.Services.Configure<ExternalServiceSettings>(
-    builder.Configuration.GetSection("ExternalServices"));
-            builder.Services.AddHttpClient<ExternalService>();
-
-            builder.Services.AddHttpClient<IExternalService, ExternalService>();
-            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             // Add services to the container.
 
             builder.Services.AddControllers();
