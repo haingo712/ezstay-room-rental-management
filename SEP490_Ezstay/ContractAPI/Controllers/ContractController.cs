@@ -18,13 +18,33 @@ namespace ContractAPI.Controllers
     {
         private readonly IContractService _contractService;
         private readonly ITokenService _tokenService;
+        private readonly IIdentityProfileService _identityProfileService;
 
-        public ContractController(IContractService contractService, ITokenService tokenService)
+        public ContractController(IContractService contractService, ITokenService tokenService, IIdentityProfileService identityProfileService)
         {
             _contractService = contractService;
             _tokenService = tokenService;
+            _identityProfileService = identityProfileService;
         }
-        
+        [Authorize(Roles = "Owner")]
+        [HttpPost]
+        public async Task<IActionResult> CreateContractWithProfiles([FromBody] CreateContractWithProfileDto request)
+        {
+            var ownerId = _tokenService.GetUserIdFromClaims(User);
+
+            var createContract = await _contractService.AddAsync(ownerId, request.Contract);
+            if (!createContract.IsSuccess)
+                return BadRequest(new { message = createContract.Message });
+
+            // foreach (var profile in request.IdentityProfiles)
+            // {
+                await _identityProfileService.AddAsync(createContract.Data.Id, request.IdentityProfiles);
+         //   }
+
+            return Ok(createContract);
+            //CreatedAtAction("GetContractById", new { id = createContract.Data.Id }, createContract);
+        }
+
        // [Authorize(Roles = "Owner")]
        // này m test coi thôi chứ k cần làm nha này là getAll coi thôi 
        [HttpGet]
@@ -83,25 +103,25 @@ namespace ContractAPI.Controllers
                 return NotFound(new { message = e.Message });
             }
         }
-        [Authorize(Roles = "Owner")]
-        [HttpPost]
-        public async Task<ActionResult<ContractResponseDto>> PostContract(CreateContractDto request)
-        {
-            try
-            {
-                var ownerId = _tokenService.GetUserIdFromClaims(User);
-                var createContract = await _contractService.AddAsync(ownerId, request);
-
-                if (!createContract.IsSuccess)
-                    return BadRequest(new { message = createContract.Message });
-
-                return CreatedAtAction("GetContractById", new { id = createContract.Data.Id }, createContract);
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(new { message = e.Message });
-            }
-        }
+        // [Authorize(Roles = "Owner")]
+        // [HttpPost]
+        // public async Task<ActionResult<ContractResponseDto>> PostContract(CreateContractDto request)
+        // {
+        //     try
+        //     {
+        //         var ownerId = _tokenService.GetUserIdFromClaims(User);
+        //         var createContract = await _contractService.AddAsync(ownerId, request);
+        //
+        //         if (!createContract.IsSuccess)
+        //             return BadRequest(new { message = createContract.Message });
+        //
+        //         return CreatedAtAction("GetContractById", new { id = createContract.Data.Id }, createContract);
+        //     }
+        //     catch (KeyNotFoundException e)
+        //     {
+        //         return NotFound(new { message = e.Message });
+        //     }
+        // }
         
         [Authorize(Roles = "Owner")]
         [HttpPut("{id}")]
