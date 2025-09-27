@@ -66,7 +66,6 @@ public class ContractService : IContractService
         contract.ContractStatus = ContractStatus.Active;
         await _roomClient.UpdateRoomStatusAsync(request.RoomId, "Occupied");
         await _contractRepository.AddAsync(contract);
-        
         var result = _mapper.Map<ContractResponseDto>(contract);
         return ApiResponse<ContractResponseDto>.Success(result, "Thuê thành công.");
     }

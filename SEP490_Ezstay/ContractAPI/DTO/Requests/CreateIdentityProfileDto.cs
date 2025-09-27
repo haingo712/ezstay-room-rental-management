@@ -1,4 +1,5 @@
-using Microsoft.Build.Framework;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace ContractAPI.DTO.Requests;
 
@@ -9,14 +10,15 @@ public class CreateIdentityProfileDto
     [Required]
     public DateTime DateOfBirth { get; set; }
     [Required]
+    [Phone]
     public string PhoneNumber { get; set; }
+    [EmailAddress]
     public string? Email { get; set; }
+    
     [Required]
-    public string Province { get; set; }
+    public string ProvinceId { get; set; }     // Mã tỉnh
     [Required]
-    public string District { get; set; }
-    [Required]
-    public string Ward { get; set; }
+    public string WardId { get; set; }         // Mã xã/phường
     [Required]
     public string Address { get; set; }
     [Required]

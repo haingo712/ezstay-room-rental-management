@@ -36,7 +36,7 @@ builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
 
 
  builder.Services.AddAutoMapper(typeof(MappingContract).Assembly);
-
+ builder.Services.AddAutoMapper(typeof(MappingIdentityProfile).Assembly);
 var odatabuilder = new ODataConventionModelBuilder();
 odatabuilder.EntitySet<ContractResponseDto>("Contract");
 odatabuilder.EntitySet<IdentityProfileResponseDto>("IdentityProfile");
