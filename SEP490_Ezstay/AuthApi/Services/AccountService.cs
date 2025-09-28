@@ -5,19 +5,24 @@ using AuthApi.Models;
 using AuthApi.Repositories.Interfaces;
 using AuthApi.Services.Interfaces;
 using AutoMapper;
-using MongoDB.Driver;
+using System.Security.Claims;
 
 namespace AuthApi.Services
 {
-    public class AccountService :IAccountService
+    public class AccountService : IAccountService
     {
         private readonly IAccountRepository _repo;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AccountService(IAccountRepository repo, IMapper mapper)
+        public AccountService(
+            IAccountRepository repo,
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             _repo = repo;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<AccountResponse> CreateAsync(AccountRequest request)
@@ -25,12 +30,12 @@ namespace AuthApi.Services
             var account = _mapper.Map<Account>(request);
 
             // Rule xử lý Role
-            if (request.Role == RoleEnum.Admin)
-                account.Role = RoleEnum.Staff;
-            else if (request.Role == RoleEnum.Staff)
-                account.Role = RoleEnum.Owner;
-            else
-                account.Role = RoleEnum.User;
+            account.Role = request.Role switch
+            {
+                RoleEnum.Admin => RoleEnum.Staff,
+                RoleEnum.Staff => RoleEnum.Owner,
+                _ => RoleEnum.User
+            };
 
             account.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
             account.IsVerified = false;
@@ -49,6 +54,16 @@ namespace AuthApi.Services
         public async Task<List<AccountResponse>> GetAllAsync()
         {
             var list = await _repo.GetAllAsync();
+
+            // Lấy role hiện tại từ Claims
+            var role = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            // Nếu Staff thì không được xem Admin
+            if (role?.Equals(RoleEnum.Staff.ToString(), StringComparison.OrdinalIgnoreCase) == true)
+            {
+                list = list.Where(x => x.Role != RoleEnum.Admin).ToList();
+            }
+
             return _mapper.Map<List<AccountResponse>>(list);
         }
 
@@ -62,13 +77,13 @@ namespace AuthApi.Services
             acc.Phone = request.Phone;
             acc.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-            // Rule Role
-            if (request.Role == RoleEnum.Admin)
-                acc.Role = RoleEnum.Staff;
-            else if (request.Role == RoleEnum.Staff)
-                acc.Role = RoleEnum.Owner;
-            else
-                acc.Role = RoleEnum.User;
+            // Rule Role khi update
+            acc.Role = request.Role switch
+            {
+                RoleEnum.Admin => RoleEnum.Staff,
+                RoleEnum.Staff => RoleEnum.Owner,
+                _ => RoleEnum.User
+            };
 
             var updated = await _repo.UpdateAsync(acc);
             return updated == null ? null : _mapper.Map<AccountResponse>(updated);
@@ -86,9 +101,7 @@ namespace AuthApi.Services
 
         public async Task UnbanAsync(Guid id)
         {
-            await _repo.BanAccountAsync(id, false); 
+            await _repo.BanAccountAsync(id, false);
         }
-
-
     }
 }

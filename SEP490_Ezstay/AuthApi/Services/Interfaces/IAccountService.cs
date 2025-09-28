@@ -7,11 +7,11 @@ namespace AuthApi.Services.Interfaces
     {
         Task<AccountResponse> CreateAsync(AccountRequest request);
         Task<AccountResponse?> GetByIdAsync(Guid id);
-        Task<List<AccountResponse>> GetAllAsync();
+        Task<List<AccountResponse>> GetAllAsync();   // ✅ bỏ string role
         Task<AccountResponse?> UpdateAsync(Guid id, AccountRequest request);
         Task VerifyAsync(string email);
         Task BanAsync(Guid id);
         Task UnbanAsync(Guid id);
-
     }
 }
+
