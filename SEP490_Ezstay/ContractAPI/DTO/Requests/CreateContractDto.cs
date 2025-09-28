@@ -21,4 +21,6 @@ public class CreateContractDto
     public int NumberOfOccupants { get; set; }
     [StringLength(500, ErrorMessage = "Notes cannot exceed 500 characters.")]
     public string? Notes { get; set; }
+    [Required]
+    public CreateIdentityProfileDto IdentityProfiles { get; set; } 
 }

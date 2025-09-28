@@ -35,5 +35,5 @@ public class CreateIdentityProfileDto
     public string FrontImageUrl { get; set; }
     [Required]
     public string BackImageUrl { get; set; }
-    
+  
 }

@@ -24,9 +24,13 @@ namespace ContractAPI.Repository
         
         public async Task<Contract?> GetByIdAsync(Guid id)
             => await _contracts.Find(t => t.Id == id).FirstOrDefaultAsync();
-        
-        public async Task AddAsync(Contract contract)
-            => await _contracts.InsertOneAsync(contract);
+
+        public async Task<Contract> AddAsync(Contract contract)
+        {
+           await _contracts.InsertOneAsync(contract);
+            return contract;
+        }
+         
         
         public async Task UpdateAsync(Contract contract)
             => await _contracts.ReplaceOneAsync(t => t.Id == contract.Id, contract);

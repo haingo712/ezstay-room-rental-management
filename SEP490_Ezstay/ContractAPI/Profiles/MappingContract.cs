@@ -13,5 +13,7 @@ public class MappingContract:Profile
         CreateMap<UpdateContractDto, Contract>();
         CreateMap<Contract, ContractResponseDto>();
         CreateMap<ExtendContractDto, Contract>();
+      
     }
+    
 }
