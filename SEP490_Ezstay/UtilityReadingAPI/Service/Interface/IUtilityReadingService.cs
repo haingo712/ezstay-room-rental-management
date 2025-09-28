@@ -13,7 +13,9 @@ public interface IUtilityReadingService
     IQueryable<UtilityReadingResponseDto> GetAllByOwnerId(Guid roomId,  UtilityType type);
     Task<UtilityReadingResponseDto> GetByIdAsync(Guid id);
     Task<ApiResponse<UtilityReadingResponseDto>> AddAsync(Guid roomId, CreateUtilityReadingDto request);
-    Task<ApiResponse<bool>> UpdateAsync(Guid id,UpdateUtilityReadingDto request);
+    // Task<ApiResponse<UtilityReadingResponseDto>> AddWater(Guid roomId, CreateUtilityReadingDto request);
+    // Task<ApiResponse<UtilityReadingResponseDto>> AddElectric(Guid roomId, CreateUtilityReadingDto request);
+     Task<ApiResponse<bool>> UpdateAsync(Guid id,UpdateUtilityReadingDto request);
     Task DeleteAsync(Guid id);
     
 }
