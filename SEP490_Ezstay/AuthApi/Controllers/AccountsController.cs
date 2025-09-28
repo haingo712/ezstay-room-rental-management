@@ -1,7 +1,6 @@
 ﻿using AuthApi.DTO.Request;
 using AuthApi.DTO.Response;
 using AuthApi.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthApi.Controllers
@@ -33,10 +32,10 @@ namespace AuthApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<AccountResponse>>> GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var result = await _service.GetAllAsync();
-            return Ok(result);
+            var accounts = await _service.GetAllAsync(); // gọn, không truyền role
+            return Ok(accounts);
         }
 
         [HttpPut("{id}")]
@@ -67,6 +66,5 @@ namespace AuthApi.Controllers
             await _service.UnbanAsync(id);
             return NoContent();
         }
-
     }
 }
