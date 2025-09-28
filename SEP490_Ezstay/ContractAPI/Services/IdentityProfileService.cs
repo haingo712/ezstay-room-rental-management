@@ -22,6 +22,7 @@ public class IdentityProfileService: IIdentityProfileService
         _identityProfileRepository = identityProfileRepository;
         _httpClientLocation = httpClient;
     }
+    
     private async Task<string?> GetProvinceNameAsync(string provinceId)
     {
         var response = await _httpClientLocation.GetFromJsonAsync<JsonElement>("/api/provinces");
