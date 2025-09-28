@@ -33,6 +33,11 @@ builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RoomApi"]);
 });
 
+builder.Services.AddHttpClient<IUtilityReadingClientService, UtilityReadingClientService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:UtilityReadingApi"]);
+});
+
 
 
  builder.Services.AddAutoMapper(typeof(MappingContract).Assembly);

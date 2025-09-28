@@ -74,6 +74,18 @@ public class IdentityProfileService: IIdentityProfileService
     //     var dto = _mapper.Map<IdentityProfileResponseDto>(entity);
     //     return ApiResponse<IdentityProfileResponseDto>.Success(dto, "Tạo hồ sơ thành công");
     // }
+    // public async Task<ApiResponse<List<IdentityProfileResponseDto>>> AddManyAsync(Guid contractId, List<CreateIdentityProfileDto> request)
+    // {
+    //     var entity = _mapper.Map<List<IdentityProfile>>(request);
+    //     foreach (var e in entity)
+    //     {
+    //         e.ContractId = contractId;
+    //         e.CreatedAt = DateTime.UtcNow;
+    //     }
+    //     await _identityProfileRepository.AddMany(entity);
+    //     var dto = _mapper.Map<List<IdentityProfileResponseDto>>(entity);
+    //     return ApiResponse<List<IdentityProfileResponseDto>>.Success(dto, "Tạo hồ sơ thành công");
+    // }
     public async Task<ApiResponse<IdentityProfileResponseDto>> AddAsync(Guid contractId, CreateIdentityProfileDto request)
     {
         var entity = _mapper.Map<IdentityProfile>(request);
@@ -96,6 +108,7 @@ public class IdentityProfileService: IIdentityProfileService
         var dto = _mapper.Map<IdentityProfileResponseDto>(entity);
         return ApiResponse<IdentityProfileResponseDto>.Success(dto, "Cập nhật hồ sơ thành công");
     }
+    
 
     public async Task DeleteAsync(Guid id)
     {

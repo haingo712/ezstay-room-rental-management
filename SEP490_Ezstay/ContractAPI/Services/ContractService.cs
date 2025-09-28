@@ -1,6 +1,7 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ContractAPI.DTO.Requests;
+using ContractAPI.DTO.Requests.UtilityReading;
 using ContractAPI.DTO.Response;
 using ContractAPI.Enum;
 using ContractAPI.Model;
@@ -15,13 +16,23 @@ public class ContractService : IContractService
     private readonly IContractRepository _contractRepository;
     private readonly IRoomClientService _roomClient; 
     private readonly IIdentityProfileService _identityProfileService; 
-    public ContractService(IMapper mapper, IContractRepository contractRepository, IRoomClientService roomClient, IIdentityProfileService identityProfileService)
+    private readonly IUtilityReadingClientService _utilityReadingClientService;
+    public ContractService(IMapper mapper, IContractRepository contractRepository, IRoomClientService roomClient, IIdentityProfileService identityProfileService, IUtilityReadingClientService utilityReadingClientService)
     {
         _mapper = mapper;
         _contractRepository = contractRepository;
         _roomClient = roomClient;
         _identityProfileService = identityProfileService;
+        _utilityReadingClientService = utilityReadingClientService;
     }
+    // public ContractService(IMapper mapper, IContractRepository contractRepository, IRoomClientService roomClient,
+    //     IIdentityProfileService identityProfileService)
+    // {
+    //     _mapper = mapper;
+    //     _contractRepository = contractRepository;
+    //     _roomClient = roomClient;
+    //     _identityProfileService = identityProfileService;
+    // }
 
     public IQueryable<ContractResponseDto> GetAllQueryable()
         => _contractRepository.GetAllQueryable().ProjectTo<ContractResponseDto>(_mapper.ConfigurationProvider);
@@ -45,8 +56,9 @@ public class ContractService : IContractService
     public async Task<ContractResponseDto?> GetByIdAsync(Guid id)
     => _mapper.Map<ContractResponseDto>(await _contractRepository.GetByIdAsync(id));
     
-
-    public async Task<ApiResponse<ContractResponseDto>> AddAsync(Guid ownerId, CreateContractDto request)
+    
+    
+    public async Task<ApiResponse<ContractResponseDto>> Add(Guid ownerId, CreateContractDto request)
     {
         if (request.CheckinDate < DateTime.UtcNow.Date)
             return ApiResponse<ContractResponseDto>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
@@ -66,10 +78,51 @@ public class ContractService : IContractService
         contract.CreatedAt = DateTime.UtcNow;
         contract.ContractStatus = ContractStatus.Active;
         await _roomClient.UpdateRoomStatusAsync(request.RoomId, "Occupied");
-        await _contractRepository.AddAsync(contract);
-        var result = _mapper.Map<ContractResponseDto>(contract);
+        var saveContract =await _contractRepository.AddAsync(contract);
+        // var electric = await _utilityReadingClientService.AddAsync(saveContract.RoomId, new CreateElectricDto
+        // {
+        //    
+        // });
+        //
+        // var water = await _utilityReadingClientService.AddAsync(saveContract.RoomId, new CreateWaterDto
+        // {
+        //    
+        // });
+
+        // if (!utilityReading.IsSuccess)
+        // {
+        //     return ApiResponse<ContractResponseDto>.Fail("Tạo hợp đồng thành công nhưng không khởi tạo UtilityReading được.");
+        // }
+        var savedProfiles =await _identityProfileService.AddAsync(saveContract.Id, request.IdentityProfiles);
+        var result = _mapper.Map<ContractResponseDto>(saveContract);
+        result.IdentityProfiles = savedProfiles.Data;
         return ApiResponse<ContractResponseDto>.Success(result, "Thuê thành công.");
     }
+
+    // public async Task<ApiResponse<ContractResponseDto>> AddAsync(Guid ownerId, CreateContractDto request)
+    // {
+    //     if (request.CheckinDate < DateTime.UtcNow.Date)
+    //         return ApiResponse<ContractResponseDto>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
+    //     
+    //     if (request.CheckoutDate < request.CheckinDate.AddMonths(1))
+    //         return ApiResponse<ContractResponseDto>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
+    //     
+    //     var room = await _roomClient.GetRoomByIdAsync(request.RoomId);
+    //     if (room == null)
+    //         return ApiResponse<ContractResponseDto>.Fail("Không tìm thấy phòng");
+    //     
+    //     if (room.RoomStatus == "Occupied")
+    //         return ApiResponse<ContractResponseDto>.Fail("Phòng đã có người thuê");
+    //     
+    //     var contract = _mapper.Map<Contract>(request);
+    //     contract.OwnerId = ownerId;
+    //     contract.CreatedAt = DateTime.UtcNow;
+    //     contract.ContractStatus = ContractStatus.Active;
+    //     await _roomClient.UpdateRoomStatusAsync(request.RoomId, "Occupied");
+    //     await _contractRepository.AddAsync(contract);
+    //     var result = _mapper.Map<ContractResponseDto>(contract);
+    //     return ApiResponse<ContractResponseDto>.Success(result, "Thuê thành công.");
+    // }
 
     public async Task<ApiResponse<ContractResponseDto>> CancelContractAsync(Guid contractId, string reason)
     {
@@ -86,7 +139,6 @@ public class ContractService : IContractService
         
         await _roomClient.UpdateRoomStatusAsync(contract.RoomId, "Available");
         await _contractRepository.UpdateAsync(contract);
-
         var dto = _mapper.Map<ContractResponseDto>(contract);
         return ApiResponse<ContractResponseDto>.Success(dto, "Huỷ hợp đồng thành công");
     }
@@ -115,6 +167,7 @@ public class ContractService : IContractService
         await _contractRepository.UpdateAsync(contract);
 
         var result = _mapper.Map<ContractResponseDto>(contract);
+        
         return ApiResponse<ContractResponseDto>.Success(result, "Cập nhật hợp đồng thành công.");
     }
 

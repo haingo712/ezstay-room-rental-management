@@ -26,24 +26,37 @@ namespace ContractAPI.Controllers
             _tokenService = tokenService;
             _identityProfileService = identityProfileService;
         }
+        
         [Authorize(Roles = "Owner")]
         [HttpPost]
-        public async Task<IActionResult> CreateContractWithProfiles([FromBody] CreateContractWithProfileDto request)
+        public async Task<IActionResult> CreateContractWithProfiles([FromBody] CreateContractDto request)
         {
             var ownerId = _tokenService.GetUserIdFromClaims(User);
 
-            var createContract = await _contractService.AddAsync(ownerId, request.Contract);
+            var createContract = await _contractService.Add(ownerId, request);
             if (!createContract.IsSuccess)
                 return BadRequest(new { message = createContract.Message });
-
-            // foreach (var profile in request.IdentityProfiles)
-            // {
-                await _identityProfileService.AddAsync(createContract.Data.Id, request.IdentityProfiles);
-         //   }
-
             return Ok(createContract);
             //CreatedAtAction("GetContractById", new { id = createContract.Data.Id }, createContract);
         }
+        // [Authorize(Roles = "Owner")]
+        // [HttpPost]
+        // public async Task<IActionResult> CreateContractWithProfiles([FromBody] CreateContractWithProfileDto request)
+        // {
+        //     var ownerId = _tokenService.GetUserIdFromClaims(User);
+        //
+        //     var createContract = await _contractService.AddAsync(ownerId, request.Contract);
+        //     if (!createContract.IsSuccess)
+        //         return BadRequest(new { message = createContract.Message });
+        //
+        //     // foreach (var profile in request.IdentityProfiles)
+        //     // {
+        //         await _identityProfileService.AddAsync(createContract.Data.Id, request.IdentityProfiles);
+        //  //   }
+        //
+        //     return Ok(createContract);
+        //     //CreatedAtAction("GetContractById", new { id = createContract.Data.Id }, createContract);
+        // }
 
        // [Authorize(Roles = "Owner")]
        // này m test coi thôi chứ k cần làm nha này là getAll coi thôi 

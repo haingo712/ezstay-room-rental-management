@@ -23,6 +23,13 @@ public class IdentityProfileRepository : IIdentityProfileRepository
     public async Task AddAsync(IdentityProfile profile)
         => await _profiles.InsertOneAsync(profile);
 
+    public async Task<IEnumerable<IdentityProfile>> AddMany(List<IdentityProfile> profile)
+    {
+      await _profiles.InsertManyAsync(profile);
+     return profile;
+    }
+      
+
     public async Task UpdateAsync(IdentityProfile profile)
         => await _profiles.ReplaceOneAsync(x => x.Id == profile.Id, profile);
 

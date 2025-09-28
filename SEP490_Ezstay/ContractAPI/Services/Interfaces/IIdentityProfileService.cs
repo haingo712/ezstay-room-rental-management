@@ -11,6 +11,7 @@ public interface IIdentityProfileService
     Task<IdentityProfileResponseDto?> GetByIdAsync(Guid id);
     // Task<ApiResponse<IdentityProfileResponseDto>> AddAsync(CreateIdentityProfileDto request);
     Task<ApiResponse<IdentityProfileResponseDto>> AddAsync(Guid contractId, CreateIdentityProfileDto request);
+   // Task<ApiResponse<IdentityProfileResponseDto>> AddManyAsync(Guid contractId, List<CreateIdentityProfileDto> request);
     Task<ApiResponse<IdentityProfileResponseDto>> UpdateAsync(Guid id, UpdateIdentityProfileDto request);
     Task DeleteAsync(Guid id);   
 }
