@@ -14,7 +14,5 @@ public class CreateUtilityReadingDto
     
     [StringLength(100, ErrorMessage = "Note cannot exceed 100 characters.")]
     public string Note { get; set; }
-    // [Required]
-    // public decimal PreviousIndex { get; set;}
     public decimal CurrentIndex { get; set;}
 }

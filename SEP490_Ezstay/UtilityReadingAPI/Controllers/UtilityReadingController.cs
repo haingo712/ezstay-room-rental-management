@@ -61,62 +61,83 @@ public class UtilityReadingController : ControllerBase
                 return Conflict(new { message = e.Message }); 
             }
         }
-        // [HttpPost("{roomId}/utilitytype/{utilityType}")]
-        // [Authorize(Roles = "Owner")]
-        // public async Task<ActionResult<UtilityReadingResponseDto>> Post(Guid roomId, string utilityType, CreateUtilityReadingContract request)
-        // {
-        //     try
-        //     {
-        //         var create =   await  _utilityReadingService.AddAsync(roomId, request);
-        //         if (!create.IsSuccess)
-        //         {
-        //             return BadRequest(new { message = create.Message });
-        //         }
-        //         return CreatedAtAction("GetUtilityReading", new { id = create.Data.Id }, create);
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         return Conflict(new { message = e.Message }); 
-        //     }
-        // }
-        
-        // [HttpPost("{roomId}")]
-        // [Authorize(Roles = "Owner")]
-        // public async Task<ActionResult<UtilityReadingResponseDto>> PostElectric(Guid roomId, CreateUtilityReadingDto request)
-        // {
-        //     try
-        //     {
-        //         var create =   await  _utilityReadingService.AddAsync(roomId, request);
-        //         if (!create.IsSuccess)
-        //         {
-        //             return BadRequest(new { message = create.Message });
-        //         }
-        //
-        //         return Ok(create);
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         return Conflict(new { message = e.Message }); 
-        //     }
-            [HttpPost("{roomId}")]
-            [Authorize(Roles = "Owner")]
-            public async Task<ActionResult<UtilityReadingResponseDto>> PostWater(Guid roomId, CreateUtilityReadingDto request)
+        [HttpPost("{roomId}/water")]
+        [Authorize(Roles = "Owner")]
+        public async Task<ActionResult<UtilityReadingResponseDto>> PostWater(Guid roomId, CreateUtilityReadingContract request)
+        {
+            try
             {
-                try
+                var create =   await  _utilityReadingService.AddWater(roomId, request);
+                if (!create.IsSuccess)
                 {
-                    var create =   await  _utilityReadingService.AddAsync(roomId, request);
-                    if (!create.IsSuccess)
-                    {
-                        return BadRequest(new { message = create.Message });
-                    }
+                    return BadRequest(new { message = create.Message });
+                }
 
-                    return Ok(create);
-                }
-                catch (Exception e)
-                {
-                    return Conflict(new { message = e.Message }); 
-                }
+                return Ok(create);
+            }
+            catch (Exception e)
+            {
+                return Conflict(new { message = e.Message }); 
+            }
         }
+        [HttpPost("{roomId}/electric")]
+        [Authorize(Roles = "Owner")]
+        public async Task<ActionResult<UtilityReadingResponseDto>> PostElectric(Guid roomId, CreateUtilityReadingContract request)
+        {
+            try
+            {
+                var create =   await  _utilityReadingService.AddElectric(roomId, request);
+                if (!create.IsSuccess)
+                {
+                    return BadRequest(new { message = create.Message });
+                }
+
+                return Ok(create);
+            }
+            catch (Exception e)
+            {
+                return Conflict(new { message = e.Message }); 
+            }
+        }
+        [HttpPost("{roomId}/contract")]
+        //[Authorize(Roles = "Owner")]
+        public async Task<ActionResult<UtilityReadingResponseDto>> PostUtilityReadindContract(Guid roomId, CreateUtilityReadingContract request)
+        {
+            try
+            {
+                var create =   await  _utilityReadingService.AddUtilityReadingContract(roomId, request);
+                if (!create.IsSuccess)
+                {
+                    return BadRequest(new { message = create.Message });
+                }
+
+                return Ok(create);
+            }
+            catch (Exception e)
+            {
+                return Conflict(new { message = e.Message }); 
+            }
+        }
+        
+        [HttpPost("{roomId}/utilitytype/{utilityType}")]
+        [Authorize(Roles = "Owner")]
+        public async Task<ActionResult<UtilityReadingResponseDto>> Post(Guid roomId, UtilityType utilityType, CreateUtilityReadingContract request)
+        {
+            try
+            {
+                var create =   await  _utilityReadingService.AddAsync(roomId, utilityType, request);
+                if (!create.IsSuccess)
+                {
+                    return BadRequest(new { message = create.Message });
+                }
+                return CreatedAtAction("GetUtilityReading", new { id = create.Data.Id }, create);
+            }
+            catch (Exception e)
+            {
+                return Conflict(new { message = e.Message }); 
+            }
+        }
+        
         // PUT: api/Amenity/5
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner")]
