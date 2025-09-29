@@ -24,10 +24,10 @@ public class CreateContractDto
     public string? Notes { get; set; }
     [Required]
     public CreateIdentityProfileDto IdentityProfiles { get; set; } 
+    // [Required]
+    // public CreateUtilityReadingContract UtilityReadingContracts { get; set; } 
     [Required]
-    public List<CreateUtilityReadingContract> UtilityReadingContracts { get; set; } 
-    // [Required]
-    // public CreateUtilityReadingContract ElectricityReading { get; set; }
-    // [Required]
-    // public CreateUtilityReadingContract WaterReading { get; set; }
+    public CreateUtilityReadingContract ElectricityReading { get; set; }
+    [Required]
+    public CreateUtilityReadingContract WaterReading { get; set; }
 }

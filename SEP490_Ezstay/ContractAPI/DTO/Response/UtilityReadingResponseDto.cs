@@ -7,7 +7,6 @@ public class UtilityReadingResponseDto
 {
     public Guid Id { get; set; }
     public Guid RoomId { get; set; }
-    public string Type { get; set; }
     public decimal Price { get; set; }
     public DateTime ReadingDate  { get; set;}
     public DateTime UpdatedAt  { get; set;}
