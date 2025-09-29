@@ -79,23 +79,21 @@ public class ContractService : IContractService
         contract.ContractStatus = ContractStatus.Active;
         await _roomClient.UpdateRoomStatusAsync(request.RoomId, "Occupied");
         var saveContract =await _contractRepository.AddAsync(contract);
-        // var electric = await _utilityReadingClientService.AddAsync(saveContract.RoomId, new CreateElectricDto
-        // {
-        //    
-        // });
-        //
-        // var water = await _utilityReadingClientService.AddAsync(saveContract.RoomId, new CreateWaterDto
-        // {
-        //    
-        // });
-
-        // if (!utilityReading.IsSuccess)
-        // {
-        //     return ApiResponse<ContractResponseDto>.Fail("Tạo hợp đồng thành công nhưng không khởi tạo UtilityReading được.");
-        // }
+        
+        foreach (var ur in request.UtilityReadingContracts)
+        {
+            var created =  await _utilityReadingClientService.AddAsync(saveContract.RoomId, new CreateUtilityReadingContract
+            {
+                CurrentIndex = ur.CurrentIndex,
+                Price = ur.Price,
+                Note = ur.Note,
+                Type = ur.Type
+            });
+        }
         var savedProfiles =await _identityProfileService.AddAsync(saveContract.Id, request.IdentityProfiles);
         var result = _mapper.Map<ContractResponseDto>(saveContract);
         result.IdentityProfiles = savedProfiles.Data;
+        
         return ApiResponse<ContractResponseDto>.Success(result, "Thuê thành công.");
     }
 
@@ -118,6 +116,22 @@ public class ContractService : IContractService
     //     contract.OwnerId = ownerId;
     //     contract.CreatedAt = DateTime.UtcNow;
     //     contract.ContractStatus = ContractStatus.Active;
+    // var electric = await _utilityReadingClientService.AddAsync(saveContract.RoomId,"Electric" , new CreateUtilityReadingContract()
+    // {
+    //  CurrentIndex  = request.UtilityReadingContracts[0].CurrentIndex,
+    //  Price = request.ElectricityReading.Price,
+    //  Note = request.ElectricityReading.Note
+    // });
+    // var water = await _utilityReadingClientService.AddAsync(saveContract.RoomId,"Water" , new CreateUtilityReadingContract()
+    // {
+    //     CurrentIndex  = request.WaterReading.CurrentIndex,
+    //     Price = request.WaterReading.Price,
+    //     Note = request.WaterReading.Note
+    // });
+    // if (!utilityReading.IsSuccess)
+    // {
+    //     return ApiResponse<ContractResponseDto>.Fail("Tạo hợp đồng thành công nhưng không khởi tạo UtilityReading được.");
+    // }
     //     await _roomClient.UpdateRoomStatusAsync(request.RoomId, "Occupied");
     //     await _contractRepository.AddAsync(contract);
     //     var result = _mapper.Map<ContractResponseDto>(contract);

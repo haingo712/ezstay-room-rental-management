@@ -21,4 +21,5 @@ public class ContractResponseDto
     public int NumberOfOccupants { get; set; }
     public string? Notes { get; set; }
     public IdentityProfileResponseDto IdentityProfiles { get; set; } 
+    public List<UtilityReadingResponseDto> UtilityReadings { get; set; }
 }

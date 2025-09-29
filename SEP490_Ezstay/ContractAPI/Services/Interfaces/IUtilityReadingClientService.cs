@@ -6,5 +6,5 @@ namespace ContractAPI.Services.Interfaces;
 
 public interface IUtilityReadingClientService
 {
-    Task<ApiResponse<UtilityReadingResponseDto>> AddAsync(Guid roomId, CreateWaterDto request);
+    Task<ApiResponse<UtilityReadingResponseDto>> AddAsync(Guid roomId, CreateUtilityReadingContract request);
 }

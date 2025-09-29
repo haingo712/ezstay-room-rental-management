@@ -14,7 +14,7 @@ public class UtilityReadingClientService : IUtilityReadingClientService
         _httpClient = httpClient;
     }
 
-    public async Task<ApiResponse<UtilityReadingResponseDto>> AddAsync(Guid roomId, CreateWaterDto request)
+    public async Task<ApiResponse<UtilityReadingResponseDto>> AddAsync(Guid roomId, CreateUtilityReadingContract request)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/UtilityReading/{roomId}", request);
 
