@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using ContractAPI.Enum;
 
-namespace UtilityReadingAPI.DTO.Request;
+namespace ContractAPI.DTO.Requests.UtilityReading;
 
-public class CreateWaterContract
+public class CreateUtilityReadingContract
 {
     public decimal? Price { get; set; }
     [StringLength(100, ErrorMessage = "Note cannot exceed 100 characters.")]
