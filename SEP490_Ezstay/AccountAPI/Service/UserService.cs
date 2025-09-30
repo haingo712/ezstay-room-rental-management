@@ -4,6 +4,7 @@ using AccountAPI.DTO.Request;
 using AccountAPI.DTO.Resquest;
 using AccountAPI.Repositories.Interfaces;
 using AccountAPI.Service.Interfaces;
+using APIGateway.Helper;
 using APIGateway.Helper.Interfaces;
 using AutoMapper;
 using System.Security.Claims;
@@ -42,17 +43,26 @@ namespace AccountAPI.Service
         }
 
 
-        public async Task<bool> CreateProfileAsync(Guid userId, UserDTO userDto)
+        public async Task<bool> CreateProfileAsync(Guid userId, UserDTO userDto, ClaimsPrincipal userClaims)
         {
             var existingUser = await _userRepository.GetByUserIdAsync(userId);
             if (existingUser != null) return false;
 
             var user = _mapper.Map<User>(userDto);
             user.UserId = userId;
+            user.Id = Guid.NewGuid();
+            user.DateOfBirth = userDto.DateOfBirth ?? DateTime.MinValue;
+
+            // Lấy FullName và Phone từ token qua helper
+            var helper = new UserClaimHelper();
+            user.FullName = helper.GetFullName(userClaims) ?? "";
+            user.Phone = helper.GetPhone(userClaims) ?? "";
 
             await _userRepository.CreateUserAsync(user);
             return true;
         }
+
+
 
         public async Task<UserResponseDTO?> GetProfileAsync(Guid userId)
         {

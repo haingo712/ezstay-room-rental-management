@@ -14,7 +14,7 @@ namespace AccountAPI.Data
 
         public GenderEnum Gender { get; set; } 
 
-        public string Avata {get; set;}
+        public string Avatar { get; set; }
 
         public string Bio {get; set;}
         public DateTime DateOfBirth { get; set;}

@@ -1,7 +1,10 @@
 ﻿using AuthApi.DTO.Request;
 using AuthApi.DTO.Response;
+using AuthApi.Enums;
+using AuthApi.Services;
 using AuthApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AuthApi.Controllers
 {
@@ -16,34 +19,47 @@ namespace AuthApi.Controllers
             _service = service;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<AccountResponse>> Create([FromBody] AccountRequest request)
-        {
-            var result = await _service.CreateAsync(request);
-            return Ok(result);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<AccountResponse>> GetById(Guid id)
-        {
-            var result = await _service.GetByIdAsync(id);
-            if (result == null) return NotFound();
-            return Ok(result);
-        }
-
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var accounts = await _service.GetAllAsync(); // gọn, không truyền role
+            var accounts = await _service.GetAllAsync();
+
+            // Lấy role của user từ token
+            var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+            if (roleClaim == null) return Unauthorized();
+
+            var role = Enum.Parse<RoleEnum>(roleClaim);
+
+            // Staff không thấy Admin
+            if (role == RoleEnum.Staff)
+            {
+                accounts = accounts.Where(a => a.Role != RoleEnum.Admin).ToList();
+            }
+
             return Ok(accounts);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<AccountResponse>> Update(Guid id, [FromBody] AccountRequest request)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
-            var result = await _service.UpdateAsync(id, request);
-            if (result == null) return NotFound();
-            return Ok(result);
+            var acc = await _service.GetByIdAsync(id);
+            if (acc == null) return Forbid(); // Staff không được xem Admin
+            return Ok(acc);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] AccountRequest request)
+        {
+            var created = await _service.CreateAsync(request);
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] AccountRequest request)
+        {
+            var updated = await _service.UpdateAsync(id, request);
+            if (updated == null) return Forbid(); // Staff không update Admin
+            return Ok(updated);
         }
 
         [HttpPatch("{email}/verify")]

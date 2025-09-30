@@ -26,9 +26,15 @@ namespace AccountAPI.Controllers
         public async Task<IActionResult> CreateProfile([FromBody] UserDTO userDto)
         {
             var userId = _userClaimHelper.GetUserId(User);
-            var success = await _userService.CreateProfileAsync(userId, userDto);
-            return success ? Ok("Tạo profile thành công.") : BadRequest("Không tạo được profile.");
+
+            // Truyền thêm User (ClaimsPrincipal) vào service
+            var success = await _userService.CreateProfileAsync(userId, userDto, User);
+
+            return success
+                ? Ok("Tạo profile thành công.")
+                : BadRequest("Không tạo được profile.");
         }
+
 
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()

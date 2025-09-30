@@ -6,8 +6,13 @@ namespace AuthApi.Services.Interfaces
     public interface IAccountService
     {
         Task<AccountResponse> CreateAsync(AccountRequest request);
+
+        // Lấy account theo id, tự kiểm tra quyền bên trong service
         Task<AccountResponse?> GetByIdAsync(Guid id);
-        Task<List<AccountResponse>> GetAllAsync();   // ✅ bỏ string role
+
+        // Lấy tất cả account, tự lọc Admin nếu user là Staff
+        Task<List<AccountResponse>> GetAllAsync();
+
         Task<AccountResponse?> UpdateAsync(Guid id, AccountRequest request);
         Task VerifyAsync(string email);
         Task BanAsync(Guid id);
