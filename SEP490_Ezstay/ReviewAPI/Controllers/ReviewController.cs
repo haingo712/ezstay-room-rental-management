@@ -20,7 +20,7 @@ public class ReviewController : ControllerBase
     }
     
     [HttpGet]
-    [Authorize(Roles = "Staff")]
+    // [Authorize(Roles = "Staff")]
     public async Task<IActionResult> GetAll()
     {
         var result = await _reviewService.GetAll();

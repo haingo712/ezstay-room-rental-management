@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
-using ReviewAPI.DTO.Requests;
+using ReviewAPI.DTO.Response;
 using ReviewAPI.Profiles;
 using ReviewAPI.Repository;
 using ReviewAPI.Repository.Interface;
@@ -37,6 +37,14 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 //     client.BaseAddress = new Uri(serviceUrls["RoomAmenityApi"]);
 // });
 
+builder.Services.AddHttpClient<IContractClientService, ContractClientService>(client =>
+{ 
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ContractApi"]);
+});
+builder.Services.AddHttpClient<IPostClientService, PostClientService>(client =>
+{ 
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RentalPostApi"]);
+});
 
 
 builder.Services.AddControllers();
@@ -46,7 +54,7 @@ builder.Services.AddSwaggerGen();
 
 ;
 var odatabuilder = new ODataConventionModelBuilder();
-odatabuilder.EntitySet<ReviewDto>("Reviews");
+odatabuilder.EntitySet<ReviewResponseDto>("Reviews");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>
     options.AddRouteComponents("odata", odata)
