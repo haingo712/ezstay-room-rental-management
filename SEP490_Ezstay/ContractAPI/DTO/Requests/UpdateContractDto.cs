@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using ContractAPI.DTO.Requests.UtilityReading;
 using ContractAPI.Enum;
 
 namespace ContractAPI.DTO.Requests;
@@ -18,4 +19,8 @@ public class UpdateContractDto
     public string? Notes { get; set; }
     [Required]
     public CreateIdentityProfileDto CreateIdentityProfile { get; set; }
+    [Required]
+    public CreateUtilityReadingContract ElectricityReading { get; set; }
+    [Required]
+    public CreateUtilityReadingContract WaterReading { get; set; }
 }

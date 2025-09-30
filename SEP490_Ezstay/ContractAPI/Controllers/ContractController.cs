@@ -27,6 +27,14 @@ namespace ContractAPI.Controllers
             _identityProfileService = identityProfileService;
         }
         
+      //  [Authorize(Roles = "User")]
+        [HttpGet("HasContract/{tenantId}/roomId/{roomId}")]
+        public async Task<IActionResult> HasContract(Guid tenantId, Guid roomId)
+        {
+            var hasContract = await _contractService.HasContractAsync(tenantId, roomId);
+            return Ok(hasContract); 
+        }
+        
         [Authorize(Roles = "Owner")]
         [HttpPost]
         public async Task<IActionResult> CreateContractWithProfiles([FromBody] CreateContractDto request)
@@ -39,25 +47,24 @@ namespace ContractAPI.Controllers
             return Ok(createContract);
             //CreatedAtAction("GetContractById", new { id = createContract.Data.Id }, createContract);
         }
-        // [Authorize(Roles = "Owner")]
-        // [HttpPost]
-        // public async Task<IActionResult> CreateContractWithProfiles([FromBody] CreateContractWithProfileDto request)
-        // {
-        //     var ownerId = _tokenService.GetUserIdFromClaims(User);
-        //
-        //     var createContract = await _contractService.AddAsync(ownerId, request.Contract);
-        //     if (!createContract.IsSuccess)
-        //         return BadRequest(new { message = createContract.Message });
-        //
-        //     // foreach (var profile in request.IdentityProfiles)
-        //     // {
-        //         await _identityProfileService.AddAsync(createContract.Data.Id, request.IdentityProfiles);
-        //  //   }
-        //
-        //     return Ok(createContract);
-        //     //CreatedAtAction("GetContractById", new { id = createContract.Data.Id }, createContract);
-        // }
-
+        [Authorize(Roles = "Owner")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutContract(Guid id,[FromBody] UpdateContractDto request)
+        {
+            try
+            {
+                var result = await _contractService.UpdateAsync(id, request);
+                if (!result.IsSuccess  )
+                {
+                    return BadRequest(new { message = result.Message });
+                }
+                return NoContent();
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
+            }
+        }
        // [Authorize(Roles = "Owner")]
        // này m test coi thôi chứ k cần làm nha này là getAll coi thôi 
        [HttpGet]
@@ -68,7 +75,7 @@ namespace ContractAPI.Controllers
        }
        
        [Authorize(Roles = "User")]
-       [HttpGet("ByTenantId/{tenantId}")]
+       [HttpGet("/ByTenantId/{tenantId}")]
        [EnableQuery]
        public IQueryable<ContractResponseDto> GetContractsByTenantId(Guid tenantId)
        {
@@ -116,45 +123,6 @@ namespace ContractAPI.Controllers
                 return NotFound(new { message = e.Message });
             }
         }
-        // [Authorize(Roles = "Owner")]
-        // [HttpPost]
-        // public async Task<ActionResult<ContractResponseDto>> PostContract(CreateContractDto request)
-        // {
-        //     try
-        //     {
-        //         var ownerId = _tokenService.GetUserIdFromClaims(User);
-        //         var createContract = await _contractService.AddAsync(ownerId, request);
-        //
-        //         if (!createContract.IsSuccess)
-        //             return BadRequest(new { message = createContract.Message });
-        //
-        //         return CreatedAtAction("GetContractById", new { id = createContract.Data.Id }, createContract);
-        //     }
-        //     catch (KeyNotFoundException e)
-        //     {
-        //         return NotFound(new { message = e.Message });
-        //     }
-        // }
-        
-        [Authorize(Roles = "Owner")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutContract(Guid id, UpdateContractDto request)
-        {
-            try
-            {
-               var result = await _contractService.UpdateAsync(id, request);
-                if (!result.IsSuccess  )
-                {
-                    return BadRequest(new { message = result.Message });
-                }
-                return NoContent();
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(new { message = e.Message });
-            }
-        }
-        
        
         [Authorize(Roles = "Owner")]
         [HttpPut("{id}/extendcontract")]
