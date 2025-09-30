@@ -10,6 +10,7 @@ namespace ContractAPI.Services.Interfaces;
 public interface IContractService
 {
     IQueryable<ContractResponseDto> GetAllQueryable();
+    Task<bool> HasContractAsync(Guid tenantId, Guid roomId);
     IQueryable<ContractResponseDto> GetAllByTenantId(Guid tenantId);
     IQueryable<ContractResponseDto> GetAllByOwnerId(Guid ownerId);
     IQueryable<ContractResponseDto> GetAllByOwnerId(Guid ownerId, ContractStatus contractStatus);

@@ -2,13 +2,12 @@ using System.Text.Json;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ContractAPI.DTO.Requests;
-using ContractAPI.DTO.Requests.UtilityReading;
 using ContractAPI.DTO.Response;
 using ContractAPI.Enum;
 using ContractAPI.Model;
 using ContractAPI.Repository.Interface;
 using ContractAPI.Services.Interfaces;
-
+using Microsoft.EntityFrameworkCore;
 namespace ContractAPI.Services;
 
 public class ContractService : IContractService
@@ -49,8 +48,8 @@ public class ContractService : IContractService
     public async Task<ContractResponseDto?> GetByIdAsync(Guid id)
     => _mapper.Map<ContractResponseDto>(await _contractRepository.GetByIdAsync(id));
     
-    
-    
+    public async Task<bool> HasContractAsync(Guid tenantId, Guid roomId)=>await _contractRepository.HasContractAsync(tenantId, roomId);
+  
     public async Task<ApiResponse<ContractResponseDto>> Add(Guid ownerId, CreateContractDto request)
     {
         if (request.CheckinDate < DateTime.UtcNow.Date)
@@ -70,26 +69,9 @@ public class ContractService : IContractService
         contract.ContractStatus = ContractStatus.Active;
         await _roomClient.UpdateRoomStatusAsync(request.RoomId, "Occupied");
         var saveContract =await _contractRepository.AddAsync(contract);
-        
-        // foreach (var ur in request.UtilityReadingContracts)
-        // {
-        //     var created =  await _utilityReadingClientService.AddAsync(saveContract.RoomId, new CreateUtilityReadingContract
-        //     {
-        //         CurrentIndex = ur.CurrentIndex,
-        //         Price = ur.Price,
-        //         Note = ur.Note,
-        //         Type = ur.Type
-        //     });
-        //     if (!created.IsSuccess)
-        //     {
-        //         // log chi tiết
-        //         Console.WriteLine($"UtilityReading tạo thất bại: {created.Message}");
-        //     }
-       // }
        var elecCreated = await _utilityReadingClientService.AddElectric(saveContract.RoomId, request.ElectricityReading);
        if (!elecCreated.IsSuccess)
            Console.WriteLine($"Electricity tạo thất bại: {elecCreated.Message}");
-       
        var waterCreated = await _utilityReadingClientService.AddWater(saveContract.RoomId, request.WaterReading);
        if (!waterCreated.IsSuccess)
            Console.WriteLine($"Water tạo thất bại: {waterCreated.Message}");
@@ -103,46 +85,7 @@ public class ContractService : IContractService
         return ApiResponse<ContractResponseDto>.Success(result, "Thuê thành công.");
     }
 
-    // public async Task<ApiResponse<ContractResponseDto>> AddAsync(Guid ownerId, CreateContractDto request)
-    // {
-    //     if (request.CheckinDate < DateTime.UtcNow.Date)
-    //         return ApiResponse<ContractResponseDto>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
-    //     
-    //     if (request.CheckoutDate < request.CheckinDate.AddMonths(1))
-    //         return ApiResponse<ContractResponseDto>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
-    //     
-    //     var room = await _roomClient.GetRoomByIdAsync(request.RoomId);
-    //     if (room == null)
-    //         return ApiResponse<ContractResponseDto>.Fail("Không tìm thấy phòng");
-    //     
-    //     if (room.RoomStatus == "Occupied")
-    //         return ApiResponse<ContractResponseDto>.Fail("Phòng đã có người thuê");
-    //     
-    //     var contract = _mapper.Map<Contract>(request);
-    //     contract.OwnerId = ownerId;
-    //     contract.CreatedAt = DateTime.UtcNow;
-    //     contract.ContractStatus = ContractStatus.Active;
-    // var electric = await _utilityReadingClientService.AddAsync(saveContract.RoomId,"Electric" , new CreateUtilityReadingContract()
-    // {
-    //  CurrentIndex  = request.UtilityReadingContracts[0].CurrentIndex,
-    //  Price = request.ElectricityReading.Price,
-    //  Note = request.ElectricityReading.Note
-    // });
-    // var water = await _utilityReadingClientService.AddAsync(saveContract.RoomId,"Water" , new CreateUtilityReadingContract()
-    // {
-    //     CurrentIndex  = request.WaterReading.CurrentIndex,
-    //     Price = request.WaterReading.Price,
-    //     Note = request.WaterReading.Note
-    // });
-    // if (!utilityReading.IsSuccess)
-    // {
-    //     return ApiResponse<ContractResponseDto>.Fail("Tạo hợp đồng thành công nhưng không khởi tạo UtilityReading được.");
-    // }
-    //     await _roomClient.UpdateRoomStatusAsync(request.RoomId, "Occupied");
-    //     await _contractRepository.AddAsync(contract);
-    //     var result = _mapper.Map<ContractResponseDto>(contract);
-    //     return ApiResponse<ContractResponseDto>.Success(result, "Thuê thành công.");
-    // }
+    
 
     public async Task<ApiResponse<ContractResponseDto>> CancelContractAsync(Guid contractId, string reason)
     {
@@ -178,9 +121,8 @@ public class ContractService : IContractService
         if (request.CheckoutDate < contract.CheckinDate.AddMonths(1))
             return ApiResponse<ContractResponseDto>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
         
-        if (contract.ContractStatus != ContractStatus.Active)
-            await _roomClient.UpdateRoomStatusAsync(contract.RoomId, "Available");
-        
+        // if (contract.ContractStatus != ContractStatus.Active)
+        //     await _roomClient.UpdateRoomStatusAsync(contract.RoomId, "Available");
         contract.UpdatedAt = DateTime.UtcNow;
         _mapper.Map(request, contract);
 

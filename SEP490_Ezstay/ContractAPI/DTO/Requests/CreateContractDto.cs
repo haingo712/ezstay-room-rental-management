@@ -5,6 +5,7 @@ namespace ContractAPI.DTO.Requests;
 
 public class CreateContractDto
 {
+    [Required]
     public Guid TenantId { get; set; }
     [Required]
     public Guid RoomId { get; set; }
