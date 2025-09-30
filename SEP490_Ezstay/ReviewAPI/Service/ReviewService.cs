@@ -13,34 +13,37 @@ public class ReviewService : IReviewService
 {
     private readonly IMapper _mapper;
     private readonly IReviewRepository _reviewRepository;
+    private readonly IContractClientService _contractClientService;
+    private readonly IPostClientService _postClientService;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public ReviewService(IMapper mapper, IReviewRepository reviewRepository, IHttpContextAccessor httpContextAccessor)
+    public ReviewService(IMapper mapper, IReviewRepository reviewRepository, IPostClientService PostClientService, IHttpContextAccessor httpContextAccessor, IContractClientService contractClientService)
     {
         _mapper = mapper;
         _reviewRepository = reviewRepository;
+        _postClientService = PostClientService;
         _httpContextAccessor = httpContextAccessor;
+        _contractClientService = contractClientService;
     }
     
-
-    public async Task<ApiResponse<IEnumerable<ReviewDto>>> GetAll()
+    public async Task<ApiResponse<IEnumerable<ReviewResponseDto>>> GetAll()
     {
         var entities = await _reviewRepository.GetAll();
-        var dto = _mapper.Map<IEnumerable<ReviewDto>>(entities);
+        var dto = _mapper.Map<IEnumerable<ReviewResponseDto>>(entities);
 
         if (!dto.Any())
-            return ApiResponse<IEnumerable<ReviewDto>>.Fail("Không có review nào.");
+            return ApiResponse<IEnumerable<ReviewResponseDto>>.Fail("Không có review nào.");
 
-        return ApiResponse<IEnumerable<ReviewDto>>.Success(dto);
+        return ApiResponse<IEnumerable<ReviewResponseDto>>.Success(dto);
     }
 
-    public async Task<ApiResponse<IEnumerable<ReviewDto>>> GetAllByPostId(Guid postId)
+    public async Task<ApiResponse<IEnumerable<ReviewResponseDto>>> GetAllByPostId(Guid postId)
     {
         var entities = await _reviewRepository.GetAllByPostId(postId);
-        var dto = _mapper.Map<IEnumerable<ReviewDto>>(entities);
+        var dto = _mapper.Map<IEnumerable<ReviewResponseDto>>(entities);
         if (!dto.Any())
-            return ApiResponse<IEnumerable<ReviewDto>>.Fail("Bài viết chưa có review nào.");
-        return ApiResponse<IEnumerable<ReviewDto>>.Success(dto);
+            return ApiResponse<IEnumerable<ReviewResponseDto>>.Fail("Bài viết chưa có review nào.");
+        return ApiResponse<IEnumerable<ReviewResponseDto>>.Success(dto);
     }
 
     // public IQueryable<ReviewDto> GetAllByPostIdAsQueryable(Guid postId)
@@ -51,23 +54,34 @@ public class ReviewService : IReviewService
     //         return ApiResponse<IEnumerable<ReviewDto>>.Fail("Bài viết chưa có review nào.");
     //     return ApiResponse<IEnumerable<ReviewDto>>.Success(dto);
     // }
-    public async Task<ReviewDto> GetByIdAsync(Guid id)
+    public async Task<ReviewResponseDto> GetByIdAsync(Guid id)
     {
         var entity = await _reviewRepository.GetByIdAsync(id);
         if (entity == null)
             throw new KeyNotFoundException("ReviewId not found");
-        return _mapper.Map<ReviewDto>(entity);
+        return _mapper.Map<ReviewResponseDto>(entity);
     }
 
-    public async Task<ApiResponse<ReviewDto>> AddAsync(Guid userId,Guid postId, CreateReviewDto request)
+    public async Task<ApiResponse<ReviewResponseDto>> AddAsync(Guid userId,Guid postId, CreateReviewDto request)
     {
+        
+        // check user có hợp đồng chưa
+        Console.WriteLine("dd "+ postId);
+        var post = await _postClientService.GetByIdAsync(postId);
+        Console.WriteLine("room "+post.RoomId);
+        Console.WriteLine("y "+ userId);
+        Console.WriteLine("dd "+ post.Id);
+        var hasContract = await _contractClientService.CheckTenantHasContract(userId, post.RoomId);
+        if (!hasContract)
+            return ApiResponse<ReviewResponseDto>.Fail("Bạn chưa có hợp đồng, không thể tạo review.");
+
         var review = _mapper.Map<Review>(request);
         review.UserId = userId;
         review.PostId = postId;
         review.CreatedAt = DateTime.UtcNow;
         await _reviewRepository.AddAsync(review);
-        var dto = _mapper.Map<ReviewDto>(review);
-        return ApiResponse<ReviewDto>.Success(dto, "Thêm review thành công");
+        var dto = _mapper.Map<ReviewResponseDto>(review);
+        return ApiResponse<ReviewResponseDto>.Success(dto, "Thêm review thành công");
     }
 
     public async Task<ApiResponse<bool>> UpdateAsync(Guid id,Guid userId, UpdateReviewDto request)
