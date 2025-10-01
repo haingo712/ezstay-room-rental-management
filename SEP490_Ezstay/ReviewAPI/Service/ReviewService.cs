@@ -62,22 +62,50 @@ public class ReviewService : IReviewService
         return _mapper.Map<ReviewResponseDto>(entity);
     }
 
-    public async Task<ApiResponse<ReviewResponseDto>> AddAsync(Guid userId,Guid postId, CreateReviewDto request)
+    // public async Task<ApiResponse<ReviewResponseDto>> AddAsync(Guid userId,Guid postId, CreateReviewDto request)
+    // {
+    //     
+    //     // check user có hợp đồng chưa
+    //     Console.WriteLine("dd "+ postId);
+    //     var post = await _postClientService.GetByIdAsync(postId);
+    //     Console.WriteLine("room "+post.RoomId);
+    //     Console.WriteLine("y "+ userId);
+    //     Console.WriteLine("dd "+ post.Id);
+    //     var hasContract = await _contractClientService.CheckTenantHasContract(userId, post.RoomId);
+    //     if (!hasContract)
+    //         return ApiResponse<ReviewResponseDto>.Fail("Bạn chưa có hợp đồng, không thể tạo review.");
+    //
+    //     var review = _mapper.Map<Review>(request);
+    //     review.UserId = userId;
+    //     review.PostId = postId;
+    //     review.CreatedAt = DateTime.UtcNow;
+    //     await _reviewRepository.AddAsync(review);
+    //     var dto = _mapper.Map<ReviewResponseDto>(review);
+    //     return ApiResponse<ReviewResponseDto>.Success(dto, "Thêm review thành công");
+    // }
+    public async Task<ApiResponse<ReviewResponseDto>> AddAsync(Guid userId, Guid contractId, CreateReviewDto request)
     {
         
-        // check user có hợp đồng chưa
-        Console.WriteLine("dd "+ postId);
-        var post = await _postClientService.GetByIdAsync(postId);
-        Console.WriteLine("room "+post.RoomId);
-        Console.WriteLine("y "+ userId);
-        Console.WriteLine("dd "+ post.Id);
-        var hasContract = await _contractClientService.CheckTenantHasContract(userId, post.RoomId);
-        if (!hasContract)
-            return ApiResponse<ReviewResponseDto>.Fail("Bạn chưa có hợp đồng, không thể tạo review.");
+          // var post = await _postClientService.GetByIdAsync(postId);
+          var contract = await _contractClientService.GetContractById(contractId);
+          if (contract == null)
+              return ApiResponse<ReviewResponseDto>.Fail("Không tìm thấy hợp đồng.");
 
+        var post =  await _postClientService.GetPostIdByRoomIdAsync(contract.RoomId);
+        if (post == null)
+            return ApiResponse<ReviewResponseDto>.Fail("Không tìm thấy bài đăng cho phòng này.");
+
+        // Console.WriteLine("room "+post.RoomId);
+        // Console.WriteLine("y "+ userId);
+        // Console.WriteLine("dd "+ post.Id);
+        // var hasContract = await _contractClientService.CheckTenantHasContract(userId, post.RoomId);
+        // if (!hasContract)
+        //     return ApiResponse<ReviewResponseDto>.Fail("Bạn chưa có hợp đồng, không thể tạo review.");
+        
         var review = _mapper.Map<Review>(request);
         review.UserId = userId;
-        review.PostId = postId;
+        review.ContractId = contractId;
+        review.PostId = post.Value;
         review.CreatedAt = DateTime.UtcNow;
         await _reviewRepository.AddAsync(review);
         var dto = _mapper.Map<ReviewResponseDto>(review);
