@@ -34,6 +34,18 @@ public class UtilityReadingService: IUtilityReadingService
             throw new KeyNotFoundException(" UtilityReading Id not found");
         return _mapper.Map<UtilityReadingResponseDto>(utilityReading);
     }
+
+    // Get lastest reading by roomId and type
+    public UtilityReadingResponseDto GetLastestReading(Guid roomId, UtilityType type)
+    {
+        var utilityReading = _utilityReadingRepository.GetAllAsQueryable()
+            .Where(x => x.RoomId == roomId && x.Type == type)
+            .OrderByDescending(x => x.ReadingDate)
+            .FirstOrDefault();
+        if (utilityReading == null)
+            throw new KeyNotFoundException("No utility reading found for the specified room and type.");
+        return _mapper.Map<UtilityReadingResponseDto>(utilityReading);
+    }
     public async Task<ApiResponse<UtilityReadingResponseDto>> AddAsync(Guid roomId, UtilityType type, CreateUtilityReadingContract  request)
     {
         var lastReading = _utilityReadingRepository.GetAllAsQueryable()
