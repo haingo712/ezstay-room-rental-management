@@ -109,7 +109,7 @@ namespace ContractAPI.Controllers
         // }
 
         // GET: api/Tenant/5
-        [Authorize(Roles = "Owner, User")]
+        // [Authorize(Roles = "Owner, User")]
         [HttpGet("{id}")]
         public async Task<ActionResult<ContractResponseDto>> GetContractById(Guid id)
         {
