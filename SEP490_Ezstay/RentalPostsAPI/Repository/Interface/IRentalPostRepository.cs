@@ -11,7 +11,7 @@ namespace RentalPostsAPI.Repository.Interface
         Task<IEnumerable<RentalPosts>> GetAllAsync();
         Task<RentalPosts?> UpdateAsync(RentalPosts post);
         Task<bool> DeleteAsync(Guid id, Guid deletedBy);
-        
+        Task<Guid?> GetPostIdByRoomIdAsync(Guid roomId);
         Task<IEnumerable<RentalPosts>> GetByRoomIdAsync(Guid roomId);
     }
 }

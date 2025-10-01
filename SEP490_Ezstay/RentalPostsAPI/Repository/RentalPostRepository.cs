@@ -15,6 +15,14 @@ namespace RentalPostsAPI.Repository
         }
         public IQueryable<RentalPosts> GetAllAsQueryable()=> _collection.AsQueryable();
 
+        public async Task<Guid?> GetPostIdByRoomIdAsync(Guid roomId)
+        {
+            var post = await _collection
+                .Find(p => p.RoomId == roomId)
+                .FirstOrDefaultAsync();
+            return post?.Id;
+        }
+
         public async Task<RentalPosts> CreateAsync(RentalPosts post)
         {
             await _collection.InsertOneAsync(post);
@@ -27,7 +35,7 @@ namespace RentalPostsAPI.Repository
         }
         public async Task<IEnumerable<RentalPosts>> GetAllByOwnerIdAsync(Guid ownerId)
         {
-            return await _collection.Find(x => !x.IsActive && x.AuthorId == ownerId).ToListAsync();
+            return await _collection.Find(x => x.AuthorId == ownerId).ToListAsync();
         }
 
         public async Task<RentalPosts?> GetByIdAsync(Guid id)
