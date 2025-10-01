@@ -12,6 +12,7 @@ public interface IUtilityReadingService
     // Task<IEnumerable<ElectricityReadingDto>> GetAllByOwnerId(Guid ownerId);
     IQueryable<UtilityReadingResponseDto> GetAllByOwnerId(Guid roomId,  UtilityType type);
     Task<UtilityReadingResponseDto> GetByIdAsync(Guid id);
+    UtilityReadingResponseDto GetLastestReading(Guid roomId, UtilityType type);
     Task<ApiResponse<UtilityReadingResponseDto>> AddAsync(Guid roomId, CreateUtilityReadingDto request);
     Task<ApiResponse<UtilityReadingResponseDto>> AddAsync(Guid roomId, UtilityType type, CreateUtilityReadingContract request); 
     Task<ApiResponse<UtilityReadingResponseDto>> AddUtilityReadingContract(Guid roomId, CreateUtilityReadingContract request);
