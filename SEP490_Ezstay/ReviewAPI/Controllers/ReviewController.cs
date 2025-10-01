@@ -41,14 +41,24 @@ public class ReviewController : ControllerBase
         return Ok(result);
     }
     
+    // [Authorize(Roles = "User")]
+    // [HttpPost("Post/{postId}")]
+    // public async Task<IActionResult> Create(Guid postId, [FromBody] CreateReviewDto request)
+    // {
+    //     var userId = _tokenService.GetUserIdFromClaims(User);
+    //     if (!ModelState.IsValid) return BadRequest(ModelState);
+    //
+    //     var result = await _reviewService.AddAsync(userId, postId, request);
+    //     return Ok(result);
+    // }
     [Authorize(Roles = "User")]
-    [HttpPost("{postId}")]
-    public async Task<IActionResult> Create(Guid postId, [FromBody] CreateReviewDto request)
+    [HttpPost("{contractId}")]
+    public async Task<IActionResult> Create(Guid contractId, [FromBody] CreateReviewDto request)
     {
         var userId = _tokenService.GetUserIdFromClaims(User);
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var result = await _reviewService.AddAsync(userId, postId, request);
+        var result = await _reviewService.AddAsync(userId, contractId,request);
         return Ok(result);
     }
     

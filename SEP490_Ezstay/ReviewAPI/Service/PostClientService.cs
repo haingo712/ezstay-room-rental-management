@@ -12,6 +12,14 @@ public class PostClientService : IPostClientService
     {
         _httpClient = httpClient;
     }
+    public async Task<Guid?> GetPostIdByRoomIdAsync(Guid roomId)
+    {
+        var response = await _httpClient.GetAsync($"/api/RentalPosts/RoomId/{roomId}");
+        if (!response.IsSuccessStatusCode) return null;
+
+        var postId = await response.Content.ReadFromJsonAsync<Guid>();
+        return postId;
+    }
 
     public async Task<PostResponse?> GetByIdAsync(Guid postId)
     {
