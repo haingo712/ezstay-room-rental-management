@@ -85,24 +85,18 @@ public class ReviewService : IReviewService
     // }
     public async Task<ApiResponse<ReviewResponseDto>> AddAsync(Guid userId, Guid contractId, CreateReviewDto request)
     {
-        
-          // var post = await _postClientService.GetByIdAsync(postId);
-          var contract = await _contractClientService.GetContractById(contractId);
-          if (contract == null)
-              return ApiResponse<ReviewResponseDto>.Fail("Không tìm thấy hợp đồng.");
-
+        var contract = await _contractClientService.GetContractById(contractId);
+        if (contract == null)
+            return ApiResponse<ReviewResponseDto>.Fail("Không tìm thấy hợp đồng.");
+        // if(contract. > DateTime.UtcNow)
+        //     return  ApiResponse<ReviewResponseDto>.Fail("K dc qua"+ contract.CheckoutDate.AddMonths(1) +" ngay");
+        if(contract.CheckoutDate.AddMonths(1) > DateTime.UtcNow)
+            return  ApiResponse<ReviewResponseDto>.Fail("K dc qua"+ contract.CheckoutDate.AddMonths(1) +" ngay");
         var post =  await _postClientService.GetPostIdByRoomIdAsync(contract.RoomId);
         if (post == null)
             return ApiResponse<ReviewResponseDto>.Fail("Không tìm thấy bài đăng cho phòng này.");
-
-        // Console.WriteLine("room "+post.RoomId);
-        // Console.WriteLine("y "+ userId);
-        // Console.WriteLine("dd "+ post.Id);
-        // var hasContract = await _contractClientService.CheckTenantHasContract(userId, post.RoomId);
-        // if (!hasContract)
-        //     return ApiResponse<ReviewResponseDto>.Fail("Bạn chưa có hợp đồng, không thể tạo review.");
-        
         var review = _mapper.Map<Review>(request);
+        review.ReviewDeadline = contract.CheckoutDate.AddMonths(1);
         review.UserId = userId;
         review.ContractId = contractId;
         review.PostId = post.Value;
@@ -120,7 +114,8 @@ public class ReviewService : IReviewService
         
         if (entity.UserId != userId)
             return ApiResponse<bool>.Fail("Bạn không có quyền cập nhật review này");
-        
+        if(entity.ReviewDeadline > DateTime.UtcNow)
+            return  ApiResponse<bool>.Fail("K dc qua"+ entity.ReviewDeadline +" ngay");
         _mapper.Map(request, entity);
         entity.UpdatedAt = DateTime.UtcNow;
         await _reviewRepository.UpdateAsync(entity);
