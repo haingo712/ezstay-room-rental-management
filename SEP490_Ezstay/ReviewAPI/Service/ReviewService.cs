@@ -90,7 +90,7 @@ public class ReviewService : IReviewService
             return ApiResponse<ReviewResponseDto>.Fail("Không tìm thấy hợp đồng.");
         // if(contract. > DateTime.UtcNow)
         //     return  ApiResponse<ReviewResponseDto>.Fail("K dc qua"+ contract.CheckoutDate.AddMonths(1) +" ngay");
-        if(contract.CheckoutDate.AddMonths(1) > DateTime.UtcNow)
+        if(contract.CheckoutDate.AddMonths(1) < DateTime.UtcNow)
             return  ApiResponse<ReviewResponseDto>.Fail("K dc qua"+ contract.CheckoutDate.AddMonths(1) +" ngay");
         var post =  await _postClientService.GetPostIdByRoomIdAsync(contract.RoomId);
         if (post == null)
@@ -114,7 +114,7 @@ public class ReviewService : IReviewService
         
         if (entity.UserId != userId)
             return ApiResponse<bool>.Fail("Bạn không có quyền cập nhật review này");
-        if(entity.ReviewDeadline > DateTime.UtcNow)
+        if(entity.ReviewDeadline < DateTime.UtcNow)
             return  ApiResponse<bool>.Fail("K dc qua"+ entity.ReviewDeadline +" ngay");
         _mapper.Map(request, entity);
         entity.UpdatedAt = DateTime.UtcNow;

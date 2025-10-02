@@ -27,12 +27,12 @@ public class ReviewController : ControllerBase
         return Ok(result);
     }
     
-    // [HttpGet("post/{postId}")]
-    // public async Task<IActionResult> GetByPostId(Guid postId)
-    // {
-    //     var result = await _reviewService.GetAllByPostId(postId);
-    //     return Ok(result);
-    // }
+    [HttpGet("post/{postId}")]
+    public async Task<IActionResult> GetByPostId(Guid postId)
+    {
+        var result = await _reviewService.GetAllByPostId(postId);
+        return Ok(result);
+    }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)

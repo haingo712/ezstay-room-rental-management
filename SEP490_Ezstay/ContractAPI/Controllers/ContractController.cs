@@ -75,10 +75,11 @@ namespace ContractAPI.Controllers
        }
        
        [Authorize(Roles = "User")]
-       [HttpGet("/ByTenantId/{tenantId}")]
+       [HttpGet("MyContract")]
        [EnableQuery]
-       public IQueryable<ContractResponseDto> GetContractsByTenantId(Guid tenantId)
+       public IQueryable<ContractResponseDto> GetContractsByTenantId()
        {
+           var tenantId = _tokenService.GetUserIdFromClaims(User);
            return _contractService.GetAllByTenantId(tenantId);
        }
        
