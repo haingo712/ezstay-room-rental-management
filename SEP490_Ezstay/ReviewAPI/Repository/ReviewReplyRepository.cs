@@ -20,7 +20,7 @@ public class ReviewReplyRepository : IReviewReplyRepository
     public async Task<ReviewReply?> GetByIdAsync(Guid id)
         => await _replies.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-
+   
     public async Task<ReviewReply?> GetByReviewIdAsync(Guid reviewId)
     {
         return await _replies.Find(r => r.ReviewId == reviewId).FirstOrDefaultAsync();
