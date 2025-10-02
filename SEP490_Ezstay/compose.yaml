@@ -164,3 +164,9 @@ services:
     build:
       context: .
       dockerfile: PaymentAPI/Dockerfile
+services:
+  reviewreportapi:
+    image: reviewreportapi
+    build:
+      context: .
+      dockerfile: ReviewReportAPI/Dockerfile
