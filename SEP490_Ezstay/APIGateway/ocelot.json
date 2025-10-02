@@ -1,69 +1,69 @@
 {
     "Routes": [
-      {
-        "DownstreamPathTemplate": "/odata/{everything}",
-        "DownstreamScheme": "https",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "localhost",
-            "Port": 7006
-          }
-        ],
-        "UpstreamPathTemplate": "/odata/{everything}",
-        "UpstreamHttpMethod": [ "GET" ],
-        "AuthenticationOptions": {
-          "AuthenticationProviderKey": "Bearer",
-          "AllowedScopes": []
-        }
-      },
-      {
-        "DownstreamPathTemplate": "/api/IdentityProfile/{everything}",
-        "DownstreamScheme": "https",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "localhost",
-            "Port": 7153
-          }
-        ],
-        "UpstreamPathTemplate": "/api/IdentityProfile/{everything}",
-        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-        "AuthenticationOptions": {
-          "AuthenticationProviderKey": "Bearer",
-          "AllowedScopes": []
-        }
-      },
-      {
-        "DownstreamPathTemplate": "/api/Contract/{everything}",
-        "DownstreamScheme": "https",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "localhost",
-            "Port": 7153
-          }
-        ],
-        "UpstreamPathTemplate": "/api/Contract/{everything}",
-        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-        "AuthenticationOptions": {
-          "AuthenticationProviderKey": "Bearer",
-          "AllowedScopes": []
-        }
-      },
-      {
-        "DownstreamPathTemplate": "/api/User/{everything}",
-        "DownstreamScheme": "https",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "localhost",
-            "Port": 7211
-          }
-        ],
-        "UpstreamPathTemplate": "/api/User/{everything}",
-        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-        "AuthenticationOptions": {
-          "AuthenticationProviderKey": "Bearer",
-          "AllowedScopes": []
-        }
-      },
+        {
+            "DownstreamPathTemplate": "/odata/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7006
+                }
+            ],
+            "UpstreamPathTemplate": "/odata/{everything}",
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/IdentityProfile/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7153
+                }
+            ],
+            "UpstreamPathTemplate": "/api/IdentityProfile/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/Contract/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7153
+                }
+            ],
+            "UpstreamPathTemplate": "/api/Contract/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/User/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7211
+                }
+            ],
+            "UpstreamPathTemplate": "/api/User/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
         {
             "DownstreamPathTemplate": "/api/Amenity/{everything}",
             "DownstreamScheme": "https",
@@ -77,7 +77,7 @@
             "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-              "AllowedScopes": []
+                "AllowedScopes": []
             }
         },
         {
@@ -116,7 +116,7 @@
             ],
             "UpstreamPathTemplate": "/signalR",
             "UpstreamHttpMethod": [ "Get", "Post" ]
-        },        
+        },
         {
             "DownstreamPathTemplate": "/api/RoomAmenity/{everything}",
             "DownstreamScheme": "https",
@@ -130,7 +130,7 @@
             "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-              "AllowedScopes": []
+                "AllowedScopes": []
             }
         },
         {
@@ -146,7 +146,7 @@
             "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-              "AllowedScopes": []
+                "AllowedScopes": []
             }
         },
         {
@@ -192,42 +192,59 @@
             ],
             "UpstreamPathTemplate": "/api/UtilityRate/{everything}",
             "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
-            "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer",
-              "AllowedScopes": []
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
             }
         },
-      {
-        "DownstreamPathTemplate": "/api/UtilityReading/{everything}",
-        "DownstreamScheme": "https",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "localhost",
-            "Port": 7006
-          }
-        ],
-        "UpstreamPathTemplate": "/api/UtilityReading/{everything}",
-        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-        "AuthenticationOptions": {
-          "AuthenticationProviderKey": "Bearer",
-          "AllowedScopes": []
-        }
-      },
-      {
-        "DownstreamPathTemplate": "/api/Image/{everything}",
-        "DownstreamScheme": "https",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "localhost",
-            "Port": 7080
-          }
-        ],
-        "UpstreamPathTemplate": "/api/Image/{everything}",
-        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-        "AuthenticationOptions": {
-          "AuthenticationProviderKey": "Bearer",
-          "AllowedScopes": []
-        }
-      },
+        {
+            "DownstreamPathTemplate": "/api/UtilityReading/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7006
+                }
+            ],
+            "UpstreamPathTemplate": "/api/UtilityReading/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/UtilityBills/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7008
+                }
+            ],
+            "UpstreamPathTemplate": "/api/UtilityBills/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/Image/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7080
+                }
+            ],
+            "UpstreamPathTemplate": "/api/Image/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
         {
             "DownstreamPathTemplate": "/address-kit/latest/provinces",
             "DownstreamScheme": "https",
@@ -252,22 +269,22 @@
             "UpstreamPathTemplate": "/api/provinces/{provinceId}/communes",
             "UpstreamHttpMethod": [ "Get" ]
         },
-      {
-        "DownstreamPathTemplate": "/api/Review/{everything}",
-        "DownstreamScheme": "https",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "localhost",
-            "Port": 7037
-          }
-        ],
-        "UpstreamPathTemplate": "/api/Review/{everything}",
-        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-        "AuthenticationOptions": {
-          "AuthenticationProviderKey": "Bearer",
-          "AllowedScopes": []
+        {
+            "DownstreamPathTemplate": "/api/Review/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7037
+                }
+            ],
+            "UpstreamPathTemplate": "/api/Review/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
         }
-      }
     ],
 
     "GlobalConfiguration": {
