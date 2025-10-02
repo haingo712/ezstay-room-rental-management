@@ -62,6 +62,11 @@ public class ReviewService : IReviewService
         return _mapper.Map<ReviewResponseDto>(entity);
     }
 
+    public async Task<ReviewResponseDto?> GetByContractIdAsync(Guid contractId)
+    {
+        var entity = await _reviewRepository.GetByContractIdAsync(contractId);
+        return _mapper.Map<ReviewResponseDto>(entity);
+    }
     // public async Task<ApiResponse<ReviewResponseDto>> AddAsync(Guid userId,Guid postId, CreateReviewDto request)
     // {
     //     
@@ -88,6 +93,10 @@ public class ReviewService : IReviewService
         var contract = await _contractClientService.GetContractById(contractId);
         if (contract == null)
             return ApiResponse<ReviewResponseDto>.Fail("Không tìm thấy hợp đồng.");
+        var existingReview = await _reviewRepository.GetByContractIdAsync(contractId);
+        if (existingReview != null)
+            return ApiResponse<ReviewResponseDto>.Fail("Hợp đồng này đã được review, không thể review thêm.");
+
         // if(contract. > DateTime.UtcNow)
         //     return  ApiResponse<ReviewResponseDto>.Fail("K dc qua"+ contract.CheckoutDate.AddMonths(1) +" ngay");
         if(contract.CheckoutDate.AddMonths(1) < DateTime.UtcNow)
