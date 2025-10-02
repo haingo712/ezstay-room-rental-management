@@ -253,15 +253,15 @@
             "UpstreamHttpMethod": [ "Get" ]
         },
       {
-        "DownstreamPathTemplate": "/api/Tenant/{everything}",
+        "DownstreamPathTemplate": "/api/Review/{everything}",
         "DownstreamScheme": "https",
         "DownstreamHostAndPorts": [
           {
             "Host": "localhost",
-            "Port": 7168
+            "Port": 7037
           }
         ],
-        "UpstreamPathTemplate": "/api/Tenant/{everything}",
+        "UpstreamPathTemplate": "/api/Review/{everything}",
         "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
         "AuthenticationOptions": {
           "AuthenticationProviderKey": "Bearer",

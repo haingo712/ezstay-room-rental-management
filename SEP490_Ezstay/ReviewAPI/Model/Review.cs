@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using ReviewAPI.Enum;
 
 namespace ReviewAPI.Model;
 
@@ -20,6 +21,7 @@ public class Review
     public int Rating { get; set; } 
     public string Content { get; set; }
     
+    public ReviewStatus Status { get; set; }
     public DateTime ReviewDeadline { get; set; }
     
     [BsonGuidRepresentation(GuidRepresentation.Standard)]

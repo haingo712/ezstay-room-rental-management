@@ -6,6 +6,7 @@ using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using ReviewAPI.DTO.Response;
+using ReviewAPI.DTO.Response.ReviewReply;
 using ReviewAPI.Profiles;
 using ReviewAPI.Repository;
 using ReviewAPI.Repository.Interface;
@@ -55,6 +56,7 @@ builder.Services.AddSwaggerGen();
 ;
 var odatabuilder = new ODataConventionModelBuilder();
 odatabuilder.EntitySet<ReviewResponseDto>("Reviews");
+odatabuilder.EntitySet<ReviewReplyResponse>("ReviewReplys");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>
     options.AddRouteComponents("odata", odata)
@@ -65,7 +67,7 @@ builder.Services.AddControllers().AddOData(options =>
         .Expand()
         .Select());
 builder.Services.AddAutoMapper(typeof(ReviewProfile).Assembly);
-
+builder.Services.AddAutoMapper(typeof(ReviewReplyResponse).Assembly);
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
