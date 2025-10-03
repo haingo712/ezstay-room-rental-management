@@ -45,5 +45,12 @@ namespace AccountAPI.Service
             return await response.Content.ReadFromJsonAsync<AccountResponse>();
         }
 
+        public async Task<bool> UpdateFullNameAsync(Guid id, string fullName)
+        {
+            var response = await _http.PutAsJsonAsync($"/api/Accounts/update-fullname/{id}", fullName);
+            return response.IsSuccessStatusCode;
+        }
+
+
     }
 }

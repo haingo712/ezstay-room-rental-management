@@ -82,5 +82,16 @@ namespace AuthApi.Controllers
             await _service.UnbanAsync(id);
             return NoContent();
         }
+
+
+        [HttpPut("update-fullname/{id}")]
+        public async Task<IActionResult> UpdateFullName(Guid id, [FromBody] string fullName)
+        {
+            var result = await _service.UpdateFullNameAsync(id, fullName);
+            return result
+                ? Ok("Cập nhật tên thành công")
+                : NotFound("Không tìm thấy tài khoản");
+        }
+
     }
 }

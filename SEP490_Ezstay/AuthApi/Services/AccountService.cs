@@ -107,6 +107,18 @@ namespace AuthApi.Services
             await _repo.CreateAsync(account);
             return _mapper.Map<AccountResponse>(account);
         }
+public async Task<bool> UpdateFullNameAsync(Guid id, string fullName)
+{
+    var acc = await _repo.GetByIdAsync(id);
+    if (acc == null) return false;
+
+    acc.FullName = fullName; // ✅ chỉ cập nhật 1 field
+
+    var updated = await _repo.UpdateAsync(acc);
+    return updated != null;
+}
+
+
 
         public async Task VerifyAsync(string email) => await _repo.MarkAsVerified(email);
         public async Task BanAsync(Guid id) => await _repo.BanAccountAsync(id, true);
