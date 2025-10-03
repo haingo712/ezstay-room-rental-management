@@ -2,7 +2,12 @@
 {
     public class ResetPasswordRequestDto
     {
-        public string Token { get; set; }
-        public string NewPassword { get; set; }
+     
+            public string Email { get; set; }        // Bổ sung email
+            public string Token { get; set; }        // OTP từ email
+            public string NewPassword { get; set; }  // Mật khẩu mới
+        
+
+     
     }
 }

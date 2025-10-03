@@ -93,5 +93,13 @@ namespace AuthApi.Controllers
                 : NotFound("Không tìm thấy tài khoản");
         }
 
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            var response = await _service.ChangePasswordAsync(request);
+            return response.Success ? Ok(response) : BadRequest(response);
+        }
+
+
     }
 }

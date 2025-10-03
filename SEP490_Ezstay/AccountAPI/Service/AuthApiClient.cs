@@ -1,4 +1,5 @@
 ﻿using AccountAPI.DTO.Response;
+using AccountAPI.DTO.Resquest;
 using AccountAPI.Service.Interfaces;
 
 namespace AccountAPI.Service
@@ -50,6 +51,17 @@ namespace AccountAPI.Service
             var response = await _http.PutAsJsonAsync($"/api/Accounts/update-fullname/{id}", fullName);
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<ChangePasswordResponse?> ChangePasswordAsync(ChangePasswordRequest request)
+        {
+            var response = await _http.PutAsJsonAsync("/api/Accounts/change-password", request);
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            return await response.Content.ReadFromJsonAsync<ChangePasswordResponse>();
+        }
+
 
 
     }
