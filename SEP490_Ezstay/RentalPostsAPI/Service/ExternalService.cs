@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Text.Json;
 using Microsoft.Extensions.Options;
 using RentalPostsAPI.DTO.Request;
 using RentalPostsAPI.Service.Interface;
@@ -16,32 +17,45 @@ namespace RentalPostsAPI.Service
             _settings = settings.Value;
         }
 
-        public async Task<RoomDto?> GetRoomByIdAsync(Guid roomId)
+        private async Task<T?> GetFromApiAsync<T>(string url)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync(url);
+                if (!response.IsSuccessStatusCode) return default;
+
+                var content = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrWhiteSpace(content)) return default;
+
+                return JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            }
+            catch (Exception ex)
+            {
+                // TODO: log lỗi ra file / console
+                Console.WriteLine($"[ExternalService] Error calling {url}: {ex.Message}");
+                return default;
+            }
+        }
+
+        public Task<RoomDto?> GetRoomByIdAsync(Guid roomId)
         {
             var url = $"{_settings.RoomApiBaseUrl}api/Rooms/{roomId}";
-            var response = await _httpClient.GetAsync(url);
-            if (!response.IsSuccessStatusCode) return null;
-
-            return await response.Content.ReadFromJsonAsync<RoomDto>();
+            return GetFromApiAsync<RoomDto>(url);
         }
 
-        public async Task<BoardingHouseDTO?> GetBoardingHouseByIdAsync(Guid houseId)
+        public Task<BoardingHouseDTO?> GetBoardingHouseByIdAsync(Guid houseId)
         {
             var url = $"{_settings.BoardingHouseApiBaseUrl}api/BoardingHouses/{houseId}";
-            var response = await _httpClient.GetAsync(url);
-            if (!response.IsSuccessStatusCode) return null;
-
-            return await response.Content.ReadFromJsonAsync<BoardingHouseDTO>();
+            return GetFromApiAsync<BoardingHouseDTO>(url);
         }
 
-        public async Task<AccountDto?> GetAccountByIdAsync(Guid Id)
+        public Task<AccountDto?> GetAccountByIdAsync(Guid id)
         {
-            var url = $"{_settings.AccountApiBaseUrl}api/Accounts/{Id}";
-            var response = await _httpClient.GetAsync(url);
-            if (!response.IsSuccessStatusCode) return null;
-
-            return await response.Content.ReadFromJsonAsync<AccountDto>();
+            var url = $"{_settings.AccountApiBaseUrl}api/Accounts/{id}";
+            return GetFromApiAsync<AccountDto>(url);
         }
-      
     }
 }

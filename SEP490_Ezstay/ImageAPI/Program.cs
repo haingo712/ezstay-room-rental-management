@@ -1,4 +1,4 @@
-
+﻿
 using CloudinaryDotNet;
 using ImageAPI;
 using Microsoft.Extensions.Options;
@@ -8,6 +8,7 @@ using ImageAPI.Repository;
 using ImageAPI.Service.Interface;
 using ImageAPI.Service;
 using RentalPostsAPI.Data;
+using Amazon.S3;
 
 namespace ImageAPI
 {
@@ -19,23 +20,24 @@ namespace ImageAPI
             builder.Services.Configure<MongoSettings>(
            builder.Configuration.GetSection("MongoSettings"));
             builder.Services.AddSingleton<MongoDbService>();
-            builder.Services.Configure<CloudinarySettings>(
-    builder.Configuration.GetSection("CloudinarySettings"));
+            builder.Services.Configure<FilebaseSettings>(
+    builder.Configuration.GetSection("FilebaseSettings"));
 
-            builder.Services.AddSingleton(sp =>
-            {
-                var config = sp.GetRequiredService<IOptions<CloudinarySettings>>().Value;
-                return new Cloudinary(new Account(config.CloudName, config.ApiKey, config.ApiSecret));
-            });
+            var filebaseSettings = builder.Configuration
+     .GetSection("FilebaseSettings")
+     .Get<FilebaseSettings>();
+
+          
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         
             builder.Services.AddScoped<IImageRepository, ImageRepository>();
-            builder.Services.AddScoped<IImageService, ImageService>();
+            builder.Services.AddSingleton<ImageService>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+           
 
             var app = builder.Build();
 

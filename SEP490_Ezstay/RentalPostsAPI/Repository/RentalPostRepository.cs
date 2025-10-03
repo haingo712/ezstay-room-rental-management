@@ -23,11 +23,12 @@ namespace RentalPostsAPI.Repository
 
         public async Task<IEnumerable<RentalPosts>> GetAllAsync()
         {
-            return await _collection.Find(_ => true).ToListAsync();
+            return await _collection.Find(x => x.IsActive).ToListAsync();
         }
+
         public async Task<IEnumerable<RentalPosts>> GetAllByOwnerIdAsync(Guid ownerId)
         {
-            return await _collection.Find(x => !x.IsActive && x.AuthorId == ownerId).ToListAsync();
+            return await _collection.Find(x => x.AuthorId == ownerId).ToListAsync();
         }
 
         public async Task<RentalPosts?> GetByIdAsync(Guid id)

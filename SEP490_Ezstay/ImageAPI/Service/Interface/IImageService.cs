@@ -1,10 +1,11 @@
 ﻿using ImageAPI.DTO.Request;
+using ImageAPI.Models;
 
 namespace ImageAPI.Service.Interface
 {
     public interface IImageService
     {
-        Task<ImageDTO> UploadAsync(ImageUploadDTO dto);
- 
+        Task<string> UploadAsync(ImageUploadDTO dto);
+
     }
 }
