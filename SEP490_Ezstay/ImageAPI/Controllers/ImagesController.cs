@@ -1,32 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ImageAPI.DTO;
-using ImageAPI.DTO.Request;
-using ImageAPI.Service;
-using ImageAPI.Service.Interface;
+﻿using ImageAPI.DTO.Request;
+using Microsoft.AspNetCore.Mvc;
 
-namespace ImageAPI.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class ImagesController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ImagesController : ControllerBase
+    private readonly ImageService _ipfsService;
+
+    public ImagesController(ImageService ipfsService)
     {
-        private readonly IImageService _service;
+        _ipfsService = ipfsService;
+    }
 
-        public ImagesController(IImageService service)
-        {
-            _service = service;
-        }
+    [HttpPost("upload")]
+    public async Task<IActionResult> Upload([FromForm] ImageUploadDTO dto)
+    {
+        if (dto.File == null || dto.File.Length == 0)
+            return BadRequest("File không hợp lệ");
 
-        [HttpPost("upload")]
-        public async Task<IActionResult> Upload([FromForm] ImageUploadDTO dto)
-        {
-            var result = await _service.UploadAsync(dto);
-            return Ok(result);
-        }
+        var url = await _ipfsService.UploadAsync(dto.File);
 
-     
-       
+        return Ok(new { Url = url });
+    }
+     [HttpPost("upload-multiple")]
+    public async Task<IActionResult> UploadMultiple([FromForm] ImageUploadMultipleDTO request)
+    {
+        if (request.Files == null || request.Files.Count == 0)
+            return BadRequest("No files uploaded.");
 
-       
+        var urls = await _ipfsService.UploadMultipleAsync(request.Files);
+        return Ok(new { Urls = urls });
     }
 }

@@ -1,57 +1,51 @@
-﻿using AutoMapper;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using ImageAPI.DTO;
-using ImageAPI.DTO.Request;
-using ImageAPI.Models;
-using ImageAPI.Repository;
-using ImageAPI.Repository.Interface;
-using ImageAPI.Service.Interface;
-using ImageAPI.Validators;
+﻿using System.Net.Http.Headers;
+using System.Text.Json;
 
-namespace ImageAPI.Service
+public class ImageService
 {
-    public class ImageService : IImageService
+    private readonly HttpClient _httpClient;
+    private readonly string _apiKey;
+
+    public ImageService(IConfiguration config)
     {
-        private readonly IImageRepository _repo;
-        private readonly IMapper _mapper;
-        private readonly Cloudinary _cloudinary;
+        _httpClient = new HttpClient();
+        _httpClient.BaseAddress = new Uri("https://rpc.filebase.io/");
+        _apiKey = config["FilebaseSettings:IpfsKey"];
 
-        public ImageService(IImageRepository repo, IMapper mapper, Cloudinary cloudinary)
+        // Thêm header mặc định
+        _httpClient.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", _apiKey);
+    }
+
+    public async Task<string> UploadAsync(IFormFile file)
+    {
+        using var form = new MultipartFormDataContent();
+        using var stream = file.OpenReadStream();
+
+        var fileContent = new StreamContent(stream);
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+        form.Add(fileContent, "file", file.FileName);
+
+        // Gọi endpoint IPFS
+        var response = await _httpClient.PostAsync("api/v0/add", form);
+        response.EnsureSuccessStatusCode();
+
+        var json = await response.Content.ReadAsStringAsync();
+        var obj = JsonDocument.Parse(json);
+        var cid = obj.RootElement.GetProperty("Hash").GetString();
+
+        // Trả về link IPFS Gateway
+        return $"https://ipfs.filebase.io/ipfs/{cid}";
+    }
+    public async Task<List<string>> UploadMultipleAsync(IFormFileCollection files)
+    {
+        var urls = new List<string>();
+        foreach (var file in files)
         {
-            _repo = repo;
-            _mapper = mapper;
-            _cloudinary = cloudinary;
+            var url = await UploadAsync(file);
+            urls.Add(url);
         }
-
-        public async Task<ImageDTO> UploadAsync(ImageUploadDTO dto)
-        {
-            ImageValidator.Validate(dto.File);
-            await using var stream = dto.File.OpenReadStream();
-            var uploadParams = new ImageUploadParams
-            {
-                File = new FileDescription(dto.File.FileName, stream),
-                PublicId = Guid.NewGuid().ToString(),
-                Folder = "ezstay"
-            };
-
-            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-
-            if (uploadResult.StatusCode != System.Net.HttpStatusCode.OK)
-                throw new Exception("Upload failed: " + uploadResult.Error?.Message);
-
-            var entity = new Image
-            {
-
-                Url = uploadResult.SecureUrl.AbsoluteUri,
-
-            };
-
-            await _repo.AddAsync(entity);
-
-            return _mapper.Map<ImageDTO>(entity);
-        }
-
-
+        return urls;
     }
 }
