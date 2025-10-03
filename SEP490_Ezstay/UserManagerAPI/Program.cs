@@ -7,12 +7,11 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+
 builder.Services.AddControllers();
 builder.Services.AddHttpClient<IAccountApiClient, AccountApiClient>();
 builder.Services.AddHttpContextAccessor();
 
-// ✅ Authentication & JWT
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -30,10 +29,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// ✅ Authorization
+
 builder.Services.AddAuthorization();
 
-// ✅ Swagger with JWT
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {

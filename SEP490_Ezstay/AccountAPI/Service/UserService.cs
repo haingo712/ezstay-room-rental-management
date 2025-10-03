@@ -87,9 +87,6 @@ namespace AccountAPI.Service
             return userResponse;
         }
 
-
-
-
         private async Task<string?> GetProvinceNameAsync(string provinceId)
         {
             var response = await _http.GetFromJsonAsync<JsonElement>("/api/provinces");
@@ -105,7 +102,6 @@ namespace AccountAPI.Service
             return communes.FirstOrDefault(c => c.GetProperty("code").GetString() == communeId)
                            .GetProperty("name").GetString();
         }
-
 
         public async Task<bool> UpdateProfile(Guid userId, UpdateUserDTO userDto)
         {
@@ -135,9 +131,6 @@ namespace AccountAPI.Service
             await _userRepository.UpdateAsync(user);
             return true;
         }
-
-
-
 
         public async Task<bool> SendOtpToPhoneAsync(string phone)
         {
@@ -174,10 +167,5 @@ namespace AccountAPI.Service
             return _mapper.Map<UserResponseDTO>(Phone);
            
         }
-
-
-
     }
-
-
 }

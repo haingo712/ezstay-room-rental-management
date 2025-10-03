@@ -51,14 +51,20 @@ namespace AuthApi.Services
             var list = await _repo.GetAllAsync();
             var currentRole = GetCurrentUserRole();
 
-            // Staff lọc Admin ra khỏi danh sách
             if (currentRole == RoleEnum.Staff)
             {
-                list = list.Where(x => x.Role != RoleEnum.Admin).ToList();
+                // Staff KHÔNG được thấy Admin và KHÔNG được thấy Staff
+                list = list.Where(x => x.Role != RoleEnum.Admin && x.Role != RoleEnum.Staff).ToList();
+            }
+            else if (currentRole == RoleEnum.Admin)
+            {
+                // Admin chỉ được thấy Staff
+                list = list.Where(x => x.Role == RoleEnum.Staff).ToList();
             }
 
             return _mapper.Map<List<AccountResponse>>(list);
         }
+
 
         public async Task<AccountResponse?> UpdateAsync(Guid id, AccountRequest request)
         {
