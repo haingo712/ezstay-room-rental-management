@@ -42,10 +42,7 @@ namespace AuthApi.Services
 
             var currentRole = GetCurrentUserRole();
 
-            // Staff không xem Admin
-            if (currentRole == RoleEnum.Staff && acc.Role == RoleEnum.Admin)
-                return null;
-
+      
             return _mapper.Map<AccountResponse>(acc);
         }
 

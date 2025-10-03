@@ -8,6 +8,7 @@ namespace AccountAPI.Repositories.Interfaces
         Task CreateUserAsync(User user);
         Task<User?> GetByUserIdAsync(Guid userId);
         Task UpdateAsync(User user);
+        Task<User> GetPhone(string phone);
 
     }
 }
