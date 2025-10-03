@@ -12,6 +12,5 @@ namespace AuthApi.Repositories.Interfaces
         Task<Account?> UpdateAsync(Account account);
         Task MarkAsVerified(string email);
         Task BanAccountAsync(Guid id, bool isBanned);
-
     }
 }
