@@ -10,6 +10,9 @@ namespace UserManagerAPI.Service.Interfaces
         Task<AccountResponse?> CreateAsync(AccountRequest request);
         Task<AccountResponse?> UpdateAsync(Guid id, AccountRequest request);
         Task BanAsync(Guid id);
-        Task UnbanAsync(Guid id);
+          Task UnbanAsync(Guid id);
+        void SetJwtToken(string token);
+
+
     }
 }

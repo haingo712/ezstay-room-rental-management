@@ -10,7 +10,6 @@ namespace AccountAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="User")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -22,13 +21,21 @@ namespace AccountAPI.Controllers
             _userClaimHelper = userClaimHelper;
         }
 
+        
         [HttpPost("create-profile")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> CreateProfile([FromBody] UserDTO userDto)
         {
             var userId = _userClaimHelper.GetUserId(User);
+
+            // Truyền thêm User (ClaimsPrincipal) vào service
             var success = await _userService.CreateProfileAsync(userId, userDto);
-            return success ? Ok("Tạo profile thành công.") : BadRequest("Không tạo được profile.");
+
+            return success
+                ? Ok("Tạo profile thành công.")
+                : BadRequest("Không tạo được profile.");
         }
+
 
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
@@ -43,6 +50,14 @@ namespace AccountAPI.Controllers
             profile.FullName = _userClaimHelper.GetFullName(User);
             profile.Phone = _userClaimHelper.GetPhone(User);
 
+            return Ok(profile);
+        }
+
+
+        [HttpGet("searchphone/{phone}")]
+        public async Task<IActionResult> GetPhone(string phone)
+        {
+            var profile = await _userService.GetPhone(phone);
             return Ok(profile);
         }
 
@@ -63,16 +78,16 @@ namespace AccountAPI.Controllers
                 : BadRequest(ApiResponse<string>.Fail("Không cập nhật được số điện thoại"));
         }
 
-        [HttpPut("update-profile")]
-        public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserDTO dto)
-        {
-            var userId = _userClaimHelper.GetUserId(User);
-            var updated = await _userService.UpdateProfileAsync(userId, dto);
+        //[HttpPut("update-profile")]
+        //public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserDTO dto)
+        //{
+        //    var userId = _userClaimHelper.GetUserId(User);
+        //    var updated = await _userService.UpdateProfileAsync(userId, dto);
 
-            return updated
-                ? Ok(ApiResponse<string>.Ok(null, "Cập nhật thông tin thành công"))
-                : BadRequest(ApiResponse<string>.Fail("Cập nhật thất bại"));
-        }
+        //    return updated
+        //        ? Ok(ApiResponse<string>.Ok(null, "Cập nhật thông tin thành công"))
+        //        : BadRequest(ApiResponse<string>.Fail("Cập nhật thất bại"));
+        //}
 
 
         [HttpPut("update-email")]
@@ -87,6 +102,8 @@ namespace AccountAPI.Controllers
                 ? Ok(ApiResponse<string>.Ok(null, "Cập nhật email thành công"))
                 : BadRequest(ApiResponse<string>.Fail("Cập nhật email thất bại"));
         }
+
+
 
 
 

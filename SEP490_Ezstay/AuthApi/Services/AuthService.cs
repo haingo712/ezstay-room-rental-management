@@ -89,9 +89,9 @@ namespace AuthApi.Services
 
             // ✅ Tạo token
             var token = _tokenGenerator.CreateToken(
-                email: account.Email,
+             
                 role: account.Role.ToString(),
-                userId: account.Id.ToString(),fullName:account.FullName.ToString(),phone:account.Phone
+                userId: account.Id.ToString()
             );
 
             return new LoginResponseDto

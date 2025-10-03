@@ -1,15 +1,21 @@
-﻿using AccountAPI.Service.Interfaces;
+﻿using AccountAPI.DTO.Response;
+using AccountAPI.Service.Interfaces;
 
 namespace AccountAPI.Service
 {
     public class AuthApiClient : IAuthApiClient
     {
         private readonly HttpClient _http;
+    
 
-        public AuthApiClient(HttpClient http)
+        public AuthApiClient(HttpClient http, IHttpClientFactory factory)
         {
             _http = http;
+            _http = factory.CreateClient("Gateway");
+
+
         }
+    
 
         public async Task<bool> ConfirmOtpAsync(string email, string otp)
         {
@@ -30,6 +36,13 @@ namespace AccountAPI.Service
             });
 
             return response.IsSuccessStatusCode;
+        }
+
+        public async Task<AccountResponse?> GetByIdAsync(Guid id)
+        {
+            var response = await _http.GetAsync($"/api/Accounts/{id}");
+            if (!response.IsSuccessStatusCode) return null;
+            return await response.Content.ReadFromJsonAsync<AccountResponse>();
         }
 
     }

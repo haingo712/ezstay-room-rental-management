@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using AuthApi.DTO.Request;
 using AuthApi.DTO.Response;
  // AccountRequest, UpdateAccountRequest, AccountResponse
@@ -18,19 +19,27 @@ namespace UserManagerAPI.Service
                        ?? throw new Exception("AccountApiBaseUrl not configured");
         }
 
-        // GET ALL
+        // Set token trước khi gọi API
+        public void SetJwtToken(string token)
+        {
+            _http.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+        }
+
         public async Task<List<AccountResponse>?> GetAllAsync()
         {
-            return await _http.GetFromJsonAsync<List<AccountResponse>>(_baseUrl);
+            var response = await _http.GetAsync(_baseUrl);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<List<AccountResponse>>();
         }
 
-        // GET BY ID
         public async Task<AccountResponse?> GetByIdAsync(Guid id)
         {
-            return await _http.GetFromJsonAsync<AccountResponse>($"{_baseUrl}/{id}");
+            var response = await _http.GetAsync($"{_baseUrl}/{id}");
+            if (!response.IsSuccessStatusCode) return null;
+            return await response.Content.ReadFromJsonAsync<AccountResponse>();
         }
 
-        // CREATE
         public async Task<AccountResponse?> CreateAsync(AccountRequest request)
         {
             var response = await _http.PostAsJsonAsync(_baseUrl, request);
@@ -38,7 +47,6 @@ namespace UserManagerAPI.Service
             return await response.Content.ReadFromJsonAsync<AccountResponse>();
         }
 
-        // UPDATE
         public async Task<AccountResponse?> UpdateAsync(Guid id, AccountRequest request)
         {
             var response = await _http.PutAsJsonAsync($"{_baseUrl}/{id}", request);
@@ -46,18 +54,19 @@ namespace UserManagerAPI.Service
             return await response.Content.ReadFromJsonAsync<AccountResponse>();
         }
 
-        // BAN
         public async Task BanAsync(Guid id)
         {
             var response = await _http.PatchAsync($"{_baseUrl}/{id}/ban", null);
             response.EnsureSuccessStatusCode();
         }
 
-        // UNBAN
         public async Task UnbanAsync(Guid id)
         {
             var response = await _http.PatchAsync($"{_baseUrl}/{id}/unban", null);
             response.EnsureSuccessStatusCode();
         }
+
+
+
     }
 }

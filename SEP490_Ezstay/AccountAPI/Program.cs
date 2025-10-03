@@ -21,15 +21,21 @@ builder.Services.AddSwaggerGen();
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
 builder.Services.AddSingleton(mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddHttpClient<IAuthApiClient, AuthApiClient>(client =>
+//builder.Services.AddHttpClient<IAuthApiClient, AuthApiClient>(client =>
+//{
+//    client.BaseAddress = new Uri("https://localhost:7000"); // gọi qua API Gateway
+//});
+builder.Services.AddScoped<IAuthApiClient, AuthApiClient>();
+
+builder.Services.AddHttpClient("Gateway", (serviceProvider, client) =>
 {
-    client.BaseAddress = new Uri("https://localhost:7000"); // gọi qua API Gateway
+    var config = serviceProvider.GetRequiredService<IConfiguration>();
+    var baseUrl = config["ServiceUrls:Gateway"];  // đọc từ appsettings.json
+    client.BaseAddress = new Uri(baseUrl);
 });
 
-builder.Services.AddHttpClient<IAddressApiClient, AddressApiClient>(client =>
-{
-    client.BaseAddress = new Uri("https://localhost:7000"); // API Gateway
-});
+
+
 
 builder.Services.AddHttpClient<UserService>(client =>
 {
