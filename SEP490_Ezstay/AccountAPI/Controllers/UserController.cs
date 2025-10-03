@@ -46,9 +46,7 @@ namespace AccountAPI.Controllers
             if (profile == null)
                 return NotFound("Không tìm thấy profile.");
 
-            // 👉 Lấy thông tin từ token
-            profile.FullName = _userClaimHelper.GetFullName(User);
-            profile.Phone = _userClaimHelper.GetPhone(User);
+          
 
             return Ok(profile);
         }
@@ -78,16 +76,16 @@ namespace AccountAPI.Controllers
                 : BadRequest(ApiResponse<string>.Fail("Không cập nhật được số điện thoại"));
         }
 
-        //[HttpPut("update-profile")]
-        //public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserDTO dto)
-        //{
-        //    var userId = _userClaimHelper.GetUserId(User);
-        //    var updated = await _userService.UpdateProfileAsync(userId, dto);
+        [HttpPut("update-profile")]
+        public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserDTO dto)
+        {
+            var userId = _userClaimHelper.GetUserId(User);
+            var updated = await _userService.UpdateProfile(userId, dto);
 
-        //    return updated
-        //        ? Ok(ApiResponse<string>.Ok(null, "Cập nhật thông tin thành công"))
-        //        : BadRequest(ApiResponse<string>.Fail("Cập nhật thất bại"));
-        //}
+            return updated
+                ? Ok(ApiResponse<string>.Ok(null, "Cập nhật thông tin thành công"))
+                : BadRequest(ApiResponse<string>.Fail("Cập nhật thất bại"));
+        }
 
 
         [HttpPut("update-email")]

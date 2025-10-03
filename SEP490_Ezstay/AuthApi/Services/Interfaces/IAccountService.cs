@@ -13,6 +13,8 @@ namespace AuthApi.Services.Interfaces
         // Lấy tất cả account, tự lọc Admin nếu user là Staff
         Task<List<AccountResponse>> GetAllAsync();
 
+        Task<bool> UpdateFullNameAsync(Guid id, string fullName);
+
         Task<AccountResponse?> UpdateAsync(Guid id, AccountRequest request);
         Task VerifyAsync(string email);
         Task BanAsync(Guid id);

@@ -7,5 +7,6 @@ namespace AccountAPI.Service.Interfaces
         Task<bool> ConfirmOtpAsync(string email, string otp);
         Task<bool> UpdateEmailAsync(string oldEmail, string newEmail);
         Task<AccountResponse?> GetByIdAsync(Guid id);
-    }
+        Task<bool> UpdateFullNameAsync(Guid id, string fullName);
+     }
 }

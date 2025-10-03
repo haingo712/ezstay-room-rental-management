@@ -10,7 +10,7 @@ namespace AccountAPI.Service.Interfaces
     {
         Task<bool> CreateProfileAsync(Guid userId, UserDTO userDto);
         Task<UserResponseDTO?> GetProfileAsync(Guid userId);
-        //Task<bool> UpdateProfileAsync(Guid userId, UpdateUserDTO dto);
+        Task<bool> UpdateProfile(Guid userId, UpdateUserDTO userDto);
         Task<bool> UpdatePhoneAsync(Guid userId, string newPhone);
         Task<bool> VerifyPhoneOtpAsync(string phone, string otp);
         Task<bool> SendOtpToPhoneAsync(string phone);
