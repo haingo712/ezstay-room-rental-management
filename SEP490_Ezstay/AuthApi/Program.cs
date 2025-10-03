@@ -23,6 +23,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<MongoSettings>(
     builder.Configuration.GetSection("MongoSettings"));
 builder.Services.AddSingleton<MongoDbService>(); // ? th�m d�ng n�y
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddCors(options =>
 {

@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace RoomAmenityAPI.DTO.Request;
+namespace RoomAmenityAPI.DTO.Response;
 
-public class RoomAmenityDto
+public class RoomAmenityResponseDto
 {
     
     public Guid Id { get; set; }

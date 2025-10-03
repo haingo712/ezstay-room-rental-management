@@ -56,7 +56,7 @@ namespace AmenityAPI.Controllers
         }
         
         [HttpGet]
-        [Authorize(Roles = "Staff")]
+      //  [Authorize(Roles = "Staff, Owner")]
         public  async Task<ActionResult<AmenityResponseDto>> GetAmenities()
         {
             return Ok(await _amenityService.GetAll());

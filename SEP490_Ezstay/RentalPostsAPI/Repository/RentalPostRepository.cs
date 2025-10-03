@@ -15,6 +15,14 @@ namespace RentalPostsAPI.Repository
         }
         public IQueryable<RentalPosts> GetAllAsQueryable()=> _collection.AsQueryable();
 
+        public async Task<Guid?> GetPostIdByRoomIdAsync(Guid roomId)
+        {
+            var post = await _collection
+                .Find(p => p.RoomId == roomId)
+                .FirstOrDefaultAsync();
+            return post?.Id;
+        }
+
         public async Task<RentalPosts> CreateAsync(RentalPosts post)
         {
             await _collection.InsertOneAsync(post);

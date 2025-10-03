@@ -26,7 +26,13 @@ public class RoomService: IRoomService
         _mapper = mapper;
         _rentalPostClient = rentalPostClient;
     }
-
+    
+    public IQueryable<RoomDto> GetAllStatusActiveByHouseId(Guid houseId)
+    {
+        var rooms = _roomRepository. GetAllQueryable().Where(x => x.HouseId == houseId && x.RoomStatus == RoomStatus.Available);
+     
+        return rooms.ProjectTo<RoomDto>(_mapper.ConfigurationProvider);
+    }
     
     public IQueryable<RoomDto> GetAllByHouseId(Guid houseId)
     {

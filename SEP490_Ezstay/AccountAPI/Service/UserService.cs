@@ -68,24 +68,39 @@ namespace AccountAPI.Service
             var userEntity = await _userRepository.GetByUserIdAsync(userId);
             if (userEntity == null) return false;
 
-            // ✅ Cập nhật các field khác từ DTO
-            _mapper.Map(dto, userEntity);
+            // ✅ Cập nhật từng field có giá trị (tránh ghi đè null)
+            if (dto.Gender.HasValue)
+                userEntity.Gender = dto.Gender.Value;
 
-            // ✅ Cập nhật avatar nếu có
+            if (!string.IsNullOrEmpty(dto.Bio))
+                userEntity.Bio = dto.Bio;
+
+            if (dto.DateOfBirth.HasValue)
+                userEntity.DateOfBirth = dto.DateOfBirth.Value;
+
+            if (!string.IsNullOrEmpty(dto.FullName))
+                userEntity.FullName = dto.FullName;
+
+            if (!string.IsNullOrEmpty(dto.Phone))
+                userEntity.Phone = dto.Phone;
+
+            if (!string.IsNullOrEmpty(dto.DetailAddress))
+                userEntity.DetailAddress = dto.DetailAddress;
+
+            // ✅ Upload avatar nếu có file mới
             if (dto.Avatar != null)
             {
                 var avatarUrl = await _imageService.UploadImageAsync(dto.Avatar);
                 userEntity.Avata = avatarUrl;
             }
 
-            // ✅ Cập nhật địa chỉ nếu có ProvinceId & CommuneId
+            // ✅ Update địa chỉ nếu có ProvinceId + CommuneId hợp lệ
             if (!string.IsNullOrEmpty(dto.ProvinceId) && !string.IsNullOrEmpty(dto.CommuneId))
             {
                 var provinceName = await _addressClient.GetProvinceNameAsync(dto.ProvinceId);
                 var communeName = await _addressClient.GetCommuneNameAsync(dto.ProvinceId, dto.CommuneId);
 
-
-                if (provinceName != null && communeName != null)
+                if (!string.IsNullOrEmpty(provinceName) && !string.IsNullOrEmpty(communeName))
                 {
                     userEntity.Province = provinceName;
                     userEntity.Commune = communeName;

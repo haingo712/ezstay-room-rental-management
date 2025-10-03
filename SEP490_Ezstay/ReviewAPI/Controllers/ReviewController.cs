@@ -20,19 +20,19 @@ public class ReviewController : ControllerBase
     }
     
     [HttpGet]
-    [Authorize(Roles = "Staff")]
+    // [Authorize(Roles = "Staff")]
     public async Task<IActionResult> GetAll()
     {
         var result = await _reviewService.GetAll();
         return Ok(result);
     }
     
-    // [HttpGet("post/{postId}")]
-    // public async Task<IActionResult> GetByPostId(Guid postId)
-    // {
-    //     var result = await _reviewService.GetAllByPostId(postId);
-    //     return Ok(result);
-    // }
+    [HttpGet("post/{postId}")]
+    public async Task<IActionResult> GetByPostId(Guid postId)
+    {
+        var result = await _reviewService.GetAllByPostId(postId);
+        return Ok(result);
+    }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
@@ -41,14 +41,24 @@ public class ReviewController : ControllerBase
         return Ok(result);
     }
     
+    // [Authorize(Roles = "User")]
+    // [HttpPost("Post/{postId}")]
+    // public async Task<IActionResult> Create(Guid postId, [FromBody] CreateReviewDto request)
+    // {
+    //     var userId = _tokenService.GetUserIdFromClaims(User);
+    //     if (!ModelState.IsValid) return BadRequest(ModelState);
+    //
+    //     var result = await _reviewService.AddAsync(userId, postId, request);
+    //     return Ok(result);
+    // }
     [Authorize(Roles = "User")]
-    [HttpPost("{postId}")]
-    public async Task<IActionResult> Create(Guid postId, [FromBody] CreateReviewDto request)
+    [HttpPost("{contractId}")]
+    public async Task<IActionResult> Create(Guid contractId, [FromBody] CreateReviewDto request)
     {
         var userId = _tokenService.GetUserIdFromClaims(User);
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var result = await _reviewService.AddAsync(userId, postId, request);
+        var result = await _reviewService.AddAsync(userId, contractId,request);
         return Ok(result);
     }
     

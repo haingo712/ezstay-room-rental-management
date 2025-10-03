@@ -25,5 +25,6 @@ namespace AccountAPI.Data
 
         public string? Province { get; set; }   // Tên tỉnh/thành
         public string? Commune { get; set; }    // Tên xã/phường
+        public string? DetailAddress { get; set; }
     }   
 }

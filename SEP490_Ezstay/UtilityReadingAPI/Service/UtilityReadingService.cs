@@ -32,7 +32,45 @@ public class UtilityReadingService: IUtilityReadingService
         var utilityReading = await _utilityReadingRepository.GetByIdAsync(id);
         if (utilityReading==null)
             throw new KeyNotFoundException(" UtilityReading Id not found");
-         return   _mapper.Map<UtilityReadingResponseDto>(utilityReading);
+        return _mapper.Map<UtilityReadingResponseDto>(utilityReading);
+    }
+
+    // Get lastest reading by roomId and type
+    public UtilityReadingResponseDto GetLastestReading(Guid roomId, UtilityType type)
+    {
+        var utilityReading = _utilityReadingRepository.GetAllAsQueryable()
+            .Where(x => x.RoomId == roomId && x.Type == type)
+            .OrderByDescending(x => x.ReadingDate)
+            .FirstOrDefault();
+        if (utilityReading == null)
+            throw new KeyNotFoundException("No utility reading found for the specified room and type.");
+        return _mapper.Map<UtilityReadingResponseDto>(utilityReading);
+    }
+    public async Task<ApiResponse<UtilityReadingResponseDto>> AddAsync(Guid roomId, UtilityType type, CreateUtilityReadingContract  request)
+    {
+        var lastReading = _utilityReadingRepository.GetAllAsQueryable()
+            .Where(x => x.RoomId == roomId && x.Type == type)
+            .OrderByDescending(x => x.ReadingDate)
+            .FirstOrDefault();
+       var utilityReading = _mapper.Map<UtilityReading>(request);
+        utilityReading.ReadingDate = DateTime.UtcNow;
+        if (lastReading == null)
+        {
+            utilityReading.PreviousIndex = 0;
+            utilityReading.CurrentIndex = request.CurrentIndex;
+        }else {
+            if (request.CurrentIndex < lastReading.CurrentIndex)
+            {
+                return ApiResponse<UtilityReadingResponseDto>.Fail("Chỉ số mới không được nhỏ hơn chỉ số tháng trước.");
+            }
+            utilityReading.PreviousIndex = lastReading.CurrentIndex;
+            utilityReading.CurrentIndex = request.CurrentIndex;
+            // utilityReading.Total = (request.Price ?? 0) * utilityReading.Consumption;
+        }
+        utilityReading.RoomId = roomId;
+        await _utilityReadingRepository.AddAsync(utilityReading);
+        var result = _mapper.Map<UtilityReadingResponseDto>(utilityReading);
+        return ApiResponse<UtilityReadingResponseDto>.Success(result, $"Thêm chỉ số {type} thành công.");
     }
     
     public async Task<ApiResponse<UtilityReadingResponseDto>> AddAsync(Guid roomId, CreateUtilityReadingDto request)
@@ -61,15 +99,41 @@ public class UtilityReadingService: IUtilityReadingService
             utilityReading.CurrentIndex = request.CurrentIndex;
             utilityReading.Total = request.Price * utilityReading.Consumption;
         }
-
-        //Console.W("ss"  + utilityReading.CurrentIndex);
         utilityReading.RoomId = roomId;
         await _utilityReadingRepository.AddAsync(utilityReading);
         var result = _mapper.Map<UtilityReadingResponseDto>(utilityReading);
         return ApiResponse<UtilityReadingResponseDto>.Success(result, $"Thêm chỉ số {request.Type} thành công.");
     }
-
-
+    public async Task<ApiResponse<UtilityReadingResponseDto>> AddWater(Guid roomId, CreateUtilityReadingContract  request)
+    {
+        var utilityReading = _mapper.Map<UtilityReading>(request);
+        utilityReading.ReadingDate = DateTime.UtcNow;
+        utilityReading.RoomId = roomId;
+        utilityReading.Type = UtilityType.Water;
+        await _utilityReadingRepository.AddAsync(utilityReading);
+        var result = _mapper.Map<UtilityReadingResponseDto>(utilityReading);
+        return ApiResponse<UtilityReadingResponseDto>.Success(result, "Thêm chỉ số thành công.");
+    }
+    public async Task<ApiResponse<UtilityReadingResponseDto>> AddElectric(Guid roomId, CreateUtilityReadingContract  request)
+    {
+        var utilityReading = _mapper.Map<UtilityReading>(request);
+        utilityReading.ReadingDate = DateTime.UtcNow;
+        utilityReading.RoomId = roomId;
+        utilityReading.Type = UtilityType.Electric;
+        await _utilityReadingRepository.AddAsync(utilityReading);
+        var result = _mapper.Map<UtilityReadingResponseDto>(utilityReading);
+        return ApiResponse<UtilityReadingResponseDto>.Success(result, "Thêm chỉ số thành công.");
+    }
+    public async Task<ApiResponse<UtilityReadingResponseDto>> AddUtilityReadingContract(Guid roomId, CreateUtilityReadingContract  request)
+    {
+      
+        var utilityReading = _mapper.Map<UtilityReading>(request);
+        utilityReading.ReadingDate = DateTime.UtcNow;
+        utilityReading.RoomId = roomId;
+        await _utilityReadingRepository.AddAsync(utilityReading);
+        var result = _mapper.Map<UtilityReadingResponseDto>(utilityReading);
+        return ApiResponse<UtilityReadingResponseDto>.Success(result, "Thêm chỉ số thành công.");
+    }
     public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateUtilityReadingDto request)
     {
         var utilityReading =await _utilityReadingRepository.GetByIdAsync(id);

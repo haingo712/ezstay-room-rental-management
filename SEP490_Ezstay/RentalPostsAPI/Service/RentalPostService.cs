@@ -16,6 +16,7 @@ namespace RentalPostsAPI.Service
         private readonly IMapper _mapper;
         private readonly ExternalService _externalService;
         private readonly ITokenService _tokenService;
+        
         public RentalPostService(IRentalPostRepository repo, IMapper mapper, ExternalService externalService, ITokenService tokenService)
         {
             _repo = repo;
@@ -161,10 +162,15 @@ namespace RentalPostsAPI.Service
             return await _repo.DeleteAsync(id, deletedBy);
         }
 
+        public async Task<Guid?> GetPostIdByRoomIdAsync(Guid roomId)
+        {
+            return await _repo.GetPostIdByRoomIdAsync(roomId);
+        }
         // public async Task<IEnumerable<RentalpostDTO>> GetByRoomIdAsync(Guid roomId)
         // {
         //     var entity= await _repo.GetByRoomIdAsync(roomId);
         //     return   _mapper.Map<IEnumerable<RentalpostDTO>>(entity);
-        // }       
+        // }   
+       
     }
 }

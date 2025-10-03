@@ -63,6 +63,7 @@ namespace RentalPostsAPI.Controllers
                 return NotFound(ApiResponse<string>.Fail("Không tìm thấy bài viết"));
             return Ok(ApiResponse<RentalpostDTO>.Success(result));
         }
+    
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner")]
@@ -83,5 +84,13 @@ namespace RentalPostsAPI.Controllers
                 return NotFound(ApiResponse<string>.Fail("Không tìm thấy bài viết"));
             return Ok(ApiResponse<string>.Success("Xóa thành công"));
         }
+        // hàm của Quốc Hiển
+        [HttpGet("RoomId/{roomId}")]
+        public async Task<IActionResult> GetPostByRoom(Guid roomId)
+        {
+            var postId = await _service.GetPostIdByRoomIdAsync(roomId);
+            return Ok(postId);
+        }
+
     }
 }
