@@ -171,7 +171,7 @@
             "DownstreamHostAndPorts": [
                 {
                     "Host": "localhost",
-                    "Port": 7179
+                    "Port": 7145
                 }
             ],
             "UpstreamPathTemplate": "/api/RentalPosts/{everything}",

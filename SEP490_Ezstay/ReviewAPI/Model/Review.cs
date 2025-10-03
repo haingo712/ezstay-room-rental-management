@@ -21,13 +21,16 @@ public class Review
     public int Rating { get; set; } 
     public string Content { get; set; }
     
-    public ReviewStatus Status { get; set; }
+    // public ReviewStatus Status { get; set; }
     public DateTime ReviewDeadline { get; set; }
     
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid ImageId { get; set; }
     public DateTime CreatedAt { get; set; } 
     public DateTime UpdatedAt { get; set; }
+   
+    public bool IsDetele { get; set; }
 
     public DateTime DeletedAt { get; set; }
+
 }
