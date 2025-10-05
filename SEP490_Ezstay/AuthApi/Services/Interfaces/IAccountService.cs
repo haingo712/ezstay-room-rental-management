@@ -19,10 +19,6 @@ namespace AuthApi.Services.Interfaces
         Task VerifyAsync(string email);
         Task BanAsync(Guid id);
         Task UnbanAsync(Guid id);
-
-
-        Task<ChangePasswordResponse> ChangePasswordAsync(ChangePasswordRequest request);
-
     }
 }
 
