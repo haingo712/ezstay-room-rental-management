@@ -1,6 +1,7 @@
 ﻿using AccountAPI.DTO.Request;
 using AccountAPI.DTO.Response;
 using AccountAPI.DTO.Resquest;
+using AccountAPI.Service;
 using AccountAPI.Service.Interfaces;
 using APIGateway.Helper.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -14,14 +15,17 @@ namespace AccountAPI.Controllers
     {
         private readonly IUserService _userService;
         private readonly IUserClaimHelper _userClaimHelper;
+       private readonly IAuthApiClient _authApiClient;
 
-        public UserController(IUserService userService, IUserClaimHelper userClaimHelper)
+        public UserController(IUserService userService, IUserClaimHelper userClaimHelper, IAuthApiClient authApiClient)
         {
             _userService = userService;
             _userClaimHelper = userClaimHelper;
+            _authApiClient = authApiClient;
+            _authApiClient = authApiClient;
         }
 
-        
+
         [HttpPost("create-profile")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> CreateProfile([FromBody] UserDTO userDto)
@@ -99,6 +103,14 @@ namespace AccountAPI.Controllers
             return result
                 ? Ok(ApiResponse<string>.Ok(null, "Cập nhật email thành công"))
                 : BadRequest(ApiResponse<string>.Fail("Cập nhật email thất bại"));
+        }
+
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto dto)
+        {
+          
+            var result = await _authApiClient.ChangePasswordAsync(dto);
+            return result ? Ok("Đổi mật khẩu thành công") : BadRequest("Đổi mật khẩu thất bại");
         }
 
 

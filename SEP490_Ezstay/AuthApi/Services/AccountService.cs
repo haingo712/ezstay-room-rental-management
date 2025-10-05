@@ -2,9 +2,11 @@
 using AuthApi.DTO.Response;
 using AuthApi.Enums;
 using AuthApi.Models;
+using AuthApi.Repositories;
 using AuthApi.Repositories.Interfaces;
 using AuthApi.Services.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
 namespace AuthApi.Services
@@ -14,12 +16,14 @@ namespace AuthApi.Services
         private readonly IAccountRepository _repo;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public AccountService(IAccountRepository repo, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public AccountService(IAccountRepository repo, IMapper mapper, IHttpContextAccessor httpContextAccessor, IPasswordHasher passwordHasher)
         {
             _repo = repo;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _passwordHasher = passwordHasher;
         }
 
         private RoleEnum GetCurrentUserRole()
@@ -129,6 +133,29 @@ public async Task<bool> UpdateFullNameAsync(Guid id, string fullName)
         public async Task VerifyAsync(string email) => await _repo.MarkAsVerified(email);
         public async Task BanAsync(Guid id) => await _repo.BanAccountAsync(id, true);
         public async Task UnbanAsync(Guid id) => await _repo.BanAccountAsync(id, false);
+
+        public async Task<RegisterResponseDto> ChangePasswordAsync(string email, ChangePasswordRequest dto)
+        {
+            var account = await _repo.GetByEmailAsync(email);
+            if (account == null)
+                return new RegisterResponseDto { Success = false, Message = "Tài khoản không tồn tại." };
+
+            var isOldPasswordCorrect = BCrypt.Net.BCrypt.Verify(dto.OldPassword, account.Password);
+            if (!isOldPasswordCorrect)
+                return new RegisterResponseDto { Success = false, Message = "Mật khẩu cũ không chính xác." };
+
+            account.Password = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            await _repo.UpdateAsync(account);
+
+            return new RegisterResponseDto
+            {
+                Success = true,
+                Message = "Đổi mật khẩu thành công."
+            };
+        }
+
     }
+
+
 
 }
