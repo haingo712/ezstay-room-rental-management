@@ -1,5 +1,7 @@
 ﻿using AccountAPI.DTO.Response;
+using AccountAPI.DTO.Resquest;
 using AccountAPI.Service.Interfaces;
+using System.Net.Http.Headers;
 
 namespace AccountAPI.Service
 {
@@ -50,6 +52,30 @@ namespace AccountAPI.Service
             var response = await _http.PutAsJsonAsync($"/api/Accounts/update-fullname/{id}", fullName);
             return response.IsSuccessStatusCode;
         }
+
+
+        public async Task<string> ChangePasswordAsync(ChangePasswordRequest dto)
+        {
+            var response = await _http.PutAsJsonAsync("/api/Accounts/change-password", dto);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<ResponseMessage>();
+                return result?.Message ?? "Đổi mật khẩu thành công.";
+            }
+            else
+            {
+                var result = await response.Content.ReadFromJsonAsync<ResponseMessage>();
+                return result?.Message ?? "Đổi mật khẩu thất bại.";
+            }
+        }
+
+        private class ResponseMessage
+        {
+            public string Message { get; set; } = string.Empty;
+        }
+    
+
 
 
     }
