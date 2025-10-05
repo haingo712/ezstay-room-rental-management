@@ -16,14 +16,14 @@ namespace AuthApi.Services
         private readonly IAccountRepository _repo;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IPasswordHasher _passwordHasher;
+     
 
-        public AccountService(IAccountRepository repo, IMapper mapper, IHttpContextAccessor httpContextAccessor, IPasswordHasher passwordHasher)
+        public AccountService(IAccountRepository repo, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _repo = repo;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
-            _passwordHasher = passwordHasher;
+      
         }
 
         private RoleEnum GetCurrentUserRole()
@@ -134,25 +134,35 @@ public async Task<bool> UpdateFullNameAsync(Guid id, string fullName)
         public async Task BanAsync(Guid id) => await _repo.BanAccountAsync(id, true);
         public async Task UnbanAsync(Guid id) => await _repo.BanAccountAsync(id, false);
 
-        public async Task<RegisterResponseDto> ChangePasswordAsync(string email, ChangePasswordRequest dto)
+        public async Task<string> ChangePasswordAsync(ChangePasswordRequest dto)
         {
-            var account = await _repo.GetByEmailAsync(email);
+            var account = await _repo.GetByEmailAsync(dto.Email);
             if (account == null)
-                return new RegisterResponseDto { Success = false, Message = "Tài khoản không tồn tại." };
-
-            var isOldPasswordCorrect = BCrypt.Net.BCrypt.Verify(dto.OldPassword, account.Password);
-            if (!isOldPasswordCorrect)
-                return new RegisterResponseDto { Success = false, Message = "Mật khẩu cũ không chính xác." };
-
-            account.Password = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
-            await _repo.UpdateAsync(account);
-
-            return new RegisterResponseDto
             {
-                Success = true,
-                Message = "Đổi mật khẩu thành công."
-            };
+                return "Tài khoản không tồn tại.";
+            }
+
+            // ✅ So sánh mật khẩu cũ bằng BCrypt
+            if (!BCrypt.Net.BCrypt.Verify(dto.OldPassword, account.Password))
+            {
+                return "Mật khẩu hiện tại không đúng.";
+            }
+
+            if (dto.NewPassword == dto.OldPassword)
+            {
+                return "Mật khẩu mới không được trùng với mật khẩu hiện tại.";
+            }
+
+            // ✅ Mã hóa mật khẩu mới
+            account.Password = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+
+            var result = await _repo.UpdateAsync(account);
+
+            return result != null
+                ? "Đổi mật khẩu thành công."
+                : "Đổi mật khẩu thất bại.";
         }
+
 
     }
 

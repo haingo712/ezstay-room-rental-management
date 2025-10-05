@@ -42,6 +42,7 @@ namespace AccountAPI.Controllers
 
 
         [HttpGet("profile")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> GetProfile()
         {
             var userId = _userClaimHelper.GetUserId(User);
@@ -64,6 +65,7 @@ namespace AccountAPI.Controllers
         }
 
         [HttpPut("update-phone")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> UpdatePhone([FromBody] UpdatePhoneRequestDto dto)
         {
             var userId = _userClaimHelper.GetUserId(User);
@@ -81,6 +83,7 @@ namespace AccountAPI.Controllers
         }
 
         [HttpPut("update-profile")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserDTO dto)
         {
             var userId = _userClaimHelper.GetUserId(User);
@@ -93,6 +96,7 @@ namespace AccountAPI.Controllers
 
 
         [HttpPut("update-email")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateEmail([FromBody] UpdateEmailRequestDto dto)
         {
             var currentEmail = _userClaimHelper.GetEmail(User);
@@ -106,12 +110,32 @@ namespace AccountAPI.Controllers
         }
 
         [HttpPut("change-password")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto dto)
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest dto)
         {
-          
-            var result = await _authApiClient.ChangePasswordAsync(dto);
-            return result ? Ok("Đổi mật khẩu thành công") : BadRequest("Đổi mật khẩu thất bại");
+            // ✅ Lấy userId từ token
+            var userId = _userClaimHelper.GetUserId(User);
+
+            // ✅ Gọi API lấy account để lấy Email
+            var account = await _authApiClient.GetByIdAsync(userId);
+            if (account == null || string.IsNullOrEmpty(account.Email))
+            {
+                return Unauthorized(ApiResponse<string>.Fail("Không tìm thấy thông tin tài khoản."));
+            }
+
+            // ✅ Gắn Email vào DTO để gửi qua AuthAPI
+            dto.Email = account.Email;
+
+            // ✅ Gọi API đổi mật khẩu
+            var message = await _authApiClient.ChangePasswordAsync(dto);
+
+            return message == "Đổi mật khẩu thành công."
+                ? Ok(ApiResponse<string>.Ok(null, message))
+                : BadRequest(ApiResponse<string>.Fail(message));
         }
+
+
+
 
 
 

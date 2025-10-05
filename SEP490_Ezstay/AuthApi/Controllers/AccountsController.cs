@@ -97,16 +97,13 @@ namespace AuthApi.Controllers
         [HttpPut("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest dto)
         {
-            var email = User.FindFirstValue(ClaimTypes.Email);
-            if (string.IsNullOrEmpty(email))
-                return Unauthorized(new RegisterResponseDto
-                {
-                    Success = false,
-                    Message = "Token không hợp lệ"
-                });
+            // Không lấy từ Claim nữa, dùng dto.Email luôn
+            var response = await _service.ChangePasswordAsync(dto);
 
-            var result = await _service.ChangePasswordAsync(email, dto);
-            return result.Success ? Ok(result) : BadRequest(result);
+            return response == "Đổi mật khẩu thành công."
+                ? Ok(new { message = response })
+                : BadRequest(new { message = response });
         }
+
     }
 }
