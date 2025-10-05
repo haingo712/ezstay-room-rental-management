@@ -46,8 +46,6 @@ namespace AuthApi.Repositories
             await _accounts.UpdateOneAsync(a => a.Id == id, update);
         }
 
-      
-
 
 
     }

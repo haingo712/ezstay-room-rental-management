@@ -1,7 +1,6 @@
 ﻿using AccountAPI.Data;
 using AccountAPI.DTO.Reponse;
 using AccountAPI.DTO.Request;
-using AccountAPI.DTO.Response;
 using AccountAPI.DTO.Resquest;
 using System.Security.Claims;
 
@@ -17,7 +16,6 @@ namespace AccountAPI.Service.Interfaces
         Task<bool> SendOtpToPhoneAsync(string phone);
         Task<bool> UpdateEmailAsync(string currentEmail, string newEmail, string otp);
         Task<UserResponseDTO> GetPhone(string phone);
-       
 
 
 

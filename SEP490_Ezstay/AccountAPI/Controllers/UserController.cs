@@ -1,7 +1,6 @@
 ﻿using AccountAPI.DTO.Request;
 using AccountAPI.DTO.Response;
 using AccountAPI.DTO.Resquest;
-using AccountAPI.Service;
 using AccountAPI.Service.Interfaces;
 using APIGateway.Helper.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -15,18 +14,16 @@ namespace AccountAPI.Controllers
     {
         private readonly IUserService _userService;
         private readonly IUserClaimHelper _userClaimHelper;
-        private readonly IAuthApiClient _authApiClient;
 
-        public UserController(IUserService userService, IUserClaimHelper userClaimHelper,IAuthApiClient authApiClient)
+        public UserController(IUserService userService, IUserClaimHelper userClaimHelper)
         {
             _userService = userService;
             _userClaimHelper = userClaimHelper;
-            _authApiClient = authApiClient;
         }
 
         
         [HttpPost("create-profile")]
-        [Authorize(Roles = "User,Owner,Staff")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> CreateProfile([FromBody] UserDTO userDto)
         {
             var userId = _userClaimHelper.GetUserId(User);
@@ -41,7 +38,6 @@ namespace AccountAPI.Controllers
 
 
         [HttpGet("profile")]
-        [Authorize(Roles = "User,Owner,Staff")]
         public async Task<IActionResult> GetProfile()
         {
             var userId = _userClaimHelper.GetUserId(User);
@@ -57,7 +53,6 @@ namespace AccountAPI.Controllers
 
 
         [HttpGet("searchphone/{phone}")]
-
         public async Task<IActionResult> GetPhone(string phone)
         {
             var profile = await _userService.GetPhone(phone);
@@ -65,7 +60,6 @@ namespace AccountAPI.Controllers
         }
 
         [HttpPut("update-phone")]
-        [Authorize(Roles = "User,Owner,Staff")]
         public async Task<IActionResult> UpdatePhone([FromBody] UpdatePhoneRequestDto dto)
         {
             var userId = _userClaimHelper.GetUserId(User);
@@ -83,7 +77,6 @@ namespace AccountAPI.Controllers
         }
 
         [HttpPut("update-profile")]
-        [Authorize(Roles = "User,Owner,Staff")]
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserDTO dto)
         {
             var userId = _userClaimHelper.GetUserId(User);
@@ -96,7 +89,6 @@ namespace AccountAPI.Controllers
 
 
         [HttpPut("update-email")]
-        [Authorize(Roles = "User,Owner,Staff")]
         public async Task<IActionResult> UpdateEmail([FromBody] UpdateEmailRequestDto dto)
         {
             var currentEmail = _userClaimHelper.GetEmail(User);
@@ -108,20 +100,6 @@ namespace AccountAPI.Controllers
                 ? Ok(ApiResponse<string>.Ok(null, "Cập nhật email thành công"))
                 : BadRequest(ApiResponse<string>.Fail("Cập nhật email thất bại"));
         }
-
-        
-        [HttpPut("client-change-password")]
-        [Authorize(Roles = "User,Owner,Staff")]
-        public async Task<IActionResult> ClientChangePassword([FromBody] ChangePasswordRequest request)
-        {
-            var result = await _authApiClient.ChangePasswordAsync(request);
-
-            if (result == null || !result.Success)
-                return BadRequest(result ?? new ChangePasswordResponse { Success = false, Message = "Lỗi không xác định" });
-
-            return Ok(result);
-        }
-
 
 
 

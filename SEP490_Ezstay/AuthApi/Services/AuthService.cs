@@ -150,17 +150,19 @@ namespace AuthApi.Services
 
         public async Task<RegisterResponseDto> ResetPasswordAsync(ResetPasswordRequestDto dto)
         {
-            // Xác thực OTP từ email
-            var verification = await _emailVerificationService.ConfirmOtpAsync(dto.Email, dto.Token);
-            if (verification == null || verification.ExpiredAt < DateTime.UtcNow)
-                return new RegisterResponseDto { Success = false, Message = "Invalid or expired OTP." };
+            // Giải mã token để lấy email
+            var principal = _tokenGenerator.ValidateToken(dto.Token);
+            if (principal == null)
+                return new RegisterResponseDto { Success = false, Message = "Invalid or expired token." };
 
-            // Lấy account từ email
-            var account = await _repo.GetByEmailAsync(dto.Email);
+            var email = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(email))
+                return new RegisterResponseDto { Success = false, Message = "Invalid token data." };
+
+            var account = await _repo.GetByEmailAsync(email);
             if (account == null)
                 return new RegisterResponseDto { Success = false, Message = "Account not found." };
 
-            // Hash mật khẩu mới và lưu
             account.Password = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
             await _repo.UpdateAsync(account);
 
@@ -170,7 +172,6 @@ namespace AuthApi.Services
                 Message = "Password reset successfully"
             };
         }
-
 
 
         public async Task<RegisterResponseDto> SendPhoneOtpAsync(string phone)
