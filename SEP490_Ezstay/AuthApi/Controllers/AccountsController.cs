@@ -93,5 +93,20 @@ namespace AuthApi.Controllers
                 : NotFound("Không tìm thấy tài khoản");
         }
 
+
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest dto)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrEmpty(email))
+                return Unauthorized(new RegisterResponseDto
+                {
+                    Success = false,
+                    Message = "Token không hợp lệ"
+                });
+
+            var result = await _service.ChangePasswordAsync(email, dto);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
     }
 }

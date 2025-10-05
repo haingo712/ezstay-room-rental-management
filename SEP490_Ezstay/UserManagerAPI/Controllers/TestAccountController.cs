@@ -103,5 +103,37 @@ namespace UserManagerAPI.Controllers
 
             return Ok(updated);
         }
+
+        [HttpPatch("{id}/ban")]
+        public async Task<IActionResult> Ban(Guid id)
+        {
+            var token = GetToken();
+            _accountApi.SetJwtToken(token);
+
+            var account = await _accountApi.GetByIdAsync(id);
+            var role = GetRoleFromToken(token);
+
+            if (account == null || (role == RoleEnum.Staff && account.Role == RoleEnum.Admin))
+                return Forbid();
+
+            await _accountApi.BanAsync(id);
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/unban")]
+        public async Task<IActionResult> Unban(Guid id)
+        {
+            var token = GetToken();
+            _accountApi.SetJwtToken(token);
+
+            var account = await _accountApi.GetByIdAsync(id);
+            var role = GetRoleFromToken(token);
+
+            if (account == null || (role == RoleEnum.Staff && account.Role == RoleEnum.Admin))
+                return Forbid();
+
+            await _accountApi.UnbanAsync(id);
+            return NoContent();
+        }
     }
 }
