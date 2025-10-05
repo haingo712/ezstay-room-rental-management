@@ -25,6 +25,11 @@ public class ReviewService : IReviewService
         _httpContextAccessor = httpContextAccessor;
         _contractClientService = contractClientService;
     }
+    public IQueryable<ReviewResponseDto> GetAllByOwnerId(Guid postId)
+    {
+        var post = _reviewRepository.GetAllAsQueryable( ).Where( post => post.PostId == postId );
+        return post.ProjectTo<ReviewResponseDto>(_mapper.ConfigurationProvider);
+    }
     
     public async Task<ApiResponse<IEnumerable<ReviewResponseDto>>> GetAll()
     {

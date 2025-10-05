@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using ReviewAPI.DTO.Requests;
 using ReviewAPI.DTO.Response;
 using ReviewAPI.Service;
@@ -26,7 +27,14 @@ public class ReviewController : ControllerBase
         var result = await _reviewService.GetAll();
         return Ok(result);
     }
-    
+    [HttpGet]
+    [EnableQuery]
+    [Route("/odata/Review")]
+    [Authorize(Roles = "Owner")]
+    public IQueryable<ReviewResponseDto> GetAllPostId(Guid postId)
+    {
+        return _reviewService.GetAllByOwnerId(postId);
+    }
     [HttpGet("post/{postId}")]
     public async Task<IActionResult> GetByPostId(Guid postId)
     {

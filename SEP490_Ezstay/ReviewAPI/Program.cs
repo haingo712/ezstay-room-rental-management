@@ -53,9 +53,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-;
 var odatabuilder = new ODataConventionModelBuilder();
-odatabuilder.EntitySet<ReviewResponseDto>("Reviews");
+odatabuilder.EntitySet<ReviewResponseDto>("Review");
 odatabuilder.EntitySet<ReviewReplyResponse>("ReviewReplys");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>
