@@ -29,8 +29,7 @@ public class ReviewController : ControllerBase
     // }
     [HttpGet]
     [EnableQuery]
-    [Route("/odata/Review")]
-    [Authorize(Roles = "Owner")]
+    [Route("/Review")]
     public IQueryable<ReviewResponseDto> GetAllAsQueryable()
     {
         return _reviewService.GetAllAsQueryable();

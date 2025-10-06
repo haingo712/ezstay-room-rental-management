@@ -1,5 +1,6 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using ReviewAPI.APIs.Interfaces;
 using ReviewAPI.DTO.Requests.ReviewReply;
 using ReviewAPI.DTO.Response;
 using ReviewAPI.DTO.Response.ReviewReply;
@@ -14,11 +15,14 @@ public class ReviewReplyService: IReviewReplyService
     private readonly IMapper _mapper;
     private readonly IReviewReplyRepository _reviewReplyRepository;
     private readonly ITokenService _tokenService;
-    public ReviewReplyService(IMapper mapper, IReviewReplyRepository reviewReplyRepository, ITokenService tokenService)
+    private readonly IImageAPI _imageClient;
+
+    public ReviewReplyService(IMapper mapper, IReviewReplyRepository reviewReplyRepository, ITokenService tokenService, IImageAPI imageClient)
     {
         _mapper = mapper;
         _reviewReplyRepository = reviewReplyRepository;
         _tokenService = tokenService;
+        _imageClient = imageClient;
     }
 
     public IQueryable<ReviewReplyResponse> GetAllQueryable()
@@ -29,15 +33,18 @@ public class ReviewReplyService: IReviewReplyService
         return  _mapper.Map<ReviewReplyResponse>(await  _reviewReplyRepository.GetByIdAsync(id));
     }
 
-    public async Task<ApiResponse<ReviewReplyResponse>> AddAsync(Guid reviewId, CreateReviewReplyRequest reviewReplyRequest)
+    public async Task<ApiResponse<ReviewReplyResponse>> AddAsync(Guid reviewId, CreateReviewReplyRequest request)
     {
-        var review = await _reviewReplyRepository.GetByIdAsync(reviewId);
-        if (review == null)
+        var reviewReply = await _reviewReplyRepository.GetByIdAsync(reviewId);
+        if (reviewReply == null)
             return ApiResponse<ReviewReplyResponse>.Fail("Không tìm thấy.");
-        var reviewDto = _mapper.Map<ReviewReply>(reviewReplyRequest);
-        reviewDto.CreatedAt = DateTime.UtcNow;
-        await _reviewReplyRepository.AddAsync(review);
-        var dto = _mapper.Map<ReviewReplyResponse>(review);
+        var reviewReplyDto = _mapper.Map<ReviewReply>(request);
+        reviewReplyDto.CreatedAt = DateTime.UtcNow;
+        reviewReplyDto.ReviewId = reviewId;
+        _imageClient.UploadImageAsync(request.Image);
+        await _reviewReplyRepository.AddAsync(reviewReply);
+       
+        var dto = _mapper.Map<ReviewReplyResponse>(reviewReply);
         return ApiResponse<ReviewReplyResponse>.Success(dto, "Thêm ReviewReply thành công");
     }
 
@@ -47,14 +54,16 @@ public class ReviewReplyService: IReviewReplyService
       return  _mapper.Map<ReviewReplyResponse>(review);
     }
 
-    public async Task<ApiResponse<bool>> UpdateReplyAsync(Guid replyId, UpdateReviewReplyRequest reviewReply)
+    public async Task<ApiResponse<bool>> UpdateReplyAsync(Guid id, UpdateReviewReplyRequest request)
     {
-        var entity = await _reviewReplyRepository.GetByIdAsync(replyId);
+        var entity = await _reviewReplyRepository.GetByIdAsync(id);
         if (entity == null)
             throw new KeyNotFoundException("ReviewId not found");
-        _mapper.Map(reviewReply, entity);
+        _mapper.Map(request, entity);
         entity.UpdatedAt = DateTime.UtcNow;
-        var dto=  _reviewReplyRepository.UpdateAsync(entity);
+       
+        _reviewReplyRepository.UpdateAsync(entity);
+        _imageClient.UploadImageAsync(request.Image);
         return ApiResponse<bool>.Success(true, "Thêm ReviewReply thành công");
     }
 
