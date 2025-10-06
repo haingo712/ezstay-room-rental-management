@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using System.Text;
+using AmenityAPI.APIs;
+using AmenityAPI.APIs.Interfaces;
 using AmenityAPI.DTO.Request;
 using AmenityAPI.DTO.Response;
 using AmenityAPI.Mapping;
@@ -38,6 +40,12 @@ builder.Services.AddAutoMapper(typeof(MappingAmenity).Assembly);
 //         options.Audience = jwtSettings["Audience"];
 //         options.RequireHttpsMetadata = bool.Parse(jwtSettings["RequireHttpsMetadata"] ?? "true");
 //     });
+
+
+builder.Services.AddHttpClient<IImageAPI, ImageAPI >(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
+});
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
@@ -106,7 +114,6 @@ builder.Services.AddControllers()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 
             var app = builder.Build();

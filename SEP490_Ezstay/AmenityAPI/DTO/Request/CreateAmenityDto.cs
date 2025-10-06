@@ -8,7 +8,5 @@ public class CreateAmenityDto
     [StringLength(100, ErrorMessage = "Amenity name cannot exceed 100 characters.")]
     public string AmenityName { get; set; } 
     [Required]
-    public string ImageUrl { get; set; }
-    // [Required]
-    // public Guid StaffId { get; set; }
+    public IFormFile ImageUrl { get; set; }
 }
