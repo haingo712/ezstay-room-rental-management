@@ -81,7 +81,7 @@ public class AmenityService: IAmenityService
         var amenity =await _amenityRepository.GetByIdAsync(id);
         if (amenity == null)
             throw new KeyNotFoundException("AmentityId not found");
-        var existAmentityName = await _amenityRepository.AmenityNameExistsAsync(request.AmenityName);
+        var existAmentityName = await _amenityRepository.AmenityNameExistsAsync(request.AmenityName, id);
         if(existAmentityName)
             return ApiResponse<bool>.Fail("Tiện ích đã có rồi.");
          _mapper.Map(request, amenity);

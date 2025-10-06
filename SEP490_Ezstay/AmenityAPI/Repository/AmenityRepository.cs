@@ -47,14 +47,22 @@ public class AmenityRepository:IAmenityRepository
     //     return result;
     // }
     
-    public async Task<bool> AmenityNameExistsAsync(string amenityNameExists)
+    public async Task<bool> AmenityNameExistsAsync(string amenityName)
     {
          return await _amenities
         .AsQueryable()
-        .AnyAsync(a => a.AmenityName.ToLower() == amenityNameExists.ToLower());
+        .AnyAsync(a => a.AmenityName.ToLower() == amenityName.ToLower());
       // return await _amenities.Find(a => a.AmenityName.ToLower() == amenityNameExists.ToLower()).AnyAsync();
     }
-    
+    public async Task<bool> AmenityNameExistsAsync(string amenityName, Guid id)
+    {
+        return await _amenities
+            .AsQueryable()
+            .AnyAsync(a => 
+                a.AmenityName.ToLower() == amenityName.ToLower() &&
+                ( a.Id != id));
+        
+    }
 
     public async Task UpdateAsync(Amenity amenity)
     {
