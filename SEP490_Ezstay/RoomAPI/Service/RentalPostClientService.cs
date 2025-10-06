@@ -13,18 +13,6 @@ public class RentalPostClientService: IRentalPostClientService
         _httpClient = httpClient;
     }
     
-    // public async Task<bool> HasPostsForRoomAsync(Guid roomId)
-    // {
-    //     var response = await _httpClient.GetAsync($"odata/RentalPosts/?$filter=RoomId eq {roomId}");
-    //     if (!response.IsSuccessStatusCode)
-    //         return false;
-    //     var json = await response.Content.ReadAsStringAsync();
-    //     using var doc = JsonDocument.Parse(json);
-    //
-    //     if (!doc.RootElement.TryGetProperty("value", out var root))
-    //         return false;
-    //     return root.GetArrayLength() > 0;
-    // }
     public async Task<bool> HasPostsForRoomAsync(Guid roomId)
     {
         var response = await _httpClient.GetAsync($"odata/RentalPosts?$filter=RoomId eq {roomId}");

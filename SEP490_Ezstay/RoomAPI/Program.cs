@@ -6,6 +6,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using RoomAPI.APIs;
+using RoomAPI.APIs.Interfaces;
 using RoomAPI.DTO.Request;
 using RoomAPI.Repository;
 using RoomAPI.Repository.Interface;
@@ -22,14 +24,10 @@ builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["Co
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
-
-// builder.Services.AddScoped<IRoomAmenityClientService, RoomAmenityClientService>();
-// builder.Services.AddScoped<IAmenityClientService, AmenityClientService>();
-// builder.Services.AddHttpClient("Gateway", client =>
-// {
-//     client.BaseAddress = new Uri("https://localhost:7000/"); // hoặc domain của RoomAmenityAPI
-// });
-
+builder.Services.AddHttpClient<IImageAPI, ImageAPI >(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
+});
 
 // var gatewayUrl = builder.Configuration["ServiceUrls:Gateway"];
 //

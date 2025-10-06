@@ -104,13 +104,11 @@ namespace RoomAPI.Controllers
             }
           
         }
-
         // PUT: api/Rooms/5
-   
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner")]
     
-        public async Task<IActionResult> PutRoom(Guid id, UpdateRoomDto request) {
+        public async Task<IActionResult> PutRoom(Guid id,[FromForm] UpdateRoomDto request) {
         try
         {
           var result =  await _roomService.Update(id, request);
@@ -128,7 +126,7 @@ namespace RoomAPI.Controllers
         
     [HttpPost("House/{houseId}")]
     [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> PostRoom(Guid houseId, CreateRoomDto request)
+    public async Task<IActionResult> PostRoom(Guid houseId,[FromForm] CreateRoomDto request)
     {
         try
         {
