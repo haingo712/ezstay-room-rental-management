@@ -99,7 +99,7 @@ namespace AmenityAPI.Controllers
         
         [HttpPost]
         [Authorize(Roles = "Staff")]
-        public async Task<ActionResult<AmenityResponseDto>> PostAmenity([FromBody] CreateAmenityDto request)
+        public async Task<ActionResult<AmenityResponseDto>> PostAmenity([FromForm] CreateAmenityDto request)
         {
             try
             {

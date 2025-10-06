@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using AmenityAPI.APIs;
+using AmenityAPI.APIs.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using AmenityAPI.DTO.Request;
@@ -15,12 +17,16 @@ public class AmenityService: IAmenityService
 {
     private readonly IMapper _mapper;
     private readonly IAmenityRepository _amenityRepository;
-    public AmenityService(IMapper mapper, IAmenityRepository amenityRepository)
+    private readonly IImageAPI _imageClient;
+
+    public AmenityService(IMapper mapper, IAmenityRepository amenityRepository, IImageAPI imageClient)
     {
         _mapper = mapper;
         _amenityRepository = amenityRepository;
+        _imageClient = imageClient;
     }
-      // public async Task<ApiResponse<IEnumerable<AmenityResponseDto>>> GetAllByStaffId(Guid staffId)
+
+    // public async Task<ApiResponse<IEnumerable<AmenityResponseDto>>> GetAllByStaffId(Guid staffId)
       // {
       //     var amenity =  await _amenityRepository.GetAllByStaffId(staffId);
       //     var c=  _mapper.Map<IEnumerable<AmenityResponseDto>>(amenity);
@@ -60,7 +66,10 @@ public class AmenityService: IAmenityService
         var exist = await _amenityRepository.AmenityNameExistsAsync(request.AmenityName);
         if (exist)
             return ApiResponse<AmenityResponseDto>.Fail("Tiện ích đã có rồi.");
+     
         var amenity = _mapper.Map<Amenity>(request);
+         var c=   _imageClient.UploadImageAsync(request.ImageUrl);
+         amenity.ImageUrl = c.Result;
         amenity.CreatedAt = DateTime.UtcNow;
         await _amenityRepository.AddAsync(amenity);
         var result =_mapper.Map<AmenityResponseDto>(amenity);
@@ -75,7 +84,6 @@ public class AmenityService: IAmenityService
         var existAmentityName = await _amenityRepository.AmenityNameExistsAsync(request.AmenityName);
         if(existAmentityName)
             return ApiResponse<bool>.Fail("Tiện ích đã có rồi.");
-        
          _mapper.Map(request, amenity);
          amenity.UpdatedAt = DateTime.UtcNow;
          await _amenityRepository.UpdateAsync(amenity);
