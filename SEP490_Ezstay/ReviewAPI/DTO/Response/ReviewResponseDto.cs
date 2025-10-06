@@ -6,7 +6,7 @@ public class ReviewResponseDto
     public Guid UserId { get; set; }
     public Guid ContractId { get; set; }
     public Guid PostId { get; set; }
-    public Guid ImageId { get; set; }
+    public string ImageUrl { get; set; }
     public DateTime ReviewDeadline { get; set; }
     public int Rating { get; set; }
     public string Content { get; set; }

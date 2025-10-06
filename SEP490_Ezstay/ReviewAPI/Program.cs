@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using ReviewAPI.APIs;
+using ReviewAPI.APIs.Interfaces;
 using ReviewAPI.DTO.Response;
 using ReviewAPI.DTO.Response.ReviewReply;
 using ReviewAPI.Profiles;
@@ -25,7 +27,12 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
-
+builder.Services.AddScoped<IReviewReplyService, ReviewReplyService>();
+builder.Services.AddScoped<IReviewReplyRepository, ReviewReplyRepository>();
+builder.Services.AddHttpClient<IImageAPI, ImageAPI >(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
+});
 // var serviceUrls = builder.Configuration.GetSection("ServiceUrls");
 //
 // builder.Services.AddHttpClient<IAmenityClientService, AmenityClientService>(client =>

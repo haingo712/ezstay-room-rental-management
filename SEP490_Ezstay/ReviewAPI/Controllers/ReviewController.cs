@@ -20,20 +20,26 @@ public class ReviewController : ControllerBase
         _tokenService = tokenService;
     }
     
-    [HttpGet]
-    // [Authorize(Roles = "Staff")]
-    public async Task<IActionResult> GetAll()
-    {
-        var result = await _reviewService.GetAll();
-        return Ok(result);
-    }
+    // [HttpGet]
+    // // [Authorize(Roles = "Staff")]
+    // public async Task<IActionResult> GetAll()
+    // {
+    //     var result = await _reviewService.GetAll();
+    //     return Ok(result);
+    // }
     [HttpGet]
     [EnableQuery]
     [Route("/odata/Review")]
     [Authorize(Roles = "Owner")]
-    public IQueryable<ReviewResponseDto> GetAllPostId(Guid postId)
+    public IQueryable<ReviewResponseDto> GetAllAsQueryable()
     {
-        return _reviewService.GetAllByOwnerId(postId);
+        return _reviewService.GetAllAsQueryable();
+    }
+    [HttpGet]
+    [EnableQuery]
+    public IQueryable<ReviewResponseDto> GetAll()
+    {
+        return _reviewService.GetAllAsQueryable();
     }
     [HttpGet("post/{postId}")]
     public async Task<IActionResult> GetByPostId(Guid postId)
@@ -61,7 +67,7 @@ public class ReviewController : ControllerBase
     // }
     [Authorize(Roles = "User")]
     [HttpPost("{contractId}")]
-    public async Task<IActionResult> Create(Guid contractId, [FromBody] CreateReviewDto request)
+    public async Task<IActionResult> Create(Guid contractId, [FromForm] CreateReviewDto request)
     {
         var userId = _tokenService.GetUserIdFromClaims(User);
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -72,7 +78,7 @@ public class ReviewController : ControllerBase
     
     [Authorize(Roles = "User")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateReviewDto request)
+    public async Task<IActionResult> Update(Guid id, [FromForm] UpdateReviewDto request)
     {
         var userId = _tokenService.GetUserIdFromClaims(User);
         if (!ModelState.IsValid) return BadRequest(ModelState);

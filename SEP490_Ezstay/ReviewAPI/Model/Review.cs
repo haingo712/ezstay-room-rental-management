@@ -11,6 +11,7 @@ public class Review
     public Guid Id { get; set; } = Guid.NewGuid();
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid UserId { get; set; } 
+    public string ImageUrl { get; set; }
     
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid PostId { get; set; }
@@ -20,12 +21,7 @@ public class Review
     
     public int Rating { get; set; } 
     public string Content { get; set; }
-    
-    // public ReviewStatus Status { get; set; }
     public DateTime ReviewDeadline { get; set; }
-    
-    [BsonGuidRepresentation(GuidRepresentation.Standard)]
-    public Guid ImageId { get; set; }
     public DateTime CreatedAt { get; set; } 
     public DateTime UpdatedAt { get; set; }
    

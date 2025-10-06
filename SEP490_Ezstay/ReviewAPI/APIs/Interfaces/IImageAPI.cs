@@ -1,0 +1,6 @@
+namespace ReviewAPI.APIs.Interfaces;
+
+public interface IImageAPI
+{ 
+    Task<string> UploadImageAsync(IFormFile file);
+}

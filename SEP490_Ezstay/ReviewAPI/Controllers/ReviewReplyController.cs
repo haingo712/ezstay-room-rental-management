@@ -48,6 +48,7 @@ public class ReviewReplyController: ControllerBase
     
     [HttpGet]
     [EnableQuery]
+    [Authorize(Roles = "Owner,User")]
     public IQueryable<ReviewReplyResponse> GetReviewReplies()
     {
         return _reviewReplyService.GetAllQueryable();
