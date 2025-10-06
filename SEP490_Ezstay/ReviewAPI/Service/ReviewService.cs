@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using ReviewAPI.APIs.Interfaces;
 using ReviewAPI.DTO.Requests;
 using ReviewAPI.DTO.Response;
 using ReviewAPI.Model;
@@ -15,19 +16,20 @@ public class ReviewService : IReviewService
     private readonly IReviewRepository _reviewRepository;
     private readonly IContractClientService _contractClientService;
     private readonly IPostClientService _postClientService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IImageAPI _imageClient;
 
-    public ReviewService(IMapper mapper, IReviewRepository reviewRepository, IPostClientService PostClientService, IHttpContextAccessor httpContextAccessor, IContractClientService contractClientService)
+    public ReviewService(IMapper mapper, IReviewRepository reviewRepository, IContractClientService contractClientService, IPostClientService postClientService, IImageAPI imageClient)
     {
         _mapper = mapper;
         _reviewRepository = reviewRepository;
-        _postClientService = PostClientService;
-        _httpContextAccessor = httpContextAccessor;
         _contractClientService = contractClientService;
+        _postClientService = postClientService;
+        _imageClient = imageClient;
     }
-    public IQueryable<ReviewResponseDto> GetAllByOwnerId(Guid postId)
+
+    public IQueryable<ReviewResponseDto> GetAllAsQueryable()
     {
-        var post = _reviewRepository.GetAllAsQueryable( ).Where( post => post.PostId == postId );
+        var post = _reviewRepository.GetAllAsQueryable();
         return post.ProjectTo<ReviewResponseDto>(_mapper.ConfigurationProvider);
     }
     
@@ -101,9 +103,7 @@ public class ReviewService : IReviewService
         var existingReview = await _reviewRepository.GetByContractIdAsync(contractId);
         if (existingReview != null)
             return ApiResponse<ReviewResponseDto>.Fail("Hợp đồng này đã được review, không thể review thêm.");
-
-        // if(contract. > DateTime.UtcNow)
-        //     return  ApiResponse<ReviewResponseDto>.Fail("K dc qua"+ contract.CheckoutDate.AddMonths(1) +" ngay");
+        
         if(contract.CheckoutDate.AddMonths(1) < DateTime.UtcNow)
             return  ApiResponse<ReviewResponseDto>.Fail("K dc qua"+ contract.CheckoutDate.AddMonths(1) +" ngay");
         var post =  await _postClientService.GetPostIdByRoomIdAsync(contract.RoomId);
@@ -115,6 +115,7 @@ public class ReviewService : IReviewService
         review.ContractId = contractId;
         review.PostId = post.Value;
         review.CreatedAt = DateTime.UtcNow;
+        review.ImageUrl =  _imageClient.UploadImageAsync(request.ImageUrl).Result;
         await _reviewRepository.AddAsync(review);
         var dto = _mapper.Map<ReviewResponseDto>(review);
         return ApiResponse<ReviewResponseDto>.Success(dto, "Thêm review thành công");
@@ -122,17 +123,18 @@ public class ReviewService : IReviewService
 
     public async Task<ApiResponse<bool>> UpdateAsync(Guid id,Guid userId, UpdateReviewDto request)
     {
-        var entity = await _reviewRepository.GetByIdAsync(id);
-        if (entity == null)
+        var review = await _reviewRepository.GetByIdAsync(id);
+        if (review == null)
             return ApiResponse<bool>.Fail("Không tìm thấy review");
         
-        if (entity.UserId != userId)
+        if (review.UserId != userId)
             return ApiResponse<bool>.Fail("Bạn không có quyền cập nhật review này");
-        if(entity.ReviewDeadline < DateTime.UtcNow)
-            return  ApiResponse<bool>.Fail("K dc qua"+ entity.ReviewDeadline +" ngay");
-        _mapper.Map(request, entity);
-        entity.UpdatedAt = DateTime.UtcNow;
-        await _reviewRepository.UpdateAsync(entity);
+        if(review.ReviewDeadline < DateTime.UtcNow)
+            return  ApiResponse<bool>.Fail("K dc qua"+ review.ReviewDeadline +" ngay");
+        _mapper.Map(request, review);
+        review.UpdatedAt = DateTime.UtcNow;
+        review.ImageUrl =  _imageClient.UploadImageAsync(request.ImageUrl).Result;
+        await _reviewRepository.UpdateAsync(review);
 
         return ApiResponse<bool>.Success(true, "Cập nhật review thành công");
     }

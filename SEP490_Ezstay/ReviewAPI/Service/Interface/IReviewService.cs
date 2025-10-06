@@ -6,7 +6,7 @@ namespace ReviewAPI.Service.Interface;
 public interface IReviewService
 {
     Task<ApiResponse<IEnumerable<ReviewResponseDto>>> GetAll();
-    IQueryable<ReviewResponseDto> GetAllByOwnerId(Guid postId);
+    IQueryable<ReviewResponseDto> GetAllAsQueryable();
     Task<ApiResponse<IEnumerable<ReviewResponseDto>>> GetAllByPostId(Guid postId);
     Task<ReviewResponseDto?> GetByContractIdAsync(Guid contractId);
     Task<ReviewResponseDto> GetByIdAsync(Guid id);
