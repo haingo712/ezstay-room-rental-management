@@ -8,6 +8,7 @@ using APIGateway.Helper;
 using APIGateway.Helper.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -120,6 +121,25 @@ namespace AccountAPI.Service
                 // ✅ Gọi Auth API để đồng bộ
                 await _authApiClient.UpdateFullNameAsync(userId, userDto.FullName);
             }
+           
+            if (userDto.Avatar != null)
+            {
+                var avatarUrl = await _imageService.UploadImageAsync(userDto.Avatar);
+                user.Avatar = avatarUrl; // ✅ gán đúng URL ảnh vào DB
+            }
+
+            if (userDto.FrontImageUrl != null)
+            {
+                var frontUrl = await _imageService.UploadImageAsync(userDto.FrontImageUrl);
+                user.FrontImageUrl = frontUrl;
+            }
+
+            if (userDto.BackImageUrl != null)
+            {
+                var backUrl = await _imageService.UploadImageAsync(userDto.BackImageUrl);
+                user.BackImageUrl = backUrl;
+            }
+
 
             // ✅ Cập nhật tên tỉnh/xã nếu cần
             if (!string.IsNullOrEmpty(user.ProvinceId))

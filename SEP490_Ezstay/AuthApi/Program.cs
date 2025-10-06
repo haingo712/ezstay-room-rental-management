@@ -48,7 +48,12 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
 builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
 builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+builder.Services.AddScoped<IOwnerRequestService, OwnerRequestService>();
+builder.Services.AddScoped<IOwnerRequestRepository, OwnerRequestRepository>();
+
+
 builder.Services.Configure<GoogleAuthSettings>(
+
     builder.Configuration.GetSection("GoogleAuth"));
 builder.Services.Configure<FacebookAuthSettings>(
     builder.Configuration.GetSection("FacebookAuth"));

@@ -11,11 +11,13 @@ namespace NotificationAPI.Service
     {
         private readonly INotificationRepository _repo;
         private readonly IMapper _mapper;
+        private readonly INotificationSender _notificationSender;
 
-        public NotificationService(INotificationRepository repo, IMapper mapper)
+        public NotificationService(INotificationRepository repo, IMapper mapper, INotificationSender notificationSender)
         {
             _repo = repo;
             _mapper = mapper;
+            _notificationSender = notificationSender;
         }
 
         public async Task<IEnumerable<NotificationResponseDto>> GetUserNotifications(Guid userId)
@@ -35,8 +37,15 @@ namespace NotificationAPI.Service
         {
             var notify = _mapper.Map<Notify>(dto);
             await _repo.AddAsync(notify);
-            return _mapper.Map<NotificationResponseDto>(notify);
+
+            var notifyDto = _mapper.Map<NotificationResponseDto>(notify);
+
+            // 🔔 Gửi real-time notification
+            await _notificationSender.SendToAllAsync($"📢 {notifyDto.Title}: {notifyDto.Message}");
+
+            return notifyDto;
         }
+
 
 
         public async Task<bool> MarkAsRead(Guid id)

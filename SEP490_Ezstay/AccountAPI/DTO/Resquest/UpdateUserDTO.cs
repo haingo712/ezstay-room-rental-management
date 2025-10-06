@@ -6,7 +6,7 @@ namespace AccountAPI.DTO.Request
     public class UpdateUserDTO
     {
         public GenderEnum Gender { get; set; }
-        public string Avatar { get; set; }
+        public IFormFile Avatar { get; set; }
         public string Bio { get; set; }
         public DateTime DateOfBirth { get; set; }
 
@@ -16,8 +16,8 @@ namespace AccountAPI.DTO.Request
         public string WardId { get; set; }         // Mã xã/phường
                                                    //public string WardName { get; set; }       // Tên xã/phường
         public string? FullName { get; set; }
-        public string? FrontImageUrl { get; set; }
-        public string? BackImageUrl { get; set; }
+        public IFormFile? FrontImageUrl { get; set; }
+        public IFormFile? BackImageUrl { get; set; }
         public string? TemporaryResidence { get; set; }
         public string? CitizenIdNumber { get; set; }
         public DateTime? CitizenIdIssuedDate { get; set; }
