@@ -80,7 +80,7 @@ namespace AmenityAPI.Controllers
         // PUT: api/Amenity/5
         [HttpPut("{id}")]
         [Authorize(Roles = "Staff")]
-        public async Task<IActionResult> PutAmenity(Guid id, [FromBody] UpdateAmenityDto request)
+        public async Task<IActionResult> PutAmenity(Guid id, [FromForm] UpdateAmenityDto request)
         {
             try
             {

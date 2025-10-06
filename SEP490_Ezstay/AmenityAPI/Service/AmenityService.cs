@@ -86,6 +86,7 @@ public class AmenityService: IAmenityService
             return ApiResponse<bool>.Fail("Tiện ích đã có rồi.");
          _mapper.Map(request, amenity);
          amenity.UpdatedAt = DateTime.UtcNow;
+         amenity.ImageUrl =  _imageClient.UploadImageAsync(request.ImageUrl).Result;
          await _amenityRepository.UpdateAsync(amenity);
         var result = _mapper.Map<AmenityResponseDto>(amenity);
         return ApiResponse<bool>.Success(true,"Cập nhật tiện ích thành công");
