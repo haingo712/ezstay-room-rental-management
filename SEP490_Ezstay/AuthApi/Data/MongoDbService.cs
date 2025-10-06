@@ -22,5 +22,7 @@ public class MongoDbService
     public IMongoCollection<PhoneVerification> PhoneVerifications =>
     _database.GetCollection<PhoneVerification>("PhoneVerifications");
 
+    public IMongoCollection<OwnerRegistrationRequest> OwnerRequests =>
+    _database.GetCollection<OwnerRegistrationRequest>("OwnerRequests");
 
 }
