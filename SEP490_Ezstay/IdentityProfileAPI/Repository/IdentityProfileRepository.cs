@@ -1,9 +1,9 @@
 
 using MongoDB.Driver;
-using ContractAPI.Model;
-using ContractAPI.Repository.Interface;
+using IdentityProfileAPI.Model;
+using IdentityProfileAPI.Repository.Interface;
 
-namespace ContractAPI.Repository;
+namespace IdentityProfileAPI.Repository;
 
 public class IdentityProfileRepository : IIdentityProfileRepository
 {

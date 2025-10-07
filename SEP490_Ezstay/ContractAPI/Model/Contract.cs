@@ -14,13 +14,12 @@ namespace ContractAPI.Model
         
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid OwnerId { get; set; }
-        
-        [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid TenantId { get; set; }  // Người thuê (trước đây là UserId)
-        
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid RoomId {get; set;}
         
+        public IdentityProfile SignerProfile {get; set;}
+        
+        public List<IdentityProfile> ProfilesInContract { get; set; }
         public DateTime CheckinDate { get; set;}
         public DateTime CheckoutDate { get; set;}
         public ContractStatus  ContractStatus{ get; set;}

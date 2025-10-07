@@ -9,7 +9,7 @@ public class MappingContract:Profile
 {
     public MappingContract()
     {
-        CreateMap<CreateContractDto, Contract>();
+        CreateMap<CreateContract, Contract>();
         CreateMap<UpdateContractDto, Contract>();
         CreateMap<Contract, ContractResponseDto>();
         CreateMap<ExtendContractDto, Contract>();

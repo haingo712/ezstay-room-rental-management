@@ -1,13 +1,13 @@
 using System.Text.Json;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using ContractAPI.DTO.Requests;
-using ContractAPI.DTO.Response;
-using ContractAPI.Model;
-using ContractAPI.Repository.Interface;
-using ContractAPI.Services.Interfaces;
+using IdentityProfileAPI.DTO.Requests;
+using IdentityProfileAPI.DTO.Response;
+using IdentityProfileAPI.Model;
+using IdentityProfileAPI.Repository.Interface;
+using IdentityProfileAPI.Services.Interfaces;
 
-namespace ContractAPI.Services;
+namespace IdentityProfileAPI.Services;
 
 public class IdentityProfileService: IIdentityProfileService
 {
@@ -89,7 +89,7 @@ public class IdentityProfileService: IIdentityProfileService
     public async Task<ApiResponse<IdentityProfileResponseDto>> AddAsync(Guid contractId, CreateIdentityProfileDto request)
     {
         var entity = _mapper.Map<IdentityProfile>(request);
-        entity.ContractId = contractId;
+      //  entity.ContractId = contractId;
         entity.CreatedAt = DateTime.UtcNow;
         await _identityProfileRepository.AddAsync(entity);
         var dto = _mapper.Map<IdentityProfileResponseDto>(entity);
@@ -101,7 +101,6 @@ public class IdentityProfileService: IIdentityProfileService
         var entity = await _identityProfileRepository.GetByIdAsync(id);
         if (entity == null)
             return ApiResponse<IdentityProfileResponseDto>.Fail("Không tìm thấy hồ sơ");
-
         _mapper.Map(request, entity);
         entity.UpdatedAt = DateTime.UtcNow;
         await _identityProfileRepository.UpdateAsync(entity);

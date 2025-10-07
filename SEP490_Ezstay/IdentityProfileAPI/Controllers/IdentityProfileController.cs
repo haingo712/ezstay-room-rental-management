@@ -1,13 +1,13 @@
 
-using ContractAPI.DTO.Requests;
-using ContractAPI.DTO.Response;
-using ContractAPI.Services.Interfaces;
+using IdentityProfileAPI.DTO.Requests;
+using IdentityProfileAPI.DTO.Response;
+using IdentityProfileAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 
 
-namespace ContractAPI.Controllers
+namespace IdentityProfileAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -29,6 +29,7 @@ namespace ContractAPI.Controllers
         {
             return  _identityProfileService.GetAllQueryable();
         }
+        
         [Authorize(Roles = "Owner, User")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)

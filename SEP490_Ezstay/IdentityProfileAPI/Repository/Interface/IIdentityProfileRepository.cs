@@ -1,8 +1,8 @@
 
 
-using ContractAPI.Model;
+using IdentityProfileAPI.Model;
 
-namespace ContractAPI.Repository.Interface;
+namespace IdentityProfileAPI.Repository.Interface;
 
 public interface IIdentityProfileRepository
 {

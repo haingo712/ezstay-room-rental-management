@@ -13,10 +13,10 @@ namespace ContractAPI.Repository
         {
             _contracts = database.GetCollection<Contract>("Contracts");
         }
-        public Task<bool> HasContractAsync(Guid tenantId, Guid roomId)
-        {
-            return _contracts.Find(c => c.TenantId == tenantId && c.RoomId == roomId).AnyAsync();
-        }
+        // public Task<bool> HasContractAsync(Guid tenantId, Guid roomId)
+        // {
+        //     return _contracts.Find(c => c.TenantId == tenantId && c.RoomId == roomId).AnyAsync();
+        // }
 
 
         public IQueryable<Contract> GetAllQueryable() => _contracts.AsQueryable();
@@ -24,9 +24,9 @@ namespace ContractAPI.Repository
         public async Task<IEnumerable<Contract>> GetAllByOwnerIdAsync(Guid ownerId)
             => await _contracts.Find(t => t.OwnerId == ownerId).ToListAsync();
         
-        public async Task<IEnumerable<Contract>> GetAllByTenantIdAsync(Guid tenantId)
-            => await _contracts.Find(t => t.TenantId == tenantId).ToListAsync();
-        
+        // public async Task<IEnumerable<Contract>> GetAllByTenantIdAsync(Guid tenantId)
+        //     => await _contracts.Find(t => t.TenantId == tenantId).ToListAsync();
+        //
         public async Task<Contract?> GetByIdAsync(Guid id)
             => await _contracts.Find(t => t.Id == id).FirstOrDefaultAsync();
 

@@ -3,8 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ContractAPI.DTO.Requests;
 
-public class CreateIdentityProfileDto
+public class CreateIdentityProfile
 {
+    public Guid? UserId { get; set; } 
     [Required]
     public string FullName { get; set; }
     [Required]
@@ -14,7 +15,6 @@ public class CreateIdentityProfileDto
     public string PhoneNumber { get; set; }
     [EmailAddress]
     public string? Email { get; set; }
-    
     [Required]
     public string ProvinceId { get; set; }     // Mã tỉnh
     [Required]
@@ -35,5 +35,4 @@ public class CreateIdentityProfileDto
     public string FrontImageUrl { get; set; }
     [Required]
     public string BackImageUrl { get; set; }
-  
 }
