@@ -62,9 +62,13 @@ namespace AccountAPI.Service
             user.FullName = existingPhone.FullName;
             user.Phone = existingPhone.Phone;
             user.Email = existingPhone.Email;
+            if (userDto.Avatar != null)
+            {
+                var avatarUrl = await _imageService.UploadImageAsync(userDto.Avatar);
+                user.Avatar = avatarUrl;
+            }
 
-
-          user.ProvinceName = await GetProvinceNameAsync(user.ProvinceId) ?? "";
+            user.ProvinceName = await GetProvinceNameAsync(user.ProvinceId) ?? "";
           user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
           await _userRepository.CreateUserAsync(user);
             return true;
