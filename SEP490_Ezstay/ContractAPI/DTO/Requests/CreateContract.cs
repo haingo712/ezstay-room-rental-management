@@ -1,15 +1,18 @@
 using System.ComponentModel.DataAnnotations;
 using ContractAPI.DTO.Requests.UtilityReading;
+using ContractAPI.Model;
 
 namespace ContractAPI.DTO.Requests;
 
-public class CreateContractDto
+public class CreateContract
 {
+    
+    // [Required]
+    // public CreateIdentityProfile SignerProfile { get; set; }
     [Required]
-    public Guid TenantId { get; set; }
+    public List<CreateIdentityProfile> ProfilesInContract { get; set; } 
     [Required]
     public Guid RoomId { get; set; }
-
     [Required]
     public DateTime CheckinDate { get; set; }
     [Required]
@@ -23,10 +26,7 @@ public class CreateContractDto
     public int NumberOfOccupants { get; set; }
     [StringLength(500, ErrorMessage = "Notes cannot exceed 500 characters.")]
     public string? Notes { get; set; }
-    [Required]
-    public CreateIdentityProfileDto IdentityProfiles { get; set; } 
-    // [Required]
-    // public CreateUtilityReadingContract UtilityReadingContracts { get; set; } 
+    
     [Required]
     public CreateUtilityReadingContract ElectricityReading { get; set; }
     [Required]

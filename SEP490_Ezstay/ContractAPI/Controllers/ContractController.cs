@@ -18,29 +18,27 @@ namespace ContractAPI.Controllers
     {
         private readonly IContractService _contractService;
         private readonly ITokenService _tokenService;
-        private readonly IIdentityProfileService _identityProfileService;
+     
 
-        public ContractController(IContractService contractService, ITokenService tokenService, IIdentityProfileService identityProfileService)
+        public ContractController(IContractService contractService, ITokenService tokenService)
         {
             _contractService = contractService;
             _tokenService = tokenService;
-            _identityProfileService = identityProfileService;
         }
         
       //  [Authorize(Roles = "User")]
-        [HttpGet("HasContract/{tenantId}/roomId/{roomId}")]
-        public async Task<IActionResult> HasContract(Guid tenantId, Guid roomId)
-        {
-            var hasContract = await _contractService.HasContractAsync(tenantId, roomId);
-            return Ok(hasContract); 
-        }
+        // [HttpGet("HasContract/{tenantId}/roomId/{roomId}")]
+        // public async Task<IActionResult> HasContract(Guid tenantId, Guid roomId)
+        // {
+        //     var hasContract = await _contractService.HasContractAsync(tenantId, roomId);
+        //     return Ok(hasContract); 
+        // }
         
         [Authorize(Roles = "Owner")]
         [HttpPost]
-        public async Task<IActionResult> CreateContractWithProfiles([FromBody] CreateContractDto request)
+        public async Task<IActionResult> CreateContract([FromBody] CreateContract request)
         {
             var ownerId = _tokenService.GetUserIdFromClaims(User);
-
             var createContract = await _contractService.Add(ownerId, request);
             if (!createContract.IsSuccess)
                 return BadRequest(new { message = createContract.Message });
@@ -74,14 +72,14 @@ namespace ContractAPI.Controllers
            return _contractService.GetAllQueryable();
        }
        
-       [Authorize(Roles = "User")]
-       [HttpGet("MyContract")]
-       [EnableQuery]
-       public IQueryable<ContractResponseDto> GetContractsByTenantId()
-       {
-           var tenantId = _tokenService.GetUserIdFromClaims(User);
-           return _contractService.GetAllByTenantId(tenantId);
-       }
+       // [Authorize(Roles = "User")]
+       // [HttpGet("MyContract")]
+       // [EnableQuery]
+       // public IQueryable<ContractResponseDto> GetContractsByTenantId()
+       // {
+       //     var tenantId = _tokenService.GetUserIdFromClaims(User);
+       //     return _contractService.GetAllByTenantId(tenantId);
+       // }
        
        [Authorize(Roles = "Owner")]
        [HttpGet("ByOwnerId")]
@@ -99,16 +97,7 @@ namespace ContractAPI.Controllers
            var ownerId=  _tokenService.GetUserIdFromClaims(User);
            return _contractService.GetAllByOwnerId(ownerId, contractStatus);
        }
-        
-        // [Authorize(Roles = "Owner")]
-        // [HttpGet("ByRoomId/{roomId}")]
-        // [EnableQuery]
-        // public  IQueryable<TenantDto> GetTenantsByRoomId(int roomId )
-        // {
-        //
-        //     return  _tenantService.GetAllroomId);
-        // }
-
+       
         // GET: api/Tenant/5
         // [Authorize(Roles = "Owner, User")]
         [HttpGet("{id}")]

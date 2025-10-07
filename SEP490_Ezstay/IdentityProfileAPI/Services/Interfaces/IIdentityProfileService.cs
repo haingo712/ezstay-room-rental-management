@@ -1,7 +1,7 @@
-using ContractAPI.DTO.Requests;
-using ContractAPI.DTO.Response;
+using IdentityProfileAPI.DTO.Requests;
+using IdentityProfileAPI.DTO.Response;
 
-namespace ContractAPI.Services.Interfaces;
+namespace IdentityProfileAPI.Services.Interfaces;
 
 public interface IIdentityProfileService
 {

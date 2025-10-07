@@ -9,7 +9,7 @@ public class MappingIdentityProfile: Profile
 {
     public MappingIdentityProfile()
     {
-        CreateMap<CreateIdentityProfileDto, IdentityProfile>();
+        CreateMap<CreateIdentityProfile, IdentityProfile>();
         CreateMap<UpdateIdentityProfileDto, IdentityProfile>();
         CreateMap<IdentityProfile, IdentityProfileResponseDto>();
     }
