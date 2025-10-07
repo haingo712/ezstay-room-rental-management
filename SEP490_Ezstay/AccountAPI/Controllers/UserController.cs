@@ -27,8 +27,8 @@ namespace AccountAPI.Controllers
 
 
         [HttpPost("create-profile")]
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> CreateProfile([FromBody] UserDTO userDto)
+        [Authorize(Roles = "User,Owner,Staff")]
+        public async Task<IActionResult> CreateProfile([FromForm] UserDTO userDto)
         {
             var userId = _userClaimHelper.GetUserId(User);
 
@@ -42,7 +42,7 @@ namespace AccountAPI.Controllers
 
 
         [HttpGet("profile")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Owner,Staff")]
         public async Task<IActionResult> GetProfile()
         {
             var userId = _userClaimHelper.GetUserId(User);
@@ -65,7 +65,7 @@ namespace AccountAPI.Controllers
         }
 
         [HttpPut("update-phone")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Owner,Staff")]
         public async Task<IActionResult> UpdatePhone([FromBody] UpdatePhoneRequestDto dto)
         {
             var userId = _userClaimHelper.GetUserId(User);
@@ -83,7 +83,7 @@ namespace AccountAPI.Controllers
         }
 
         [HttpPut("update-profile")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Owner,Staff")]
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateUserDTO dto)
         {
             var userId = _userClaimHelper.GetUserId(User);
@@ -96,7 +96,7 @@ namespace AccountAPI.Controllers
 
 
         [HttpPut("update-email")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Owner,Staff")]
         public async Task<IActionResult> UpdateEmail([FromBody] UpdateEmailRequestDto dto)
         {
             var currentEmail = _userClaimHelper.GetEmail(User);
@@ -110,7 +110,7 @@ namespace AccountAPI.Controllers
         }
 
         [HttpPut("change-password")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Owner,Staff")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest dto)
         {
             // ✅ Lấy userId từ token
