@@ -1,26 +1,38 @@
-using SignalRHubAPI.Hub;
+﻿using SignalRHubAPI.Hub;
+using EasyNetQ;
+using SignalRHubAPI.Listener;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
 builder.Services.AddSignalR();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .SetIsOriginAllowed(_ => true) // Cho phép mọi domain
+                  .AllowCredentials(); // Cho phép gửi cookie, signalR credentials
+        });
+});
+
+builder.Services.AddSingleton(RabbitHutch.CreateBus(
+    builder.Configuration["RabbitMQ:ConnectionString"]
+));
+
+builder.Services.AddHostedService<RabbitMqListener>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 app.UseHttpsRedirection();
-app.MapHub<NotificationHub>("/signalR");
-app.UseAuthorization();
+app.UseCors("AllowAll");
+app.MapHub<NotificationHub>("/hubs/notification");
 
 app.MapControllers();
 

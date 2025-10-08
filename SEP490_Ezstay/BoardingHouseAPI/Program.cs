@@ -1,5 +1,4 @@
 ﻿
-using Microsoft.EntityFrameworkCore;
 using BoardingHouseAPI.Data;
 using BoardingHouseAPI.Repository.Interface;
 using BoardingHouseAPI.Repository;
@@ -13,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text;
+using EasyNetQ; 
 
 namespace BoardingHouseAPI
 {
@@ -115,7 +115,10 @@ namespace BoardingHouseAPI
                     }
                 });
             });
-            
+
+            builder.Services.AddSingleton(RabbitHutch.CreateBus(
+                builder.Configuration["RabbitMQ:ConnectionString"]
+            ));
 
             var app = builder.Build();
 
