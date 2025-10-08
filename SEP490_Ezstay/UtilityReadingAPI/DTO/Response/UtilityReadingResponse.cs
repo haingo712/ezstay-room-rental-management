@@ -3,7 +3,7 @@ using UtilityReadingAPI.Enum;
 
 namespace UtilityReadingAPI.DTO.Response;
 
-public class UtilityReadingResponseDto
+public class UtilityReadingResponse
 {
     public Guid Id { get; set; }
     public Guid RoomId { get; set; }
