@@ -125,18 +125,12 @@ public class ContractService : IContractService
         var saveContract =await _contractRepository.AddAsync(contract);
        var elecCreated = await _utilityReadingClientService.AddElectric(saveContract.RoomId, request.ElectricityReading);
        var waterCreated = await _utilityReadingClientService.AddWater(saveContract.RoomId, request.WaterReading);
-       // if (!waterCreated.IsSuccess)
-       //     Console.WriteLine($"Water tạo thất bại: {waterCreated.Message}");
-      
-     //   var savedProfiles =await _identityProfileService.AddAsync(saveContract.Id, request.IdentityProfiles);
-        var result = _mapper.Map<ContractResponseDto>(saveContract);
-     //   result.IdentityProfiles = savedProfiles.Data;
+       var result = _mapper.Map<ContractResponseDto>(saveContract);
+        result.ElectricityReading = elecCreated.Data;
+        result.WaterReading = waterCreated.Data;
         await _roomClient.UpdateRoomStatusAsync(request.RoomId, "Occupied");
         return ApiResponse<ContractResponseDto>.Success(result, "Thuê thành công.");
     }
-
-    
-
     public async Task<ApiResponse<ContractResponseDto>> CancelContractAsync(Guid contractId, string reason)
     {
         var contract = await _contractRepository.GetByIdAsync(contractId);
@@ -156,21 +150,39 @@ public class ContractService : IContractService
         return ApiResponse<ContractResponseDto>.Success(dto, "Huỷ hợp đồng thành công");
     }
 
-    public async Task<ApiResponse<ContractResponseDto>> UpdateAsync(Guid id, UpdateContractDto request)
+    public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateContractDto request)
     {
         var contract = await _contractRepository.GetByIdAsync(id);
         if (contract == null)
             throw new KeyNotFoundException("Contract Id not found");
-
+       
         if (DateTime.UtcNow - contract.CreatedAt > TimeSpan.FromHours(1))
-            return ApiResponse<ContractResponseDto>.Fail("Đơn này đã quá 1 giờ, không thể cập nhật nữa.");
+            return ApiResponse<bool>.Fail("Đơn này đã quá 1 giờ, không thể cập nhật nữa.");
         
-        if (contract.CheckinDate < DateTime.UtcNow)
-            return ApiResponse<ContractResponseDto>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
+        if (contract.CheckinDate < DateTime.UtcNow.Date)
+            return ApiResponse<bool>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
         
         if (request.CheckoutDate < contract.CheckinDate.AddMonths(1))
-            return ApiResponse<ContractResponseDto>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
-        
+            return ApiResponse<bool>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
+        if (request.ProfilesInContract != null && request.ProfilesInContract.Any())
+        {
+            var members = request.ProfilesInContract
+                .Select((p, index) =>
+                {
+                    var profile = _mapper.Map<IdentityProfile>(p);
+                    profile.IsSigner = index == 0;
+                    return profile;
+                }).ToList();
+
+            contract.ProfilesInContract = members;
+            contract.SignerProfile = members.First(p => p.IsSigner);
+        }
+      //  Console.WriteLine("sss"+ utilityReading.Data.Id);
+        if (request.ElectricityReading != null) 
+            await _utilityReadingClientService.UpdateElectric(contract.RoomId, request.ElectricityReading);
+        if (request.WaterReading != null) 
+            await _utilityReadingClientService.UpdateWater(contract.RoomId, request.WaterReading);
+
         // if (contract.ContractStatus != ContractStatus.Active)
         //     await _roomClient.UpdateRoomStatusAsync(contract.RoomId, "Available");
         contract.UpdatedAt = DateTime.UtcNow;
@@ -178,9 +190,9 @@ public class ContractService : IContractService
 
         await _contractRepository.UpdateAsync(contract);
 
-        var result = _mapper.Map<ContractResponseDto>(contract);
+     //   var result = _mapper.Map<ContractResponseDto>(contract);
         
-        return ApiResponse<ContractResponseDto>.Success(result, "Cập nhật hợp đồng thành công.");
+        return ApiResponse<bool>.Success(true, "Cập nhật hợp đồng thành công.");
     }
 
     public async Task<ApiResponse<ContractResponseDto>> ExtendContractAsync(Guid contractId, ExtendContractDto request)

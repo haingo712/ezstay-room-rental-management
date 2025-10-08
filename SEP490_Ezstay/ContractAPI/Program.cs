@@ -29,10 +29,10 @@ builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RoomApi"]);
 });
-// builder.Services.AddHttpClient<IAccountAPI, AccountAPI>(client =>
-// {
-//     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:AccountApi"]);
-// });
+builder.Services.AddHttpClient<IAccountAPI, AccountAPI>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:AccountApi"]);
+});
 builder.Services.AddHttpClient<IUtilityReadingClientService, UtilityReadingClientService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:UtilityReadingApi"]);

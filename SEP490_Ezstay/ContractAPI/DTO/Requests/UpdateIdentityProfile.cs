@@ -1,19 +1,24 @@
-using Microsoft.Build.Framework;
+using System.ComponentModel.DataAnnotations;
 
-namespace TenantAPI.DTO.Requests;
+namespace ContractAPI.DTO.Requests;
 
-public class UpdateIdentityProfileDto
+public class UpdateIdentityProfile
 {
+    public Guid? UserId { get; set; } 
     [Required]
     public string FullName { get; set; }
     public DateTime DateOfBirth { get; set; }
     [Required]
     public string PhoneNumber { get; set; }
+    [EmailAddress]
     public string Email { get; set; }
-    public string Province { get; set; }
-    public string District { get; set; }
-    public string Ward { get; set; }
+    [Required]
+    public string ProvinceId { get; set; }     // Mã tỉnh
+    [Required]
+    public string WardId { get; set; }         // Mã xã/phường
+    [Required]
     public string Address { get; set; }
+    [Required]
     public string TemporaryResidence { get; set; }
     [Required]
     public string CitizenIdNumber { get; set; }
