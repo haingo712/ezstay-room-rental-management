@@ -1,4 +1,4 @@
-namespace TenantAPI.DTO.Response;
+namespace IdentityProfileAPI.DTO.Response;
 
 public class ApiResponse<T>
 {
