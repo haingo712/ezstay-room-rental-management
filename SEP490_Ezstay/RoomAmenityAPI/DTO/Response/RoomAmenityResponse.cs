@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RoomAmenityAPI.DTO.Response;
 
-public class RoomAmenityResponseDto
+public class RoomAmenityResponse
 {
     
     public Guid Id { get; set; }

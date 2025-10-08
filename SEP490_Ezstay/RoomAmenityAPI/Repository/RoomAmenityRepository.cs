@@ -14,6 +14,7 @@ public class RoomAmenityRepository:IRoomAmenityRepository
     {
         _roomAmenities = database.GetCollection<RoomAmenity>("RoomAmenities");
     }
+    
 
     public IQueryable<RoomAmenity> GetAll()=> _roomAmenities.AsQueryable();
 
@@ -30,6 +31,9 @@ public class RoomAmenityRepository:IRoomAmenityRepository
     {
         await _roomAmenities.InsertOneAsync(roomAmenity);
     }
+    public async Task<bool> CheckAmenity(Guid amenityId)
+    =>await _roomAmenities.Find(r => r.AmenityId == amenityId).AnyAsync();
+
     public async  Task<bool> AmenityIdExistsInRoomAsync(Guid roomId, Guid amenityId)
     =>    await _roomAmenities
         .Find(r => r.RoomId == roomId && r.AmenityId == amenityId).AnyAsync();

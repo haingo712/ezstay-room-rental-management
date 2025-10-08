@@ -27,40 +27,38 @@ namespace RoomAmenityAPI.Controllers
         [HttpGet]
         [EnableQuery]
         [Authorize(Roles = "Staff")]
-        public IQueryable<RoomAmenityResponseDto> GetRoomAmenities( )
+        public IQueryable<RoomAmenityResponse> GetRoomAmenities( )
         {
             return  _roomAmenityService.GetAll();
         }
         // GET: api/RoomAmenity
-          [Authorize(Roles = "Owner")]
-        //  uu tien lam 
-        [HttpGet("/Odata/ByRoomId/{roonId}")]
+        [Authorize(Roles = "Owner")]
+        [HttpGet("/odata/byRoomId/{roonId}")]
         [EnableQuery]
-        public IQueryable<RoomAmenityResponseDto> GetRoomAmenitiesByRoomIdOdata(Guid roonId)
+        public IQueryable<RoomAmenityResponse> GetRoomAmenitiesByRoomIdOdata(Guid roonId)
         {
             return  _roomAmenityService.GetAllByRoomId(roonId);
         }
         // GET: api/RoomAmenity/5
-        //  ****
         [Authorize(Roles = "Owner")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<RoomAmenityResponseDto>> GetRoomAmenity(Guid id)
+        public async Task<ActionResult<RoomAmenityResponse>> GetRoomAmenity(Guid id)
         {
             var roomAmenity = await _roomAmenityService.GetByIdAsync(id);
             return Ok(roomAmenity);
         }
         //  uu tien lam 
         // [Authorize(Roles = "Owner")]
-        [HttpGet("ByRoomId/{roomId}")]
-        public async Task<ActionResult<RoomAmenityResponseDto>> GetRoomAmenitiesByRoomId(Guid roomId)
+        [HttpGet("byRoomId/{roomId}")]
+        public async Task<ActionResult<RoomAmenityResponse>> GetRoomAmenitiesByRoomId(Guid roomId)
         {
             var roomAmenity = await _roomAmenityService.GetRoomAmenitiesByRoomIdAsync(roomId);
             return Ok(roomAmenity);
         }
         
-        [HttpPost("{roomId}/Amenity")]
+        [HttpPost("{roomId}/amenity")]
         [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> PostRoomAmenity(Guid roomId, List<CreateRoomAmenityDto> roomAmenity)
+        public async Task<IActionResult> PostRoomAmenity(Guid roomId, List<CreateRoomAmenity> roomAmenity)
         {
             var createdRoomAmenity = await _roomAmenityService.AddAsync( roomId,roomAmenity);
             if (!createdRoomAmenity.IsSuccess ) 
@@ -70,5 +68,12 @@ namespace RoomAmenityAPI.Controllers
             return Ok(createdRoomAmenity);
             // return CreatedAtAction("GetRoomAmenity", new { roomId = roomId }, createdRoomAmenity.Data);
         }
+        [HttpGet("check-by-amenity/{amenityId}")]
+        public async Task<ActionResult<bool>> CheckAmenityUsage(Guid amenityId)
+        {
+            var isUsed = await _roomAmenityService.CheckAmenity(amenityId);
+            return Ok(isUsed);
+        }
+
     }
 }

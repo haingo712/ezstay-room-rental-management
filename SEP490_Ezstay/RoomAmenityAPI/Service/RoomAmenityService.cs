@@ -19,34 +19,39 @@ public class RoomAmenityService: IRoomAmenityService
         _roomAmenityRepository = roomAmenityRepository;
     }
 
-    public IQueryable<RoomAmenityResponseDto> GetAllByRoomId(Guid roonId)
+    public IQueryable<RoomAmenityResponse> GetAllByRoomId(Guid roonId)
     {
         var book =   _roomAmenityRepository.GetAll().Where(r=> r.RoomId == roonId);
-        return book.ProjectTo<RoomAmenityResponseDto>(_mapper.ConfigurationProvider);
+        return book.ProjectTo<RoomAmenityResponse>(_mapper.ConfigurationProvider);
     }
-    public IQueryable<RoomAmenityResponseDto> GetAll()
+    public IQueryable<RoomAmenityResponse> GetAll()
     {
         var book = _roomAmenityRepository.GetAll();
-        return book.ProjectTo<RoomAmenityResponseDto>(_mapper.ConfigurationProvider);
+        return book.ProjectTo<RoomAmenityResponse>(_mapper.ConfigurationProvider);
     }
-    public async Task<List<RoomAmenityResponseDto>> GetRoomAmenitiesByRoomIdAsync(Guid roomId)
+    public async Task<List<RoomAmenityResponse>> GetRoomAmenitiesByRoomIdAsync(Guid roomId)
     {
         var roomAmenity = await _roomAmenityRepository.GetRoomAmenitiesByRoomIdAsync(roomId);
         if (roomAmenity == null)
             throw new KeyNotFoundException("RoomAmentityId not found");
-        return   _mapper.Map<List<RoomAmenityResponseDto>>(roomAmenity);
+        return   _mapper.Map<List<RoomAmenityResponse>>(roomAmenity);
     }
-    public async Task<RoomAmenityResponseDto> GetByIdAsync(Guid id)
+    public async Task<RoomAmenityResponse> GetByIdAsync(Guid id)
     {
         var roomAmenity = await _roomAmenityRepository.GetByIdAsync(id);
         if (roomAmenity == null)
             throw new KeyNotFoundException("RoomAmentityId not found");
-        return   _mapper.Map<RoomAmenityResponseDto>(roomAmenity);
+        return   _mapper.Map<RoomAmenityResponse>(roomAmenity);
     }
-    public async  Task<ApiResponse<List<RoomAmenityResponseDto>>> AddAsync(Guid roomId, List<CreateRoomAmenityDto> request)
+    public async Task<bool> CheckAmenity(Guid amenityId)
+    {
+        return   await _roomAmenityRepository.CheckAmenity(amenityId);
+       
+    }
+    public async  Task<ApiResponse<List<RoomAmenityResponse>>> AddAsync(Guid roomId, List<CreateRoomAmenity> request)
     {
         var existing = await _roomAmenityRepository.GetRoomAmenitiesByRoomIdAsync(roomId);
-        var result = new List<RoomAmenityResponseDto>();
+        var result = new List<RoomAmenityResponse>();
         var toAdd = request
             .Where(r => !existing.Any(e => e.AmenityId == r.AmenityId))
             .ToList();
@@ -59,7 +64,7 @@ public class RoomAmenityService: IRoomAmenityService
             roomAmenity.RoomId = roomId;
             roomAmenity.CreatedAt = DateTime.UtcNow;
             await _roomAmenityRepository.AddAsync(roomAmenity);
-            result.Add(_mapper.Map<RoomAmenityResponseDto>(roomAmenity));
+            result.Add(_mapper.Map<RoomAmenityResponse>(roomAmenity));
         }
         var requestAmenityIds = request.Select(r => r.AmenityId).ToHashSet();
         var toRemove = existing
@@ -69,7 +74,7 @@ public class RoomAmenityService: IRoomAmenityService
         {
             await _roomAmenityRepository.DeleteAsync(r);
         }
-        return ApiResponse<List<RoomAmenityResponseDto>>.Success(result, "Thêm tiện ích vào trọ thành công");
+        return ApiResponse<List<RoomAmenityResponse>>.Success(result, "Thêm tiện ích vào trọ thành công");
     }
     
 }
