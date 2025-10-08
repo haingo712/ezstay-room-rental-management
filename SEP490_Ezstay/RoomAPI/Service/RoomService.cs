@@ -14,13 +14,13 @@ public class RoomService: IRoomService
 {
 
     private readonly IRoomRepository _roomRepository;
-    private readonly IRoomAmenityClientService _roomAmenityClient;
+    private readonly IRoomAmenityAPI _roomAmenityClient;
     private readonly IAmenityClientService _amenityClient;
     private readonly IImageAPI _imageClient;
     private readonly IRentalPostClientService _rentalPostClient;
     private readonly IMapper _mapper;
 
-    public RoomService(IRoomRepository roomRepository, IRoomAmenityClientService roomAmenityClient, IAmenityClientService amenityClient, IImageAPI imageClient, IRentalPostClientService rentalPostClient, IMapper mapper)
+    public RoomService(IRoomRepository roomRepository, IRoomAmenityAPI roomAmenityClient, IAmenityClientService amenityClient, IImageAPI imageClient, IRentalPostClientService rentalPostClient, IMapper mapper)
     {
         _roomRepository = roomRepository;
         _roomAmenityClient = roomAmenityClient;
@@ -81,7 +81,15 @@ public class RoomService: IRoomService
         room.CreatedAt = DateTime.UtcNow;
         
         await _roomRepository.Add(room);
-        
+        // if (request.RoomAmenity != null )
+        // {
+        //     var amenityRequest = request.AmenityIds
+        //         .Select(aid => new CreateRoomAmenityDto { AmenityId = aid })
+        //         .ToList();
+        //
+        //     await _roomAmenityClient.AddRoomAmenitiesAsync(room.Id, amenityRequest);
+        // }
+
         var result = _mapper.Map<RoomDto>(room);
         return ApiResponse<RoomDto>.Success(result, "Thêm phòng thành công");
     }
@@ -120,18 +128,18 @@ public class RoomService: IRoomService
     {
         var roomId = await _roomRepository.GetById(id);
         var room = _mapper.Map<RoomDto>(roomId);
-        var roomAmenities = await _roomAmenityClient.GetAmenityIdsByRoomId(id);
-        var amenities = new List<AmenityDto>();
-        foreach (var x in roomAmenities)
-        {
-            var amenity = await _amenityClient.GetAmenityById(x.AmenityId);
-            amenities.Add(amenity);
-        }
+        // var roomAmenities = await _roomAmenityClient.GetAmenityIdsByRoomId(id);
+        // var amenities = new List<AmenityDto>();
+        // foreach (var x in roomAmenities)
+        // {
+        //     var amenity = await _amenityClient.GetAmenityById(x.AmenityId);
+        //     amenities.Add(amenity);
+        // }
         var roomDto =   _mapper.Map<RoomWithAmenitiesDto>(room);
         //return new RoomWithAmenitiesDto
        // {
         //    Room = room,
-        roomDto.Amenities = amenities;
+        //roomDto.Amenities = amenities;
         return roomDto;
           //  Amenities = amenities
        // };

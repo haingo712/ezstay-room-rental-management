@@ -24,22 +24,12 @@ builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["Co
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<IRoomAmenityAPI, RoomAmenityAPI>();
+
 builder.Services.AddHttpClient<IImageAPI, ImageAPI >(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
 });
-
-// var gatewayUrl = builder.Configuration["ServiceUrls:Gateway"];
-//
-// builder.Services.AddHttpClient<IAmenityClientService, AmenityClientService>(client =>
-// {
-//     client.BaseAddress = new Uri($"{gatewayUrl}");
-// });
-//
-// builder.Services.AddHttpClient<IRoomAmenityClientService, RoomAmenityClientService>(client =>
-// {
-//     client.BaseAddress = new Uri($"{gatewayUrl}");
-// });
 
 var serviceUrls = builder.Configuration.GetSection("ServiceUrls");
 
@@ -58,16 +48,6 @@ builder.Services.AddHttpClient<IRentalPostClientService, RentalPostClientService
     client.BaseAddress = new Uri(serviceUrls["RentalPostApi"]);
    // client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RentalPostApi"]);
 });
-
-
-
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var odatabuilder = new ODataConventionModelBuilder();
 odatabuilder.EntitySet<RoomDto>("Rooms");
@@ -136,6 +116,13 @@ builder.Services.AddAuthorization();
                 });
             });
 
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

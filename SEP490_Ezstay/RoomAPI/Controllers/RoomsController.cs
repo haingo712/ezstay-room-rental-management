@@ -20,15 +20,10 @@ namespace RoomAPI.Controllers
     public class RoomsController : ControllerBase
     {
         private readonly IRoomService _roomService;
-        private readonly ITokenService _tokenService;
-        private readonly IRoomAmenityClientService _roomAmenityClient;
-        private readonly IAmenityClientService _amenityClient;
-        public RoomsController(IRoomService roomService, ITokenService tokenService, IRoomAmenityClientService roomAmenityClient, IAmenityClientService amenityClient)
+        
+        public RoomsController(IRoomService roomService)
         {
             _roomService = roomService;
-            _tokenService = tokenService;
-            _roomAmenityClient = roomAmenityClient;
-            _amenityClient = amenityClient;
         }
         
         [HttpPut("{id}/RoomStatus/{roomStatus}")]
