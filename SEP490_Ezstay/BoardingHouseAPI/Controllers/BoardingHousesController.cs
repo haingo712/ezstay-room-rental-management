@@ -74,7 +74,7 @@ namespace BoardingHouseAPI.Controllers
                     Data = new {Id = id, UpdatedFields = dto }
                 };
                 var jsonMessage = System.Text.Json.JsonSerializer.Serialize(notification);
-                await _bus.PubSub.PublishAsync(jsonMessage);
+                //await _bus.PubSub.PublishAsync(jsonMessage);
                 return Ok(response);
             }
             catch (KeyNotFoundException ex)
@@ -103,7 +103,7 @@ namespace BoardingHouseAPI.Controllers
                     Data = dto
                 };
                 var jsonMessage = System.Text.Json.JsonSerializer.Serialize(notification);
-                await _bus.PubSub.PublishAsync(jsonMessage);
+                //await _bus.PubSub.PublishAsync(jsonMessage);
 
                 return CreatedAtAction(nameof(GetBoardingHouse), new { id = response.Data.Id }, response);
             }
@@ -131,7 +131,7 @@ namespace BoardingHouseAPI.Controllers
                     Data = new { Id = id }
                 };
                 var jsonMessage = System.Text.Json.JsonSerializer.Serialize(notification);
-                await _bus.PubSub.PublishAsync(jsonMessage);
+                //await _bus.PubSub.PublishAsync(jsonMessage);
                 return Ok(response);
             }
             catch (KeyNotFoundException ex)
