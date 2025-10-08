@@ -17,7 +17,7 @@ public interface IContractService
     Task<ContractResponseDto?> GetByIdAsync(Guid id);
   //  Task<ApiResponse<ContractResponseDto>> AddAsync(Guid ownerId, CreateContractDto request);
     Task<ApiResponse<ContractResponseDto>> Add(Guid ownerId, CreateContract request);
-    Task<ApiResponse<ContractResponseDto>> UpdateAsync(Guid id, UpdateContractDto request);
+    Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateContractDto request);
     Task<ApiResponse<ContractResponseDto>> ExtendContractAsync(Guid contractId, ExtendContractDto request);
     Task<ApiResponse<ContractResponseDto>> CancelContractAsync(Guid contractId, string reason);
     Task<ApiResponse<bool>> DeleteAsync(Guid id);

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ContractAPI.DTO.Requests;
+namespace IdentityProfileAPI.DTO.Requests;
 
 public class UpdateIdentityProfileDto
 {

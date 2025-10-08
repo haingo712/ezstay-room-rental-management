@@ -8,7 +8,7 @@ public class ContractResponseDto
 {
     public Guid Id { get; set; }
     public Guid OwnerId { get; set; }
-    public Guid TenantId { get; set; }
+    // public Guid TenantId { get; set; }
     public Guid RoomId { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -20,5 +20,8 @@ public class ContractResponseDto
     public decimal DepositAmount { get; set; }
     public int NumberOfOccupants { get; set; }
     public string? Notes { get; set; }
-    public IdentityProfileResponseDto IdentityProfiles { get; set; } 
+    
+    public List<IdentityProfileResponseDto> IdentityProfiles { get; set; } 
+    public UtilityReadingResponseDto ElectricityReading { get; set; }
+    public UtilityReadingResponseDto WaterReading { get; set; }
 }

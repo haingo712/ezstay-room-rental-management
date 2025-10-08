@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RoomAmenityAPI.DTO.Request;
 
-public class CreateRoomAmenityDto
+public class CreateRoomAmenity
 {
    public Guid AmenityId { get; set; }
    // [Required]

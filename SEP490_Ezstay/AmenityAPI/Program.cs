@@ -46,6 +46,10 @@ builder.Services.AddHttpClient<IImageAPI, ImageAPI >(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
 });
+builder.Services.AddHttpClient<IRoomAmenityAPI, RoomAmenityAPI >(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RoomAmenityApi"]); 
+});
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 

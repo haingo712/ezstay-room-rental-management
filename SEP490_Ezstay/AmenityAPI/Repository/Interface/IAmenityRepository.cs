@@ -7,13 +7,13 @@ public interface IAmenityRepository
     IQueryable<Amenity> GetAllAsQueryable();
     Task<IEnumerable<Amenity>> GetAll();
   //  Task<IEnumerable<Amenity>> GetAllByStaffId(Guid staffId);
-    Task<Amenity?> GetByIdAsync(Guid id);
+    Task<Amenity?> GetById(Guid id);
     
-    Task AddAsync(Amenity amenity);
-    Task UpdateAsync(Amenity amenity);
-    Task DeleteAsync(Amenity amenity);
-    Task<bool> AmenityNameExistsAsync(string amenityName);
-    Task<bool> AmenityNameExistsAsync(string amenityName, Guid id);
+    Task Add(Amenity amenity);
+    Task Update(Amenity amenity);
+    Task Delete(Amenity amenity);
+    Task<bool> AmenityNameExists(string amenityName);
+    Task<bool> AmenityNameExists(string amenityName, Guid id);
 
 
 

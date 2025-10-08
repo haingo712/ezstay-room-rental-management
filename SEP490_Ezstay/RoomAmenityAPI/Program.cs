@@ -33,7 +33,7 @@ builder.Services.AddScoped<IRoomAmenityRepository, RoomAmenityRepository>();
 builder.Services.AddScoped<IRoomAmenityService, RoomAmenityService>();
 
 var odatabuilder = new ODataConventionModelBuilder();
-odatabuilder.EntitySet<RoomAmenityResponseDto>("RoomAmenities");
+odatabuilder.EntitySet<RoomAmenityResponse>("RoomAmenities");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>
     options.AddRouteComponents("odata", odata)

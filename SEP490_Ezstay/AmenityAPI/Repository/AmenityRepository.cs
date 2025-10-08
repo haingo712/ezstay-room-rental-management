@@ -22,21 +22,12 @@ public class AmenityRepository:IAmenityRepository
         return await _amenities.Find(_ => true).ToListAsync();
     }
     
-    // public async Task<IEnumerable<Amenity>> GetAll()
-    // {
-    //     return await _amenities.AsQueryable().ToListAsync();
-    // }
-    // public async Task<IEnumerable<Amenity>> GetAllByStaffId(Guid staffId)
-    // {
-    //     return await _amenities.Find(a=> a.StaffId == staffId).ToListAsync();
-    // }
-    
-    public async Task<Amenity?> GetByIdAsync(Guid id)
+    public async Task<Amenity?> GetById(Guid id)
     {
       return await _amenities.Find(a => a.Id == id).FirstOrDefaultAsync();
     }
 
-    public async Task AddAsync(Amenity amenity)
+    public async Task Add(Amenity amenity)
     {
         await _amenities.InsertOneAsync(amenity);
     }
@@ -47,14 +38,14 @@ public class AmenityRepository:IAmenityRepository
     //     return result;
     // }
     
-    public async Task<bool> AmenityNameExistsAsync(string amenityName)
+    public async Task<bool> AmenityNameExists(string amenityName)
     {
          return await _amenities
         .AsQueryable()
         .AnyAsync(a => a.AmenityName.ToLower() == amenityName.ToLower());
       // return await _amenities.Find(a => a.AmenityName.ToLower() == amenityNameExists.ToLower()).AnyAsync();
     }
-    public async Task<bool> AmenityNameExistsAsync(string amenityName, Guid id)
+    public async Task<bool> AmenityNameExists(string amenityName, Guid id)
     {
         return await _amenities
             .AsQueryable()
@@ -64,11 +55,11 @@ public class AmenityRepository:IAmenityRepository
         
     }
 
-    public async Task UpdateAsync(Amenity amenity)
+    public async Task Update(Amenity amenity)
     {
         await _amenities.ReplaceOneAsync(a => a.Id == amenity.Id, amenity);
     }
-    public async Task DeleteAsync(Amenity amenity)
+    public async Task Delete(Amenity amenity)
     {
         await _amenities.DeleteOneAsync(a => a.Id == amenity.Id);
     }
