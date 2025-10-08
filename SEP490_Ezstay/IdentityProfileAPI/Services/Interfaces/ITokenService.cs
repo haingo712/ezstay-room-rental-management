@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace TenantAPI.Services.Interface
+namespace IdentityProfileAPI.Services.Interfaces
 {
     public interface ITokenService
     {

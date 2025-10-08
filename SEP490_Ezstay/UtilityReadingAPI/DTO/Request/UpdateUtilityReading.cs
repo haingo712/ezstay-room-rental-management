@@ -4,15 +4,12 @@ using UtilityReadingAPI.Enum;
 
 namespace UtilityReadingAPI.DTO.Request;
 
-public class CreateUtilityReadingDto
+public class UpdateUtilityReading
 {
-    // [Required]
-    // public Guid RoomId { get; set; }
-    // [JsonConverter(typeof(JsonStringEnumConverter))]
-    public decimal Price { get; set; }
-    public UtilityType Type { get; set; }
     
+    public decimal Price { get; set; }
     [StringLength(100, ErrorMessage = "Note cannot exceed 100 characters.")]
-    public string Note { get; set; }
+    public string? Note { get; set; }
+    [Required]
     public decimal CurrentIndex { get; set;}
 }

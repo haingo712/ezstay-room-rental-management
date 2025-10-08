@@ -13,14 +13,14 @@ public class RoomAmenityClientService: IRoomAmenityClientService
          _httpClient = httpClient;
      }
 
-     public async Task<List<RoomAmenityDto>> GetAmenityIdsByRoomId(Guid roomId)
+     public async Task<List<RoomAmenityResponse>> GetAmenityIdsByRoomId(Guid roomId)
      {
-         var response = await _httpClient.GetFromJsonAsync<List<RoomAmenityDto>>(
+         var response = await _httpClient.GetFromJsonAsync<List<RoomAmenityResponse>>(
              $"api/RoomAmenity/ByRoomId/{roomId}");
 
-         return response ??  new List<RoomAmenityDto>();
+         return response ??  new List<RoomAmenityResponse>();
      }
-     public async Task AddAsync(Guid roomId, List<CreateRoomAmenityDto> request)
+     public async Task AddAsync(Guid roomId, List<CreateRoomAmenity> request)
      {
          var response = await _httpClient.PostAsJsonAsync($"api/RoomAmenity/{roomId}/Amenity", request);
          response.EnsureSuccessStatusCode();

@@ -1,6 +1,6 @@
 namespace RoomAPI.DTO.Response;
 
-public class RoomAmenityDto
+public class RoomAmenityResponse
 {
     public Guid Id { get; set; }
     public Guid RoomId { get; set; }

@@ -14,4 +14,7 @@ public class CreateRoomDto
     public decimal Price { get; set; }
     [Required]
     public IFormFile ImageUrl { get; set;}
+    
+   // public CreateRoomAmenity RoomAmenity { get; set; } 
+    
 }
