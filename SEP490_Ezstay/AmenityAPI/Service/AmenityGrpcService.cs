@@ -14,7 +14,7 @@ public class AmenityGrpcService : AmenityService.AmenityServiceBase
 
     public override async Task<GetAmenityResponse> GetAmenityById(GetAmenityRequest request, ServerCallContext context)
     {
-        var amenity = await _repository.GetByIdAsync(Guid.Parse(request.Id));
+        var amenity = await _repository.GetById(Guid.Parse(request.Id));
         if (amenity == null)
             throw new RpcException(new Status(StatusCode.NotFound, $"Amenity {request.Id} not found"));
         return new GetAmenityResponse

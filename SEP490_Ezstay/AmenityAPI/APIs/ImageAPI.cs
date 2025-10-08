@@ -14,7 +14,7 @@ public class ImageAPI:IImageAPI
             _httpClient = httpClient;
         }
 
-        public async Task<string> UploadImageAsync(IFormFile file)
+        public async Task<string> UploadImage(IFormFile file)
         {
             using var form = new MultipartFormDataContent();
             var streamContent = new StreamContent(file.OpenReadStream());
