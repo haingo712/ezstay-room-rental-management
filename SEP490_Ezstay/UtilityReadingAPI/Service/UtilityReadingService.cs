@@ -121,9 +121,10 @@ public class UtilityReadingService: IUtilityReadingService
     }
     public async Task<ApiResponse<bool>> UpdateContract(Guid roomId,UtilityType utilityType, UpdateUtilityReading request)
     {
-        var reading = await _utilityReadingRepository.GetAllAsQueryable()
-            .OrderByDescending(x => x.ReadingDate)
-            .FirstOrDefaultAsync(x => x.RoomId == roomId && x.Type == utilityType );
+        var reading = _utilityReadingRepository.GetAllAsQueryable()
+        .Where(x => x.RoomId == roomId && x.Type == utilityType)
+        .OrderByDescending(x => x.ReadingDate)
+        .FirstOrDefault();
         if (reading == null)
             return ApiResponse<bool>.Fail("Không tìm thấy chỉ số điện cho phòng này.");
         _mapper.Map(request, reading);
