@@ -1,5 +1,5 @@
 using AutoMapper;
-using UtilityReadingAPI.DTO.Response;
+using Shared.DTOs.UtilityReadings.Responses;
 using UtilityReadingAPI.DTO.Request;
 using UtilityReadingAPI.Model;
 

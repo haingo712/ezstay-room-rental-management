@@ -1,8 +1,9 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using Shared.DTOs;
+using Shared.DTOs.UtilityReadings.Responses;
 using UtilityReadingAPI.DTO.Request;
-using UtilityReadingAPI.DTO.Response;
 using UtilityReadingAPI.Enum;
 using UtilityReadingAPI.Model;
 using UtilityReadingAPI.Repository.Interface;
