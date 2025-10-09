@@ -5,7 +5,7 @@ using ContractAPI.Model;
 
 namespace ContractAPI.DTO.Requests;
 
-public class UpdateContract
+public class UpdateContractDto
 {
     [Required]
     public Guid RoomId { get; set; }

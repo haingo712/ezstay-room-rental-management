@@ -11,7 +11,7 @@ public class MappingContract:Profile
     public MappingContract()
     {
         CreateMap<CreateContract, Contract>();
-        CreateMap<UpdateContract, Contract>();
+        CreateMap<UpdateContractDto, Contract>();
         CreateMap<Contract, ContractResponse>();
         CreateMap<ExtendContractDto, Contract>();
       
