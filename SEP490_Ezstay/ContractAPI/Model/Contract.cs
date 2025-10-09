@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using ContractAPI.Enum;
+using Shared.Enums;
 
 namespace ContractAPI.Model
 {

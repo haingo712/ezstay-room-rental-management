@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using UtilityReadingAPI.Enum;
 
 namespace UtilityReadingAPI.DTO.Request;
 

@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using UtilityReadingAPI.Enum;
-
+using Shared.Enums;
 namespace UtilityReadingAPI.DTO.Request;
 
 public class CreateUtilityReading

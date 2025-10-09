@@ -1,6 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using UtilityReadingAPI.Enum;
+using Shared.Enums;
 
 namespace UtilityReadingAPI.Model;
 

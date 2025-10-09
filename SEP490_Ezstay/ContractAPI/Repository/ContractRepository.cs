@@ -2,6 +2,7 @@ using ContractAPI.Model;
 using MongoDB.Driver;
 using ContractAPI.Enum;
 using ContractAPI.Repository.Interface;
+using Shared.Enums;
 
 namespace ContractAPI.Repository
 {

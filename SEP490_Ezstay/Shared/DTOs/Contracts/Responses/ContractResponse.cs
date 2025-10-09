@@ -23,7 +23,7 @@ public class ContractResponse
     public int NumberOfOccupants { get; set; }
     public string? Notes { get; set; }
     
-    public List<IdentityProfileResponseDto> IdentityProfiles { get; set; } 
+    public List<IdentityProfileResponse> IdentityProfiles { get; set; } 
     public UtilityReadingResponse ElectricityReading { get; set; }
     public UtilityReadingResponse WaterReading { get; set; }
 }

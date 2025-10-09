@@ -13,6 +13,7 @@ using RoomAPI.Service;
 using RoomAPI.Service.Interface;
 using Shared.DTOs.RoomAmenities.Responses;
 using Shared.DTOs.Rooms.Responses;
+using Shared.Enums;
 
 namespace RoomAPI.Controllers
 {
@@ -29,7 +30,7 @@ namespace RoomAPI.Controllers
         
         [HttpPut("{id}/RoomStatus/{roomStatus}")]
         // [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> UpdateStatus(Guid id, string roomStatus)
+        public async Task<IActionResult> UpdateStatus(Guid id, RoomStatus roomStatus)
         {
             try
             {

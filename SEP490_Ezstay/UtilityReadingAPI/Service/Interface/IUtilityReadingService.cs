@@ -1,9 +1,8 @@
 
 using Shared.DTOs;
 using Shared.DTOs.UtilityReadings.Responses;
+using Shared.Enums;
 using UtilityReadingAPI.DTO.Request;
-using UtilityReadingAPI.Enum;
-using UtilityReadingAPI.Model;
 
 
 namespace UtilityReadingAPI.Service.Interface;

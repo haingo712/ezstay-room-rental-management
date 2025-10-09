@@ -1,6 +1,6 @@
 namespace Shared.DTOs.Contracts.Responses;
 
-public class IdentityProfileResponseDto
+public class IdentityProfileResponse
 { 
    public Guid Id { get; set; }
    public Guid UserId { get; set; }

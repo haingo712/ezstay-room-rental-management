@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using Shared.DTOs.Contracts.Responses;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,8 +48,8 @@ builder.Services.AddHttpClient<IUtilityReadingClientService, UtilityReadingClien
  builder.Services.AddAutoMapper(typeof(MappingContract).Assembly);
  builder.Services.AddAutoMapper(typeof(MappingIdentityProfile).Assembly);
 var odatabuilder = new ODataConventionModelBuilder();
-odatabuilder.EntitySet<ContractResponseDto>("Contract");
-odatabuilder.EntitySet<IdentityProfileResponseDto>("IdentityProfile");
+odatabuilder.EntitySet<ContractResponse>("Contract");
+odatabuilder.EntitySet<IdentityProfileResponse>("IdentityProfile");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>
     options.AddRouteComponents("odata", odata)

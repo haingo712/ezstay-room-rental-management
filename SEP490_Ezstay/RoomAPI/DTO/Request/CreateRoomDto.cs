@@ -15,6 +15,4 @@ public class CreateRoomDto
     [Required]
     public IFormFile ImageUrl { get; set;}
     
-   // public CreateRoomAmenity RoomAmenity { get; set; } 
-    
 }

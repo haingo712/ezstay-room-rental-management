@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using RoomAPI.Enum;
+using Shared.Enums;
 
 namespace RoomAPI.DTO.Request;
 

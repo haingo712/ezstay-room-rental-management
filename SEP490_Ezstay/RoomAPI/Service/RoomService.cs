@@ -2,7 +2,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using RoomAPI.APIs.Interfaces;
 using RoomAPI.DTO.Request;
-using RoomAPI.Enum;
+using Shared.Enums;
 using RoomAPI.Model;
 using RoomAPI.Repository.Interface;
 using RoomAPI.Service.Interface;
@@ -147,17 +147,17 @@ public class RoomService: IRoomService
        // };
     }
     
-    public async Task<ApiResponse<bool>> UpdateStatusAsync(Guid roomId,string roomStatus)
+    public async Task<ApiResponse<bool>> UpdateStatusAsync(Guid roomId,RoomStatus roomStatus)
     {
         var room = await _roomRepository.GetById(roomId);
         if (room == null)
             throw new KeyNotFoundException("Room not found");
       
         // Chuyển string -> Enum
-        if (!Enum.RoomStatus.TryParse<RoomStatus>(roomStatus, true, out var roomStatuss))
-            return ApiResponse<bool>.Fail("Invalid room status");
+        // if (!Enum.RoomStatus.TryParse<RoomStatus>(roomStatus, true, out var roomStatuss))
+        //     return ApiResponse<bool>.Fail("Invalid room status");
 
-        room.RoomStatus = roomStatuss;
+        room.RoomStatus = roomStatus;
         room.UpdatedAt = DateTime.UtcNow;
         await _roomRepository.Update(room);
         return ApiResponse<bool>.Success(true, "Cập nhật trạng thái phòng thành công");
