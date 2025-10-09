@@ -68,8 +68,19 @@ namespace AccountAPI.Service
                 user.Avatar = avatarUrl;
             }
 
+            if (userDto.FrontImageUrl != null)
+            {
+                var frontUrl = await _imageService.UploadImageAsync(userDto.FrontImageUrl);
+                user.FrontImageUrl = frontUrl;
+            }
+            if (userDto.BackImageUrl != null)
+            {
+                var backUrl = await _imageService.UploadImageAsync(userDto.BackImageUrl);
+                user.BackImageUrl = backUrl;
+            }
+
             user.ProvinceName = await GetProvinceNameAsync(user.ProvinceId) ?? "";
-          user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
+            user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
           await _userRepository.CreateUserAsync(user);
             return true;
         }

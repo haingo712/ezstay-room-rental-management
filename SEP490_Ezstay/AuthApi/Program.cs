@@ -61,6 +61,8 @@ builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twi
 builder.Services.AddSingleton<IPhoneVerificationService, TwilioPhoneVerificationService>();
 
 
+
+
 builder.Services.AddScoped<IFacebookAuthService, FacebookAuthService>();
 
 builder.Services.AddSingleton<GenerateJwtToken>();
