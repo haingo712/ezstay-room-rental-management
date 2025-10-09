@@ -136,31 +136,14 @@ public class UtilityReadingController : ControllerBase
         }
     }
 
-    [HttpPut("{roomId}/electric")]
-    [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> PutElectric(Guid roomId, UpdateUtilityReading request)
+   
+    [HttpPut("{roomId}/utilitytype/{utilityType}/contract")]
+    // [Authorize(Roles = "Owner")]
+    public async Task<IActionResult> PutContract(Guid roomId, UtilityType utilityType, UpdateUtilityReading request)
     {
         try
         {
-            var update = await _utilityReadingService.UpdateElectric(roomId, request);
-            if (!update.IsSuccess)
-            {
-                return BadRequest(new { message = update.Message });
-            }
-            return Ok(update);
-        }
-        catch (KeyNotFoundException e)
-        {
-            return NotFound(new { message = e.Message });
-        }
-    }
-    [HttpPut("{roomId}/water")]
-    [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> PutWater(Guid roomId, UpdateUtilityReading request)
-    {
-        try
-        {
-            var update = await _utilityReadingService.UpdateElectric(roomId, request);
+            var update = await _utilityReadingService.UpdateContract(roomId,utilityType , request);
             if (!update.IsSuccess)
             {
                 return BadRequest(new { message = update.Message });

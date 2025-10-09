@@ -16,8 +16,7 @@ public interface IUtilityReadingService
     // Task<ApiResponse<UtilityReadingResponse>> AddAsync(Guid roomId, CreateUtilityReading request);
     Task<ApiResponse<UtilityReadingResponse>> AddAsync(Guid roomId, UtilityType type, CreateUtilityReadingContract request); 
     Task<ApiResponse<UtilityReadingResponse>> AddUtilityReadingContract(Guid roomId,UtilityType type, CreateUtilityReadingContract request);
-     Task<ApiResponse<bool>> UpdateWater(Guid roomId, UpdateUtilityReading request);
-    Task<ApiResponse<bool>> UpdateElectric(Guid roomId, UpdateUtilityReading request);
+    Task<ApiResponse<bool>> UpdateContract(Guid roomId, UtilityType type, UpdateUtilityReading request);
     Task<ApiResponse<bool>> UpdateAsync(Guid id,UpdateUtilityReading request);
     Task DeleteAsync(Guid id);
     

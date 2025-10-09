@@ -30,23 +30,7 @@ public class UtilityReadingClientService : IUtilityReadingClientService
                 new AuthenticationHeaderValue("Bearer", token.Replace("Bearer ", ""));
     }
 
-
-    public async Task<ApiResponse<UtilityReadingResponse>> AddElectric(Guid roomId, CreateUtilityReadingContract request)
-    {
-        // var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
-        // if (!string.IsNullOrEmpty(token))
-        //     _httpClient.DefaultRequestHeaders.Authorization = 
-        //         new AuthenticationHeaderValue("Bearer", token.Replace("Bearer ", ""));
-        var response = await _httpClient.PostAsJsonAsync($"api/UtilityReading/{roomId}/electric", request);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            return ApiResponse<UtilityReadingResponse>.Fail(
-                $"UtilityReading API call failed: {response.StatusCode}");
-        }
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse<UtilityReadingResponse>>();
-        return result!;
-    }
+    
     public async Task<ApiResponse<UtilityReadingResponse>> Add(Guid roomId, UtilityType utilityType, CreateUtilityReadingContract request)
     {
         // var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
@@ -65,40 +49,12 @@ public class UtilityReadingClientService : IUtilityReadingClientService
         var result = await response.Content.ReadFromJsonAsync<ApiResponse<UtilityReadingResponse>>();
         return result!;
     }
-
-    public async Task<ApiResponse<UtilityReadingResponse>> AddWater(Guid roomId, CreateUtilityReadingContract request)
-    {
-        // var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
-        // if (!string.IsNullOrEmpty(token))
-        //     _httpClient.DefaultRequestHeaders.Authorization = 
-        //         new AuthenticationHeaderValue("Bearer", token.Replace("Bearer ", ""));
-        var response = await _httpClient.PostAsJsonAsync($"api/UtilityReading/{roomId}/water", request);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            return ApiResponse<UtilityReadingResponse>.Fail(
-                $"UtilityReading API call failed: {response.StatusCode}");
-        }
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse<UtilityReadingResponse>>();
-        return result!;
-    }
-    public async Task<ApiResponse<bool>> UpdateElectric(Guid roomId, UpdateUtilityReading request)
-    {
-       // AttachBearerTokenIfExists();
-
-        var response = await _httpClient.PutAsJsonAsync($"api/UtilityReading/{roomId}/electric", request);
-
-        if (!response.IsSuccessStatusCode)
-            return ApiResponse<bool>.Fail($"UtilityReading API call failed: {response.StatusCode}");
-
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse<bool>>();
-        return result!;
-    }
-    public async Task<ApiResponse<bool>> UpdateWater(Guid roomId, UpdateUtilityReading request)
+    
+    public async Task<ApiResponse<bool>> Update(Guid roomId, UtilityType utilityType, UpdateUtilityReading request)
     {
       //  AttachBearerTokenIfExists();
 
-        var response = await _httpClient.PutAsJsonAsync($"api/UtilityReading/{roomId}/water", request);
+        var response = await _httpClient.PutAsJsonAsync($"api/UtilityReading/{roomId}/utilitytype/{utilityType}/contract", request);
 
         if (!response.IsSuccessStatusCode)
             return ApiResponse<bool>.Fail($"UtilityReading API call failed: {response.StatusCode}");

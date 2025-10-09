@@ -137,15 +137,15 @@ public class ContractService : IContractService
         return ApiResponse<ContractResponse>.Success(dto, "Huỷ hợp đồng thành công");
     }
 
-    public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateContractDto request)
+    public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateContract request)
     {
         var contract = await _contractRepository.GetByIdAsync(id);
         if (contract == null)
             throw new KeyNotFoundException("Contract Id not found");
        
-        if (DateTime.UtcNow - contract.CreatedAt > TimeSpan.FromHours(1))
-            return ApiResponse<bool>.Fail("Đơn này đã quá 1 giờ, không thể cập nhật nữa.");
-        
+        // if (DateTime.UtcNow - contract.CreatedAt > TimeSpan.FromHours(1))
+        //     return ApiResponse<bool>.Fail("Đơn này đã quá 1 giờ, không thể cập nhật nữa.");
+        //
         if (contract.CheckinDate < DateTime.UtcNow.Date)
             return ApiResponse<bool>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
         
@@ -164,11 +164,10 @@ public class ContractService : IContractService
             contract.ProfilesInContract = members;
             contract.SignerProfile = members.First(p => p.IsSigner);
         }
-      //  Console.WriteLine("sss"+ utilityReading.Data.Id);
         if (request.ElectricityReading != null) 
-            await _utilityReadingClientService.UpdateElectric(contract.RoomId, request.ElectricityReading);
+            await _utilityReadingClientService.Update(contract.RoomId, UtilityType.Electric, request.ElectricityReading);
         if (request.WaterReading != null) 
-            await _utilityReadingClientService.UpdateWater(contract.RoomId, request.WaterReading);
+            await _utilityReadingClientService.Update(contract.RoomId, UtilityType.Water, request.WaterReading);
 
         // if (contract.ContractStatus != ContractStatus.Active)
         //     await _roomClient.UpdateRoomStatusAsync(contract.RoomId, "Available");

@@ -10,9 +10,7 @@ namespace ContractAPI.Services.Interfaces;
 public interface IUtilityReadingClientService
 {
     Task<ApiResponse<UtilityReadingResponse>> Add(Guid ownerId, UtilityType utilityType, CreateUtilityReadingContract request);
-    Task<ApiResponse<UtilityReadingResponse>> AddElectric(Guid roomId, CreateUtilityReadingContract request);
-    Task<ApiResponse<UtilityReadingResponse>> AddWater(Guid roomId, CreateUtilityReadingContract request);
-    Task<ApiResponse<bool>> UpdateElectric(Guid roomId, UpdateUtilityReading request);
-    Task<ApiResponse<bool>> UpdateWater(Guid roomId, UpdateUtilityReading request);
+    Task<ApiResponse<bool>> Update(Guid roomId, UtilityType type, UpdateUtilityReading request);
+   
     Task<ApiResponse<UtilityReadingResponse>> GetById(Guid id);
 }

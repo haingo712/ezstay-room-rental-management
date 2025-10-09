@@ -119,35 +119,19 @@ public class UtilityReadingService: IUtilityReadingService
         var result = _mapper.Map<UtilityReadingResponse>(utilityReading);
         return ApiResponse<UtilityReadingResponse>.Success(result, "Thêm chỉ số thành công.");
     }
-    public async Task<ApiResponse<bool>> UpdateElectric(Guid roomId, UpdateUtilityReading request)
+    public async Task<ApiResponse<bool>> UpdateContract(Guid roomId,UtilityType utilityType, UpdateUtilityReading request)
     {
         var reading = await _utilityReadingRepository.GetAllAsQueryable()
-            .FirstOrDefaultAsync(x => x.RoomId == roomId && x.Type == UtilityType.Electric );
-
+            .OrderByDescending(x => x.ReadingDate)
+            .FirstOrDefaultAsync(x => x.RoomId == roomId && x.Type == utilityType );
         if (reading == null)
             return ApiResponse<bool>.Fail("Không tìm thấy chỉ số điện cho phòng này.");
-
         _mapper.Map(request, reading);
         reading.UpdatedAt = DateTime.UtcNow;
         await _utilityReadingRepository.UpdateAsync(reading);
-
         return ApiResponse<bool>.Success(true, "Cập nhật điện thành công");
     }
-
-    public async Task<ApiResponse<bool>> UpdateWater(Guid roomId, UpdateUtilityReading request)
-    {
-        var reading = await _utilityReadingRepository.GetAllAsQueryable()
-            .FirstOrDefaultAsync(x => x.RoomId == roomId && x.Type == UtilityType.Water);
-
-        if (reading == null)
-            return ApiResponse<bool>.Fail("Không tìm thấy chỉ số nước cho phòng này.");
-
-        _mapper.Map(request, reading);
-        reading.UpdatedAt = DateTime.UtcNow;
-        await _utilityReadingRepository.UpdateAsync(reading);
-
-        return ApiResponse<bool>.Success(true, "Cập nhật nước thành công");
-    }
+    
 
     public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateUtilityReading request)
     {

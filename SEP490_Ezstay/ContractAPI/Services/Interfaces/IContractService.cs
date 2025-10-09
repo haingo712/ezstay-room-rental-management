@@ -17,7 +17,7 @@ public interface IContractService
     IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId, ContractStatus contractStatus);
     Task<ContractResponse?> GetByIdAsync(Guid id);
     Task<ApiResponse<ContractResponse>> Add(Guid ownerId, CreateContract request);
-    Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateContractDto request);
+    Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateContract request);
     Task<ApiResponse<ContractResponse>> ExtendContractAsync(Guid contractId, ExtendContractDto request);
     Task<ApiResponse<ContractResponse>> CancelContractAsync(Guid contractId, string reason);
     Task<ApiResponse<bool>> DeleteAsync(Guid id);
