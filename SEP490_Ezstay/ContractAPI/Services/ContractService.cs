@@ -142,7 +142,10 @@ public class ContractService : IContractService
         var contract = await _contractRepository.GetByIdAsync(id);
         if (contract == null)
             throw new KeyNotFoundException("Contract Id not found");
-        
+       
+        // if (DateTime.UtcNow - contract.CreatedAt > TimeSpan.FromHours(1))
+        //     return ApiResponse<bool>.Fail("Đơn này đã quá 1 giờ, không thể cập nhật nữa.");
+        //
         if (contract.CheckinDate < DateTime.UtcNow.Date)
             return ApiResponse<bool>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
         
