@@ -56,82 +56,115 @@ public class UtilityReadingService: IUtilityReadingService
             .FirstOrDefault();
        var utilityReading = _mapper.Map<UtilityReading>(request);
         utilityReading.ReadingDate = DateTime.UtcNow;
-        utilityReading.Type = type;
-        // if (lastReading == null)
-        // {
-        //     utilityReading.PreviousIndex = 0;
-        //     utilityReading.CurrentIndex = request.CurrentIndex;
-        // }else {
-            if (request.CurrentIndex < lastReading?.CurrentIndex)
+        if (lastReading == null)
+        {
+            utilityReading.PreviousIndex = 0;
+            utilityReading.CurrentIndex = request.CurrentIndex;
+        }else {
+            if (request.CurrentIndex < lastReading.CurrentIndex)
             {
                 return ApiResponse<UtilityReadingResponse>.Fail("Chỉ số mới không được nhỏ hơn chỉ số tháng trước.");
             }
             utilityReading.PreviousIndex = lastReading.CurrentIndex;
             utilityReading.CurrentIndex = request.CurrentIndex;
             // utilityReading.Total = (request.Price ?? 0) * utilityReading.Consumption;
-        //}
+        }
         utilityReading.RoomId = roomId;
         await _utilityReadingRepository.AddAsync(utilityReading);
         var result = _mapper.Map<UtilityReadingResponse>(utilityReading);
         return ApiResponse<UtilityReadingResponse>.Success(result, $"Thêm chỉ số {type} thành công.");
     }
     
-    // public async Task<ApiResponse<UtilityReadingResponse>> AddAsync(Guid roomId, CreateUtilityReading request)
-    // {
-    //     var lastReading = _utilityReadingRepository.GetAllAsQueryable()
-    //         .Where(x => x.RoomId == roomId && x.Type == request.Type)
-    //         .OrderByDescending(x => x.ReadingDate)
-    //         .FirstOrDefault();
-    //     
-    //     // if (await _utilityReadingRepository.ExistsUtilityReadingInMonthAsync(request.RoomId, request.Type, DateTime.UtcNow)) 
-    //     //     return ApiResponse<UtilityReadingResponseDto>.Fail("Đã tồn tại chỉ số cho phòng này trong tháng này.");
-    //
-    //     var utilityReading = _mapper.Map<UtilityReading>(request);
-    //     utilityReading.ReadingDate = DateTime.UtcNow;
-    //     if (lastReading == null)
-    //     {
-    //         utilityReading.PreviousIndex = 0;
-    //         utilityReading.CurrentIndex = request.CurrentIndex;
-    //     }else {
-    //         if (request.CurrentIndex < lastReading.CurrentIndex)
-    //         {
-    //             return ApiResponse<UtilityReadingResponse>.Fail("Chỉ số mới không được nhỏ hơn chỉ số tháng trước.");
-    //         }
-    //         // utilityReading.PreviousIndex = lastReading?.CurrentIndex ?? request.CurrentIndex;
-    //         utilityReading.PreviousIndex = lastReading.CurrentIndex;
-    //         utilityReading.CurrentIndex = request.CurrentIndex;
-    //         utilityReading.Total = request.Price * utilityReading.Consumption;
-    //     }
-    //     utilityReading.RoomId = roomId;
-    //     await _utilityReadingRepository.AddAsync(utilityReading);
-    //     var result = _mapper.Map<UtilityReadingResponse>(utilityReading);
-    //     return ApiResponse<UtilityReadingResponse>.Success(result, $"Thêm chỉ số {request.Type} thành công.");
-    // }
-   
-    public async Task<ApiResponse<UtilityReadingResponse>> AddUtilityReadingContract(Guid roomId,UtilityType utilityType, CreateUtilityReadingContract  request)
+    public async Task<ApiResponse<UtilityReadingResponse>> AddAsync(Guid roomId, CreateUtilityReading request)
+    {
+        var lastReading = _utilityReadingRepository.GetAllAsQueryable()
+            .Where(x => x.RoomId == roomId && x.Type == request.Type)
+            .OrderByDescending(x => x.ReadingDate)
+            .FirstOrDefault();
+        
+        // if (await _utilityReadingRepository.ExistsUtilityReadingInMonthAsync(request.RoomId, request.Type, DateTime.UtcNow)) 
+        //     return ApiResponse<UtilityReadingResponseDto>.Fail("Đã tồn tại chỉ số cho phòng này trong tháng này.");
+
+        var utilityReading = _mapper.Map<UtilityReading>(request);
+        utilityReading.ReadingDate = DateTime.UtcNow;
+        if (lastReading == null)
+        {
+            utilityReading.PreviousIndex = 0;
+            utilityReading.CurrentIndex = request.CurrentIndex;
+        }else {
+            if (request.CurrentIndex < lastReading.CurrentIndex)
+            {
+                return ApiResponse<UtilityReadingResponse>.Fail("Chỉ số mới không được nhỏ hơn chỉ số tháng trước.");
+            }
+            // utilityReading.PreviousIndex = lastReading?.CurrentIndex ?? request.CurrentIndex;
+            utilityReading.PreviousIndex = lastReading.CurrentIndex;
+            utilityReading.CurrentIndex = request.CurrentIndex;
+            utilityReading.Total = request.Price * utilityReading.Consumption;
+        }
+        utilityReading.RoomId = roomId;
+        await _utilityReadingRepository.AddAsync(utilityReading);
+        var result = _mapper.Map<UtilityReadingResponse>(utilityReading);
+        return ApiResponse<UtilityReadingResponse>.Success(result, $"Thêm chỉ số {request.Type} thành công.");
+    }
+    public async Task<ApiResponse<UtilityReadingResponse>> AddWater(Guid roomId, CreateUtilityReadingContract  request)
+    {
+        var utilityReading = _mapper.Map<UtilityReading>(request);
+        utilityReading.ReadingDate = DateTime.UtcNow;
+        utilityReading.RoomId = roomId;
+        utilityReading.Type = UtilityType.Water;
+        await _utilityReadingRepository.AddAsync(utilityReading);
+        var result = _mapper.Map<UtilityReadingResponse>(utilityReading);
+        return ApiResponse<UtilityReadingResponse>.Success(result, "Thêm chỉ số thành công.");
+    }
+    public async Task<ApiResponse<UtilityReadingResponse>> AddElectric(Guid roomId, CreateUtilityReadingContract  request)
+    {
+        var utilityReading = _mapper.Map<UtilityReading>(request);
+        utilityReading.ReadingDate = DateTime.UtcNow;
+        utilityReading.RoomId = roomId;
+        utilityReading.Type = UtilityType.Electric;
+        await _utilityReadingRepository.AddAsync(utilityReading);
+        var result = _mapper.Map<UtilityReadingResponse>(utilityReading);
+        return ApiResponse<UtilityReadingResponse>.Success(result, "Thêm chỉ số thành công.");
+    }
+    public async Task<ApiResponse<UtilityReadingResponse>> AddUtilityReadingContract(Guid roomId, CreateUtilityReadingContract  request)
     {
       
         var utilityReading = _mapper.Map<UtilityReading>(request);
         utilityReading.ReadingDate = DateTime.UtcNow;
         utilityReading.RoomId = roomId;
-        utilityReading.Type = utilityType;
         await _utilityReadingRepository.AddAsync(utilityReading);
         var result = _mapper.Map<UtilityReadingResponse>(utilityReading);
         return ApiResponse<UtilityReadingResponse>.Success(result, "Thêm chỉ số thành công.");
     }
-    public async Task<ApiResponse<bool>> UpdateContract(Guid roomId,UtilityType utilityType, UpdateUtilityReading request)
+    public async Task<ApiResponse<bool>> UpdateElectric(Guid roomId, UpdateUtilityReading request)
     {
         var reading = await _utilityReadingRepository.GetAllAsQueryable()
-            .OrderByDescending(x => x.ReadingDate)
-            .FirstOrDefaultAsync(x => x.RoomId == roomId && x.Type == utilityType );
+            .FirstOrDefaultAsync(x => x.RoomId == roomId && x.Type == UtilityType.Electric );
+
         if (reading == null)
             return ApiResponse<bool>.Fail("Không tìm thấy chỉ số điện cho phòng này.");
+
         _mapper.Map(request, reading);
         reading.UpdatedAt = DateTime.UtcNow;
         await _utilityReadingRepository.UpdateAsync(reading);
+
         return ApiResponse<bool>.Success(true, "Cập nhật điện thành công");
     }
-    
+
+    public async Task<ApiResponse<bool>> UpdateWater(Guid roomId, UpdateUtilityReading request)
+    {
+        var reading = await _utilityReadingRepository.GetAllAsQueryable()
+            .FirstOrDefaultAsync(x => x.RoomId == roomId && x.Type == UtilityType.Water);
+
+        if (reading == null)
+            return ApiResponse<bool>.Fail("Không tìm thấy chỉ số nước cho phòng này.");
+
+        _mapper.Map(request, reading);
+        reading.UpdatedAt = DateTime.UtcNow;
+        await _utilityReadingRepository.UpdateAsync(reading);
+
+        return ApiResponse<bool>.Success(true, "Cập nhật nước thành công");
+    }
 
     public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateUtilityReading request)
     {

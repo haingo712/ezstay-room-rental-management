@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using ContractAPI.DTO.Requests.UtilityReading;
-
+using ContractAPI.Model;
 
 namespace ContractAPI.DTO.Requests;
 
@@ -30,5 +30,4 @@ public class CreateContract
     public CreateUtilityReadingContract ElectricityReading { get; set; }
     [Required]
     public CreateUtilityReadingContract WaterReading { get; set; }
-   // public List<CreateUtilityReadingContract> UtilityReadings { get; set; }
 }
