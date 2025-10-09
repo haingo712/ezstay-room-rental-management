@@ -2,7 +2,7 @@ using UtilityReadingAPI.Model;
 using UtilityReadingAPI.Repository.Interface;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using UtilityReadingAPI.Enum;
+using Shared.Enums;
 
 
 namespace UtilityReadingAPI.Repository;

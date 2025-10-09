@@ -1,5 +1,6 @@
 using ContractAPI.APIs.Interfaces;
 using ContractAPI.DTO.Response;
+using Shared.DTOs.Contracts.Responses;
 
 namespace ContractAPI.APIs;
 
@@ -12,12 +13,12 @@ public class AccountAPI:IAccountAPI
         _httpClient = httpClient;
     }
 
-    public async Task<IdentityProfileResponseDto?> GetProfileByPhoneAsync(string phone)
+    public async Task<IdentityProfileResponse?> GetProfileByPhoneAsync(string phone)
     {
         var response = await _httpClient.GetAsync($"pi/user/searchphone/{phone}");
         if (!response.IsSuccessStatusCode)
             return null;
 
-        return await response.Content.ReadFromJsonAsync<IdentityProfileResponseDto>();
+        return await response.Content.ReadFromJsonAsync<IdentityProfileResponse>();
     }
 }

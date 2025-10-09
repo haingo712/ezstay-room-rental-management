@@ -8,6 +8,8 @@ using ContractAPI.Enum;
 using ContractAPI.Model;
 using ContractAPI.Services;
 using ContractAPI.Services.Interfaces;
+using Shared.DTOs.Contracts.Responses;
+using Shared.Enums;
 
 namespace ContractAPI.Controllers
 {
@@ -36,7 +38,7 @@ namespace ContractAPI.Controllers
         
         [Authorize(Roles = "Owner")]
         [HttpPost]
-        public async Task<IActionResult> CreateContract([FromForm] CreateContract request)
+        public async Task<IActionResult> CreateContract([FromBody] CreateContract request)
         {
             var ownerId = _tokenService.GetUserIdFromClaims(User);
             var createContract = await _contractService.Add(ownerId, request);
@@ -47,7 +49,7 @@ namespace ContractAPI.Controllers
         }
         [Authorize(Roles = "Owner")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutContract(Guid id,[FromForm] UpdateContractDto request)
+        public async Task<IActionResult> PutContract(Guid id,[FromBody] UpdateContractDto request)
         {
             try
             {
@@ -67,7 +69,7 @@ namespace ContractAPI.Controllers
        // này m test coi thôi chứ k cần làm nha này là getAll coi thôi 
        [HttpGet]
        [EnableQuery]
-       public IQueryable<ContractResponseDto> GetContracts()
+       public IQueryable<ContractResponse> GetContracts()
        {
            return _contractService.GetAllQueryable();
        }
@@ -84,7 +86,7 @@ namespace ContractAPI.Controllers
        [Authorize(Roles = "Owner")]
        [HttpGet("ByOwnerId")]
        [EnableQuery]
-       public IQueryable<ContractResponseDto> GetContractsByOwnerId()
+       public IQueryable<ContractResponse> GetContractsByOwnerId()
        {
          var ownerId=  _tokenService.GetUserIdFromClaims(User);
            return _contractService.GetAllByOwnerId(ownerId);
@@ -92,7 +94,7 @@ namespace ContractAPI.Controllers
        [Authorize(Roles = "Owner")]
        [HttpGet("ContractStatus")]
        [EnableQuery]
-       public IQueryable<ContractResponseDto> GetContractsStatusByOwnerId(ContractStatus contractStatus)
+       public IQueryable<ContractResponse> GetContractsStatusByOwnerId(ContractStatus contractStatus)
        {
            var ownerId=  _tokenService.GetUserIdFromClaims(User);
            return _contractService.GetAllByOwnerId(ownerId, contractStatus);
@@ -101,7 +103,7 @@ namespace ContractAPI.Controllers
         // GET: api/Tenant/5
         // [Authorize(Roles = "Owner, User")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ContractResponseDto>> GetContractById(Guid id)
+        public async Task<ActionResult<ContractResponse>> GetContractById(Guid id)
         {
             try
             {

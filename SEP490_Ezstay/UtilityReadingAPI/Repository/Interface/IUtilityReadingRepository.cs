@@ -1,6 +1,6 @@
 
 
-using UtilityReadingAPI.Enum;
+using Shared.Enums;
 using UtilityReadingAPI.Model;
 
 namespace UtilityReadingAPI.Repository.Interface;

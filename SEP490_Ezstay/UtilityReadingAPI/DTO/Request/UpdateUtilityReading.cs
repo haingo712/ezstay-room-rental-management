@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using UtilityReadingAPI.Enum;
 
 namespace UtilityReadingAPI.DTO.Request;
 

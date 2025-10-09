@@ -4,6 +4,7 @@ using ContractAPI.DTO.Requests.UtilityReading;
 using ContractAPI.DTO.Response;
 using ContractAPI.Services.Interfaces;
 using Shared.DTOs;
+using Shared.DTOs.UtilityReadings.Responses;
 
 namespace ContractAPI.Services;
 
@@ -30,7 +31,7 @@ public class UtilityReadingClientService : IUtilityReadingClientService
     }
 
 
-    public async Task<ApiResponse<UtilityReadingResponseDto>> AddElectric(Guid roomId, CreateUtilityReadingContract request)
+    public async Task<ApiResponse<UtilityReadingResponse>> AddElectric(Guid roomId, CreateUtilityReadingContract request)
     {
         var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
         if (!string.IsNullOrEmpty(token))
@@ -41,13 +42,13 @@ public class UtilityReadingClientService : IUtilityReadingClientService
 
         if (!response.IsSuccessStatusCode)
         {
-            return ApiResponse<UtilityReadingResponseDto>.Fail(
+            return ApiResponse<UtilityReadingResponse>.Fail(
                 $"UtilityReading API call failed: {response.StatusCode}");
         }
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse<UtilityReadingResponseDto>>();
+        var result = await response.Content.ReadFromJsonAsync<ApiResponse<UtilityReadingResponse>>();
         return result!;
     }
-    public async Task<ApiResponse<UtilityReadingResponseDto>> AddWater(Guid roomId, CreateUtilityReadingContract request)
+    public async Task<ApiResponse<UtilityReadingResponse>> AddWater(Guid roomId, CreateUtilityReadingContract request)
     {
         var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
         if (!string.IsNullOrEmpty(token))
@@ -58,10 +59,10 @@ public class UtilityReadingClientService : IUtilityReadingClientService
 
         if (!response.IsSuccessStatusCode)
         {
-            return ApiResponse<UtilityReadingResponseDto>.Fail(
+            return ApiResponse<UtilityReadingResponse>.Fail(
                 $"UtilityReading API call failed: {response.StatusCode}");
         }
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse<UtilityReadingResponseDto>>();
+        var result = await response.Content.ReadFromJsonAsync<ApiResponse<UtilityReadingResponse>>();
         return result!;
     }
     public async Task<ApiResponse<bool>> UpdateElectric(Guid roomId, UpdateUtilityReading request)
@@ -88,15 +89,15 @@ public class UtilityReadingClientService : IUtilityReadingClientService
         var result = await response.Content.ReadFromJsonAsync<ApiResponse<bool>>();
         return result!;
     }
-    public async Task<ApiResponse<UtilityReadingResponseDto>> GetById(Guid id)
+    public async Task<ApiResponse<UtilityReadingResponse>> GetById(Guid id)
     {
         AttachBearerTokenIfExists();
         var response = await _httpClient.GetAsync($"api/UtilityReading/{id}");
 
         if (!response.IsSuccessStatusCode)
-            return ApiResponse<UtilityReadingResponseDto>.Fail($"UtilityReading API call failed: {response.StatusCode}");
+            return ApiResponse<UtilityReadingResponse>.Fail($"UtilityReading API call failed: {response.StatusCode}");
 
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse<UtilityReadingResponseDto>>();
+        var result = await response.Content.ReadFromJsonAsync<ApiResponse<UtilityReadingResponse>>();
         return result!;
     }
 }
