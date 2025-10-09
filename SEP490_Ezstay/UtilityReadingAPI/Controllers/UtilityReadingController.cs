@@ -58,69 +58,32 @@ public class UtilityReadingController : ControllerBase
     }
 
 
-    [HttpPost("{roomId}")]
-    [Authorize(Roles = "Owner")]
-    public async Task<ActionResult<UtilityReadingResponse>> PostUtilityReading(Guid roomId, CreateUtilityReading request)
+    // [HttpPost("{roomId}")]
+    // [Authorize(Roles = "Owner")]
+    // public async Task<ActionResult<UtilityReadingResponse>> PostUtilityReading(Guid roomId, CreateUtilityReading request)
+    // {
+    //     try
+    //     {
+    //         var create = await _utilityReadingService.AddAsync(roomId, request);
+    //         if (!create.IsSuccess)
+    //         {
+    //             return BadRequest(new { message = create.Message });
+    //         }
+    //         return CreatedAtAction("GetById", new { id = create.Data.Id }, create);
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         return Conflict(new { message = e.Message });
+    //     }
+    // }
+  
+   
+    [HttpPost("{roomId}/utilitytype/{utilityType}/contract")]
+    public async Task<ActionResult<UtilityReadingResponse>> PostUtilityReadindContract(Guid roomId,UtilityType utilityType , CreateUtilityReadingContract request)
     {
         try
         {
-            var create = await _utilityReadingService.AddAsync(roomId, request);
-            if (!create.IsSuccess)
-            {
-                return BadRequest(new { message = create.Message });
-            }
-            return CreatedAtAction("GetUtilityReading", new { id = create.Data.Id }, create);
-        }
-        catch (Exception e)
-        {
-            return Conflict(new { message = e.Message });
-        }
-    }
-    [HttpPost("{roomId}/water")]
-    [Authorize(Roles = "Owner")]
-    public async Task<ActionResult<UtilityReadingResponse>> PostWater(Guid roomId, CreateUtilityReadingContract request)
-    {
-        try
-        {
-            var create = await _utilityReadingService.AddWater(roomId, request);
-            if (!create.IsSuccess)
-            {
-                return BadRequest(new { message = create.Message });
-            }
-
-            return Ok(create);
-        }
-        catch (Exception e)
-        {
-            return Conflict(new { message = e.Message });
-        }
-    }
-    [HttpPost("{roomId}/electric")]
-    [Authorize(Roles = "Owner")]
-    public async Task<ActionResult<UtilityReadingResponse>> PostElectric(Guid roomId, CreateUtilityReadingContract request)
-    {
-        try
-        {
-            var create = await _utilityReadingService.AddElectric(roomId, request);
-            if (!create.IsSuccess)
-            {
-                return BadRequest(new { message = create.Message });
-            }
-
-            return Ok(create);
-        }
-        catch (Exception e)
-        {
-            return Conflict(new { message = e.Message });
-        }
-    }
-    [HttpPost("{roomId}/contract")]
-    //[Authorize(Roles = "Owner")]
-    public async Task<ActionResult<UtilityReadingResponse>> PostUtilityReadindContract(Guid roomId, CreateUtilityReadingContract request)
-    {
-        try
-        {
-            var create = await _utilityReadingService.AddUtilityReadingContract(roomId, request);
+            var create = await _utilityReadingService.AddUtilityReadingContract(roomId, utilityType, request);
             if (!create.IsSuccess)
             {
                 return BadRequest(new { message = create.Message });
@@ -145,7 +108,7 @@ public class UtilityReadingController : ControllerBase
             {
                 return BadRequest(new { message = create.Message });
             }
-            return CreatedAtAction("GetUtilityReading", new { id = create.Data.Id }, create);
+            return CreatedAtAction("GetById", new { id = create.Data.Id }, create);
         }
         catch (Exception e)
         {
@@ -173,31 +136,14 @@ public class UtilityReadingController : ControllerBase
         }
     }
 
-    [HttpPut("{roomId}/electric")]
-    [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> PutElectric(Guid roomId, UpdateUtilityReading request)
+   
+    [HttpPut("{roomId}/utilitytype/{utilityType}/contract")]
+    // [Authorize(Roles = "Owner")]
+    public async Task<IActionResult> PutContract(Guid roomId, UtilityType utilityType, UpdateUtilityReading request)
     {
         try
         {
-            var update = await _utilityReadingService.UpdateElectric(roomId, request);
-            if (!update.IsSuccess)
-            {
-                return BadRequest(new { message = update.Message });
-            }
-            return Ok(update);
-        }
-        catch (KeyNotFoundException e)
-        {
-            return NotFound(new { message = e.Message });
-        }
-    }
-    [HttpPut("{roomId}/water")]
-    [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> PutWater(Guid roomId, UpdateUtilityReading request)
-    {
-        try
-        {
-            var update = await _utilityReadingService.UpdateElectric(roomId, request);
+            var update = await _utilityReadingService.UpdateContract(roomId,utilityType , request);
             if (!update.IsSuccess)
             {
                 return BadRequest(new { message = update.Message });
