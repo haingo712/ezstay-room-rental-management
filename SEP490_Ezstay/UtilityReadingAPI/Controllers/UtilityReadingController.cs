@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
+using Shared.DTOs.UtilityReadings.Responses;
 using UtilityReadingAPI.DTO.Request;
-using UtilityReadingAPI.DTO.Response;
 using UtilityReadingAPI.Enum;
 using UtilityReadingAPI.Service.Interface;
 

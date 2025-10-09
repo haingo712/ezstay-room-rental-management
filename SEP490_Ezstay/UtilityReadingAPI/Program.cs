@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
-using UtilityReadingAPI.DTO.Response;
+using Shared.DTOs.UtilityReadings.Responses;
 using UtilityReadingAPI.Repository;
 using UtilityReadingAPI.Repository.Interface;
 using UtilityReadingAPI.Service;

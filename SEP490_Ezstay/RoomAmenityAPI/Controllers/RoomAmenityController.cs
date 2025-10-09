@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using RoomAmenityAPI.DTO.Request;
-using RoomAmenityAPI.DTO.Response;
+using Shared.DTOs.RoomAmenities.Responses;
 using RoomAmenityAPI.Service.Interface;
 using RoomAmenityAPI.Model;
 

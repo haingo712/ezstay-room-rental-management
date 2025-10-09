@@ -1,8 +1,10 @@
 using AutoMapper;
 using RoomAmenityAPI.DTO.Request;
-using RoomAmenityAPI.DTO.Response;
+
 using RoomAmenityAPI.Model;
 using RoomAmenityAPI.Grpc;
+using Shared.DTOs.RoomAmenities.Responses;
+
 namespace RoomAmenityAPI.Profiles;
 
 public class RoomAmenityProfile:Profile
