@@ -142,10 +142,7 @@ public class ContractService : IContractService
         var contract = await _contractRepository.GetByIdAsync(id);
         if (contract == null)
             throw new KeyNotFoundException("Contract Id not found");
-       
-        // if (DateTime.UtcNow - contract.CreatedAt > TimeSpan.FromHours(1))
-        //     return ApiResponse<bool>.Fail("Đơn này đã quá 1 giờ, không thể cập nhật nữa.");
-        //
+        
         if (contract.CheckinDate < DateTime.UtcNow.Date)
             return ApiResponse<bool>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
         
@@ -164,9 +161,9 @@ public class ContractService : IContractService
             contract.ProfilesInContract = members;
             contract.SignerProfile = members.First(p => p.IsSigner);
         }
-        if (request.ElectricityReading != null) 
+     //   if (request.ElectricityReading != null) 
             await _utilityReadingClientService.Update(contract.RoomId, UtilityType.Electric, request.ElectricityReading);
-        if (request.WaterReading != null) 
+      //  if (request.WaterReading != null) 
             await _utilityReadingClientService.Update(contract.RoomId, UtilityType.Water, request.WaterReading);
 
         // if (contract.ContractStatus != ContractStatus.Active)
@@ -176,6 +173,7 @@ public class ContractService : IContractService
         await _contractRepository.UpdateAsync(contract);
         return ApiResponse<bool>.Success(true, "Cập nhật hợp đồng thành công.");
     }
+    
 
     public async Task<ApiResponse<ContractResponse>> ExtendContractAsync(Guid contractId, ExtendContractDto request)
     {
