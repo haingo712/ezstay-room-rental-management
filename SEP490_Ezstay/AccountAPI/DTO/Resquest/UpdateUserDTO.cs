@@ -5,15 +5,15 @@ namespace AccountAPI.DTO.Request
 {
     public class UpdateUserDTO
     {
-        public GenderEnum Gender { get; set; }
-        public IFormFile Avatar { get; set; }
-        public string Bio { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public GenderEnum? Gender { get; set; }
+        public IFormFile? Avatar { get; set; }
+        public string? Bio { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         public string? DetailAddress { get; set; }
-        public string ProvinceId { get; set; }     // Mã tỉnh
+        public string? ProvinceId { get; set; }     // Mã tỉnh
         //public string ProvinceName { get; set; }   // Tên tỉnh
-        public string WardId { get; set; }         // Mã xã/phường
+        public string? WardId { get; set; }         // Mã xã/phường
                                                    //public string WardName { get; set; }       // Tên xã/phường
         public string? FullName { get; set; }
         public IFormFile? FrontImageUrl { get; set; }

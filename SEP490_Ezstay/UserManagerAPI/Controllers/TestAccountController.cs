@@ -1,24 +1,30 @@
-﻿using AuthApi.DTO.Request;
+﻿using APIGateway.Helper.Interfaces;
+using AuthApi.DTO.Request;
 using AuthApi.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using UserManagerAPI.Service.Interfaces;
 
 namespace UserManagerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin,Staff")]
+  
     public class TestAccountController : ControllerBase
     {
         private readonly IAccountApiClient _accountApi;
 
-        public TestAccountController(IAccountApiClient accountApi)
+        private readonly IJwtClaimHelper _userClaimHelper;
+
+        public TestAccountController(IAccountApiClient accountApi, IJwtClaimHelper userClaimHelper)
         {
             _accountApi = accountApi;
+            _userClaimHelper = userClaimHelper;
         }
+
 
 
 
@@ -46,6 +52,7 @@ namespace UserManagerAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetAll()
         {
             var token = GetToken();
@@ -64,6 +71,7 @@ namespace UserManagerAPI.Controllers
 
 
         [HttpGet("{id}")]
+          [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var token = GetToken();
@@ -80,6 +88,7 @@ namespace UserManagerAPI.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Create([FromBody] AccountRequest request)
         {
             var token = GetToken();
@@ -90,6 +99,7 @@ namespace UserManagerAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Update(Guid id, [FromBody] AccountRequest request)
         {
             var token = GetToken();
@@ -105,6 +115,7 @@ namespace UserManagerAPI.Controllers
         }
 
         [HttpPatch("{id}/ban")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Ban(Guid id)
         {
             var token = GetToken();
@@ -121,6 +132,7 @@ namespace UserManagerAPI.Controllers
         }
 
         [HttpPatch("{id}/unban")]
+          [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Unban(Guid id)
         {
             var token = GetToken();
@@ -135,5 +147,28 @@ namespace UserManagerAPI.Controllers
             await _accountApi.UnbanAsync(id);
             return NoContent();
         }
+        [HttpPost("request-owner")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> RequestBecomeOwner([FromBody] SubmitOwnerRequestDto dto)
+        {
+            var accountId = _userClaimHelper.GetUserIdOrNull(User);
+            if (accountId == null)
+                return BadRequest(new { message = "Không tìm thấy thông tin tài khoản trong token." });
+
+            // Gắn AccountId vào DTO trước khi gửi service
+            dto.AccountId = accountId.Value;
+
+
+            // Gọi client/service để tạo OwnerRequest, trả về DTO
+            var resultDto = await _accountApi.SubmitOwnerRequestAsync(dto);
+
+            if (resultDto == null)
+                return BadRequest("Gửi đơn thất bại");
+
+            return Ok(resultDto); // Trả về DTO đầy đủ
+        }
+
+
+
     }
 }

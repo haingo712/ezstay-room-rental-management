@@ -11,12 +11,15 @@ namespace UserManagerAPI.Service
     {
         private readonly HttpClient _http;
         private readonly string _baseUrl;
+        private readonly string _ownerRequestApiUrl;
 
         public AccountApiClient(HttpClient http, IConfiguration config)
         {
             _http = http;
             _baseUrl = config["ApiSettings:AccountApiBaseUrl"]
                        ?? throw new Exception("AccountApiBaseUrl not configured");
+            _ownerRequestApiUrl = config["ApiSettings:OwnerRequestApiUrl"]
+         ?? throw new Exception("OwnerRequestApiUrl not configured");
         }
 
         // Set token trước khi gọi API
@@ -67,6 +70,29 @@ namespace UserManagerAPI.Service
         }
 
 
+        public async Task<OwnerRequestResponseDto?> SubmitOwnerRequestAsync(SubmitOwnerRequestDto dto)
+        {
+            // POST thẳng JSON đến API, dùng JWT đã set trong HttpClient
+            var response = await _http.PostAsJsonAsync(_ownerRequestApiUrl, dto);
 
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Failed to submit owner request. StatusCode: {response.StatusCode}");
+                return null;
+            }
+
+            // Deserialize thẳng sang DTO
+            return await response.Content.ReadFromJsonAsync<OwnerRequestResponseDto>();
+        }
     }
+
+
+
+
+
+
+
+
+    
 }
+

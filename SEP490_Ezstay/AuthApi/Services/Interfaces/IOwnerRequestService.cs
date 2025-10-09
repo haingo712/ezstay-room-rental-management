@@ -1,10 +1,11 @@
 ﻿using AuthApi.DTO.Request;
+using AuthApi.DTO.Response;
 
 namespace AuthApi.Services.Interfaces
 {
     public interface IOwnerRequestService
     {
-        Task<string> SubmitRequestAsync(string email, SubmitOwnerRequestDto dto);
+        Task<OwnerRequestResponseDto?> SubmitRequestAsync(SubmitOwnerRequestDto dto);
         Task<string> ApproveRequestAsync(Guid requestId);
     }
 }
