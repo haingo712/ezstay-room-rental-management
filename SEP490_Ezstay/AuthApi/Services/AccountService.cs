@@ -69,7 +69,6 @@ namespace AuthApi.Services
             return _mapper.Map<List<AccountResponse>>(list);
         }
 
-
         public async Task<AccountResponse?> UpdateAsync(Guid id, AccountRequest request)
         {
             var acc = await _repo.GetByIdAsync(id);
@@ -77,22 +76,28 @@ namespace AuthApi.Services
 
             var currentRole = GetCurrentUserRole();
 
-            // Staff không update Admin
+            // ❌ Không cho Staff update Admin
             if (currentRole == RoleEnum.Staff && acc.Role == RoleEnum.Admin)
                 return null;
+
+            // ✅ Check quyền sửa role
+            var isAllowed = (currentRole, request.Role) switch
+            {
+                (RoleEnum.Admin, RoleEnum.Staff) => true,
+                (RoleEnum.Staff, RoleEnum.Owner) => true,
+                (RoleEnum.Staff, RoleEnum.Staff) => true,
+                (RoleEnum.Staff, RoleEnum.User) => true,
+                _ => false
+            };
+
+            if (!isAllowed)
+                throw new UnauthorizedAccessException("Bạn không có quyền cập nhật tài khoản với vai trò này.");
 
             acc.FullName = request.FullName;
             acc.Email = request.Email;
             acc.Phone = request.Phone;
             acc.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
-
-            // Rule Role khi update
-            acc.Role = request.Role switch
-            {
-                RoleEnum.Admin => RoleEnum.Staff, // Staff không được set Admin
-                RoleEnum.Staff => RoleEnum.Owner,
-                _ => RoleEnum.User
-            };
+            acc.Role = request.Role;
 
             var updated = await _repo.UpdateAsync(acc);
             return updated == null ? null : _mapper.Map<AccountResponse>(updated);
@@ -100,24 +105,36 @@ namespace AuthApi.Services
 
         public async Task<AccountResponse> CreateAsync(AccountRequest request)
         {
-            var account = _mapper.Map<Account>(request);
+            var creatorRole = GetCurrentUserRole();
 
-            // Rule Role khi create
-            account.Role = request.Role switch
+            var isAllowed = (creatorRole, request.Role) switch
             {
-                RoleEnum.Admin => RoleEnum.Staff,
-                RoleEnum.Staff => RoleEnum.Owner,
-                _ => RoleEnum.User
+                (RoleEnum.Admin, RoleEnum.Staff) => true,
+                (RoleEnum.Staff, RoleEnum.Owner) => true,
+               
+                (RoleEnum.Staff, RoleEnum.User) => true,
+                _ => false
             };
 
+            if (!isAllowed)
+                throw new UnauthorizedAccessException("Bạn không có quyền tạo tài khoản với vai trò này.");
+
+            var existing = await _repo.GetByEmailAsync(request.Email);
+                if (existing != null)
+                throw new InvalidOperationException("Email đã tồn tại.");
+
+            var account = _mapper.Map<Account>(request);
             account.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
             account.IsVerified = false;
             account.IsBanned = false;
+            account.CreateAt = DateTime.UtcNow;
 
             await _repo.CreateAsync(account);
             return _mapper.Map<AccountResponse>(account);
         }
-public async Task<bool> UpdateFullNameAsync(Guid id, string fullName)
+
+
+        public async Task<bool> UpdateFullNameAsync(Guid id, string fullName)
 {
     var acc = await _repo.GetByIdAsync(id);
     if (acc == null) return false;

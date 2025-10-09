@@ -1,7 +1,9 @@
 ﻿using AuthApi.DTO.Request;
 using AuthApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AuthApi.Controllers
 {
@@ -16,26 +18,27 @@ namespace AuthApi.Controllers
             _service = service;
         }
 
+        // ✅ SubmitOwnerRequest không phân quyền, chỉ cần JWT hợp lệ
         [HttpPost]
         public async Task<IActionResult> SubmitOwnerRequest([FromBody] SubmitOwnerRequestDto dto)
         {
-            // Lấy email từ header
-            if (!Request.Headers.TryGetValue("X-Email", out var email) || string.IsNullOrEmpty(email))
-                return BadRequest("Thiếu thông tin email trong header.");
+            // Lấy accountId từ dto hoặc service, không dùng Claim nếu không có
+            var resultDto = await _service.SubmitRequestAsync(dto);
 
-            var result = await _service.SubmitRequestAsync(email, dto);
-            return Ok(result);
+            if (resultDto == null)
+                return BadRequest(new { message = "Gửi đơn thất bại" });
+
+            return Ok(resultDto);
         }
 
-        /// <summary>
-        /// Staff duyệt đơn đăng ký
-        /// </summary>
+
+        // Duyệt đơn (Staff/Admin)
         [HttpPut("{id}/approve")]
         public async Task<IActionResult> ApproveRequest(Guid id)
         {
             var result = await _service.ApproveRequestAsync(id);
 
-            if (result.StartsWith("Không")) // trả về NotFound nếu không hợp lệ
+            if (result.StartsWith("Không"))
                 return NotFound(result);
 
             return Ok(result);

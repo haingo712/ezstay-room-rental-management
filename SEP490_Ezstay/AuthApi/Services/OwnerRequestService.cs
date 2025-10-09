@@ -1,4 +1,5 @@
 ﻿using AuthApi.DTO.Request;
+using AuthApi.DTO.Response;
 using AuthApi.Enums;
 using AuthApi.Models;
 using AuthApi.Repositories.Interfaces;
@@ -11,34 +12,53 @@ namespace AuthApi.Services
     {
         private readonly IAccountRepository _accountRepo;
         private readonly IOwnerRequestRepository _ownerRequestRepo;
+        private readonly IMapper _mapper;
 
         public OwnerRequestService(
             IAccountRepository accountRepo,
-            IOwnerRequestRepository ownerRequestRepo)
+            IOwnerRequestRepository ownerRequestRepo,
+            IMapper mapper)
         {
             _accountRepo = accountRepo;
             _ownerRequestRepo = ownerRequestRepo;
+            _mapper = mapper;
         }
 
         // Submit owner request
-        public async Task<string> SubmitRequestAsync(string email, SubmitOwnerRequestDto dto)
+        public async Task<OwnerRequestResponseDto?> SubmitRequestAsync(SubmitOwnerRequestDto dto)
         {
-            // Lấy account theo email (truyền từ request)
-            var account = await _accountRepo.GetByEmailAsync(email);
-            if (account == null)
-                return "Không tìm thấy account";
+            // Tạo entity từ DTO
+            var entity = _mapper.Map<OwnerRegistrationRequest>(dto);
 
-            var request = new OwnerRegistrationRequest
+            // Tạo Id mới nếu chưa có
+            if (entity.Id == Guid.Empty)
+                entity.Id = Guid.NewGuid();
+
+            // Set thời gian submit
+            entity.SubmittedAt = DateTime.UtcNow;
+
+            // Trạng thái mặc định
+            entity.Status = Enums.RequestStatusEnum.Pending;
+
+            try
             {
-                AccountId = account.Id,
-                Reason = dto.Reason
-            };
+                // Lưu vào MongoDB
+                await _ownerRequestRepo.CreateAsync(entity);
 
-            await _ownerRequestRepo.CreateAsync(request);
-            return "Đơn đăng ký đã được gửi.";
+                // Map entity thành DTO trả về
+                var responseDto = _mapper.Map<OwnerRequestResponseDto>(entity);
+                return responseDto;
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi nếu muốn
+                Console.WriteLine($"Submit owner request failed: {ex.Message}");
+                return null;
+            }
         }
 
-        // Approve request
+
+
         public async Task<string> ApproveRequestAsync(Guid requestId)
         {
             var request = await _ownerRequestRepo.GetByIdAsync(requestId);
@@ -49,11 +69,11 @@ namespace AuthApi.Services
             await _ownerRequestRepo.UpdateAsync(request);
 
             var account = await _accountRepo.GetByIdAsync(request.AccountId);
-            if (account == null)
-                return "Không tìm thấy account của đơn.";
-
-            account.Role = RoleEnum.Owner;
-            await _accountRepo.UpdateAsync(account);
+            if (account != null)
+            {
+                account.Role = RoleEnum.Owner;
+                await _accountRepo.UpdateAsync(account);
+            }
 
             return "Đã duyệt đơn và cập nhật tài khoản thành Owner.";
         }

@@ -118,6 +118,20 @@
         "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ]
 
       },
+      {
+        "DownstreamPathTemplate": "/api/OwnerRequest/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7009
+          }
+        ],
+        "UpstreamPathTemplate": "/api/OwnerRequest/{everything}",
+        "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ]
+
+      }
+      ,
         {
             "DownstreamPathTemplate": "/api/signalR",
             "DownstreamScheme": "https",
