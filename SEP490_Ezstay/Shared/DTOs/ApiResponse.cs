@@ -1,4 +1,4 @@
-namespace RoomAmenityAPI.DTO.Response;
+namespace Shared.DTOs;
 
 public class ApiResponse<T>
 {

@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace AmenityAPI.DTO.Response;
+namespace Shared.DTOs.Amenities.Responses;
 
-public class AmenityResponseDto
+public class AmenityResponse
 {
     public Guid Id { get; set; }
     public string AmenityName { get; set; } 

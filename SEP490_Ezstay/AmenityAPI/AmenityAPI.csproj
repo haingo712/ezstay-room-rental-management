@@ -37,5 +37,8 @@
     <ItemGroup>
         <Protobuf Include="Protos\amenity.proto" GrpcServices="Server" />
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Shared\Shared.csproj" />
+    </ItemGroup>
  
 </Project>

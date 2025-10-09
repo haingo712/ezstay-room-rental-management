@@ -1,4 +1,4 @@
-namespace AmenityAPI.DTO.Response;
+namespace Shared.DTOs.Amenities.Responses;
 
 public class UploadResponse
 {

@@ -1,7 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
 using AmenityAPI.APIs.Interfaces;
-using AmenityAPI.DTO.Response;
+using Shared.DTOs.Amenities.Responses;
 
 namespace AmenityAPI.APIs;
 

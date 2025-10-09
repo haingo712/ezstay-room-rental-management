@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AmenityAPI.DTO.Request;
-using AmenityAPI.DTO.Response;
+using Shared.DTOs.Amenities.Responses;
 using AmenityAPI.Models;
 using AmenityAPI.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
@@ -28,7 +28,7 @@ namespace AmenityAPI.Controllers
         
         [HttpGet]
         [EnableQuery]
-        public IQueryable<AmenityResponseDto> GetAmenitiesOdata()
+        public IQueryable<AmenityResponse> GetAmenitiesOdata()
         {
             return  _amenityService.GetAllAsQueryable();
         }
@@ -41,7 +41,7 @@ namespace AmenityAPI.Controllers
       
         // GET: api/Amenity/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Amenity>> GetAll(Guid id)
+        public async Task<ActionResult<Amenity>> GetById(Guid id)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace AmenityAPI.Controllers
         
         [HttpPost]
         [Authorize(Roles = "Staff")]
-        public async Task<ActionResult<AmenityResponseDto>> Post([FromForm] CreateAmenityDto request)
+        public async Task<ActionResult<AmenityResponse>> Post([FromForm] CreateAmenityDto request)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace AmenityAPI.Controllers
                 {
                     return BadRequest(new { message = createAmentity.Message });
                 }
-                return CreatedAtAction("GetAmenity", new { id = createAmentity.Data.Id }, createAmentity);
+                return CreatedAtAction("GetById", new { id = createAmentity.Data.Id }, createAmentity);
             }
             catch (Exception e)
             {
