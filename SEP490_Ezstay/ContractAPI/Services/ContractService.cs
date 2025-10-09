@@ -164,9 +164,9 @@ public class ContractService : IContractService
             contract.ProfilesInContract = members;
             contract.SignerProfile = members.First(p => p.IsSigner);
         }
-        if (request.ElectricityReading != null) 
+     //   if (request.ElectricityReading != null) 
             await _utilityReadingClientService.Update(contract.RoomId, UtilityType.Electric, request.ElectricityReading);
-        if (request.WaterReading != null) 
+      //  if (request.WaterReading != null) 
             await _utilityReadingClientService.Update(contract.RoomId, UtilityType.Water, request.WaterReading);
 
         // if (contract.ContractStatus != ContractStatus.Active)
@@ -176,6 +176,7 @@ public class ContractService : IContractService
         await _contractRepository.UpdateAsync(contract);
         return ApiResponse<bool>.Success(true, "Cập nhật hợp đồng thành công.");
     }
+    
 
     public async Task<ApiResponse<ContractResponse>> ExtendContractAsync(Guid contractId, ExtendContractDto request)
     {
