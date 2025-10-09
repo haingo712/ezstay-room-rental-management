@@ -1,7 +1,7 @@
 using AutoMapper;
 using AmenityAPI.DTO.Request;
-using AmenityAPI.DTO.Response;
 using AmenityAPI.Models;
+using Shared.DTOs.Amenities.Responses;
 
 namespace AmenityAPI.Mapping;
 
@@ -11,6 +11,6 @@ public class MappingAmenity:Profile
     {
         CreateMap<CreateAmenityDto, Amenity>();
         CreateMap<UpdateAmenityDto, Amenity>();
-        CreateMap<Amenity, AmenityResponseDto>();
+        CreateMap<Amenity, AmenityResponse>();
     }
 }
