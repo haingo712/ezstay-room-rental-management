@@ -1,6 +1,7 @@
 
 using ContractAPI.DTO.Requests.UtilityReading;
 using ContractAPI.DTO.Response;
+using Shared.DTOs;
 
 namespace ContractAPI.Services.Interfaces;
 

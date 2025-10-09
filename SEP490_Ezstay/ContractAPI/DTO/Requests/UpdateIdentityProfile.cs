@@ -27,9 +27,9 @@ public class UpdateIdentityProfile
     [Required]
     public string CitizenIdIssuedPlace { get; set; }
     public string? Notes { get; set; }
-    public string AvatarUrl { get; set; } 
+    public IFormFile? AvatarUrl { get; set; } 
     [Required]
-    public string FrontImageUrl { get; set; }
+    public IFormFile FrontImageUrl { get; set; }
     [Required]
-    public string BackImageUrl { get; set; }
+    public IFormFile BackImageUrl { get; set; }
 }

@@ -25,6 +25,7 @@ namespace ContractAPI.Model
         public ContractStatus  ContractStatus{ get; set;}
         public int NumberOfOccupants { get; set; }
         public string Notes { get; set; }
+       
         public string Reason { get; set; }
         
         public decimal DepositAmount { get; set; }  //  Tiền cọc
@@ -32,6 +33,6 @@ namespace ContractAPI.Model
         public DateTime UpdatedAt {get;set;}
         
         public DateTime CanceledAt { get; set; }
-
+        public string? SignedContractImage { get; set; }
     }
 }

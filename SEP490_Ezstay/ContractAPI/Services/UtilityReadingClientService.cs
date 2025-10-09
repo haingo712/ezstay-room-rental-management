@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using ContractAPI.DTO.Requests.UtilityReading;
 using ContractAPI.DTO.Response;
 using ContractAPI.Services.Interfaces;
+using Shared.DTOs;
 
 namespace ContractAPI.Services;
 

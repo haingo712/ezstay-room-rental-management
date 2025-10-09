@@ -1,5 +1,4 @@
 using System.Text.Json;
-using RoomAPI.DTO.Response;
 using RoomAPI.Service.Interface;
 
 namespace RoomAPI.Service;

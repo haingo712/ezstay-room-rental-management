@@ -7,13 +7,13 @@ using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using ReviewAPI.APIs;
 using ReviewAPI.APIs.Interfaces;
-using ReviewAPI.DTO.Response;
 using ReviewAPI.DTO.Response.ReviewReply;
 using ReviewAPI.Profiles;
 using ReviewAPI.Repository;
 using ReviewAPI.Repository.Interface;
 using ReviewAPI.Service;
 using ReviewAPI.Service.Interface;
+using Shared.DTOs.Reviews.Responses;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,7 +61,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var odatabuilder = new ODataConventionModelBuilder();
-odatabuilder.EntitySet<ReviewResponseDto>("Review");
+odatabuilder.EntitySet<ReviewResponse>("Review");
 odatabuilder.EntitySet<ReviewReplyResponse>("ReviewReplys");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>

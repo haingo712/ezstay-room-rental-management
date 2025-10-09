@@ -1,6 +1,7 @@
 using RoomAPI.APIs.Interfaces;
 using RoomAPI.DTO.Request;
-using RoomAPI.DTO.Response;
+using Shared.DTOs;
+using Shared.DTOs.RoomAmenities.Responses;
 
 namespace RoomAPI.APIs;
 

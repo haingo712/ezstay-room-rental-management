@@ -7,6 +7,7 @@ using ReviewAPI.DTO.Response.ReviewReply;
 using ReviewAPI.Model;
 using ReviewAPI.Repository.Interface;
 using ReviewAPI.Service.Interface;
+using Shared.DTOs;
 
 namespace ReviewAPI.Service;
 

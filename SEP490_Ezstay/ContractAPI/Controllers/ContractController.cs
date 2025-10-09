@@ -14,17 +14,17 @@ namespace ContractAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
    
-    public class ContractController : ControllerBase
+    public class ContractController(IContractService _contractService, ITokenService _tokenService) : ControllerBase
     {
-        private readonly IContractService _contractService;
-        private readonly ITokenService _tokenService;
-     
-
-        public ContractController(IContractService contractService, ITokenService tokenService)
-        {
-            _contractService = contractService;
-            _tokenService = tokenService;
-        }
+        // private readonly IContractService _contractService;
+        // private readonly ITokenService _tokenService;
+        //
+        //
+        // public ContractController(IContractService contractService, ITokenService tokenService)
+        // {
+        //     _contractService = contractService;
+        //     _tokenService = tokenService;
+        // }
         
       //  [Authorize(Roles = "User")]
         // [HttpGet("HasContract/{tenantId}/roomId/{roomId}")]
@@ -36,7 +36,7 @@ namespace ContractAPI.Controllers
         
         [Authorize(Roles = "Owner")]
         [HttpPost]
-        public async Task<IActionResult> CreateContract([FromBody] CreateContract request)
+        public async Task<IActionResult> CreateContract([FromForm] CreateContract request)
         {
             var ownerId = _tokenService.GetUserIdFromClaims(User);
             var createContract = await _contractService.Add(ownerId, request);
@@ -47,7 +47,7 @@ namespace ContractAPI.Controllers
         }
         [Authorize(Roles = "Owner")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutContract(Guid id,[FromBody] UpdateContractDto request)
+        public async Task<IActionResult> PutContract(Guid id,[FromForm] UpdateContractDto request)
         {
             try
             {

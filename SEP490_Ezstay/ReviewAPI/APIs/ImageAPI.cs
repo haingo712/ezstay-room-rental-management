@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using ReviewAPI.APIs.Interfaces;
 using ReviewAPI.DTO.Response;
+using Shared.DTOs;
 
 namespace ReviewAPI.APIs;
 
@@ -26,7 +27,7 @@ public class ImageAPI:IImageAPI
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<UploadResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var result = JsonSerializer.Deserialize<ImageResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             return result?.Url ?? string.Empty;
         }

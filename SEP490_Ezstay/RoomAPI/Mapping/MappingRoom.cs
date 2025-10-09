@@ -1,7 +1,7 @@
 using AutoMapper;
 using RoomAPI.DTO.Request;
-using RoomAPI.DTO.Response;
 using RoomAPI.Model;
+using Shared.DTOs.Rooms.Responses;
 
 namespace RoomAPI.Mapping;
 
@@ -11,10 +11,10 @@ public class MappingRoom:Profile
     {
         CreateMap<CreateRoomDto, Room>();
         CreateMap<UpdateRoomDto, Room>();
-        CreateMap<Room, RoomDto>();
+        CreateMap<Room, RoomResponse>();
 
-        CreateMap<Room, RoomWithAmenitiesDto>()
-            .ForMember(dest => dest.Amenities,
-                opt => opt.Ignore());
+        // CreateMap<Room, RoomWithAmenitiesDto>()
+        //     .ForMember(dest => dest.Amenities,
+        //         opt => opt.Ignore());
     }
 }

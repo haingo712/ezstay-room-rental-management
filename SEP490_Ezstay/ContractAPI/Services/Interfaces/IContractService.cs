@@ -5,6 +5,7 @@
 using ContractAPI.DTO.Requests;
 using ContractAPI.DTO.Response;
 using ContractAPI.Enum;
+using Shared.DTOs;
 
 namespace ContractAPI.Services.Interfaces;
 public interface IContractService

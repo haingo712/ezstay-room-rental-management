@@ -20,7 +20,7 @@ public class UpdateContractDto
     [StringLength(500, ErrorMessage = "Notes cannot exceed 500 characters.")]
     public string? Notes { get; set; }
     [Required]
-    public List<CreateIdentityProfile> ProfilesInContract { get; set; } 
+    public List<UpdateIdentityProfile> ProfilesInContract { get; set; } 
     [Required]
     public UpdateUtilityReading ElectricityReading { get; set; }
     [Required]
