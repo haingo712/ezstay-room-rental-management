@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
-using RoomAmenityAPI.DTO.Response;
+using Shared.DTOs.RoomAmenities.Responses;
 using RoomAmenityAPI.Repository;
 using RoomAmenityAPI.Repository.Interface;
 using RoomAmenityAPI.Service;

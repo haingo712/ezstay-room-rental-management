@@ -2,9 +2,10 @@ using RoomAmenityAPI.Service.Interface;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using RoomAmenityAPI.DTO.Request;
-using RoomAmenityAPI.DTO.Response;
 using RoomAmenityAPI.Model;
 using RoomAmenityAPI.Repository.Interface;
+using Shared.DTOs;
+using Shared.DTOs.RoomAmenities.Responses;
 
 namespace RoomAmenityAPI.Service;
 
