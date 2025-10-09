@@ -9,6 +9,8 @@ using ContractAPI.Model;
 using ContractAPI.Repository.Interface;
 using ContractAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Shared.DTOs;
+
 namespace ContractAPI.Services;
 
 public class ContractService : IContractService
@@ -16,15 +18,16 @@ public class ContractService : IContractService
     private readonly IMapper _mapper;
     private readonly IContractRepository _contractRepository;
     private readonly IRoomClientService _roomClient; 
-   
+    private readonly IImageAPI _imageClient;
     private readonly IAccountAPI _accountClient;
     private readonly IUtilityReadingClientService _utilityReadingClientService;
 
-    public ContractService(IMapper mapper, IContractRepository contractRepository, IRoomClientService roomClient, IAccountAPI accountClient, IUtilityReadingClientService utilityReadingClientService)
+    public ContractService(IMapper mapper, IContractRepository contractRepository, IRoomClientService roomClient, IImageAPI imageClient, IAccountAPI accountClient, IUtilityReadingClientService utilityReadingClientService)
     {
         _mapper = mapper;
         _contractRepository = contractRepository;
         _roomClient = roomClient;
+        _imageClient = imageClient;
         _accountClient = accountClient;
         _utilityReadingClientService = utilityReadingClientService;
     }
@@ -70,65 +73,33 @@ public class ContractService : IContractService
         contract.OwnerId = ownerId;
         contract.CreatedAt = DateTime.UtcNow;
         contract.ContractStatus = ContractStatus.Active;
-        // nếu nhiều người kí
-        // contract.ProfilesInContract = request.ProfilesInContract
-        //     .Select(p =>
-        //     {
-        //         var profile = _mapper.Map<IdentityProfile>(p);
-        //         // Nếu IsSigner thì gán SignerProfile
-        //         if (p.IsSigner)
-        //         {
-        //             contract.SignerProfile = profile;
-        //             contract.SignerProfileId = profile.ProfileId != Guid.Empty
-        //                 ? profile.ProfileId
-        //                 : Guid.NewGuid();
-        //             profile.IsSigner = true;
-        //         }
-        //         else
-        //         {
-        //             profile.IsSigner = false;
-        //         }
-        //         return profile;
-        //     }).ToList();
-        
-//         // Map SignerProfile
-//         var signer = _mapper.Map<IdentityProfile>(request.SignerProfile);
-//         signer.IsSigner = true;
-//
-// // Map tất cả người ở
-//         var members = request.ProfilesInContract
-//             .Select(p =>
-//             {
-//                 var profile = _mapper.Map<IdentityProfile>(p);
-//                 profile.IsSigner = false;
-//                 return profile;
-//             }).ToList();
-//
-// // Gán vào contract
-//         contract.SignerProfile = signer;
-//         contract.SignerProfile.UserId = signer.UserId != Guid.Empty ? signer.UserId : Guid.NewGuid();
-//
-// // Thêm signer vào danh sách members
-//         members.Insert(0, signer);
-//         contract.ProfilesInContract = members;
-
+        if (request.ProfilesInContract == null || !request.ProfilesInContract.Any())
+            return  ApiResponse<ContractResponseDto>.Fail("Danh sách người thuê không được để trống");
         var members = request.ProfilesInContract
             .Select((p, index) =>
             {
                 var profile = _mapper.Map<IdentityProfile>(p);
-                profile.IsSigner = index == 0; 
+                profile.IsSigner = index == 0;
+                 profile.AvatarUrl = _imageClient.UploadImage(p.AvatarUrl).Result;
+                  //_imageClient.UploadImage(p.BackImageUrl).Result;
+                // profile.FrontImageUrl = _imageClient.UploadImage(p.FrontImageUrl).Result;
                 return profile;
             }).ToList();
-
+   
         contract.ProfilesInContract = members;
+        // var signer = members.FirstOrDefault(p => p.IsSigner);
+        // if (signer == null)
+        //     return ApiResponse<ContractResponseDto>.Fail("Không tìm thấy người ký hợp đồng (IsSigner = true)");
+
+       // contract.SignerProfile = signer;
         contract.SignerProfile = members.First(p => p.IsSigner); 
         var saveContract =await _contractRepository.AddAsync(contract);
-       var elecCreated = await _utilityReadingClientService.AddElectric(saveContract.RoomId, request.ElectricityReading);
-       var waterCreated = await _utilityReadingClientService.AddWater(saveContract.RoomId, request.WaterReading);
-       var result = _mapper.Map<ContractResponseDto>(saveContract);
+        var elecCreated = await _utilityReadingClientService.AddElectric(saveContract.RoomId, request.ElectricityReading);
+        var waterCreated = await _utilityReadingClientService.AddWater(saveContract.RoomId, request.WaterReading);
+        var result = _mapper.Map<ContractResponseDto>(saveContract);
         result.ElectricityReading = elecCreated.Data;
         result.WaterReading = waterCreated.Data;
-        await _roomClient.UpdateRoomStatusAsync(request.RoomId, "Occupied");
+        //await _roomClient.UpdateRoomStatusAsync(request.RoomId, "Occupied");
         return ApiResponse<ContractResponseDto>.Success(result, "Thuê thành công.");
     }
     public async Task<ApiResponse<ContractResponseDto>> CancelContractAsync(Guid contractId, string reason)
@@ -143,7 +114,6 @@ public class ContractService : IContractService
         contract.ContractStatus = ContractStatus.Cancelled;
         contract.UpdatedAt = DateTime.UtcNow;
         contract.Reason = reason;
-        
         await _roomClient.UpdateRoomStatusAsync(contract.RoomId, "Available");
         await _contractRepository.UpdateAsync(contract);
         var dto = _mapper.Map<ContractResponseDto>(contract);
@@ -187,11 +157,7 @@ public class ContractService : IContractService
         //     await _roomClient.UpdateRoomStatusAsync(contract.RoomId, "Available");
         contract.UpdatedAt = DateTime.UtcNow;
         _mapper.Map(request, contract);
-
         await _contractRepository.UpdateAsync(contract);
-
-     //   var result = _mapper.Map<ContractResponseDto>(contract);
-        
         return ApiResponse<bool>.Success(true, "Cập nhật hợp đồng thành công.");
     }
 
@@ -232,3 +198,46 @@ public class ContractService : IContractService
         return ApiResponse<bool>.Success(true, "Xoá hợp đồng thành công");
     }
 }
+
+
+// nếu nhiều người kí
+// contract.ProfilesInContract = request.ProfilesInContract
+//     .Select(p =>
+//     {
+//         var profile = _mapper.Map<IdentityProfile>(p);
+//         // Nếu IsSigner thì gán SignerProfile
+//         if (p.IsSigner)
+//         {
+//             contract.SignerProfile = profile;
+//             contract.SignerProfileId = profile.ProfileId != Guid.Empty
+//                 ? profile.ProfileId
+//                 : Guid.NewGuid();
+//             profile.IsSigner = true;
+//         }
+//         else
+//         {
+//             profile.IsSigner = false;
+//         }
+//         return profile;
+//     }).ToList();
+        
+//         // Map SignerProfile
+//         var signer = _mapper.Map<IdentityProfile>(request.SignerProfile);
+//         signer.IsSigner = true;
+//
+// // Map tất cả người ở
+//         var members = request.ProfilesInContract
+//             .Select(p =>
+//             {
+//                 var profile = _mapper.Map<IdentityProfile>(p);
+//                 profile.IsSigner = false;
+//                 return profile;
+//             }).ToList();
+//
+// // Gán vào contract
+//         contract.SignerProfile = signer;
+//         contract.SignerProfile.UserId = signer.UserId != Guid.Empty ? signer.UserId : Guid.NewGuid();
+//
+// // Thêm signer vào danh sách members
+//         members.Insert(0, signer);
+//         contract.ProfilesInContract = members;

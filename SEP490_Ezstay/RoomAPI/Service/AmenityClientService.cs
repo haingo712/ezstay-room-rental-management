@@ -1,5 +1,5 @@
-using RoomAPI.DTO.Response;
 using RoomAPI.Service.Interface;
+using Shared.DTOs.Amenities.Responses;
 
 namespace RoomAPI.Service;
 
@@ -11,8 +11,8 @@ public class AmenityClientService : IAmenityClientService
     {
         _httpClient = httpClient;
     }
-    public async Task<AmenityDto?> GetAmenityById(Guid amenityId)
+    public async Task<AmenityResponse?> GetAmenityById(Guid amenityId)
     {
-        return await _httpClient.GetFromJsonAsync<AmenityDto>($"api/Amenity/{amenityId}");
+        return await _httpClient.GetFromJsonAsync<AmenityResponse>($"api/Amenity/{amenityId}");
     }
 }

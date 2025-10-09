@@ -1,6 +1,6 @@
 using RoomAPI.DTO.Request;
-using RoomAPI.DTO.Response;
 using RoomAPI.Service.Interface;
+using Shared.DTOs.RoomAmenities.Responses;
 
 namespace RoomAPI.Service;
 

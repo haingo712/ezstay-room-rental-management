@@ -5,6 +5,7 @@ using ReviewAPI.DTO.Requests;
 using ReviewAPI.DTO.Response;
 using ReviewAPI.Service;
 using ReviewAPI.Service.Interface;
+using Shared.DTOs.Reviews.Responses;
 
 namespace ReviewAPI.Controllers;
 
@@ -30,13 +31,13 @@ public class ReviewController : ControllerBase
     [HttpGet]
     [EnableQuery]
     [Route("/Review")]
-    public IQueryable<ReviewResponseDto> GetAllAsQueryable()
+    public IQueryable<ReviewResponse> GetAllAsQueryable()
     {
         return _reviewService.GetAllAsQueryable();
     }
     [HttpGet]
     [EnableQuery]
-    public IQueryable<ReviewResponseDto> GetAll()
+    public IQueryable<ReviewResponse> GetAll()
     {
         return _reviewService.GetAllAsQueryable();
     }

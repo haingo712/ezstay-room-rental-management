@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using RoomAPI.DTO.Request;
-using RoomAPI.DTO.Response;
 using RoomAPI.Model;
 using RoomAPI.Service;
 using RoomAPI.Service.Interface;
+using Shared.DTOs.RoomAmenities.Responses;
+using Shared.DTOs.Rooms.Responses;
 
 namespace RoomAPI.Controllers
 {
@@ -44,7 +45,7 @@ namespace RoomAPI.Controllers
         }
 
         [HttpGet("{id}/WithAmenities")]
-        public async Task<ActionResult<RoomWithAmenitiesDto>> GetRoomWithAmenities(Guid id)
+        public async Task<ActionResult<RoomWithAmenitiesResponse>> GetRoomWithAmenities(Guid id)
         {
             try
             {
@@ -60,20 +61,20 @@ namespace RoomAPI.Controllers
         
         [HttpGet]
         [EnableQuery]
-        public IQueryable<RoomDto> GetRooms()
+        public IQueryable<RoomResponse> GetRooms()
         {
             return _roomService.GetAllQueryable();
         }
         
         [HttpGet("ByHouseId/{houseId}")]
         [EnableQuery]        
-        public IQueryable<RoomDto> GetRoomsByHouseId(Guid houseId)
+        public IQueryable<RoomResponse> GetRoomsByHouseId(Guid houseId)
         {
             return _roomService.GetAllByHouseId(houseId);
         }
         [HttpGet("ByHouseId/{houseId}/Status")]
         [EnableQuery]        
-        public IQueryable<RoomDto> GetRoomsStatusByHouseId(Guid houseId)
+        public IQueryable<RoomResponse> GetRoomsStatusByHouseId(Guid houseId)
         {
             return _roomService.GetAllStatusActiveByHouseId(houseId);
         }
@@ -86,7 +87,7 @@ namespace RoomAPI.Controllers
     
         // GET: api/Rooms/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RoomDto>> GetRoomById(Guid id)
+        public async Task<ActionResult<RoomResponse>> GetRoomById(Guid id)
         {
             try
             {

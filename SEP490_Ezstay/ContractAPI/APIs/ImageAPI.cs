@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using ContractAPI.APIs.Interfaces;
 using ContractAPI.DTO.Response;
+using Shared.DTOs;
 
 namespace ContractAPI.APIs;
 
@@ -14,7 +15,7 @@ public class ImageAPI:IImageAPI
             _httpClient = httpClient;
         }
 
-        public async Task<string> UploadImageAsync(IFormFile file)
+        public async Task<string> UploadImage(IFormFile file)
         {
             using var form = new MultipartFormDataContent();
             var streamContent = new StreamContent(file.OpenReadStream());
@@ -26,7 +27,7 @@ public class ImageAPI:IImageAPI
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<UploadResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var result = JsonSerializer.Deserialize<ImageResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             return result?.Url ?? string.Empty;
         }

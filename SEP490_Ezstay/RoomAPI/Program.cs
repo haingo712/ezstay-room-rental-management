@@ -13,6 +13,7 @@ using RoomAPI.Repository;
 using RoomAPI.Repository.Interface;
 using RoomAPI.Service;
 using RoomAPI.Service.Interface;
+using Shared.DTOs.Rooms.Responses;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,7 @@ builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IRoomAmenityAPI, RoomAmenityAPI>();
 
-builder.Services.AddHttpClient<IImageAPI, ImageAPI >(client =>
+builder.Services.AddHttpClient<IImageAPI, ImageAPI>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
 });
@@ -50,7 +51,7 @@ builder.Services.AddHttpClient<IRentalPostClientService, RentalPostClientService
 });
 
 var odatabuilder = new ODataConventionModelBuilder();
-odatabuilder.EntitySet<RoomDto>("Rooms");
+odatabuilder.EntitySet<RoomResponse>("Rooms");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>
     options.AddRouteComponents("odata", odata)

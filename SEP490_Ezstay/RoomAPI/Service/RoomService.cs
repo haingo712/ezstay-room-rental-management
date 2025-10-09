@@ -2,11 +2,13 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using RoomAPI.APIs.Interfaces;
 using RoomAPI.DTO.Request;
-using RoomAPI.DTO.Response;
 using RoomAPI.Enum;
 using RoomAPI.Model;
 using RoomAPI.Repository.Interface;
 using RoomAPI.Service.Interface;
+using Shared.DTOs;
+using Shared.DTOs.RoomAmenities.Responses;
+using Shared.DTOs.Rooms.Responses;
 
 namespace RoomAPI.Service;
 
@@ -30,29 +32,29 @@ public class RoomService: IRoomService
         _mapper = mapper;
     }
 
-    public IQueryable<RoomDto> GetAllStatusActiveByHouseId(Guid houseId)
+    public IQueryable<RoomResponse> GetAllStatusActiveByHouseId(Guid houseId)
     {
         var rooms = _roomRepository. GetAllQueryable().Where(x => x.HouseId == houseId && x.RoomStatus == RoomStatus.Available);
      
-        return rooms.ProjectTo<RoomDto>(_mapper.ConfigurationProvider);
+        return rooms.ProjectTo<RoomResponse>(_mapper.ConfigurationProvider);
     }
     
-    public IQueryable<RoomDto> GetAllByHouseId(Guid houseId)
+    public IQueryable<RoomResponse> GetAllByHouseId(Guid houseId)
     {
         var rooms = _roomRepository. GetAllQueryable().Where(x => x.HouseId == houseId);
      
-        return rooms.ProjectTo<RoomDto>(_mapper.ConfigurationProvider);
+        return rooms.ProjectTo<RoomResponse>(_mapper.ConfigurationProvider);
     }
-    public IQueryable<RoomDto>  GetAllQueryable()
+    public IQueryable<RoomResponse>  GetAllQueryable()
     {
         var book = _roomRepository.GetAllQueryable();
-    return book.ProjectTo<RoomDto>(_mapper.ConfigurationProvider);
+    return book.ProjectTo<RoomResponse>(_mapper.ConfigurationProvider);
     }
 
-    public async Task<RoomDto> GetById(Guid id)
+    public async Task<RoomResponse> GetById(Guid id)
     {
         var room = await _roomRepository.GetById(id);
-      return   _mapper.Map<RoomDto>(room);
+      return   _mapper.Map<RoomResponse>(room);
     }
     // public async Task<ApiResponse<RoomDto>> Add(  Guid houseId, Guid houseLocationId,  CreateRoomDto request)
     // { 
@@ -69,11 +71,11 @@ public class RoomService: IRoomService
     //     return ApiResponse<RoomDto>.Success(result, "Thêm phòng thành công");
     // }
     
-    public async Task<ApiResponse<RoomDto>> Add(  Guid houseId,  CreateRoomDto request)
+    public async Task<ApiResponse<RoomResponse>> Add(  Guid houseId,  CreateRoomDto request)
     { 
         var exist = await _roomRepository.RoomNameExistsInHouse(houseId, request.RoomName);
         if (exist)
-            return ApiResponse<RoomDto>.Fail("Tên phòng đã tồn tại trong nhà trọ.");
+            return ApiResponse<RoomResponse>.Fail("Tên phòng đã tồn tại trong nhà trọ.");
         var room = _mapper.Map<Room>(request);
         room.ImageUrl= _imageClient.UploadImageAsync(request.ImageUrl).Result;
         room.HouseId = houseId;
@@ -90,8 +92,8 @@ public class RoomService: IRoomService
         //     await _roomAmenityClient.AddRoomAmenitiesAsync(room.Id, amenityRequest);
         // }
 
-        var result = _mapper.Map<RoomDto>(room);
-        return ApiResponse<RoomDto>.Success(result, "Thêm phòng thành công");
+        var result = _mapper.Map<RoomResponse>(room);
+        return ApiResponse<RoomResponse>.Success(result, "Thêm phòng thành công");
     }
 
     public async Task<ApiResponse<bool>>  Update(Guid id, UpdateRoomDto request)
@@ -124,10 +126,10 @@ public class RoomService: IRoomService
         await _roomRepository.Delete(room);
         return ApiResponse<bool>.Success(true, "Xoá phòng thành công");
     }
-    public async Task<RoomWithAmenitiesDto> GetRoomWithAmenitiesAsync(Guid id)
+    public async Task<RoomWithAmenitiesResponse> GetRoomWithAmenitiesAsync(Guid id)
     {
         var roomId = await _roomRepository.GetById(id);
-        var room = _mapper.Map<RoomDto>(roomId);
+        var room = _mapper.Map<RoomResponse>(roomId);
         // var roomAmenities = await _roomAmenityClient.GetAmenityIdsByRoomId(id);
         // var amenities = new List<AmenityDto>();
         // foreach (var x in roomAmenities)
@@ -135,7 +137,7 @@ public class RoomService: IRoomService
         //     var amenity = await _amenityClient.GetAmenityById(x.AmenityId);
         //     amenities.Add(amenity);
         // }
-        var roomDto =   _mapper.Map<RoomWithAmenitiesDto>(room);
+        var roomDto =   _mapper.Map<RoomWithAmenitiesResponse>(room);
         //return new RoomWithAmenitiesDto
        // {
         //    Room = room,

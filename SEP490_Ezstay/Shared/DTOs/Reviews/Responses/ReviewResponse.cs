@@ -1,6 +1,6 @@
-namespace ReviewAPI.DTO.Response;
+namespace Shared.DTOs.Reviews.Responses;
 
-public class ReviewResponseDto
+public class ReviewResponse
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }

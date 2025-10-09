@@ -1,4 +1,4 @@
-﻿namespace ImageAPI.DTO.Request
+﻿namespace Shared.DTOs
 {
     public class ImageResponse
     {

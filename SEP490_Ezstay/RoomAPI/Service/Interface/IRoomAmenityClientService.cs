@@ -1,4 +1,5 @@
-using RoomAPI.DTO.Response;
+
+using Shared.DTOs.RoomAmenities.Responses;
 
 namespace RoomAPI.Service.Interface;
 

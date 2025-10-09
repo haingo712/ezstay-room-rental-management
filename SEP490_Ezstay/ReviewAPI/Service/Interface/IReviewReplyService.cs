@@ -1,6 +1,7 @@
 using ReviewAPI.DTO.Requests.ReviewReply;
 using ReviewAPI.DTO.Response;
 using ReviewAPI.DTO.Response.ReviewReply;
+using Shared.DTOs;
 
 namespace ReviewAPI.Service.Interface;
 
