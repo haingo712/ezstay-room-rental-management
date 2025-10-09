@@ -81,9 +81,6 @@ public class ContractService : IContractService
             {
                 var profile = _mapper.Map<IdentityProfile>(p);
                 profile.IsSigner = index == 0;
-                //  profile.AvatarUrl = _imageClient.UploadImage(p.AvatarUrl).Result;
-                // profile.BackImageUrl=   _imageClient.UploadImage(p.BackImageUrl).Result;
-                //  profile.FrontImageUrl = _imageClient.UploadImage(p.FrontImageUrl).Result;
                 return profile;
             }).ToList();
    
@@ -91,15 +88,34 @@ public class ContractService : IContractService
         // var signer = members.FirstOrDefault(p => p.IsSigner);
         // if (signer == null)
         //     return ApiResponse<ContractResponseDto>.Fail("Không tìm thấy người ký hợp đồng (IsSigner = true)");
-
        // contract.SignerProfile = signer;
         contract.SignerProfile = members.First(p => p.IsSigner); 
         var saveContract =await _contractRepository.AddAsync(contract);
-        var elecCreated = await _utilityReadingClientService.AddElectric(saveContract.RoomId, request.ElectricityReading);
-        var waterCreated = await _utilityReadingClientService.AddWater(saveContract.RoomId, request.WaterReading);
+        // if (request.UtilityReadings != null && request.UtilityReadings.Any())
+       // {
+       //     foreach (var utility in request.UtilityReadings)
+       //     {
+       //         var type = request.UtilityReadings.IndexOf(utility) == 0
+       //             ? UtilityType.Electric
+       //             : UtilityType.Water;
+       //          var createUtility = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Electric, utility);
+       //
+       //         // var createUtility = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Electric, request.UtilityReadings[0]);
+       //         // var createUtility1 = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Water, request.UtilityReadings[1]);
+       //
+       //         if (!createUtility.IsSuccess)
+       //             return ApiResponse<ContractResponse>.Fail($"Không thể tạo chỉ số : {createUtility.Message}");
+       //   }
+   //  }
+    var createUtility = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Water, request.WaterReading);
+    var createUtiliyw = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Electric, request.ElectricityReading);
+
+   if (!createUtility.IsSuccess)
+       return ApiResponse<ContractResponse>.Fail($"Không thể tạo chỉ số : {createUtility.Message}");
+
         var result = _mapper.Map<ContractResponse>(saveContract);
-        result.ElectricityReading = elecCreated.Data;
-        result.WaterReading = waterCreated.Data;
+        result.WaterReading = createUtility.Data;
+        result.ElectricityReading = createUtiliyw.Data;
       //  await _roomClient.UpdateRoomStatusAsync(request.RoomId, RoomStatus.Occupied);
         return ApiResponse<ContractResponse>.Success(result, "Thuê thành công.");
     }

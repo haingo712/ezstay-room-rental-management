@@ -1,10 +1,10 @@
 
 using System.Net.Http.Headers;
 using ContractAPI.DTO.Requests.UtilityReading;
-using ContractAPI.DTO.Response;
 using ContractAPI.Services.Interfaces;
 using Shared.DTOs;
 using Shared.DTOs.UtilityReadings.Responses;
+using Shared.Enums;
 
 namespace ContractAPI.Services;
 
@@ -33,11 +33,10 @@ public class UtilityReadingClientService : IUtilityReadingClientService
 
     public async Task<ApiResponse<UtilityReadingResponse>> AddElectric(Guid roomId, CreateUtilityReadingContract request)
     {
-        var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
-        if (!string.IsNullOrEmpty(token))
-            _httpClient.DefaultRequestHeaders.Authorization = 
-                new AuthenticationHeaderValue("Bearer", token.Replace("Bearer ", ""));
-
+        // var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
+        // if (!string.IsNullOrEmpty(token))
+        //     _httpClient.DefaultRequestHeaders.Authorization = 
+        //         new AuthenticationHeaderValue("Bearer", token.Replace("Bearer ", ""));
         var response = await _httpClient.PostAsJsonAsync($"api/UtilityReading/{roomId}/electric", request);
 
         if (!response.IsSuccessStatusCode)
@@ -48,13 +47,31 @@ public class UtilityReadingClientService : IUtilityReadingClientService
         var result = await response.Content.ReadFromJsonAsync<ApiResponse<UtilityReadingResponse>>();
         return result!;
     }
+    public async Task<ApiResponse<UtilityReadingResponse>> Add(Guid roomId, UtilityType utilityType, CreateUtilityReadingContract request)
+    {
+        // var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
+        // if (!string.IsNullOrEmpty(token))
+        //     _httpClient.DefaultRequestHeaders.Authorization = 
+        //         new AuthenticationHeaderValue("Bearer", token.Replace("Bearer ", ""));
+
+        var url = $"api/UtilityReading/{roomId}/utilitytype/{utilityType}/contract";
+        var response = await _httpClient.PostAsJsonAsync(url, request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return ApiResponse<UtilityReadingResponse>.Fail(
+                $"UtilityReading API call failed: {response.StatusCode}");
+        }
+        var result = await response.Content.ReadFromJsonAsync<ApiResponse<UtilityReadingResponse>>();
+        return result!;
+    }
+
     public async Task<ApiResponse<UtilityReadingResponse>> AddWater(Guid roomId, CreateUtilityReadingContract request)
     {
-        var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
-        if (!string.IsNullOrEmpty(token))
-            _httpClient.DefaultRequestHeaders.Authorization = 
-                new AuthenticationHeaderValue("Bearer", token.Replace("Bearer ", ""));
-
+        // var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
+        // if (!string.IsNullOrEmpty(token))
+        //     _httpClient.DefaultRequestHeaders.Authorization = 
+        //         new AuthenticationHeaderValue("Bearer", token.Replace("Bearer ", ""));
         var response = await _httpClient.PostAsJsonAsync($"api/UtilityReading/{roomId}/water", request);
 
         if (!response.IsSuccessStatusCode)
@@ -67,7 +84,7 @@ public class UtilityReadingClientService : IUtilityReadingClientService
     }
     public async Task<ApiResponse<bool>> UpdateElectric(Guid roomId, UpdateUtilityReading request)
     {
-        AttachBearerTokenIfExists();
+       // AttachBearerTokenIfExists();
 
         var response = await _httpClient.PutAsJsonAsync($"api/UtilityReading/{roomId}/electric", request);
 
@@ -79,7 +96,7 @@ public class UtilityReadingClientService : IUtilityReadingClientService
     }
     public async Task<ApiResponse<bool>> UpdateWater(Guid roomId, UpdateUtilityReading request)
     {
-        AttachBearerTokenIfExists();
+      //  AttachBearerTokenIfExists();
 
         var response = await _httpClient.PutAsJsonAsync($"api/UtilityReading/{roomId}/water", request);
 
