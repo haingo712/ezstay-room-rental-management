@@ -16,9 +16,13 @@ namespace UserManagerAPI.Service.Interfaces
          Task UnbanAsync(Guid id);
         void SetJwtToken(string token);
         Task<OwnerRequestResponseDto?> SubmitOwnerRequestAsync(SubmitOwnerRequestDto dto);
-        
+        Task<OwnerRequestResponseDto?> ApproveOwnerRequestAsync(Guid requestId);
+        Task<OwnerRequestResponseDto?> RejectOwnerRequestAsync(Guid requestId, string rejectionReason);
+        Task<List<OwnerRequestResponseDto>?> GetPendingRequestsForStaffAsync();
 
 
 
-        }
+
+
+    }
 }

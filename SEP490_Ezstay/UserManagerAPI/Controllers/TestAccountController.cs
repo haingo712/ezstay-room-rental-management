@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using UserManagerAPI.Service;
 using UserManagerAPI.Service.Interfaces;
 
 namespace UserManagerAPI.Controllers
@@ -167,6 +168,61 @@ namespace UserManagerAPI.Controllers
 
             return Ok(resultDto); // Trả về DTO đầy đủ
         }
+
+        [HttpPut("request-owner/approve/{requestId}")]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> ApproveOwnerRequest(Guid requestId)
+        {
+            var token = GetToken();
+            if (string.IsNullOrEmpty(token))
+                return Unauthorized(new { message = "Thiếu token" });
+
+            _accountApi.SetJwtToken(token);
+
+            var resultDto = await _accountApi.ApproveOwnerRequestAsync(requestId);
+
+            if (resultDto == null)
+                return BadRequest(new { message = "Duyệt đơn thất bại hoặc đơn không tồn tại." });
+
+            return Ok(resultDto); // Trả về DTO chứa thông tin đơn đã duyệt
+        }
+
+        [HttpPut("request-owner/reject/{requestId}")]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> RejectOwnerRequest(Guid requestId, [FromBody] RejectOwnerRequestDto dto)
+        {
+            var token = GetToken();
+            if (string.IsNullOrEmpty(token))
+                return Unauthorized(new { message = "Thiếu token" });
+
+            _accountApi.SetJwtToken(token);
+
+            var result = await _accountApi.RejectOwnerRequestAsync(requestId, dto.RejectionReason);
+            if (result == null)
+                return BadRequest(new { message = "Từ chối đơn thất bại hoặc đơn không tồn tại." });
+
+            return Ok(result);
+        }
+
+
+        [HttpGet("request-owner")]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> GetPendingOwnerRequests()
+        {
+            var token = GetToken();
+            _accountApi.SetJwtToken(token);
+
+            var requests = await _accountApi.GetPendingRequestsForStaffAsync();
+
+            if (requests == null || !requests.Any())
+                return NotFound(new { message = "Không có đơn nào đang chờ duyệt." });
+
+            return Ok(requests);
+        }
+
+
+
+
 
 
 

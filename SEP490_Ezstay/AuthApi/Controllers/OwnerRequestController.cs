@@ -33,15 +33,54 @@ namespace AuthApi.Controllers
 
 
         // Duyệt đơn (Staff/Admin)
-        [HttpPut("{id}/approve")]
-        public async Task<IActionResult> ApproveRequest(Guid id)
+        [HttpPut("approve/{requestId}")]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> ApproveRequest(Guid requestId)
         {
-            var result = await _service.ApproveRequestAsync(id);
+            var staffIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(staffIdClaim))
+                return Unauthorized(new { message = "Không xác định được staff." });
 
-            if (result.StartsWith("Không"))
-                return NotFound(result);
+            var staffId = Guid.Parse(staffIdClaim);
+
+            var result = await _service.ApproveRequestAsync(requestId, staffId);
+            if (result == null)
+                return BadRequest(new { message = "Duyệt đơn thất bại hoặc đơn không hợp lệ." });
 
             return Ok(result);
         }
+
+        [HttpPut("reject/{requestId}")]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> RejectOwnerRequest(Guid requestId, [FromBody] RejectOwnerRequestDto dto)
+        {
+            var staffIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(staffIdClaim))
+                return Unauthorized(new { message = "Không xác định được staff." });
+
+            var staffId = Guid.Parse(staffIdClaim);
+
+            var result = await _service.RejectRequestAsync(requestId, staffId, dto.RejectionReason);
+            if (result == null)
+                return BadRequest(new { message = "Từ chối đơn thất bại hoặc đơn không hợp lệ." });
+
+            return Ok(result);
+        }
+
+
+        [HttpGet]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> GetAllUserRequests()
+        {
+            var requests = await _service.GetAllRequestsAsync();
+            return Ok(requests);
+        }
+
+
+
+
+
+
+
     }
 }

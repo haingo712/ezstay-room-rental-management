@@ -7,5 +7,6 @@ namespace AuthApi.Repositories.Interfaces
         Task CreateAsync(EmailVerification verification);
         Task<EmailVerification?> GetByEmailAsync(string email);
         Task<EmailVerification?> VerifyOtpAsync(string email, string otp);
+        Task UpdateAsync(EmailVerification verification);
     }
 }

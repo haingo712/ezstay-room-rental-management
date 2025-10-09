@@ -84,6 +84,51 @@ namespace UserManagerAPI.Service
             // Deserialize thẳng sang DTO
             return await response.Content.ReadFromJsonAsync<OwnerRequestResponseDto>();
         }
+
+
+        public async Task<OwnerRequestResponseDto?> ApproveOwnerRequestAsync(Guid requestId)
+        {
+            var response = await _http.PutAsync($"{_ownerRequestApiUrl}/approve/{requestId}", null);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Failed to approve owner request. StatusCode: {response.StatusCode}");
+                return null;
+            }
+
+            return await response.Content.ReadFromJsonAsync<OwnerRequestResponseDto>();
+        }
+
+        public async Task<OwnerRequestResponseDto?> RejectOwnerRequestAsync(Guid requestId, string rejectionReason)
+        {
+            var payload = new RejectOwnerRequestDto
+            {
+                RejectionReason = rejectionReason
+            };
+
+            var response = await _http.PutAsJsonAsync($"{_ownerRequestApiUrl}/reject/{requestId}", payload);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Failed to reject owner request. StatusCode: {response.StatusCode}");
+                return null;
+            }
+
+            return await response.Content.ReadFromJsonAsync<OwnerRequestResponseDto>();
+        }
+
+        public async Task<List<OwnerRequestResponseDto>?> GetPendingRequestsForStaffAsync()
+        {
+            var response = await _http.GetAsync(_ownerRequestApiUrl); // Gọi /api/ownerrequest
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            return await response.Content.ReadFromJsonAsync<List<OwnerRequestResponseDto>>();
+        }
+
+
+
+
     }
 
 
@@ -93,6 +138,6 @@ namespace UserManagerAPI.Service
 
 
 
-    
+
 }
 
