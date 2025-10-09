@@ -7,5 +7,7 @@ namespace AuthApi.Repositories.Interfaces
         Task CreateAsync(OwnerRegistrationRequest request);
         Task<OwnerRegistrationRequest?> GetByIdAsync(Guid id);
         Task UpdateAsync(OwnerRegistrationRequest request);
+        Task<List<OwnerRegistrationRequest>> GetAllAsync();
     }
+
 }

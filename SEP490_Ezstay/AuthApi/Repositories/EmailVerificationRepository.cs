@@ -1,46 +1,57 @@
-﻿using AuthApi.Data;
-using AuthApi.Models;
-using AuthApi.Repositories.Interfaces;
-using MongoDB.Driver;
+﻿    using AuthApi.Data;
+    using AuthApi.Models;
+    using AuthApi.Repositories.Interfaces;
+    using MongoDB.Driver;
 
-namespace AuthApi.Repositories
-{
-    public class EmailVerificationRepository : IEmailVerificationRepository
+    namespace AuthApi.Repositories
     {
-        private readonly IMongoCollection<EmailVerification> _collection;
-
-        public EmailVerificationRepository(MongoDbService db)
+        public class EmailVerificationRepository : IEmailVerificationRepository
         {
-            _collection = db.EmailVerifications;
-        }
+            private readonly IMongoCollection<EmailVerification> _collection;
 
-        public async Task CreateAsync(EmailVerification verification)
-        {
-            await _collection.InsertOneAsync(verification);
-        }
+            public EmailVerificationRepository(MongoDbService db)
+            {
+                _collection = db.EmailVerifications;
+            }
+
+            public async Task CreateAsync(EmailVerification verification)
+            {
+                await _collection.InsertOneAsync(verification);
+            }
 
         public async Task<EmailVerification?> GetByEmailAsync(string email)
         {
-            return await _collection.Find(x => x.Email == email && !x.IsVerified).FirstOrDefaultAsync();
+            return await _collection
+                .Find(x => x.Email == email && x.IsVerifiedForReset) // 🔥 chỉ lấy bản đã xác minh
+                .SortByDescending(x => x.VerifiedAt) // 🔥 lấy bản mới nhất
+                .FirstOrDefaultAsync();
         }
+
 
         public async Task<EmailVerification?> VerifyOtpAsync(string email, string otp)
-        {
-            var filter = Builders<EmailVerification>.Filter.Where(x =>
-                x.Email == email &&
-                x.OtpCode == otp &&
-                x.ExpiredAt > DateTime.UtcNow &&
-                !x.IsVerified);
-
-            var update = Builders<EmailVerification>.Update
-                .Set(x => x.IsVerified, true);
-
-            var options = new FindOneAndUpdateOptions<EmailVerification>
             {
-                ReturnDocument = ReturnDocument.After
-            };
+                var filter = Builders<EmailVerification>.Filter.Where(x =>
+                    x.Email == email &&
+                    x.OtpCode == otp &&
+                    x.ExpiredAt > DateTime.UtcNow &&
+                    !x.IsVerified);
 
-            return await _collection.FindOneAndUpdateAsync(filter, update, options);
+                var update = Builders<EmailVerification>.Update
+                    .Set(x => x.IsVerified, true);
+
+                var options = new FindOneAndUpdateOptions<EmailVerification>
+                {
+                    ReturnDocument = ReturnDocument.After
+                };
+
+                return await _collection.FindOneAndUpdateAsync(filter, update, options);
+            }
+
+        public async Task UpdateAsync(EmailVerification verification)
+        {
+            var filter = Builders<EmailVerification>.Filter.Eq(x => x.Id, verification.Id);
+            await _collection.ReplaceOneAsync(filter, verification);
         }
+
     }
 }

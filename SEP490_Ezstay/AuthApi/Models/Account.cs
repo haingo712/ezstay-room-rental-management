@@ -26,6 +26,8 @@ namespace AuthApi.Models
 
         public bool IsBanned { get; set; } = false;
 
+
+
     }
 
 }

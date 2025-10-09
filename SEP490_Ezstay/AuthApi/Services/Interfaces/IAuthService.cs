@@ -13,5 +13,6 @@ namespace AuthApi.Services.Interfaces
         Task<RegisterResponseDto> ForgotPasswordAsync(ForgotPasswordRequestDto dto);
         Task<RegisterResponseDto> SendPhoneOtpAsync(string phone);
         Task<RegisterResponseDto> VerifyPhoneOtpAsync(string phone, string otp);
+        Task<RegisterResponseDto> ConfirmOtpForForgotPasswordAsync(string email, string otp);
         }
 }

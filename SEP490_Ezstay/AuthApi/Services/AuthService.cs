@@ -133,7 +133,7 @@ namespace AuthApi.Services
             if (account == null)
                 return new RegisterResponseDto { Success = false, Message = "Email not found." };
 
-            // Gửi OTP (dùng lại hàm SendOtpAsync)
+            // Gửi OTP
             await _emailVerificationService.SendOtpAsync(new RegisterRequestDto
             {
                 Email = dto.Email,
@@ -148,30 +148,56 @@ namespace AuthApi.Services
             };
         }
 
-        public async Task<RegisterResponseDto> ResetPasswordAsync(ResetPasswordRequestDto dto)
+        public async Task<RegisterResponseDto> ConfirmOtpForForgotPasswordAsync(string email, string otp)
         {
-            // Giải mã token để lấy email
-            var principal = _tokenGenerator.ValidateToken(dto.Token);
-            if (principal == null)
-                return new RegisterResponseDto { Success = false, Message = "Invalid or expired token." };
+            var verification = await _emailVerificationService.ConfirmOtpAsync(email, otp);
+            if (verification == null || verification.ExpiredAt < DateTime.UtcNow)
+                return new RegisterResponseDto { Success = false, Message = "Invalid or expired OTP." };
 
-            var email = principal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-            if (string.IsNullOrEmpty(email))
-                return new RegisterResponseDto { Success = false, Message = "Invalid token data." };
-
-            var account = await _repo.GetByEmailAsync(email);
-            if (account == null)
-                return new RegisterResponseDto { Success = false, Message = "Account not found." };
-
-            account.Password = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
-            await _repo.UpdateAsync(account);
+            verification.IsVerifiedForReset = true;
+            verification.VerifiedAt = DateTime.UtcNow;
+            await _emailVerificationService.UpdateVerificationAsync(verification);
 
             return new RegisterResponseDto
             {
                 Success = true,
-                Message = "Password reset successfully"
+                Message = "OTP verified. You can now reset your password."
             };
         }
+
+        public async Task<RegisterResponseDto> ResetPasswordAsync(ResetPasswordRequestDto dto)
+        {
+            var account = await _repo.GetByEmailAsync(dto.Email);
+            if (account == null)
+                return new RegisterResponseDto { Success = false, Message = "Account not found." };
+
+            var verification = await _emailVerificationService.GetVerificationByEmail(dto.Email);
+            if (verification == null || !verification.IsVerifiedForReset ||
+                verification.VerifiedAt == null ||
+                verification.VerifiedAt.Value.AddMinutes(10) < DateTime.UtcNow)
+            {
+                return new RegisterResponseDto { Success = false, Message = "OTP not verified or expired." };
+            }
+
+            account.Password = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            await _repo.UpdateAsync(account);
+
+            verification.IsVerifiedForReset = false;
+            verification.VerifiedAt = null;
+            await _emailVerificationService.UpdateVerificationAsync(verification);
+
+            return new RegisterResponseDto
+            {
+                Success = true,
+                Message = "Password has been reset successfully."
+            };
+        }
+
+
+
+
+
+
 
 
         public async Task<RegisterResponseDto> SendPhoneOtpAsync(string phone)

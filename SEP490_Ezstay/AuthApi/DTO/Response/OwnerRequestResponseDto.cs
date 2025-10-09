@@ -9,5 +9,7 @@ namespace AuthApi.DTO.Response
         public string Reason { get; set; } = null!;
         public DateTime SubmittedAt { get; set; }
         public RequestStatusEnum Status { get; set; }
+
+        public string? RejectionReason { get; set; }
     }
 }

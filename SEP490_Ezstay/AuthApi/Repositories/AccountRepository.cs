@@ -1,4 +1,5 @@
 ﻿using AuthApi.Data;
+using AuthApi.Enums;
 using AuthApi.Models;
 using AuthApi.Repositories.Interfaces;
 using MongoDB.Driver;
@@ -45,6 +46,12 @@ namespace AuthApi.Repositories
             var update = Builders<Account>.Update.Set(a => a.IsBanned, isBanned);
             await _accounts.UpdateOneAsync(a => a.Id == id, update);
         }
+
+        public async Task<List<Account>> GetByRoleAsync(RoleEnum role)
+        {
+            return await _accounts.Find(a => a.Role == role).ToListAsync();
+        }
+
 
 
 

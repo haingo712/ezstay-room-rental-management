@@ -19,6 +19,10 @@ namespace AuthApi.Services
 
         public async Task SendOtpAsync(RegisterRequestDto dto)
         {
+            // ❌ Bỏ dòng này đi
+            // if (string.IsNullOrWhiteSpace(dto.Password))
+            //     throw new ArgumentException("Password is required before sending OTP.");
+
             var otp = new Random().Next(100000, 999999).ToString();
             var payload = JsonSerializer.Serialize(dto);
 
@@ -32,13 +36,14 @@ namespace AuthApi.Services
 
             await _repo.CreateAsync(verification);
 
-            // Gửi OTP qua mail
             await _http.PostAsJsonAsync("/api/mail/send-verification", new
             {
                 Email = dto.Email,
                 Otp = otp
             });
         }
+
+
 
         public async Task SendOtpAsync(string userPayload)
         {
@@ -70,5 +75,12 @@ namespace AuthApi.Services
                 Body = $"Click the link below to reset your password:\n{resetLink}"
             });
         }
+
+
+        public async Task UpdateVerificationAsync(EmailVerification verification)
+        {
+            await _repo.UpdateAsync(verification);
+        }
+
     }
 }

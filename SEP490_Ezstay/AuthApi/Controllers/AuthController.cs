@@ -125,6 +125,14 @@ namespace AuthApi.Controllers
             return Ok(result);
         }
 
+        [HttpPost("confirm-otp")]
+        public async Task<IActionResult> ConfirmOtp([FromBody] ConfirmOtpRequest dto)
+        {
+            var result = await _authService.ConfirmOtpForForgotPasswordAsync(dto.Email, dto.Otp);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
+
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto dto)
         {
@@ -132,15 +140,9 @@ namespace AuthApi.Controllers
             return Ok(result);
         }
 
-        [HttpPost("confirm-otp")]
-        public async Task<IActionResult> ConfirmOtp([FromBody] ConfirmOtpRequest request)
-        {
-            var result = await _emailVerificationService.ConfirmOtpAsync(request.Email, request.Otp);
-            if (result == null || result.ExpiredAt < DateTime.UtcNow)
-                return BadRequest("OTP sai hoặc hết hạn");
 
-            return Ok("Xác thực thành công");
-        }
+
+
 
         [HttpPut("update-email")]
         [Authorize]

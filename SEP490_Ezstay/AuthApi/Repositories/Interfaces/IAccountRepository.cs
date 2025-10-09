@@ -1,4 +1,5 @@
-﻿using AuthApi.Models;
+﻿using AuthApi.Enums;
+using AuthApi.Models;
 
 namespace AuthApi.Repositories.Interfaces
 {
@@ -12,6 +13,7 @@ namespace AuthApi.Repositories.Interfaces
         Task<Account?> UpdateAsync(Account account);
         Task MarkAsVerified(string email);
         Task BanAccountAsync(Guid id, bool isBanned);
+        Task<List<Account>> GetByRoleAsync(RoleEnum role);
 
     }
 }

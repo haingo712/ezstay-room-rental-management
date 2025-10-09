@@ -27,6 +27,11 @@ namespace AuthApi.Repositories
         public async Task UpdateAsync(OwnerRegistrationRequest request)
         {
             await _collection.ReplaceOneAsync(x => x.Id == request.Id, request);
-        }   
+        }
+
+        public async Task<List<OwnerRegistrationRequest>> GetAllAsync()
+        {
+            return await _collection.Find(_ => true).ToListAsync();
+        }
     }
 }
