@@ -49,7 +49,7 @@ namespace ContractAPI.Controllers
         }
         [Authorize(Roles = "Owner")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutContract(Guid id,[FromBody] UpdateContractDto request)
+        public async Task<IActionResult> PutContract(Guid id,[FromBody] UpdateContract request)
         {
             try
             {
