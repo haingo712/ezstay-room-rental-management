@@ -18,7 +18,7 @@ namespace RentalPostsAPI.Repository
         public async Task<Guid?> GetPostIdByRoomIdAsync(Guid roomId)
         {
             var post = await _collection
-                .Find(p => p.RoomId == roomId)
+                .Find(p => p.RoomId.Contains(roomId))
                 .FirstOrDefaultAsync();
             return post?.Id;
         }
@@ -65,7 +65,7 @@ namespace RentalPostsAPI.Repository
         
         public async Task<IEnumerable<RentalPosts>> GetByRoomIdAsync(Guid roomId)
         {
-            return await _collection.Find(x => x.RoomId == roomId).ToListAsync();
+            return await _collection.Find(p => p.RoomId.Contains(roomId)).ToListAsync();
         }
     }
 }

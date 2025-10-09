@@ -2,9 +2,12 @@
 {
     public class CreateRentalPostDTO
     {
-        public Guid RoomId { get; set; }
+        public Guid BoardingHouseId { get; set; }
+        public List<Guid>? RoomId { get; set; }
         public string Title { get; set; } = null!;
-        public string? Description { get; set; }
+        public string Content { get; set; } = null!;
         public string ContactPhone { get; set; } = null!;
+        public List<IFormFile>? Images { get; set; }
+
     }
 }

@@ -6,5 +6,6 @@
         public string AuthApiBaseUrl { get; set; } = string.Empty;
         public string BoardingHouseApiBaseUrl { get; set; } = string.Empty;
         public string AccountApiBaseUrl { get; set; } = string.Empty;
+        public string ImageApiBaseUrl { get; set; } = string.Empty;
     }
 }

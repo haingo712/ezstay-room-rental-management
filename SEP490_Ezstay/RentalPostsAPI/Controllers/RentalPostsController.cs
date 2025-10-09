@@ -32,7 +32,7 @@ namespace RentalPostsAPI.Controllers
         }
         [HttpPost]
         [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> Create([FromBody] CreateRentalPostDTO dto)
+        public async Task<IActionResult> Create([FromForm] CreateRentalPostDTO dto)
         {
 
  

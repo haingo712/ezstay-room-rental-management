@@ -16,7 +16,10 @@ namespace RentalPostsAPI.Service
 
         public string? GetFullNameFromClaims(ClaimsPrincipal user)
         {
-            return user.FindFirst("fullName")?.Value;
+            return user.FindFirst("fullName")?.Value
+        ?? user.FindFirst("FullName")?.Value
+        ?? user.FindFirst(ClaimTypes.Name)?.Value
+        ?? user.FindFirst("name")?.Value;
         }
 
         public string? GetPhoneFromClaims(ClaimsPrincipal user)
