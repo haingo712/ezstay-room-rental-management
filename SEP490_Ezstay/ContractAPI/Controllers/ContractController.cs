@@ -74,14 +74,14 @@ namespace ContractAPI.Controllers
            return _contractService.GetAllQueryable();
        }
        
-       // [Authorize(Roles = "User")]
-       // [HttpGet("MyContract")]
-       // [EnableQuery]
-       // public IQueryable<ContractResponseDto> GetContractsByTenantId()
-       // {
-       //     var tenantId = _tokenService.GetUserIdFromClaims(User);
-       //     return _contractService.GetAllByTenantId(tenantId);
-       // }
+       [Authorize(Roles = "User")]
+       [HttpGet("MyContract")]
+       [EnableQuery]
+       public IQueryable<ContractResponse> GetContractsByTenantId()
+       {
+           var tenantId = _tokenService.GetUserIdFromClaims(User);
+           return _contractService.GetAllByTenantId(tenantId);
+       }
        
        [Authorize(Roles = "Owner")]
        [HttpGet("ByOwnerId")]

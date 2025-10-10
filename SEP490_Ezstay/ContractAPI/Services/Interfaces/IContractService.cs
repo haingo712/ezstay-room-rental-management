@@ -12,7 +12,7 @@ public interface IContractService
 {
     IQueryable<ContractResponse> GetAllQueryable();
    // Task<bool> HasContractAsync(Guid tenantId, Guid roomId);
-   // IQueryable<ContractResponseDto> GetAllByTenantId(Guid tenantId);
+   IQueryable<ContractResponse> GetAllByTenantId(Guid tenantId);
     IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId);
     IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId, ContractStatus contractStatus);
     Task<ContractResponse?> GetByIdAsync(Guid id);
