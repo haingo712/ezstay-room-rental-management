@@ -1,5 +1,6 @@
 
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Shared.DTOs.UtilityReadings.Responses;
 using Shared.Enums;
 
@@ -17,6 +18,7 @@ public class ContractResponse
     public DateTime CanceledAt { get; set; }
     public DateTime CheckinDate { get; set; }
     public DateTime CheckoutDate { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ContractStatus ContractStatus { get; set; }
     public string Reason { get; set; }
     public decimal DepositAmount { get; set; }
