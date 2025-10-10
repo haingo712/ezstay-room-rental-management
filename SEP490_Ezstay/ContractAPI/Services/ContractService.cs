@@ -36,10 +36,10 @@ public class ContractService : IContractService
     public IQueryable<ContractResponse> GetAllQueryable()
         => _contractRepository.GetAllQueryable().ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
 
-    // public IQueryable<ContractResponseDto> GetAllByTenantId(Guid tenantId)
-    //     => _contractRepository.GetAllQueryable()
-    //                           .Where(x => x.TenantId == tenantId).OrderByDescending(d => d.CreatedAt)
-    //                           .ProjectTo<ContractResponseDto>(_mapper.ConfigurationProvider);
+    public IQueryable<ContractResponse> GetAllByTenantId(Guid tenantId)
+        => _contractRepository.GetAllQueryable()
+                              .Where(x => x.SignerProfile.TenantId == tenantId).OrderByDescending(d => d.CreatedAt)
+                              .ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
 
     public IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId)
         => _contractRepository.GetAllQueryable()
