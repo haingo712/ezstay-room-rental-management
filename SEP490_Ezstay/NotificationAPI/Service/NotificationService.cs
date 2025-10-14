@@ -5,6 +5,7 @@ using NotificationAPI.DTOs.Resquest;
 using NotificationAPI.Model;
 using NotificationAPI.Repositories.Interfaces;
 using NotificationAPI.Service.Interfaces;
+using Twilio.Rest.Conversations.V1.Service.Configuration;
 
 namespace NotificationAPI.Service
 {
@@ -64,6 +65,33 @@ namespace NotificationAPI.Service
 
             return _mapper.Map<NotificationResponseDto>(notify);
         }
+
+        public async Task<NotificationResponseDto?> UpdateNotifyByRole(Guid id,UpdateNotificationRequestDto dto, RoleEnum role)
+        {
+            // 🔹 Lấy notify cần cập nhật
+            var notify = await _repo.GetByIdAsync(id);
+            if (notify == null) return null;
+
+            // 🔹 Map dữ liệu từ DTO sang entity (AutoMapper)
+            _mapper.Map(dto, notify);
+            notify.IsRead = false;
+            notify.CreatedAt = DateTime.UtcNow;
+
+            await _repo.UpdateAsync(notify);
+
+            // 🔹 Lấy danh sách account theo Role
+            var accounts = await _notificationSender.GetByRoleAsync(role);
+            if (accounts == null || !accounts.Any()) return null;
+
+            // 🔹 Gửi notify cập nhật tới từng user theo role
+            foreach (var acc in accounts)
+            {
+                await _notificationSender.SendToAllAsync($"♻️ [Cập nhật] {notify.Title}: {notify.Message}");
+            }
+
+            return _mapper.Map<NotificationResponseDto>(notify);
+        }
+
 
 
 
