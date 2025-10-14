@@ -17,15 +17,15 @@
             }
         },
         {
-            "DownstreamPathTemplate": "/api/IdentityProfile/{everything}",
+            "DownstreamPathTemplate": "/api/Chat/{everything}",
             "DownstreamScheme": "https",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "localhost",
-                    "Port": 7153
+                    "Port": 7140
                 }
             ],
-            "UpstreamPathTemplate": "/api/IdentityProfile/{everything}",
+            "UpstreamPathTemplate": "/api/Chat/{everything}",
             "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
