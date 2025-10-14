@@ -25,8 +25,10 @@ public interface IChatService
    // Task<ChatMessageResponse> SendMessageAsync(ChatMessageRequest request);
 
    // Task<ApiResponse<ChatRoomResponse>> Add(Guid postId, CreateChatRoom request);
+
    Task<ApiResponse<ChatRoomResponse>> Add(Guid postId, Guid userId);
    Task<ApiResponse<List<ChatMessageResponse>>> GetMessages(Guid chatRoomId);
+   Task<ApiResponse<List<ChatRoomResponse>>> GetAllChatRoomByOwner(Guid ownerId);
    Task<ApiResponse<ChatMessageResponse>> SendMessage(Guid chatRoomId, Guid senderId,CreateChatMessage request);
    // Task<ApiResponse<ChatMessageResponse>> SendMessage(Guid chatRoomId,CreateChatMessage request);
    Task<ApiResponse<List<ChatRoomResponse>>> GetChatRoomsByOwner(Guid ownerId);

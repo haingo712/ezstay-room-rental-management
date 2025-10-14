@@ -22,7 +22,10 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IChatRoomRepository, ChatRoomRepository>();
 builder.Services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
 builder.Services.AddScoped<IChatService, ChatService>();
-
+builder.Services.AddHttpClient<IRentalPostClientService, RentalPostClientService>(client =>
+{
+     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RentalPostApi"]);
+});
 var odatabuilder = new ODataConventionModelBuilder();
 odatabuilder.EntitySet<ChatRoomResponse>("Chats");
 var odata = odatabuilder.GetEdmModel();

@@ -31,6 +31,11 @@ public class ChatRoomRepository:IChatRoomRepository
         await _collection.InsertOneAsync(chatRoom);
         return chatRoom;
     }
+    public async Task<IEnumerable<ChatRoom>> GetByChatRoomByOwner(Guid ownerId)
+    {
+        return await _collection.Find(r => r.OwnerId == ownerId)
+            .ToListAsync();
+    }
     // public async Task Update(ChatRoom chatRoom)
     // {
     //     await _collection.ReplaceOneAsync(a => a.Id == chatRoom.Id, chatRoom);
