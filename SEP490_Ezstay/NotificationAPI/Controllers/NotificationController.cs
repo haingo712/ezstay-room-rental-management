@@ -1,4 +1,5 @@
 ﻿using APIGateway.Helper.Interfaces;
+using AuthApi.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -63,6 +64,16 @@ namespace NotificationAPI.Controllers
         {
             var success = await _service.DeleteAsync(id);
             return success ? NoContent() : NotFound("Không tìm thấy thông báo");
+        }
+
+        [HttpPost("{id:guid}/role")]
+        public async Task<IActionResult> CreateNotificationByRole(Guid id, [FromQuery] RoleEnum role)
+        {
+            var result = await _service.CreateRoleNoti(id, role);
+            if (result == null)
+                return NotFound($"Không tìm thấy thông báo hoặc không có tài khoản thuộc role {role}");
+
+            return Ok(result);
         }
     }
 }

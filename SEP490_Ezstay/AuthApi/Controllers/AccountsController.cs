@@ -105,5 +105,12 @@ namespace AuthApi.Controllers
                 : BadRequest(new { message = response });
         }
 
+        [HttpPost("GetByRole")]
+        public async Task<IActionResult> GetByRole([FromBody] RoleEnum role)
+        {
+            var accounts = await _service.GetByRoleAsync(role);
+            return Ok(accounts);
+        }
+
     }
 }

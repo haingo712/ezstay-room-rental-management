@@ -26,6 +26,12 @@ builder.Services.AddScoped<IUserClaimHelper, UserClaimHelper>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
+builder.Services.AddHttpClient("Gateway", (serviceProvider, client) =>
+{
+    var config = serviceProvider.GetRequiredService<IConfiguration>();
+    var baseUrl = config["ServiceUrls:Gateway"];  // đọc từ appsettings.json
+    client.BaseAddress = new Uri(baseUrl);
+});
 
 builder.Services.AddAutoMapper(typeof(NotificationProfile));
 

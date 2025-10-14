@@ -1,5 +1,6 @@
 ﻿using AuthApi.DTO.Request;
 using AuthApi.DTO.Response;
+using AuthApi.Enums;
 
 namespace AuthApi.Services.Interfaces
 {
@@ -20,6 +21,7 @@ namespace AuthApi.Services.Interfaces
         Task BanAsync(Guid id);
         Task UnbanAsync(Guid id);
         Task<string> ChangePasswordAsync(ChangePasswordRequest dto);
+        Task<List<AccountResponse>> GetByRoleAsync(RoleEnum role);
 
     }
 }

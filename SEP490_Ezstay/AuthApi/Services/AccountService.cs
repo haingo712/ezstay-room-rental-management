@@ -125,7 +125,7 @@ namespace AuthApi.Services
 
             var account = _mapper.Map<Account>(request);
             account.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
-            account.IsVerified = false;
+            account.IsVerified = true;
             account.IsBanned = false;
             account.CreateAt = DateTime.UtcNow;
 
@@ -178,6 +178,12 @@ namespace AuthApi.Services
             return result != null
                 ? "Đổi mật khẩu thành công."
                 : "Đổi mật khẩu thất bại.";
+        }
+
+        public async Task<List<AccountResponse>> GetByRoleAsync(RoleEnum role)
+        {
+            var list = await _repo.GetByRoleAsync(role);
+            return _mapper.Map<List<AccountResponse>>(list);
         }
 
 
