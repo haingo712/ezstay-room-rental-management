@@ -35,7 +35,15 @@ public class ChatController : ControllerBase
         var userId= _tokenService.GetUserIdFromClaims(User);
         return Ok(await _chatService.Add(postId, userId));
     }
-   
+
+    [Authorize(Roles = "Owner")]
+    [HttpGet]
+    public async Task<IActionResult> GetAllChatRoomByOwner()
+    {
+        var ownerId= _tokenService.GetUserIdFromClaims(User);
+      return  Ok(await _chatService.GetAllChatRoomByOwner(ownerId));
+    }
+
     // [Authorize(Roles = "User")]
     // [HttpGet("chat-room")]
     // public async Task<IActionResult> GetUserRooms()

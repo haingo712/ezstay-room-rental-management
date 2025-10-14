@@ -27,14 +27,14 @@ public class ChatService: IChatService
     // }
     private readonly IChatRoomRepository _chatRoomRepository;
     private readonly IChatMessageRepository _chatMessageRepository;
-  
+  private readonly IRentalPostClientService _rentalPostClientService;
     private readonly IMapper _mapper;
 
-    public ChatService(IChatRoomRepository chatRoomRepository, IChatMessageRepository chatMessageRepository, IMapper mapper)
+    public ChatService(IChatRoomRepository chatRoomRepository, IChatMessageRepository chatMessageRepository, IRentalPostClientService rentalPostClientService, IMapper mapper)
     {
         _chatRoomRepository = chatRoomRepository;
         _chatMessageRepository = chatMessageRepository;
-      
+        _rentalPostClientService = rentalPostClientService;
         _mapper = mapper;
     }
 
@@ -58,15 +58,17 @@ public class ChatService: IChatService
         var existing = await _chatRoomRepository.GetByPostAndUsers(postId, userId);
         if (existing != null)
             return ApiResponse<ChatRoomResponse>.Success(_mapper.Map<ChatRoomResponse>(existing),"ok");
-       // var chatRoom = _mapper.Map<ChatRoom>(postId);
+      var post = _rentalPostClientService.GetByIdAsync(postId);
+        // var chatRoom = _mapper.Map<ChatRoom>(postId);
         // var chatRoom = _mapper.Map<ChatRoom>(existing);
         // chatRoom.PostId = postId;
         // chatRoom.CreatedAt = DateTime.UtcNow;
         // chatRoom.LastMessageAt = DateTime.UtcNow;
+        Console.WriteLine("sssssss "+ postId );
         var chatRoom = new ChatRoom
         {
             PostId = postId,
-           
+           OwnerId = post.Result.AuthorId,
             TenantId = userId,
             CreatedAt = DateTime.UtcNow,
             LastMessageAt = DateTime.UtcNow
@@ -79,6 +81,11 @@ public class ChatService: IChatService
     {
         var messages = await _chatMessageRepository.GetByChatRoomId(chatRoomId);
         return ApiResponse<List<ChatMessageResponse>>.Success( _mapper.Map<List<ChatMessageResponse>>(messages), "ok");
+    }
+    public async Task<ApiResponse<List<ChatRoomResponse>>> GetAllChatRoomByOwner(Guid ownerId)
+    {
+        var messages = await _chatRoomRepository.GetByChatRoomByOwner(ownerId);
+        return ApiResponse<List<ChatRoomResponse>>.Success( _mapper.Map<List<ChatRoomResponse>>(messages), "ok");
     }
     public async Task<ApiResponse<ChatMessageResponse>> SendMessage(Guid chatRoomId,Guid senderId,CreateChatMessage request)
     {
