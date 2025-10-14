@@ -9,8 +9,8 @@ public class MappingRoom:Profile
 {
     public MappingRoom()
     {
-        CreateMap<CreateRoomDto, Room>();
-        CreateMap<UpdateRoomDto, Room>();
+        CreateMap<CreateRoom, Room>();
+        CreateMap<UpdateRoom, Room>();
         CreateMap<Room, RoomResponse>();
 
         // CreateMap<Room, RoomWithAmenitiesDto>()

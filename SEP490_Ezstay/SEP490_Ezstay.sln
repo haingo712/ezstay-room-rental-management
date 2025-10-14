@@ -62,6 +62,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityBillAPI", "UtilityBi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{1FA5EF3B-1446-4675-9213-2029BA84676F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAPI", "ChatAPI\ChatAPI.csproj", "{23234280-8A03-4C6B-A9F8-32199DF7D938}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -176,6 +178,10 @@ Global
 		{1FA5EF3B-1446-4675-9213-2029BA84676F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FA5EF3B-1446-4675-9213-2029BA84676F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FA5EF3B-1446-4675-9213-2029BA84676F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23234280-8A03-4C6B-A9F8-32199DF7D938}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23234280-8A03-4C6B-A9F8-32199DF7D938}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23234280-8A03-4C6B-A9F8-32199DF7D938}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23234280-8A03-4C6B-A9F8-32199DF7D938}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

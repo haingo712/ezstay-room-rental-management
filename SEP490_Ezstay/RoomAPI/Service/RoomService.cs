@@ -71,7 +71,7 @@ public class RoomService: IRoomService
     //     return ApiResponse<RoomDto>.Success(result, "Thêm phòng thành công");
     // }
     
-    public async Task<ApiResponse<RoomResponse>> Add(  Guid houseId,  CreateRoomDto request)
+    public async Task<ApiResponse<RoomResponse>> Add(Guid houseId,  CreateRoom request)
     { 
         var exist = await _roomRepository.RoomNameExistsInHouse(houseId, request.RoomName);
         if (exist)
@@ -91,19 +91,18 @@ public class RoomService: IRoomService
         //
         //     await _roomAmenityClient.AddRoomAmenitiesAsync(room.Id, amenityRequest);
         // }
-
         var result = _mapper.Map<RoomResponse>(room);
         return ApiResponse<RoomResponse>.Success(result, "Thêm phòng thành công");
     }
 
-    public async Task<ApiResponse<bool>>  Update(Guid id, UpdateRoomDto request)
+    public async Task<ApiResponse<bool>>  Update(Guid id, UpdateRoom request)
     {
         var checkRoom =await _roomRepository.GetById(id);
         if (checkRoom == null)
             throw new KeyNotFoundException("Room not found");
-        // var existRoomName = await _roomRepository.RoomNameExistsInHouse(checkRoom.HouseId, request.RoomName, id);
-        // if(existRoomName)
-        //     return ApiResponse<bool>.Fail("Tên phòng đã tồn tại trong nhà trọ.");    
+        var existRoomName = await _roomRepository.RoomNameExistsInHouse(checkRoom.HouseId, request.RoomName, id);
+        if(existRoomName)
+            return ApiResponse<bool>.Fail("Tên phòng đã tồn tại trong nhà trọ.");    
         if (request.RoomStatus == RoomStatus.Occupied)
             return ApiResponse<bool>.Fail("K dc set trang thai nay");  
          _mapper.Map(request, checkRoom);
@@ -120,7 +119,6 @@ public class RoomService: IRoomService
             throw new KeyNotFoundException("k tim thay phong tro");
         var hasPosts = await _rentalPostClient.HasPostsForRoomAsync(room.Id);
         Console.WriteLine("sss"+ hasPosts);
-        Console.WriteLine("sss"+ hasPosts.GetHashCode());
         if (hasPosts)
             return  ApiResponse<bool>.Fail("Không thể xóa phòng vì đang có bài đăng");
         await _roomRepository.Delete(room);

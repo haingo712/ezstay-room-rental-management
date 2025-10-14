@@ -15,8 +15,8 @@ public interface IRoomService
     Task<RoomResponse> GetById(Guid id);
    // Task<ApiResponse<RoomDto>> Add(CreateRoomDto request);
     // Task<ApiResponse<RoomDto>> Add(Guid houseId, Guid houseLocationId, CreateRoomDto request);
-    Task<ApiResponse<RoomResponse>> Add(Guid houseId, CreateRoomDto request);
-    Task<ApiResponse<bool>> Update(Guid id,UpdateRoomDto request);
+    Task<ApiResponse<RoomResponse>> Add(Guid houseId, CreateRoom request);
+    Task<ApiResponse<bool>> Update(Guid id,UpdateRoom request);
     Task<ApiResponse<bool>> Delete(Guid id);
     Task<RoomWithAmenitiesResponse> GetRoomWithAmenitiesAsync(Guid roomId);
     
