@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\APIGateway\APIGateway.csproj" />
+    <ProjectReference Include="..\AuthApi\AuthApi.csproj" />
   </ItemGroup>
 
 </Project>

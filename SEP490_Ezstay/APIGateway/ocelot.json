@@ -296,22 +296,38 @@
             "UpstreamPathTemplate": "/api/provinces/{provinceId}/communes",
             "UpstreamHttpMethod": [ "Get" ]
         },
-        {
-            "DownstreamPathTemplate": "/api/Review/{everything}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7037
-                }
-            ],
-            "UpstreamPathTemplate": "/api/Review/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": []
-            }
+      {
+        "DownstreamPathTemplate": "/api/Review/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7037
+          }
+        ],
+        "UpstreamPathTemplate": "/api/Review/{everything}",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
         }
+      },
+      {
+        "DownstreamPathTemplate": "/api/TestAccount/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7139
+          }
+        ],
+        "UpstreamPathTemplate": "/api/TestAccount/{everything}",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        }
+      }
     ],
 
     "GlobalConfiguration": {

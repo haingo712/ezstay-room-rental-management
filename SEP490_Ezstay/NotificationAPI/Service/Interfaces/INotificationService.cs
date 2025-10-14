@@ -1,4 +1,5 @@
-﻿using NotificationAPI.DTOs.Respone;
+﻿using AuthApi.Enums;
+using NotificationAPI.DTOs.Respone;
 using NotificationAPI.DTOs.Resquest;
 
 namespace NotificationAPI.Service.Interfaces
@@ -8,7 +9,7 @@ namespace NotificationAPI.Service.Interfaces
         Task<IEnumerable<NotificationResponseDto>> GetUserNotifications(Guid userId);
         Task<NotificationResponseDto> CreateAsync(CreateNotificationRequestDto dto);
         Task<IEnumerable<NotificationResponseDto>> GetAllNotifications();
-
+        Task<NotificationResponseDto?> CreateRoleNoti(Guid id, RoleEnum role);
         Task<bool> MarkAsRead(Guid id);
         Task<bool> DeleteAsync(Guid id);
     }
