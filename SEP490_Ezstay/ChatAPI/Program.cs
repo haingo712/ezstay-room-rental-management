@@ -26,6 +26,10 @@ builder.Services.AddHttpClient<IRentalPostClientService, RentalPostClientService
 {
      client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RentalPostApi"]);
 });
+builder.Services.AddHttpClient<IAccountClientService, AccountClientService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:AuthApi"]);
+});
 var odatabuilder = new ODataConventionModelBuilder();
 odatabuilder.EntitySet<ChatRoomResponse>("Chats");
 var odata = odatabuilder.GetEdmModel();

@@ -11,11 +11,11 @@ public class ChatMessage
     public Guid Id { get; set; } 
 
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
-    public Guid ChatRoomId { get; set; }  // của phòng chat
+    public Guid ChatRoomId { get; set; }  
 
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid SenderId { get; set; } // Ai gửi tin (chủ trọ hoặc người thuê)
-
+    public string Image { get; set; }
     public string Content { get; set; } 
     public DateTime SentAt { get; set; } //  time gửi
     public bool IsRead { get; set; } // Tin nhắn đã đọc chưa
