@@ -75,5 +75,17 @@ namespace NotificationAPI.Controllers
 
             return Ok(result);
         }
+
+
+        [HttpPut("{id:guid}/role")]
+        public async Task<IActionResult> UpdateNotifyByRole(Guid id, [FromQuery] RoleEnum role, [FromBody] UpdateNotificationRequestDto dto)
+        {
+            var result = await _service.UpdateNotifyByRole(id, dto, role);
+            if (result == null)
+                return NotFound($"Không tìm thấy thông báo hoặc không có tài khoản thuộc role {role}");
+
+            return Ok(result);
+        }
     }
-}
+
+    }

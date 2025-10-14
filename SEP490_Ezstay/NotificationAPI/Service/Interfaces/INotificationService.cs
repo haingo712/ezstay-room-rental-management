@@ -10,6 +10,7 @@ namespace NotificationAPI.Service.Interfaces
         Task<NotificationResponseDto> CreateAsync(CreateNotificationRequestDto dto);
         Task<IEnumerable<NotificationResponseDto>> GetAllNotifications();
         Task<NotificationResponseDto?> CreateRoleNoti(Guid id, RoleEnum role);
+        Task<NotificationResponseDto?> UpdateNotifyByRole(Guid id, UpdateNotificationRequestDto dto, RoleEnum role);
         Task<bool> MarkAsRead(Guid id);
         Task<bool> DeleteAsync(Guid id);
     }
