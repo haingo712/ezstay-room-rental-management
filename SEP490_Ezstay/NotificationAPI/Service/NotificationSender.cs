@@ -27,7 +27,7 @@ namespace NotificationAPI.Service
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             // Gọi qua Gateway → AuthAPI (qua route /api/accounts/GetByRole)
-            var response = await _httpClient.PostAsync("api/accounts/GetByRole", content);
+            var response = await _httpClient.PostAsync("api/Accounts/GetByRole", content);
 
             response.EnsureSuccessStatusCode();
 
