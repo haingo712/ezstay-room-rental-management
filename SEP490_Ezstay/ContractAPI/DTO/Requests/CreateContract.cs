@@ -18,7 +18,9 @@ public class CreateContract
     [Required]
     [Range(0, double.MaxValue, ErrorMessage = "Tiền cọc phải >= 0")]
     public decimal DepositAmount { get; set; }
-
+    [Required]
+    [Range(0, double.MaxValue, ErrorMessage = "Tiền phòng  phải >= 0")]
+    public decimal RoomPrice { get; set;}
     [Required]
     [Range(1, int.MaxValue, ErrorMessage = "Number of occupants must be at least 1.")]
     public int NumberOfOccupants { get; set; }

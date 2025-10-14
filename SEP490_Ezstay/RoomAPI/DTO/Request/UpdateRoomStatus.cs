@@ -2,7 +2,7 @@
 
 namespace RoomAPI.DTO.Request;
 
-public class UpdateRoomStatusDto
+public class UpdateRoomStatus
 {
     public string Status { get; set; }
 }

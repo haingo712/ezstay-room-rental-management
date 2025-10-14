@@ -9,8 +9,8 @@ public class MappingAmenity:Profile
 {
     public MappingAmenity()
     {
-        CreateMap<CreateAmenityDto, Amenity>();
-        CreateMap<UpdateAmenityDto, Amenity>();
+        CreateMap<CreateAmenity, Amenity>();
+        CreateMap<UpdateAmenity, Amenity>();
         CreateMap<Amenity, AmenityResponse>();
     }
 }

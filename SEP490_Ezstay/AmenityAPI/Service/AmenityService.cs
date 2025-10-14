@@ -64,7 +64,7 @@ public class AmenityService: IAmenityService
             throw new KeyNotFoundException("AmentityId not found");
         return   _mapper.Map<AmenityResponse>(amenity);
     }
-    public async  Task<ApiResponse<AmenityResponse>> Add(CreateAmenityDto request )
+    public async  Task<ApiResponse<AmenityResponse>> Add(CreateAmenity request )
     { 
         var exist = await _amenityRepository.AmenityNameExists(request.AmenityName);
         if (exist)
@@ -72,11 +72,6 @@ public class AmenityService: IAmenityService
   
         var amenity = _mapper.Map<Amenity>(request);
          var c=   _imageClient.UploadImage(request.ImageUrl);
-         Console.WriteLine("sss "+ c);
-         Console.WriteLine("sss "+ request.ImageUrl.Headers);
-         Console.WriteLine("sss "+ request.ImageUrl.ContentType);
-         Console.WriteLine("sss "+ request.ImageUrl.FileName);
-         Console.WriteLine("sss "+ request.ImageUrl);
          amenity.ImageUrl = c.Result;
         amenity.CreatedAt = DateTime.UtcNow;
         await _amenityRepository.Add(amenity);
@@ -84,7 +79,7 @@ public class AmenityService: IAmenityService
         return  ApiResponse<AmenityResponse>.Success(result,"Thêm tiện ích thành công");
     }
 
-    public async Task<ApiResponse<bool>> Update(Guid id, UpdateAmenityDto request)
+    public async Task<ApiResponse<bool>> Update(Guid id, UpdateAmenity request)
     {
         var amenity =await _amenityRepository.GetById(id);
         if (amenity == null)

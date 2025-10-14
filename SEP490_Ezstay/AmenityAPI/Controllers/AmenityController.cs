@@ -57,7 +57,7 @@ namespace AmenityAPI.Controllers
         // PUT: api/Amenity/5
         [HttpPut("{id}")]
         [Authorize(Roles = "Staff")]
-        public async Task<IActionResult> Put(Guid id, [FromForm] UpdateAmenityDto request)
+        public async Task<IActionResult> Put(Guid id, [FromForm] UpdateAmenity request)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace AmenityAPI.Controllers
         
         [HttpPost]
         [Authorize(Roles = "Staff")]
-        public async Task<ActionResult<AmenityResponse>> Post([FromForm] CreateAmenityDto request)
+        public async Task<ActionResult<AmenityResponse>> Post([FromForm] CreateAmenity request)
         {
             try
             {

@@ -62,7 +62,7 @@ namespace RoomAPI.Controllers
         
         [HttpGet]
         [EnableQuery]
-        public IQueryable<RoomResponse> GetRooms()
+        public IQueryable<RoomResponse> GetAll()
         {
             return _roomService.GetAllQueryable();
         }
@@ -88,7 +88,7 @@ namespace RoomAPI.Controllers
     
         // GET: api/Rooms/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RoomResponse>> GetRoomById(Guid id)
+        public async Task<ActionResult<RoomResponse>> GetById(Guid id)
         {
             try
             {
@@ -105,7 +105,7 @@ namespace RoomAPI.Controllers
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner")]
     
-        public async Task<IActionResult> PutRoom(Guid id,[FromForm] UpdateRoomDto request) {
+        public async Task<IActionResult> Put(Guid id,[FromForm] UpdateRoom request) {
         try
         {
           var result =  await _roomService.Update(id, request);
@@ -123,7 +123,7 @@ namespace RoomAPI.Controllers
         
     [HttpPost("House/{houseId}")]
     [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> PostRoom(Guid houseId,[FromForm] CreateRoomDto request)
+    public async Task<IActionResult> Post(Guid houseId,[FromForm] CreateRoom request)
     {
         try
         {
@@ -132,7 +132,7 @@ namespace RoomAPI.Controllers
             if (!createRoom.IsSuccess)
                 return BadRequest(new { message = createRoom.Message });
          
-            return CreatedAtAction("GetRoomById", new { id = createRoom.Data.HouseId }, createRoom);
+            return CreatedAtAction("GetById", new { id = createRoom.Data.HouseId }, createRoom);
 
         }catch (Exception e) {
             return Conflict(new { message = e.Message });
@@ -141,7 +141,7 @@ namespace RoomAPI.Controllers
     //     // DELETE: api/Rooms/5
     // [Authorize(Roles = "Owner")]
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteRoom(Guid id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         try
         {    

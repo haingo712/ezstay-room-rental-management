@@ -74,8 +74,8 @@ public class ContractService : IContractService
         contract.OwnerId = ownerId;
         contract.CreatedAt = DateTime.UtcNow;
         contract.ContractStatus = ContractStatus.Active;
-        if (request.ProfilesInContract == null || !request.ProfilesInContract.Any())
-            return  ApiResponse<ContractResponse>.Fail("Danh sách người thuê không được để trống");
+        // if (request.ProfilesInContract == null || !request.ProfilesInContract.Any())
+        //     return  ApiResponse<ContractResponse>.Fail("Danh sách người thuê không được để trống");
         var members = request.ProfilesInContract
             .Select((p, index) =>
             {
@@ -91,27 +91,11 @@ public class ContractService : IContractService
        // contract.SignerProfile = signer;
         contract.SignerProfile = members.First(p => p.IsSigner); 
         var saveContract =await _contractRepository.AddAsync(contract);
-        // if (request.UtilityReadings != null && request.UtilityReadings.Any())
-       // {
-       //     foreach (var utility in request.UtilityReadings)
-       //     {
-       //         var type = request.UtilityReadings.IndexOf(utility) == 0
-       //             ? UtilityType.Electric
-       //             : UtilityType.Water;
-       //          var createUtility = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Electric, utility);
-       //
-       //         // var createUtility = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Electric, request.UtilityReadings[0]);
-       //         // var createUtility1 = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Water, request.UtilityReadings[1]);
-       //
-       //         if (!createUtility.IsSuccess)
-       //             return ApiResponse<ContractResponse>.Fail($"Không thể tạo chỉ số : {createUtility.Message}");
-       //   }
-   //  }
     var createUtility = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Water, request.WaterReading);
     var createUtiliyw = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Electric, request.ElectricityReading);
 
-   if (!createUtility.IsSuccess)
-       return ApiResponse<ContractResponse>.Fail($"Không thể tạo chỉ số : {createUtility.Message}");
+   // if (!createUtility.IsSuccess)
+   //     return ApiResponse<ContractResponse>.Fail($"Không thể tạo chỉ số : {createUtility.Message}");
 
         var result = _mapper.Map<ContractResponse>(saveContract);
         result.WaterReading = createUtility.Data;
@@ -164,9 +148,7 @@ public class ContractService : IContractService
             contract.ProfilesInContract = members;
             contract.SignerProfile = members.First(p => p.IsSigner);
         }
-     //   if (request.ElectricityReading != null) 
             await _utilityReadingClientService.Update(contract.RoomId, UtilityType.Electric, request.ElectricityReading);
-      //  if (request.WaterReading != null) 
             await _utilityReadingClientService.Update(contract.RoomId, UtilityType.Water, request.WaterReading);
 
         // if (contract.ContractStatus != ContractStatus.Active)

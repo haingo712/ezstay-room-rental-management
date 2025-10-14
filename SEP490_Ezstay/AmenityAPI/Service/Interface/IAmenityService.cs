@@ -14,8 +14,8 @@ public interface IAmenityService
     Task<ApiResponse<IEnumerable<AmenityResponse>>> GetAll();
     Task<AmenityResponse> GetById(Guid id);
    // Task<ApiResponse<AmenityResponseDto>> AddAsync(Guid staffId, CreateAmenityDto request);
-    Task<ApiResponse<AmenityResponse>> Add(CreateAmenityDto request);
-    Task<ApiResponse<bool>> Update(Guid id,UpdateAmenityDto request);
+    Task<ApiResponse<AmenityResponse>> Add(CreateAmenity request);
+    Task<ApiResponse<bool>> Update(Guid id,UpdateAmenity request);
     Task<ApiResponse<bool>> Delete(Guid id);
     
 }

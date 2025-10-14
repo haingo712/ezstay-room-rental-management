@@ -3,10 +3,10 @@ using Shared.Enums;
 
 namespace RoomAPI.DTO.Request;
 
-public class UpdateRoomDto
+public class UpdateRoom
 {
-  //  [Required]
-  //  public string RoomName { get; set; } 
+     [Required]
+    public string RoomName { get; set; } 
     [Required]
     [Range(0.01, double.MaxValue, ErrorMessage = "Area must be greater than zero.")]
     public decimal Area { get; set; }

@@ -28,6 +28,7 @@ namespace ContractAPI.Model
         public string Notes { get; set; }
        
         public string Reason { get; set; }
+        public decimal RoomPrice { get; set;}
         
         public decimal DepositAmount { get; set; }  //  Tiền cọc
         public DateTime CreatedAt {get;set;}

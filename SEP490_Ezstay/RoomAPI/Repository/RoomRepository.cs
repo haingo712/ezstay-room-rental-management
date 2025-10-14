@@ -40,10 +40,10 @@ public class RoomRepository:IRoomRepository
     //     return await _rooms.AsQueryable()
     //         .AnyAsync(r => r.HouseId == houseId 
     //                        && r.RoomName.ToLower() == roomName.ToLower()
-    //                        && r.HouseLocationId == houseLocationId
+    //                        && r.HouseId != houseLocationId
     //                        );
     // }
-    public async Task<bool> RoomNameExistsInHouseRoom(Guid houseId, string roomName, Guid roomId)
+    public async Task<bool> RoomNameExistsInHouse(Guid houseId, string roomName, Guid roomId)
     {
         return await _rooms.AsQueryable()
             .AnyAsync(r =>

@@ -38,7 +38,7 @@ namespace ContractAPI.Controllers
         
         [Authorize(Roles = "Owner")]
         [HttpPost]
-        public async Task<IActionResult> CreateContract([FromBody] CreateContract request)
+        public async Task<IActionResult> Post([FromBody] CreateContract request)
         {
             var ownerId = _tokenService.GetUserIdFromClaims(User);
             var createContract = await _contractService.Add(ownerId, request);
@@ -49,7 +49,7 @@ namespace ContractAPI.Controllers
         }
         [Authorize(Roles = "Owner")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutContract(Guid id,[FromBody] UpdateContract request)
+        public async Task<IActionResult> Put(Guid id,[FromBody] UpdateContract request)
         {
             try
             {
@@ -152,7 +152,7 @@ namespace ContractAPI.Controllers
 
         // // DELETE: api/Tenant/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteContract(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {

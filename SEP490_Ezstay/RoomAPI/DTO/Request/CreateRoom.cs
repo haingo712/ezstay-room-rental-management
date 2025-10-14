@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RoomAPI.DTO.Request;
 
-public class CreateRoomDto
+public class CreateRoom
 {
     [Required]
     public string RoomName { get; set; } 
