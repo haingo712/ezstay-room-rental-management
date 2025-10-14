@@ -24,6 +24,8 @@ var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:Conne
 builder.Services.AddSingleton(mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
 builder.Services.AddScoped<IUserClaimHelper, UserClaimHelper>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<INotificationSender, NotificationSender>();
+
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
 builder.Services.AddHttpClient("Gateway", (serviceProvider, client) =>

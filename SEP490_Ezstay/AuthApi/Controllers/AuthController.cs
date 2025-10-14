@@ -128,7 +128,9 @@ namespace AuthApi.Controllers
         [HttpPost("confirm-otp")]
         public async Task<IActionResult> ConfirmOtp([FromBody] ConfirmOtpRequest dto)
         {
-            if (!result.Success) return BadRequest(result);            var result = await _authService.ConfirmOtpForForgotPasswordAsync(dto.Email, dto.Otp);
+            var result = await _authService.ConfirmOtpForForgotPasswordAsync(dto.Email, dto.Otp);
+            if (!result.Success) return BadRequest(result);           
+          
 
             return Ok(result);
         }

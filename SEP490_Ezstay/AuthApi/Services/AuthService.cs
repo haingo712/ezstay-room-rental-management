@@ -81,7 +81,7 @@ namespace AuthApi.Services
                 return new LoginResponseDto { Success = false, Message = "Account not found." };
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, account.Password))
                 return new LoginResponseDto { Success = false, Message = "Incorrect password." };
-            if(!account.IsBanned)
+            if(account.IsBanned == true)
                 return new LoginResponseDto { Success = false, Message = "Account has been banned." };  
             if (!account.IsVerified)
                 return new LoginResponseDto { Success = false, Message = "Account has not been verified." };

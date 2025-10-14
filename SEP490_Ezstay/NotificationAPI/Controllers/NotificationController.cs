@@ -66,15 +66,16 @@ namespace NotificationAPI.Controllers
             return success ? NoContent() : NotFound("Không tìm thấy thông báo");
         }
 
-        [HttpPost("{id:guid}/role")]
-        public async Task<IActionResult> CreateNotificationByRole(Guid id, [FromQuery] RoleEnum role)
+        [HttpPost("role/{role}")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> CreateNotifyByRole([FromBody] CreateNotificationRequestDto dto, RoleEnum role)
         {
-            var result = await _service.CreateRoleNoti(id, role);
+            var result = await _service.CreateNotifyByRoleAsync(dto, role);
             if (result == null)
-                return NotFound($"Không tìm thấy thông báo hoặc không có tài khoản thuộc role {role}");
-
+                return NotFound("Không tìm thấy user nào thuộc role này.");
             return Ok(result);
         }
+
 
 
         [HttpPut("{id:guid}/role")]

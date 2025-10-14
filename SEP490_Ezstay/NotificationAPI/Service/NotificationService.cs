@@ -47,24 +47,31 @@ namespace NotificationAPI.Service
             return notifyDto;
         }
 
-        public async Task<NotificationResponseDto?> CreateRoleNoti(Guid id, RoleEnum role)
+        public async Task<NotificationResponseDto?> CreateNotifyByRoleAsync(CreateNotificationRequestDto dto, RoleEnum role)
         {
-            // Lấy notify từ repo
-            var notify = await _repo.GetByIdAsync(id);
-            if (notify == null) return null;
+            // 🔹 B1: map DTO → entity
+            var notify = _mapper.Map<Notify>(dto);
 
-            // 🔹 Lấy danh sách account theo role (gọi qua Gateway → AuthAPI)
+            // Tùy chọn: thêm Role để biết thông báo này gửi cho role nào
+            // Nếu bạn chưa có trường Role trong Notify, có thể bỏ dòng này
+            // notify.Role = role;
+
+            await _repo.AddAsync(notify);
+
+            // 🔹 B2: lấy danh sách account theo role từ AuthAPI qua Gateway
             var accounts = await _notificationSender.GetByRoleAsync(role);
             if (accounts == null || !accounts.Any()) return null;
 
-            // 🔹 Gửi notify đến từng account theo role
+            // 🔹 B3: gửi notification tới tất cả user thuộc role đó
             foreach (var acc in accounts)
             {
                 await _notificationSender.SendToAllAsync($"🔔 {notify.Title}: {notify.Message}");
             }
 
+            // 🔹 B4: trả về DTO kết quả
             return _mapper.Map<NotificationResponseDto>(notify);
         }
+
 
         public async Task<NotificationResponseDto?> UpdateNotifyByRole(Guid id,UpdateNotificationRequestDto dto, RoleEnum role)
         {
