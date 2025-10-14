@@ -36,7 +36,7 @@ public class ChatController : ControllerBase
         return Ok(await _chatService.Add(postId, userId));
     }
 
-    [Authorize(Roles = "Owner")]
+    [Authorize(Roles = "Owner, User")]
     [HttpGet]
     public async Task<IActionResult> GetAllChatRoomByOwner()
     {

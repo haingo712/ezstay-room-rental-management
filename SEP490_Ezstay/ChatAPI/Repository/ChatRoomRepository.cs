@@ -33,24 +33,10 @@ public class ChatRoomRepository:IChatRoomRepository
     }
     public async Task<IEnumerable<ChatRoom>> GetByChatRoomByOwner(Guid ownerId)
     {
-        return await _collection.Find(r => r.OwnerId == ownerId)
+        return await _collection.Find(r => r.OwnerId == ownerId ||  r.TenantId == ownerId )
             .ToListAsync();
     }
-    // public async Task Update(ChatRoom chatRoom)
-    // {
-    //     await _collection.ReplaceOneAsync(a => a.Id == chatRoom.Id, chatRoom);
-    // }
-    // public async Task Delete(ChatRoom chatRoom)
-    // {
-    //     await _collection.DeleteOneAsync(a => a.Id == chatRoom.Id);
-    // }
-    // public async Task<ChatRoom?> GetByPostAndUsers(Guid postId, Guid ownerId, Guid tenantId)
-    // {
-    //     return await _collection.Find(r =>
-    //         r.PostId == postId &&
-    //         r.OwnerId == ownerId &&
-    //         r.TenantId == tenantId).FirstOrDefaultAsync();
-    // }
+  
     public async Task<ChatRoom?> GetByPostAndUsers(Guid postId, Guid tenantId)
     {
         return await _collection.Find(r =>
