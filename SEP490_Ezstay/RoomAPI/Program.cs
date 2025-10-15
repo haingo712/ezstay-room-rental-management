@@ -43,6 +43,10 @@ builder.Services.AddHttpClient<IRoomAmenityClientService, RoomAmenityClientServi
 {
     client.BaseAddress = new Uri(serviceUrls["RoomAmenityApi"]);
 });
+builder.Services.AddHttpClient<IContractClientService, ContractClientService>(client =>
+{
+    client.BaseAddress = new Uri(serviceUrls["ContractApi"]);
+});
 
 builder.Services.AddHttpClient<IRentalPostClientService, RentalPostClientService>(client =>
 {

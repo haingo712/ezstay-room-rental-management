@@ -22,4 +22,5 @@ public interface IContractService
     Task<ApiResponse<ContractResponse>> CancelContract(Guid contractId, string reason);
     Task<ApiResponse<bool>> Delete(Guid id);
     Task<ApiResponse<List<string>>> UploadContractImages(Guid id, List<IFormFile> images);
+    Task<ApiResponse<bool>> ExistsByRoomId(Guid roomId);
 }

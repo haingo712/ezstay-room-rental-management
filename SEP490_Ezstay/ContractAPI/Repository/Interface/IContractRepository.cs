@@ -12,5 +12,5 @@ public interface IContractRepository
     Task<Contract> AddAsync(Contract contract);
     Task UpdateAsync(Contract contract);
     Task DeleteAsync(Contract contract);
-    Task<bool> ContractRoomIsActiveAsync(Guid roomId);
+    Task<bool> ExistsByRoomId(Guid roomId);
 }

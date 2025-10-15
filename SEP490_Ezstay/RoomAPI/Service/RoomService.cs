@@ -21,16 +21,26 @@ public class RoomService: IRoomService
     private readonly IImageAPI _imageClient;
     private readonly IRentalPostClientService _rentalPostClient;
     private readonly IMapper _mapper;
+    private readonly IContractClientService _contractClient;
 
-    public RoomService(IRoomRepository roomRepository, IRoomAmenityAPI roomAmenityClient, IAmenityClientService amenityClient, IImageAPI imageClient, IRentalPostClientService rentalPostClient, IMapper mapper)
+    public RoomService(
+        IRoomRepository roomRepository,
+        IRoomAmenityAPI roomAmenityClient,
+        IAmenityClientService amenityClient,
+        IImageAPI imageClient,
+        IRentalPostClientService rentalPostClient,
+        IContractClientService contractClient,
+        IMapper mapper)
     {
         _roomRepository = roomRepository;
         _roomAmenityClient = roomAmenityClient;
         _amenityClient = amenityClient;
         _imageClient = imageClient;
         _rentalPostClient = rentalPostClient;
+        _contractClient = contractClient;
         _mapper = mapper;
     }
+
 
     public IQueryable<RoomResponse> GetAllStatusActiveByHouseId(Guid houseId)
     {
@@ -121,6 +131,11 @@ public class RoomService: IRoomService
         Console.WriteLine("sss"+ hasPosts);
         if (hasPosts)
             return  ApiResponse<bool>.Fail("Không thể xóa phòng vì đang có bài đăng");
+        var checkContract = await _contractClient.HasContractByRoomId(room.Id);
+        Console.WriteLine("xxxs"+ hasPosts);
+        if (checkContract)
+            return  ApiResponse<bool>.Fail("Không thể xóa phòng vì đang có contract");
+        
         await _roomRepository.Delete(room);
         return ApiResponse<bool>.Success(true, "Xoá phòng thành công");
     }
