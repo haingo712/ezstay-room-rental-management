@@ -1,4 +1,5 @@
-﻿using NotificationAPI.Model;
+﻿using AuthApi.Enums;
+using NotificationAPI.Model;
 
 namespace NotificationAPI.Repositories.Interfaces
 {
@@ -17,6 +18,8 @@ namespace NotificationAPI.Repositories.Interfaces
 
         Task<List<Notify>> GetByUserIdsAsync(IEnumerable<Guid> userIds);
         Task UpdateManyAsync(IEnumerable<Notify> notifies);
+        Task<List<Notify>> GetAllForRoleOrUserAsync(Guid userId, RoleEnum role);
+
 
 
         }

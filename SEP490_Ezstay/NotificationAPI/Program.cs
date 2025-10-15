@@ -10,6 +10,7 @@ using NotificationAPI.Service.Interfaces;
 using NotificationAPI.Service;
 using System.Text;
 using NotificationAPI.Mapping;
+using NotificationAPI.Sinair;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,7 @@ var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:Conne
 builder.Services.AddSingleton(mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
 builder.Services.AddScoped<IUserClaimHelper, UserClaimHelper>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddSignalR();
 
 
 builder.Services.AddScoped<INotificationService, NotificationService>();
@@ -104,5 +106,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapHub<NotificationHub>("/hubs/notification");
 app.Run();

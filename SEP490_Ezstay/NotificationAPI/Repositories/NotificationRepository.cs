@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using AuthApi.Enums;
+using MongoDB.Driver;
 using NotificationAPI.Model;
 using NotificationAPI.Repositories.Interfaces;
 
@@ -80,6 +81,30 @@ namespace NotificationAPI.Repositories
             });
             await Task.WhenAll(tasks);
         }
+
+        public async Task<List<Notify>> GetAllForRoleOrUserAsync(Guid userId, RoleEnum role)
+        {
+            if (role == RoleEnum.Admin)
+            {
+                // Admin thấy tất cả
+                return await _notifications.Find(_ => true)
+                    .SortByDescending(x => x.CreatedAt)
+                    .ToListAsync();
+            }
+
+            // Các role khác chỉ thấy:
+            // - Thông báo chung cho role đó
+            // - Thông báo riêng cho user đó
+            var filter = Builders<Notify>.Filter.Or(
+                Builders<Notify>.Filter.Eq(x => x.TargetRole, role),
+                Builders<Notify>.Filter.Eq(x => x.UserId, userId)
+            );
+
+            return await _notifications.Find(filter)
+                .SortByDescending(x => x.CreatedAt)
+                .ToListAsync();
+        }
+
 
 
 
