@@ -1,4 +1,5 @@
-﻿using NotificationAPI.Enums;
+﻿using AuthApi.Enums;
+using NotificationAPI.Enums;
 
 namespace NotificationAPI.DTOs.Resquest
 {
@@ -10,6 +11,6 @@ namespace NotificationAPI.DTOs.Resquest
         public string Message { get; set; } = string.Empty;
         public RelatedItemType RelatedItemType { get; set; }
         public int RelatedItemId { get; set; }
-        public string TargetRole { get; set; } = string.Empty;
+        public RoleEnum TargetRole { get; set; }
     }
 }

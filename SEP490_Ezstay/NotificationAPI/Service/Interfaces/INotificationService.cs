@@ -6,7 +6,7 @@ namespace NotificationAPI.Service.Interfaces
 {
     public interface INotificationService 
     {
-        Task<List<NotificationResponseDto>> GetAllByUserAsync(Guid userId);
+        //Task<List<NotificationResponseDto>> GetAllByUserAsync(Guid userId);
 
         // 🔹 Lấy chi tiết thông báo
         Task<NotificationResponseDto?> GetByIdAsync(Guid id);
@@ -21,11 +21,14 @@ namespace NotificationAPI.Service.Interfaces
         Task DeleteAsync(Guid id);
 
         // 🔹 Tạo thông báo cho 1 role
-        Task<List<NotificationResponseDto>> CreateByRoleAsync(NotifyByRoleRequest request);
+        Task<NotificationResponseDto> CreateByRoleAsync(NotifyByRoleRequest request);
+
 
         // 🔹 Đánh dấu thông báo đã đọc
         Task<bool> MarkAsReadAsync(Guid id);
-        Task<List<NotificationResponseDto>> UpdateByRoleAsync(NotifyByRoleRequest request);
-        
+        Task<NotificationResponseDto?> UpdateAsyncByRole(Guid id, NotifyRequest request);
+        Task<List<NotificationResponseDto>> GetAllByRoleOrUserAsync(Guid userId, RoleEnum role);
+
+
         }
 }
