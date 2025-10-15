@@ -7,5 +7,7 @@ namespace RentalPostsAPI.Service.Interface
         Task<RoomDto?> GetRoomByIdAsync(Guid roomId);
         Task<BoardingHouseDTO?> GetBoardingHouseByIdAsync(Guid houseId);
         Task<AccountDto?> GetAccountByIdAsync(Guid Id);
+        Task<List<string>?> UploadImagesAsync(List<IFormFile> files);
+        Task<List<RoomDto>> GetRoomsByBoardingHouseIdAsync(Guid houseId);
     }
 }

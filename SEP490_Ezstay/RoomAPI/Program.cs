@@ -6,11 +6,14 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using RoomAPI.APIs;
+using RoomAPI.APIs.Interfaces;
 using RoomAPI.DTO.Request;
 using RoomAPI.Repository;
 using RoomAPI.Repository.Interface;
 using RoomAPI.Service;
 using RoomAPI.Service.Interface;
+using Shared.DTOs.Rooms.Responses;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,26 +25,12 @@ builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["Co
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<IRoomAmenityAPI, RoomAmenityAPI>();
 
-// builder.Services.AddScoped<IRoomAmenityClientService, RoomAmenityClientService>();
-// builder.Services.AddScoped<IAmenityClientService, AmenityClientService>();
-// builder.Services.AddHttpClient("Gateway", client =>
-// {
-//     client.BaseAddress = new Uri("https://localhost:7000/"); // hoặc domain của RoomAmenityAPI
-// });
-
-
-// var gatewayUrl = builder.Configuration["ServiceUrls:Gateway"];
-//
-// builder.Services.AddHttpClient<IAmenityClientService, AmenityClientService>(client =>
-// {
-//     client.BaseAddress = new Uri($"{gatewayUrl}");
-// });
-//
-// builder.Services.AddHttpClient<IRoomAmenityClientService, RoomAmenityClientService>(client =>
-// {
-//     client.BaseAddress = new Uri($"{gatewayUrl}");
-// });
+builder.Services.AddHttpClient<IImageAPI, ImageAPI>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
+});
 
 var serviceUrls = builder.Configuration.GetSection("ServiceUrls");
 
@@ -54,6 +43,10 @@ builder.Services.AddHttpClient<IRoomAmenityClientService, RoomAmenityClientServi
 {
     client.BaseAddress = new Uri(serviceUrls["RoomAmenityApi"]);
 });
+builder.Services.AddHttpClient<IContractClientService, ContractClientService>(client =>
+{
+    client.BaseAddress = new Uri(serviceUrls["ContractApi"]);
+});
 
 builder.Services.AddHttpClient<IRentalPostClientService, RentalPostClientService>(client =>
 {
@@ -61,18 +54,8 @@ builder.Services.AddHttpClient<IRentalPostClientService, RentalPostClientService
    // client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RentalPostApi"]);
 });
 
-
-
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-});
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
 var odatabuilder = new ODataConventionModelBuilder();
-odatabuilder.EntitySet<RoomDto>("Rooms");
+odatabuilder.EntitySet<RoomResponse>("Rooms");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>
     options.AddRouteComponents("odata", odata)
@@ -138,6 +121,13 @@ builder.Services.AddAuthorization();
                 });
             });
 
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

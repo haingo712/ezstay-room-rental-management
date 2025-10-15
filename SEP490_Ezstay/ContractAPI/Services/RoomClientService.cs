@@ -1,6 +1,8 @@
 using MongoDB.Bson.IO;
 using ContractAPI.DTO.Response;
 using ContractAPI.Services.Interfaces;
+using Shared.DTOs.Rooms.Responses;
+using Shared.Enums;
 using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 namespace ContractAPI.Services;
@@ -22,7 +24,7 @@ public class RoomClientService : IRoomClientService
         var content = await response.Content.ReadAsStringAsync();
         return JsonConvert.DeserializeObject<RoomResponse>(content);
     }
-    public async Task<bool> UpdateRoomStatusAsync(Guid roomId, string status)
+    public async Task<bool> UpdateRoomStatusAsync(Guid roomId, RoomStatus status)
     {
         // var payload = new { RoomStatus = status };
         var response = await _httpClient.PutAsync($"api/Rooms/{roomId}/RoomStatus/{status}",null);

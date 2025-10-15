@@ -1,5 +1,6 @@
 using ReviewAPI.DTO.Response;
 using ReviewAPI.Service.Interface;
+using Shared.DTOs.Contracts.Responses;
 
 namespace ReviewAPI.Service;
 
@@ -20,7 +21,7 @@ public class ContractClientService: IContractClientService
         var result = await response.Content.ReadAsStringAsync();
         return bool.Parse(result);
     }
-    public async Task<ContractResponseDto?> GetContractById(Guid contractId)
+    public async Task<ContractResponse?> GetContractById(Guid contractId)
     {
         var response = await _httpClient.GetAsync($"/api/Contract/{contractId}");
         if (!response.IsSuccessStatusCode) return null;
@@ -32,7 +33,7 @@ public class ContractClientService: IContractClientService
         //     });
         //
         // return wrapper?.Data;
-        var contract = await response.Content.ReadFromJsonAsync<ContractResponseDto>(
+        var contract = await response.Content.ReadFromJsonAsync<ContractResponse>(
             new System.Text.Json.JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true

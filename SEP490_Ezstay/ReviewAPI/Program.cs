@@ -1,17 +1,20 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OData;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
-using ReviewAPI.DTO.Response;
+using ReviewAPI.APIs;
+using ReviewAPI.APIs.Interfaces;
 using ReviewAPI.DTO.Response.ReviewReply;
 using ReviewAPI.Profiles;
 using ReviewAPI.Repository;
 using ReviewAPI.Repository.Interface;
 using ReviewAPI.Service;
 using ReviewAPI.Service.Interface;
+using Shared.DTOs.Reviews.Responses;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +28,12 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
-
+builder.Services.AddScoped<IReviewReplyService, ReviewReplyService>();
+builder.Services.AddScoped<IReviewReplyRepository, ReviewReplyRepository>();
+builder.Services.AddHttpClient<IImageAPI, ImageAPI >(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
+});
 // var serviceUrls = builder.Configuration.GetSection("ServiceUrls");
 //
 // builder.Services.AddHttpClient<IAmenityClientService, AmenityClientService>(client =>
@@ -48,13 +56,12 @@ builder.Services.AddHttpClient<IPostClientService, PostClientService>(client =>
 });
 
 
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var odatabuilder = new ODataConventionModelBuilder();
-odatabuilder.EntitySet<ReviewResponseDto>("Review");
+odatabuilder.EntitySet<ReviewResponse>("Review");
 odatabuilder.EntitySet<ReviewReplyResponse>("ReviewReplys");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>
@@ -121,7 +128,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     }
                 });
             });
-
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

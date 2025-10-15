@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
-using RoomAmenityAPI.DTO.Response;
+using Shared.DTOs.RoomAmenities.Responses;
 using RoomAmenityAPI.Repository;
 using RoomAmenityAPI.Repository.Interface;
 using RoomAmenityAPI.Service;
@@ -33,7 +33,7 @@ builder.Services.AddScoped<IRoomAmenityRepository, RoomAmenityRepository>();
 builder.Services.AddScoped<IRoomAmenityService, RoomAmenityService>();
 
 var odatabuilder = new ODataConventionModelBuilder();
-odatabuilder.EntitySet<RoomAmenityResponseDto>("RoomAmenities");
+odatabuilder.EntitySet<RoomAmenityResponse>("RoomAmenities");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>
     options.AddRouteComponents("odata", odata)

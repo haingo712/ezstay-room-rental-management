@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AmenityAPI.DTO.Request;
-using AmenityAPI.DTO.Response;
+using Shared.DTOs.Amenities.Responses;
 using AmenityAPI.Models;
 using AmenityAPI.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
@@ -17,58 +17,35 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 namespace AmenityAPI.Controllers
 {
     [Route("api/[controller]")]
-     // [ApiController]
-    public class AmenityController : ODataController
+    [ApiController]
+    public class AmenityController : ControllerBase
     {
         private readonly IAmenityService _amenityService;
-      //  private readonly ITokenService _tokenService;
-      // public AmenityController(IAmenityService amenityService, ITokenService tokenService)
-      // {
-      //     _amenityService = amenityService;
-      //     _tokenService = tokenService;
-      // }
         public AmenityController(IAmenityService amenityService)
         {
             _amenityService = amenityService;
         }
-        // [HttpGet("ByStaffId/odata/")]
-        // [Authorize(Roles = "Staff")]
-        // [EnableQuery]
-        // public IQueryable<AmenityResponseDto> GetAmenitiesByOwnerIdOdata( )
-        // {
-        //     var staffId = _tokenService.GetUserIdFromClaims(User);
-        //     return _amenityService.GetAllByStaffIdAsQueryable(staffId);
-        // }
         
-        // [HttpGet("ByStaffId")]
-        // [Authorize(Roles = "Staff")]
-        // public async Task<ActionResult<AmenityResponseDto>> GetAmenitiesByStaffId()
-        // {
-        //     var staffId = _tokenService.GetUserIdFromClaims(User);
-        //     return Ok( await _amenityService.GetAllByStaffId(staffId));
-        // }
-        //
-        [HttpGet("/odata/Amenities")]
-        [EnableQuery(PageSize = 3)]
-        public IQueryable<AmenityResponseDto> GetAmenitiesOdata()
+        [HttpGet]
+        [EnableQuery]
+        public IQueryable<AmenityResponse> GetAmenitiesOdata()
         {
             return  _amenityService.GetAllAsQueryable();
         }
         
-        [HttpGet]
-      //  [Authorize(Roles = "Staff, Owner")]
-        public  async Task<ActionResult<AmenityResponseDto>> GetAmenities()
-        {
-            return Ok(await _amenityService.GetAll());
-        }
+        // [HttpGet]
+        // public  async Task<ActionResult<AmenityResponseDto>> GetAmenities()
+        // {
+        //     return Ok(await _amenityService.GetAll());
+        // }
       
         // GET: api/Amenity/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Amenity>> GetAmenity(Guid id)
+        public async Task<ActionResult<Amenity>> GetById(Guid id)
         {
             try
             {
-                var amenity = await _amenityService.GetByIdAsync(id);
+                var amenity = await _amenityService.GetById(id);
                     return Ok(amenity);
             }
             catch (KeyNotFoundException e)
@@ -80,11 +57,11 @@ namespace AmenityAPI.Controllers
         // PUT: api/Amenity/5
         [HttpPut("{id}")]
         [Authorize(Roles = "Staff")]
-        public async Task<IActionResult> PutAmenity(Guid id, [FromBody] UpdateAmenityDto request)
+        public async Task<IActionResult> Put(Guid id, [FromForm] UpdateAmenity request)
         {
             try
             {
-                var updateAmentity =  await _amenityService.UpdateAsync(id, request);
+                var updateAmentity =  await _amenityService.Update(id, request);
                 if (!updateAmentity.IsSuccess)
                 {
                     return BadRequest(new { message = updateAmentity.Message });
@@ -99,17 +76,16 @@ namespace AmenityAPI.Controllers
         
         [HttpPost]
         [Authorize(Roles = "Staff")]
-        public async Task<ActionResult<AmenityResponseDto>> PostAmenity([FromBody] CreateAmenityDto request)
+        public async Task<ActionResult<AmenityResponse>> Post([FromForm] CreateAmenity request)
         {
             try
             {
-                // var staffId = _tokenService.GetUserIdFromClaims(User);
-                var createAmentity =   await  _amenityService.AddAsync(request);
+                var createAmentity =   await  _amenityService.Add(request);
                 if (!createAmentity.IsSuccess)
                 {
                     return BadRequest(new { message = createAmentity.Message });
                 }
-                return CreatedAtAction("GetAmenity", new { id = createAmentity.Data.Id }, createAmentity);
+                return CreatedAtAction("GetById", new { id = createAmentity.Data.Id }, createAmentity);
             }
             catch (Exception e)
             {
@@ -120,11 +96,15 @@ namespace AmenityAPI.Controllers
         // DELETE: api/Amenity/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "Staff")]
-        public async Task<IActionResult> DeleteAmenity(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             { 
-                await _amenityService.DeleteAsync( id);
+                var amentity= await _amenityService.Delete( id);
+                if (!amentity.IsSuccess)
+                {
+                    return BadRequest(new { message = amentity.Message });
+                }
                 return NoContent();
             }
             catch (KeyNotFoundException e)

@@ -11,6 +11,7 @@ public interface IRoomAmenityRepository
     Task UpdateAsync(RoomAmenity amenity);
     Task DeleteAsync(RoomAmenity amenity);
     Task<bool> AmenityIdExistsInRoomAsync(Guid roomId, Guid amenityId);
-   
+    Task<bool> CheckAmenity(Guid amenityId);
+
 
 }

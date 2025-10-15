@@ -1,7 +1,9 @@
 using System.Security.Claims;
 using System.Text;
+using AmenityAPI.APIs;
+using AmenityAPI.APIs.Interfaces;
 using AmenityAPI.DTO.Request;
-using AmenityAPI.DTO.Response;
+using Shared.DTOs.Amenities.Responses;
 using AmenityAPI.Mapping;
 using AmenityAPI.Repository;
 using AmenityAPI.Repository.Interface;
@@ -38,6 +40,16 @@ builder.Services.AddAutoMapper(typeof(MappingAmenity).Assembly);
 //         options.Audience = jwtSettings["Audience"];
 //         options.RequireHttpsMetadata = bool.Parse(jwtSettings["RequireHttpsMetadata"] ?? "true");
 //     });
+
+
+builder.Services.AddHttpClient<IImageAPI, ImageAPI >(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
+});
+builder.Services.AddHttpClient<IRoomAmenityAPI, RoomAmenityAPI >(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RoomAmenityApi"]); 
+});
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
@@ -99,14 +111,13 @@ builder.Services.AddControllers()
     {
         opt.Select().Filter().OrderBy().Expand().Count().SetMaxTop(100).SkipToken();
         var edmBuilder = new ODataConventionModelBuilder();
-        edmBuilder.EntitySet<AmenityResponseDto>("Amenities"); 
+        edmBuilder.EntitySet<AmenityResponse>("Amenities"); 
         opt.AddRouteComponents("odata", edmBuilder.GetEdmModel());
     });
 // builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 
             var app = builder.Build();

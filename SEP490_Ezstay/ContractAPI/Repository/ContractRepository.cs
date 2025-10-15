@@ -2,6 +2,7 @@ using ContractAPI.Model;
 using MongoDB.Driver;
 using ContractAPI.Enum;
 using ContractAPI.Repository.Interface;
+using Shared.Enums;
 
 namespace ContractAPI.Repository
 {
@@ -13,10 +14,10 @@ namespace ContractAPI.Repository
         {
             _contracts = database.GetCollection<Contract>("Contracts");
         }
-        public Task<bool> HasContractAsync(Guid tenantId, Guid roomId)
-        {
-            return _contracts.Find(c => c.TenantId == tenantId && c.RoomId == roomId).AnyAsync();
-        }
+        // public Task<bool> HasContractAsync(Guid tenantId, Guid roomId)
+        // {
+        //     return _contracts.Find(c => c.TenantId == tenantId && c.RoomId == roomId).AnyAsync();
+        // }
 
 
         public IQueryable<Contract> GetAllQueryable() => _contracts.AsQueryable();
@@ -25,7 +26,7 @@ namespace ContractAPI.Repository
             => await _contracts.Find(t => t.OwnerId == ownerId).ToListAsync();
         
         public async Task<IEnumerable<Contract>> GetAllByTenantIdAsync(Guid tenantId)
-            => await _contracts.Find(t => t.TenantId == tenantId).ToListAsync();
+            => await _contracts.Find(t => t.SignerProfile.TenantId == tenantId).ToListAsync();
         
         public async Task<Contract?> GetByIdAsync(Guid id)
             => await _contracts.Find(t => t.Id == id).FirstOrDefaultAsync();
@@ -48,6 +49,10 @@ namespace ContractAPI.Repository
             var filter = Builders<Contract>.Filter.Eq(t => t.RoomId, roomId) &
                           Builders<Contract>.Filter.Eq(t => t.ContractStatus, ContractStatus.Active);
             return await _contracts.Find(filter).AnyAsync();
+        }
+        public async Task<bool> ExistsByRoomId(Guid roomId)
+        {
+            return await _contracts.Find(c => c.RoomId == roomId).AnyAsync();
         }
     }
 }

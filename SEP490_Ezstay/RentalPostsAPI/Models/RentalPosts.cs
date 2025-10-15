@@ -13,11 +13,16 @@ namespace RentalPostsAPI.Models
         public Guid AuthorId { get; set; }
 
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid RoomId { get; set; }
+        public List<Guid>? RoomId { get; set; }
 
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid BoardingHouseId { get; set; }
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid? ImageId { get; set; }
+        public List<string>? ImageUrls { get; set; }
         public string Title { get; set; } = null!;
 
-        public string? Description { get; set; }
+        public string Content { get; set; } = null!;
 
         public string ContactPhone { get; set; } = null!;
 

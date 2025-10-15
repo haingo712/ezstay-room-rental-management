@@ -14,8 +14,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoomAmenityAPI", "RoomAmeni
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoomAPI", "RoomAPI\RoomAPI.csproj", "{BF280EF3-8BFB-4270-9676-ACA08A8D2EEE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TenantAPI", "TenantAPI\TenantAPI.csproj", "{AA00DBD1-BAC7-4714-8ECE-0F85C4BBB55E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIGateway", "APIGateway\APIGateway.csproj", "{099E219C-4AC3-4AE9-8773-6C0E4752BF42}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UtilityReadingAPI", "UtilityReadingAPI\UtilityReadingAPI.csproj", "{8FF16158-13C2-4B54-A30D-4F680279F0CF}"
@@ -62,6 +60,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReviewReportAPI", "ReviewRe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityBillAPI", "UtilityBillAPI\UtilityBillAPI.csproj", "{A11EC25D-F9F2-7049-F646-28FD494C2CF5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{1FA5EF3B-1446-4675-9213-2029BA84676F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAPI", "ChatAPI\ChatAPI.csproj", "{23234280-8A03-4C6B-A9F8-32199DF7D938}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,10 +82,6 @@ Global
 		{BF280EF3-8BFB-4270-9676-ACA08A8D2EEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF280EF3-8BFB-4270-9676-ACA08A8D2EEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF280EF3-8BFB-4270-9676-ACA08A8D2EEE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA00DBD1-BAC7-4714-8ECE-0F85C4BBB55E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA00DBD1-BAC7-4714-8ECE-0F85C4BBB55E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA00DBD1-BAC7-4714-8ECE-0F85C4BBB55E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA00DBD1-BAC7-4714-8ECE-0F85C4BBB55E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{099E219C-4AC3-4AE9-8773-6C0E4752BF42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{099E219C-4AC3-4AE9-8773-6C0E4752BF42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{099E219C-4AC3-4AE9-8773-6C0E4752BF42}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -176,6 +174,14 @@ Global
 		{A11EC25D-F9F2-7049-F646-28FD494C2CF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A11EC25D-F9F2-7049-F646-28FD494C2CF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A11EC25D-F9F2-7049-F646-28FD494C2CF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FA5EF3B-1446-4675-9213-2029BA84676F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FA5EF3B-1446-4675-9213-2029BA84676F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FA5EF3B-1446-4675-9213-2029BA84676F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FA5EF3B-1446-4675-9213-2029BA84676F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23234280-8A03-4C6B-A9F8-32199DF7D938}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23234280-8A03-4C6B-A9F8-32199DF7D938}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23234280-8A03-4C6B-A9F8-32199DF7D938}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23234280-8A03-4C6B-A9F8-32199DF7D938}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

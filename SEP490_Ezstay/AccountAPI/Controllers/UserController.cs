@@ -15,7 +15,7 @@ namespace AccountAPI.Controllers
     {
         private readonly IUserService _userService;
         private readonly IUserClaimHelper _userClaimHelper;
-       private readonly IAuthApiClient _authApiClient;
+        private readonly IAuthApiClient _authApiClient;
 
         public UserController(IUserService userService, IUserClaimHelper userClaimHelper, IAuthApiClient authApiClient)
         {

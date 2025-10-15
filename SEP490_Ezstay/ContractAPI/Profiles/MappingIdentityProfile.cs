@@ -2,6 +2,7 @@ using AutoMapper;
 using ContractAPI.DTO.Requests;
 using ContractAPI.DTO.Response;
 using ContractAPI.Model;
+using Shared.DTOs.Contracts.Responses;
 
 namespace ContractAPI.Profiles;
 
@@ -9,8 +10,8 @@ public class MappingIdentityProfile: Profile
 {
     public MappingIdentityProfile()
     {
-        CreateMap<CreateIdentityProfileDto, IdentityProfile>();
-        CreateMap<UpdateIdentityProfileDto, IdentityProfile>();
-        CreateMap<IdentityProfile, IdentityProfileResponseDto>();
+        CreateMap<CreateIdentityProfile, IdentityProfile>();
+        CreateMap<UpdateIdentityProfile, IdentityProfile>();
+        CreateMap<IdentityProfile, IdentityProfileResponse>();
     }
 }

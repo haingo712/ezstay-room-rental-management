@@ -17,11 +17,11 @@ public class ReviewReplyController: ControllerBase
         _reviewReplyService = reviewReplyService;
     }
 
-    [HttpPost("{id}")]
+    [HttpPost("{reviewId}")]
     [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> Create(Guid id, [FromBody] CreateReviewReplyRequest request)
+    public async Task<IActionResult> Create(Guid reviewId, [FromForm] CreateReviewReplyRequest request)
     {
-            var create = await _reviewReplyService.AddAsync(id, request);
+            var create = await _reviewReplyService.AddAsync(reviewId, request);
             if (!create.IsSuccess)
                 return BadRequest(new { message = create.Message });
             return CreatedAtAction("GetById", new { id = create.Data.Id }, create);
@@ -30,7 +30,7 @@ public class ReviewReplyController: ControllerBase
     
     [HttpPut("{id}")]
     [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateReviewReplyRequest request)
+    public async Task<IActionResult> Update(Guid id, [FromForm] UpdateReviewReplyRequest request)
     {
         var result = await _reviewReplyService.UpdateReplyAsync(id, request);
         if (!result.IsSuccess  )
@@ -48,6 +48,7 @@ public class ReviewReplyController: ControllerBase
     
     [HttpGet]
     [EnableQuery]
+    [Authorize(Roles = "Owner,User")]
     public IQueryable<ReviewReplyResponse> GetReviewReplies()
     {
         return _reviewReplyService.GetAllQueryable();

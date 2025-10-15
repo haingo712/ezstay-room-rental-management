@@ -1,6 +1,7 @@
 using System.Text.Json;
 using ReviewAPI.DTO.Response;
 using ReviewAPI.Service.Interface;
+using Shared.DTOs;
 
 namespace ReviewAPI.Service;
 

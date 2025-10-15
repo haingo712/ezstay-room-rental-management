@@ -8,7 +8,7 @@ namespace SignalRHubAPI.Controllers;
 [Route("api/signalR")]
 public class SignalRController : ControllerBase
 {
-    private readonly IHubContext<NotificationHub> _hubContext;
+   /* private readonly IHubContext<NotificationHub> _hubContext;
 
     public SignalRController(IHubContext<NotificationHub> hubContext)
     {
@@ -20,5 +20,5 @@ public class SignalRController : ControllerBase
     {
         await _hubContext.Clients.All.SendAsync("ReceiveNotification", message);
         return Ok(new { Status = "Sent", Message = message });
-    }
+    }*/
 }

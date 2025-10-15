@@ -14,8 +14,6 @@ namespace RoomAmenityAPI.Model
         public Guid RoomId { get; set; }
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid AmenityId { get; set; }
-        // public string Notes { get; set; }
-        
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         

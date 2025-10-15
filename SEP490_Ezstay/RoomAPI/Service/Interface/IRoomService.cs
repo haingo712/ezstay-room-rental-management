@@ -1,22 +1,25 @@
 using RoomAPI.DTO.Request;
-using RoomAPI.DTO.Response;
+using Shared.DTOs;
+using Shared.DTOs.RoomAmenities.Responses;
+using Shared.DTOs.Rooms.Responses;
+using Shared.Enums;
 
 namespace RoomAPI.Service.Interface;
 
 public interface IRoomService
 {
-    IQueryable<RoomDto>  GetAllQueryable();
+    IQueryable<RoomResponse>  GetAllQueryable();
     //Task<IEnumerable<RoomDto>> GetAllByHouseId(int houseId);
-    IQueryable<RoomDto> GetAllByHouseId(Guid houseId);
-    IQueryable<RoomDto> GetAllStatusActiveByHouseId(Guid houseId);
-    Task<RoomDto> GetById(Guid id);
+    IQueryable<RoomResponse> GetAllByHouseId(Guid houseId);
+    IQueryable<RoomResponse> GetAllStatusActiveByHouseId(Guid houseId);
+    Task<RoomResponse> GetById(Guid id);
    // Task<ApiResponse<RoomDto>> Add(CreateRoomDto request);
     // Task<ApiResponse<RoomDto>> Add(Guid houseId, Guid houseLocationId, CreateRoomDto request);
-    Task<ApiResponse<RoomDto>> Add(Guid houseId, CreateRoomDto request);
-    Task<ApiResponse<bool>> Update(Guid id,UpdateRoomDto request);
+    Task<ApiResponse<RoomResponse>> Add(Guid houseId, CreateRoom request);
+    Task<ApiResponse<bool>> Update(Guid id,UpdateRoom request);
     Task<ApiResponse<bool>> Delete(Guid id);
-    Task<RoomWithAmenitiesDto> GetRoomWithAmenitiesAsync(Guid roomId);
+    Task<RoomWithAmenitiesResponse> GetRoomWithAmenitiesAsync(Guid roomId);
     
-    Task<ApiResponse<bool>> UpdateStatusAsync(Guid roomId, string roomStatus);
+    Task<ApiResponse<bool>> UpdateStatusAsync(Guid roomId, RoomStatus roomStatus);
 
 }

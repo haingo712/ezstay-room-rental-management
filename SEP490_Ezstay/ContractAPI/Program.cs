@@ -1,5 +1,7 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using ContractAPI.APIs;
+using ContractAPI.APIs.Interfaces;
 using ContractAPI.DTO.Response;
 using ContractAPI.Profiles;
 using ContractAPI.Repository;
@@ -12,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using Shared.DTOs.Contracts.Responses;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,15 +26,18 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IContractRepository, ContractRepository>();
 builder.Services.AddScoped<IContractService, ContractService>();
 
-builder.Services.AddScoped<IIdentityProfileService, IdentityProfileService>();
-builder.Services.AddScoped<IIdentityProfileRepository, IdentityProfileRepository>();
-// var serviceUrls = builder.Configuration.GetSection("ServiceUrls");
-
+builder.Services.AddHttpClient<IImageAPI, ImageAPI >(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
+});
 builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RoomApi"]);
 });
-
+builder.Services.AddHttpClient<IAccountAPI, AccountAPI>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:AccountApi"]);
+});
 builder.Services.AddHttpClient<IUtilityReadingClientService, UtilityReadingClientService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:UtilityReadingApi"]);
@@ -42,8 +48,8 @@ builder.Services.AddHttpClient<IUtilityReadingClientService, UtilityReadingClien
  builder.Services.AddAutoMapper(typeof(MappingContract).Assembly);
  builder.Services.AddAutoMapper(typeof(MappingIdentityProfile).Assembly);
 var odatabuilder = new ODataConventionModelBuilder();
-odatabuilder.EntitySet<ContractResponseDto>("Contract");
-odatabuilder.EntitySet<IdentityProfileResponseDto>("IdentityProfile");
+odatabuilder.EntitySet<ContractResponse>("Contract");
+odatabuilder.EntitySet<IdentityProfileResponse>("IdentityProfile");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>
     options.AddRouteComponents("odata", odata)

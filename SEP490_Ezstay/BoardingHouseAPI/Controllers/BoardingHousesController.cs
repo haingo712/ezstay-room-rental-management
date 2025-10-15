@@ -1,5 +1,6 @@
 ﻿using BoardingHouseAPI.DTO.Request;
 using BoardingHouseAPI.Service.Interface;
+using EasyNetQ;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
@@ -13,10 +14,12 @@ namespace BoardingHouseAPI.Controllers
     {
         private readonly IBoardingHouseService _boardingHouseService;
         private readonly ITokenService _tokenService;
-        public BoardingHousesController(IBoardingHouseService boardingHouseService, ITokenService tokenService)
+        private readonly IBus _bus;
+        public BoardingHousesController(IBoardingHouseService boardingHouseService, ITokenService tokenService, IBus bus)
         {
             _boardingHouseService = boardingHouseService;
             _tokenService = tokenService;
+            _bus = bus;
         }
        
         // GET: api/BoardingHouses
@@ -64,6 +67,14 @@ namespace BoardingHouseAPI.Controllers
                 {
                     return BadRequest(new { message = response.Message });
                 }
+
+                var notification = new
+                {
+                    EventType = "BoardingHouseChanged",
+                    Data = new {Id = id, UpdatedFields = dto }
+                };
+                var jsonMessage = System.Text.Json.JsonSerializer.Serialize(notification);
+                //await _bus.PubSub.PublishAsync(jsonMessage);
                 return Ok(response);
             }
             catch (KeyNotFoundException ex)
@@ -84,7 +95,16 @@ namespace BoardingHouseAPI.Controllers
                 if (!response.IsSuccess)
                 {
                     return BadRequest(new { message = response.Message });
-                }
+                }               
+
+                var notification = new
+                {
+                    EventType = "BoardingHouseChanged",
+                    Data = dto
+                };
+                var jsonMessage = System.Text.Json.JsonSerializer.Serialize(notification);
+                //await _bus.PubSub.PublishAsync(jsonMessage);
+
                 return CreatedAtAction(nameof(GetBoardingHouse), new { id = response.Data.Id }, response);
             }
             catch (Exception ex)
@@ -105,6 +125,13 @@ namespace BoardingHouseAPI.Controllers
                 {
                     return BadRequest(new { message = response.Message });
                 }
+                var notification = new
+                {
+                    EventType = "BoardingHouseChanged",
+                    Data = new { Id = id }
+                };
+                var jsonMessage = System.Text.Json.JsonSerializer.Serialize(notification);
+                //await _bus.PubSub.PublishAsync(jsonMessage);
                 return Ok(response);
             }
             catch (KeyNotFoundException ex)

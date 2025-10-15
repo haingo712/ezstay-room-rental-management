@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using RoomAPI.DTO.Request;
-using RoomAPI.DTO.Response;
 using RoomAPI.Model;
 using RoomAPI.Service;
 using RoomAPI.Service.Interface;
+using Shared.DTOs.RoomAmenities.Responses;
+using Shared.DTOs.Rooms.Responses;
+using Shared.Enums;
 
 namespace RoomAPI.Controllers
 {
@@ -20,20 +22,15 @@ namespace RoomAPI.Controllers
     public class RoomsController : ControllerBase
     {
         private readonly IRoomService _roomService;
-        private readonly ITokenService _tokenService;
-        private readonly IRoomAmenityClientService _roomAmenityClient;
-        private readonly IAmenityClientService _amenityClient;
-        public RoomsController(IRoomService roomService, ITokenService tokenService, IRoomAmenityClientService roomAmenityClient, IAmenityClientService amenityClient)
+        
+        public RoomsController(IRoomService roomService)
         {
             _roomService = roomService;
-            _tokenService = tokenService;
-            _roomAmenityClient = roomAmenityClient;
-            _amenityClient = amenityClient;
         }
         
         [HttpPut("{id}/RoomStatus/{roomStatus}")]
         // [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> UpdateStatus(Guid id, string roomStatus)
+        public async Task<IActionResult> UpdateStatus(Guid id, RoomStatus roomStatus)
         {
             try
             {
@@ -49,7 +46,7 @@ namespace RoomAPI.Controllers
         }
 
         [HttpGet("{id}/WithAmenities")]
-        public async Task<ActionResult<RoomWithAmenitiesDto>> GetRoomWithAmenities(Guid id)
+        public async Task<ActionResult<RoomWithAmenitiesResponse>> GetRoomWithAmenities(Guid id)
         {
             try
             {
@@ -65,20 +62,20 @@ namespace RoomAPI.Controllers
         
         [HttpGet]
         [EnableQuery]
-        public IQueryable<RoomDto> GetRooms()
+        public IQueryable<RoomResponse> GetAll()
         {
             return _roomService.GetAllQueryable();
         }
         
         [HttpGet("ByHouseId/{houseId}")]
         [EnableQuery]        
-        public IQueryable<RoomDto> GetRoomsByHouseId(Guid houseId)
+        public IQueryable<RoomResponse> GetRoomsByHouseId(Guid houseId)
         {
             return _roomService.GetAllByHouseId(houseId);
         }
         [HttpGet("ByHouseId/{houseId}/Status")]
         [EnableQuery]        
-        public IQueryable<RoomDto> GetRoomsStatusByHouseId(Guid houseId)
+        public IQueryable<RoomResponse> GetRoomsStatusByHouseId(Guid houseId)
         {
             return _roomService.GetAllStatusActiveByHouseId(houseId);
         }
@@ -91,7 +88,7 @@ namespace RoomAPI.Controllers
     
         // GET: api/Rooms/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RoomDto>> GetRoomById(Guid id)
+        public async Task<ActionResult<RoomResponse>> GetById(Guid id)
         {
             try
             {
@@ -104,13 +101,11 @@ namespace RoomAPI.Controllers
             }
           
         }
-
         // PUT: api/Rooms/5
-   
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner")]
     
-        public async Task<IActionResult> PutRoom(Guid id, UpdateRoomDto request) {
+        public async Task<IActionResult> Put(Guid id,[FromForm] UpdateRoom request) {
         try
         {
           var result =  await _roomService.Update(id, request);
@@ -128,7 +123,7 @@ namespace RoomAPI.Controllers
         
     [HttpPost("House/{houseId}")]
     [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> PostRoom(Guid houseId, CreateRoomDto request)
+    public async Task<IActionResult> Post(Guid houseId,[FromForm] CreateRoom request)
     {
         try
         {
@@ -137,7 +132,7 @@ namespace RoomAPI.Controllers
             if (!createRoom.IsSuccess)
                 return BadRequest(new { message = createRoom.Message });
          
-            return CreatedAtAction("GetRoomById", new { id = createRoom.Data.HouseId }, createRoom);
+            return CreatedAtAction("GetById", new { id = createRoom.Data.HouseId }, createRoom);
 
         }catch (Exception e) {
             return Conflict(new { message = e.Message });
@@ -146,7 +141,7 @@ namespace RoomAPI.Controllers
     //     // DELETE: api/Rooms/5
     // [Authorize(Roles = "Owner")]
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteRoom(Guid id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         try
         {    

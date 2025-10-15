@@ -1,5 +1,5 @@
 using AutoMapper;
-using UtilityReadingAPI.DTO.Response;
+using Shared.DTOs.UtilityReadings.Responses;
 using UtilityReadingAPI.DTO.Request;
 using UtilityReadingAPI.Model;
 
@@ -9,9 +9,9 @@ public class MappingUtilityReading:Profile
 {
     public MappingUtilityReading()
     {
-        CreateMap<CreateUtilityReadingDto , UtilityReading>();
+        CreateMap<CreateUtilityReading , UtilityReading>();
         CreateMap<CreateUtilityReadingContract , UtilityReading>();
-        CreateMap<UpdateUtilityReadingDto, UtilityReading>();
-        CreateMap<UtilityReading,  UtilityReadingResponseDto>();
+        CreateMap<UpdateUtilityReading, UtilityReading>();
+        CreateMap<UtilityReading,  UtilityReadingResponse>();
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
-using UtilityReadingAPI.DTO.Response;
+using Shared.DTOs.UtilityReadings.Responses;
 using UtilityReadingAPI.Repository;
 using UtilityReadingAPI.Repository.Interface;
 using UtilityReadingAPI.Service;
@@ -22,7 +22,7 @@ builder.Services.AddScoped<IUtilityReadingRepository, UtilityReadingRepository>(
 builder.Services.AddScoped<IUtilityReadingService, UtilityReadingService>();
 
 var odatabuilder = new ODataConventionModelBuilder();
-odatabuilder.EntitySet<UtilityReadingResponseDto>("UtilityReadings");
+odatabuilder.EntitySet<UtilityReadingResponse>("UtilityReadings");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>
     options.AddRouteComponents("odata", odata)
