@@ -184,5 +184,12 @@ namespace ContractAPI.Controllers
                 return NotFound(new { message = e.Message });
             }
         }
+        //  Kiểm tra phòng có hợp đồng không
+        [HttpGet("room/{roomId}/exists")]
+        public async Task<IActionResult> HasContract(Guid roomId)
+        {
+            var result = await _contractService.ExistsByRoomId(roomId);
+            return Ok(result);
+        }
     }
 }

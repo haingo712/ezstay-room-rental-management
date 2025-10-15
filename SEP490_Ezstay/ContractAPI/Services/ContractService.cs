@@ -219,6 +219,12 @@ public class ContractService : IContractService
         await _roomClient.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
         return ApiResponse<List<string>>.Success(uploadedUrls, "Upload ảnh scan hợp đồng thành công");
     }
+
+    public async Task<ApiResponse<bool>> ExistsByRoomId(Guid roomId)
+    {
+        var exists = await _contractRepository.ExistsByRoomId(roomId);
+        return ApiResponse<bool>.Success(exists);
+    }
 }
 
 

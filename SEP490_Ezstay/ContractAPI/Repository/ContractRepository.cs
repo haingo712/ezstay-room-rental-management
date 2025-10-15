@@ -50,5 +50,9 @@ namespace ContractAPI.Repository
                           Builders<Contract>.Filter.Eq(t => t.ContractStatus, ContractStatus.Active);
             return await _contracts.Find(filter).AnyAsync();
         }
+        public async Task<bool> ExistsByRoomId(Guid roomId)
+        {
+            return await _contracts.Find(c => c.RoomId == roomId).AnyAsync();
+        }
     }
 }
