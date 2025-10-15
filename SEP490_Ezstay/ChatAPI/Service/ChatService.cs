@@ -74,9 +74,11 @@ public class ChatService: IChatService
           Console.WriteLine("sss "+ await _accountClientService.GetByIdAsync(r.OwnerId));
           var response = _mapper.Map<ChatRoomResponse>(r);
           var tenantInfo = await _accountClientService.GetByIdAsync(r.TenantId);
-          response.user = tenantInfo; 
+          response.User = tenantInfo; 
           var ownerInfor = await _accountClientService.GetByIdAsync(r.OwnerId);
-          response.owner = ownerInfor; 
+          response.Owner = ownerInfor; 
+          var post = await _rentalPostClientService.GetByIdAsync(r.PostId);
+          response.RentalPost = post;
           result.Add(response);
       } 
        return ApiResponse<List<ChatRoomResponse>>.Success( _mapper.Map<List<ChatRoomResponse>>(result), "ok");

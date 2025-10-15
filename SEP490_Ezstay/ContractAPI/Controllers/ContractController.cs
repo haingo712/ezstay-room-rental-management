@@ -122,7 +122,7 @@ namespace ContractAPI.Controllers
         {
             try
             {
-                var result = await _contractService.ExtendContractAsync(id, dto);
+                var result = await _contractService.ExtendContract(id, dto);
                 if (!result.IsSuccess)
                     return BadRequest(new { message = result.Message });
 
@@ -139,7 +139,7 @@ namespace ContractAPI.Controllers
         {
             try
             {
-                var result = await _contractService.CancelContractAsync(id, reason);
+                var result = await _contractService.CancelContract(id, reason);
                 if (!result.IsSuccess)
                     return BadRequest(new { message = result.Message });
                 return Ok(result);
@@ -149,14 +149,34 @@ namespace ContractAPI.Controllers
                 return NotFound(new { message = e.Message });
             }
         }
-
+        
+        // hàm upload hợp đồng 
+        [Authorize(Roles = "Owner")]
+        [HttpPut("{id}/upload-image")]
+        public async Task<IActionResult> CancelContract(Guid id, [FromForm] List<IFormFile> request )
+        {
+            try
+            {
+                var result = await _contractService.UploadContractImages(id, request);
+                if (!result.IsSuccess)
+                    return BadRequest(new { message = result.Message });
+                return Ok(result);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
+            }
+        }
+        // làm 
         // // DELETE: api/Tenant/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
-                await _contractService.DeleteAsync(id);
+                var result = await _contractService.Delete(id);
+                if (!result.IsSuccess)
+                    return BadRequest(new { message = result.Message });
                 return NoContent();
             }
             catch (KeyNotFoundException e)

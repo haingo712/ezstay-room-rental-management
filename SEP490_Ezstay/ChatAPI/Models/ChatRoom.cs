@@ -11,7 +11,7 @@ public class ChatRoom
     public Guid Id { get; set; } = Guid.NewGuid();
 
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
-    public Guid? PostId { get; set; } 
+    public Guid PostId { get; set; } 
 
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid OwnerId { get; set; } 

@@ -3,7 +3,7 @@ namespace Shared.DTOs.Contracts.Responses;
 public class IdentityProfileResponse
 { 
    public Guid Id { get; set; }
-   public Guid UserId { get; set; }
+   public Guid TenantId { get; set; }
    public string FullName { get; set; }              
    public DateTime DateOfBirth { get; set; }         
    public string PhoneNumber { get; set; }

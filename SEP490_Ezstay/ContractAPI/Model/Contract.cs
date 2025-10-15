@@ -5,8 +5,8 @@ using MongoDB.Bson.Serialization.Attributes;
 using ContractAPI.Enum;
 using Shared.Enums;
 
-namespace ContractAPI.Model
-{
+namespace ContractAPI.Model;
+    [BsonIgnoreExtraElements]
     public class Contract
     {
         [BsonId] 
@@ -33,8 +33,8 @@ namespace ContractAPI.Model
         public decimal DepositAmount { get; set; }  //  Tiền cọc
         public DateTime CreatedAt {get;set;}
         public DateTime UpdatedAt {get;set;}
+        public List<string> ContractImage { get; set; }
+        public DateTime ContractUploadedAt { get; set; }
         
         public DateTime CanceledAt { get; set; }
-        public string? SignedContractImage { get; set; }
     }
-}
