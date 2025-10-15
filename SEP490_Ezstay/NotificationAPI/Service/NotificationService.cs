@@ -1,4 +1,5 @@
-﻿using AuthApi.Enums;
+﻿using APIGateway.Helper.Interfaces;
+using AuthApi.Enums;
 using AutoMapper;
 using NotificationAPI.DTOs.Respone;
 using NotificationAPI.DTOs.Resquest;
@@ -13,114 +14,133 @@ namespace NotificationAPI.Service
     {
         private readonly INotificationRepository _repo;
         private readonly IMapper _mapper;
-        private readonly INotificationSender _notificationSender;
+        private readonly HttpClient _httpClient;
+        private readonly IUserClaimHelper _userHelper;
 
-        public NotificationService(INotificationRepository repo, IMapper mapper, INotificationSender notificationSender)
+        public NotificationService(
+              INotificationRepository repo,
+              IMapper mapper,
+              IUserClaimHelper userHelper,
+              IHttpClientFactory httpFactory)
         {
             _repo = repo;
             _mapper = mapper;
-            _notificationSender = notificationSender;
+            _userHelper = userHelper;
+            _httpClient = httpFactory.CreateClient("Gateway");
         }
 
-        public async Task<IEnumerable<NotificationResponseDto>> GetUserNotifications(Guid userId)
+        public async Task<List<NotificationResponseDto>> GetAllByUserAsync(Guid userId)
         {
             var list = await _repo.GetByUserIdAsync(userId);
-            return _mapper.Map<IEnumerable<NotificationResponseDto>>(list);
+            return _mapper.Map<List<NotificationResponseDto>>(list);
         }
 
-        public async Task<IEnumerable<NotificationResponseDto>> GetAllNotifications()
+        public async Task<NotificationResponseDto?> GetByIdAsync(Guid id)
         {
-            var list = await _repo.GetAllAsync(); // ➕ gọi repository
-            return _mapper.Map<IEnumerable<NotificationResponseDto>>(list);
+            var notify = await _repo.GetByIdAsync(id);
+            return notify == null ? null : _mapper.Map<NotificationResponseDto>(notify);
         }
 
-
-        public async Task<NotificationResponseDto> CreateAsync(CreateNotificationRequestDto dto)
+        public async Task<NotificationResponseDto> CreateAsync(Guid userId, NotifyRequest request)
         {
-            var notify = _mapper.Map<Notify>(dto);
-            await _repo.AddAsync(notify);
-
-            var notifyDto = _mapper.Map<NotificationResponseDto>(notify);
-            // 🔔 Gửi real-time notification
-            await _notificationSender.SendToAllAsync($"📢 {notifyDto.Title}: {notifyDto.Message}");
-
-            return notifyDto;
-        }
-
-        public async Task<NotificationResponseDto?> CreateNotifyByRoleAsync(CreateNotificationRequestDto dto, RoleEnum role)
-        {
-            // 🔹 B1: map DTO → entity
-            var notify = _mapper.Map<Notify>(dto);
-
-            // Tùy chọn: thêm Role để biết thông báo này gửi cho role nào
-            // Nếu bạn chưa có trường Role trong Notify, có thể bỏ dòng này
-            // notify.Role = role;
-
-            await _repo.AddAsync(notify);
-
-            // 🔹 B2: lấy danh sách account theo role từ AuthAPI qua Gateway
-            var accounts = await _notificationSender.GetByRoleAsync(role);
-            if (accounts == null || !accounts.Any()) return null;
-
-            // 🔹 B3: gửi notification tới tất cả user thuộc role đó
-            foreach (var acc in accounts)
+            var entity = new Notify
             {
-                await _notificationSender.SendToAllAsync($"🔔 {notify.Title}: {notify.Message}");
-            }
-
-            // 🔹 B4: trả về DTO kết quả
-            return _mapper.Map<NotificationResponseDto>(notify);
+                UserId = userId,
+                NotificationType = request.NotificationType,
+                Title = request.Title,
+                Message = request.Message,
+                RelatedItemType = request.RelatedItemType,
+                RelatedItemId = request.RelatedItemId,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _repo.AddAsync(entity);
+            return _mapper.Map<NotificationResponseDto>(entity);
         }
 
-
-        public async Task<NotificationResponseDto?> UpdateNotifyByRole(Guid id,UpdateNotificationRequestDto dto, RoleEnum role)
+        public async Task<NotificationResponseDto?> UpdateAsync(Guid id, NotifyRequest request)
         {
-            // 🔹 Lấy notify cần cập nhật
             var notify = await _repo.GetByIdAsync(id);
             if (notify == null) return null;
 
-            // 🔹 Map dữ liệu từ DTO sang entity (AutoMapper)
-            _mapper.Map(dto, notify);
-            notify.IsRead = false;
-            notify.CreatedAt = DateTime.UtcNow;
+            notify.Title = request.Title;
+            notify.Message = request.Message;
+            notify.NotificationType = request.NotificationType;
+            notify.RelatedItemType = request.RelatedItemType;
+            notify.RelatedItemId = request.RelatedItemId;
 
             await _repo.UpdateAsync(notify);
-
-            // 🔹 Lấy danh sách account theo Role
-            var accounts = await _notificationSender.GetByRoleAsync(role);
-            if (accounts == null || !accounts.Any()) return null;
-
-            // 🔹 Gửi notify cập nhật tới từng user theo role
-            foreach (var acc in accounts)
-            {
-                await _notificationSender.SendToAllAsync($"♻️ [Cập nhật] {notify.Title}: {notify.Message}");
-            }
-
             return _mapper.Map<NotificationResponseDto>(notify);
         }
 
-
-
-
-
-
-        public async Task<bool> MarkAsRead(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            var notify = await _repo.GetByIdAsync(id);
-            if (notify == null) return false;
-
-            notify.IsRead = true;
-            await _repo.UpdateAsync(notify);
-            return true;
-        }
-
-        public async Task<bool> DeleteAsync(Guid id)
-        {
-            var notify = await _repo.GetByIdAsync(id);
-            if (notify == null) return false;
-
             await _repo.DeleteAsync(id);
-            return true;
         }
+
+
+        public async Task<List<NotificationResponseDto>> CreateByRoleAsync(NotifyByRoleRequest request)
+        {
+            var users = await _httpClient.GetFromJsonAsync<List<Guid>>(
+                $"api/account/get-by-role?role={request.TargetRole}");
+
+            if (users == null || !users.Any())
+                throw new Exception($"Không tìm thấy user nào thuộc role {request.TargetRole}");
+
+            var listNotify = users.Select(userId => new Notify
+            {
+                UserId = userId,
+                NotificationType = request.NotificationType,
+                Title = request.Title,
+                Message = request.Message,
+                RelatedItemType = request.RelatedItemType,
+                RelatedItemId = request.RelatedItemId,
+                CreatedAt = DateTime.UtcNow
+            }).ToList();
+
+            await _repo.CreateManyAsync(listNotify);
+            return _mapper.Map<List<NotificationResponseDto>>(listNotify);
+        }
+
+        public async Task<List<NotificationResponseDto>> UpdateByRoleAsync(NotifyByRoleRequest request)
+        {
+            var users = await _httpClient.GetFromJsonAsync<List<Guid>>(
+                $"api/account/get-by-role?role={request.TargetRole}");
+
+            if (users == null || !users.Any())
+                throw new Exception($"Không tìm thấy user nào thuộc role {request.TargetRole}");
+
+            var notifies = await _repo.GetByUserIdsAsync(users);
+
+            foreach (var notify in notifies)
+            {
+                notify.NotificationType = request.NotificationType;
+                notify.Title = request.Title;
+                notify.Message = request.Message;
+                notify.RelatedItemType = request.RelatedItemType;
+                notify.RelatedItemId = request.RelatedItemId;
+                notify.CreatedAt = DateTime.UtcNow;
+            }
+
+            await _repo.UpdateManyAsync(notifies);
+            return _mapper.Map<List<NotificationResponseDto>>(notifies);
+        }
+
+
+
+
+
+
+
+
+        // 🟢 Đánh dấu đã đọc
+        public async Task<bool> MarkAsReadAsync(Guid id)
+        {
+            var exist = await _repo.GetByIdAsync(id);
+            if (exist == null) return false;
+
+            return await _repo.MarkAsReadAsync(id);
+        }
+
+
     }
 }
