@@ -5,7 +5,7 @@ namespace ContractAPI.DTO.Requests;
 
 public class CreateIdentityProfile
 {
-    public Guid? UserId { get; set; } 
+    public Guid? TenantId { get; set; } 
    [Required]
     public string FullName { get; set; }
    [Required]

@@ -18,7 +18,8 @@ public interface IContractService
     Task<ContractResponse?> GetByIdAsync(Guid id);
     Task<ApiResponse<ContractResponse>> Add(Guid ownerId, CreateContract request);
     Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateContract request);
-    Task<ApiResponse<ContractResponse>> ExtendContractAsync(Guid contractId, ExtendContractDto request);
-    Task<ApiResponse<ContractResponse>> CancelContractAsync(Guid contractId, string reason);
-    Task<ApiResponse<bool>> DeleteAsync(Guid id);
+    Task<ApiResponse<ContractResponse>> ExtendContract(Guid contractId, ExtendContractDto request);
+    Task<ApiResponse<ContractResponse>> CancelContract(Guid contractId, string reason);
+    Task<ApiResponse<bool>> Delete(Guid id);
+    Task<ApiResponse<List<string>>> UploadContractImages(Guid id, List<IFormFile> images);
 }

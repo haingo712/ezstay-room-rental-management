@@ -14,9 +14,9 @@ public class ChatMessage
     public Guid ChatRoomId { get; set; }  
 
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
-    public Guid SenderId { get; set; } // Ai gửi tin (chủ trọ hoặc người thuê)
+    public Guid SenderId { get; set; }
     public string Image { get; set; }
     public string Content { get; set; } 
-    public DateTime SentAt { get; set; } //  time gửi
+    public DateTime SentAt { get; set; } 
     public bool IsRead { get; set; } // Tin nhắn đã đọc chưa
 }

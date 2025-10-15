@@ -18,16 +18,6 @@ public class ChatController : ControllerBase
         _chatService = chatService;
         _tokenService = tokenService;
     }
-
-    // [HttpPost]
-    // [Authorize(Roles = "User, Owner")]
-    // public async Task<IActionResult> CreateRoom([FromQuery] Guid postId, [FromBody] CreateChatRoom request)
-    // {
-    //     var userId= _tokenService.GetUserIdFromClaims(User);
-    //     request.
-    //    return Ok(await _chatService.Add(postId, request));
-    // }
-    // lam
     [HttpPost]
     [Authorize(Roles = "User, Owner")]
     public async Task<IActionResult> CreateChatRoom([FromQuery] Guid postId)
@@ -56,11 +46,6 @@ public class ChatController : ControllerBase
     [HttpGet("messages/{chatRoomId}")]
     public async Task<IActionResult> GetMessages(Guid chatRoomId)
         => Ok(await _chatService.GetMessages(chatRoomId));
-
-    // [HttpPost("message")]
-    // [Authorize(Roles = "User, Owner")]
-    // public async Task<IActionResult> SendMessage([FromQuery] Guid chatRoomId, [FromBody] CreateChatMessage request)
-    //     => Ok(await _chatService.SendMessage(chatRoomId,request));
     //lam
     [HttpPost("message")]
     [Authorize(Roles = "User, Owner")]
