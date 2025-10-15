@@ -134,8 +134,8 @@ namespace AuthApi.Services
         }
 
 
-        public async Task<bool> UpdateFullNameAsync(Guid id, string fullName)
-{
+    public async Task<bool> UpdateFullNameAsync(Guid id, string fullName)
+    {
     var acc = await _repo.GetByIdAsync(id);
     if (acc == null) return false;
 
@@ -143,7 +143,7 @@ namespace AuthApi.Services
 
     var updated = await _repo.UpdateAsync(acc);
     return updated != null;
-}
+    }
 
 
 
