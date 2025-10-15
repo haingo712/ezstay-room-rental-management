@@ -17,25 +17,25 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/IdentityProfile/{everything}",
+      "DownstreamPathTemplate": "/api/Chat/{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-            "DownstreamPathTemplate": "/api/Chat/{everything}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7140
-                }
-            ],
-            "UpstreamPathTemplate": "/api/Chat/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": []
-            }
-        },
+          "Host": "localhost",
+          "Port": 7140
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Chat/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Contract/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
           "Port": 7153
