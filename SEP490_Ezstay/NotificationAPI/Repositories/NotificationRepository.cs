@@ -14,18 +14,16 @@ namespace NotificationAPI.Repositories
             _notifications = settings.GetCollection<Notify>("Notify");
         }
 
-        public async Task<IEnumerable<Notify>> GetByUserIdAsync(Guid userId)
+        public async Task<List<Notify>> GetByUserIdAsync(Guid userId)
         {
-            var filter = Builders<Notify>.Filter.Eq(n => n.UserId, userId);
-            var sort = Builders<Notify>.Sort.Descending(n => n.CreatedAt);
-            var result = await _notifications.Find(filter).Sort(sort).ToListAsync();
-            return result;
+            return await _notifications.Find(x => x.UserId == userId)
+                .SortByDescending(x => x.CreatedAt)
+                .ToListAsync();
         }
 
         public async Task<Notify?> GetByIdAsync(Guid id)
         {
-            var filter = Builders<Notify>.Filter.Eq(n => n.Id, id);
-            return await _notifications.Find(filter).FirstOrDefaultAsync();
+            return await _notifications.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task AddAsync(Notify notify)
@@ -35,21 +33,55 @@ namespace NotificationAPI.Repositories
 
         public async Task UpdateAsync(Notify notify)
         {
-            var filter = Builders<Notify>.Filter.Eq(n => n.Id, notify.Id);
-            await _notifications.ReplaceOneAsync(filter, notify);
+            await _notifications.ReplaceOneAsync(x => x.Id == notify.Id, notify);
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var filter = Builders<Notify>.Filter.Eq(n => n.Id, id);
-            await _notifications.DeleteOneAsync(filter);
+            await _notifications.DeleteOneAsync(x => x.Id == id);
         }
 
-        public async Task<IEnumerable<Notify>> GetAllAsync()
+        public async Task CreateManyAsync(List<Notify> notifies)
         {
-            var sort = Builders<Notify>.Sort.Descending(n => n.CreatedAt);
-            return await _notifications.Find(_ => true).Sort(sort).ToListAsync();
+            await _notifications.InsertManyAsync(notifies);
         }
+
+        public async Task<List<Notify>> GetByUserIdAsyncrole(Guid userId)
+        {
+            return await _notifications.Find(n => n.UserId == userId).ToListAsync();
+        }
+
+        public async Task<bool> MarkAsReadAsync(Guid id)
+        {
+            var update = Builders<Notify>.Update.Set(n => n.IsRead, true);
+            var result = await _notifications.UpdateOneAsync(n => n.Id == id, update);
+            return result.ModifiedCount > 0;
+        }
+
+        public async Task<bool> DeleteAsyncByRole(Guid id)
+        {
+            var result = await _notifications.DeleteOneAsync(n => n.Id == id);
+            return result.DeletedCount > 0;
+        }
+
+
+        public async Task<List<Notify>> GetByUserIdsAsync(IEnumerable<Guid> userIds)
+        {
+            var filter = Builders<Notify>.Filter.In(n => n.UserId, userIds);
+            return await _notifications.Find(filter).ToListAsync();
+        }
+
+        public async Task UpdateManyAsync(IEnumerable<Notify> notifies)
+        {
+            var tasks = notifies.Select(async notify =>
+            {
+                var filter = Builders<Notify>.Filter.Eq(x => x.Id, notify.Id);
+                await _notifications.ReplaceOneAsync(filter, notify);
+            });
+            await Task.WhenAll(tasks);
+        }
+
+
 
     }
 }

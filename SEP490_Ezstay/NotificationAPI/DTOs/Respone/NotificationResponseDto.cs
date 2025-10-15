@@ -6,10 +6,10 @@ namespace NotificationAPI.DTOs.Respone
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public NotificationType NotificationType { get; set; }
-        public string Title { get; set; } = null!;
-        public string Message { get; set; } = null!;
-        public RelatedItemType RelatedItemType { get; set; }
+        public string NotificationType { get; set; }
+        public string Title { get; set; }
+        public string Message { get; set; }
+        public string RelatedItemType { get; set; }
         public int RelatedItemId { get; set; }
         public bool IsRead { get; set; }
         public DateTime CreatedAt { get; set; }
