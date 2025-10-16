@@ -6,7 +6,7 @@ namespace ChatAPI.Repository.Interface;
 public interface IChatRoomRepository
 {
   //  IQueryable<ChatRoom> GetAllAsQueryable();
-  //  Task<ChatRoom?> GetById(Guid id);
+    Task<ChatRoom> GetById(Guid id);
     Task<ChatRoom> Add(ChatRoom chatRoom);
     Task<IEnumerable<ChatRoom>> GetByChatRoomByOwner(Guid ownerId);
     Task<ChatRoom?> GetByUsersAsync(Guid ownerId, Guid tenantId);

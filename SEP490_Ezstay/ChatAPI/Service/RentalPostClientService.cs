@@ -14,7 +14,7 @@ public class RentalPostClientService: IRentalPostClientService
         _httpClient = httpClient;
     }
     
-    public async Task<RentalpostResponse?> GetByIdAsync(Guid postId)
+    public async Task<RentalPostResponse?> GetById(Guid postId)
     {
             var response = await _httpClient.GetAsync($"api/RentalPosts/{postId}");
 
@@ -22,7 +22,7 @@ public class RentalPostClientService: IRentalPostClientService
             {
                 return null;
             }
-            var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<RentalpostResponse>>();
+            var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<RentalPostResponse>>();
             return apiResponse?.Data;
     }
     

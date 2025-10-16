@@ -18,6 +18,15 @@ public class ChatController : ControllerBase
         _chatService = chatService;
         _tokenService = tokenService;
     }
+    [HttpGet("chat-room/{chatRoomId}")]
+    public async Task<IActionResult> GetRoomWithPost(Guid chatRoomId)
+    {
+        var response = await _chatService.GetRoomWithPost(chatRoomId);
+        if (!response.IsSuccess)
+            return NotFound(response); 
+        return Ok(response); 
+    }
+   
     [HttpPost]
     [Authorize(Roles = "User, Owner")]
     public async Task<IActionResult> CreateChatRoom([FromQuery] Guid postId)

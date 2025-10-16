@@ -21,7 +21,7 @@ public class ChatRoomRepository:IChatRoomRepository
 
     public IQueryable<ChatRoom> GetAllAsQueryable()=> _collection.AsQueryable();
     
-    public async Task<ChatRoom?> GetById(Guid id)
+    public async Task<ChatRoom> GetById(Guid id)
     {
       return await _collection.Find(a => a.Id == id).FirstOrDefaultAsync();
     }

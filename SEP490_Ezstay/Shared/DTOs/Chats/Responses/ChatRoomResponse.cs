@@ -17,5 +17,5 @@ public class ChatRoomResponse
     public DateTime? LastMessageAt { get; set; } 
     public AccountResponse User { get; set; }
     public AccountResponse Owner { get; set; }
-    public RentalpostResponse? RentalPost { get; set; }
+    public RentalPostResponse? RentalPost { get; set; }
 }
