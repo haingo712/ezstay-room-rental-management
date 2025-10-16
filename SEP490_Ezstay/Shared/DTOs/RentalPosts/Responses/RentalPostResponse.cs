@@ -1,6 +1,6 @@
 ﻿namespace Shared.DTOs.RentalPosts.Responses
 {
-    public class RentalpostResponse
+    public class RentalPostResponse
     {
         public Guid Id { get; set; }
         public List<Guid>? RoomId { get; set; }

@@ -44,7 +44,7 @@ public class ChatService: IChatService
         var existing = await _chatRoomRepository.GetByPostAndUsers(postId, userId);
         if (existing != null)
             return ApiResponse<ChatRoomResponse>.Success(_mapper.Map<ChatRoomResponse>(existing),"ok");
-      var post = _rentalPostClientService.GetByIdAsync(postId);
+      var post = _rentalPostClientService.GetById(postId);
         var chatRoom = new ChatRoom
         {
             PostId = postId,
@@ -57,6 +57,41 @@ public class ChatService: IChatService
         
         return ApiResponse<ChatRoomResponse>.Success(_mapper.Map<ChatRoomResponse>(result),"ok");
     }
+    public async Task<ApiResponse<ChatRoomDetailResponse>> GetRoomWithPost(Guid chatRoomId)
+    {
+        var room = await _chatRoomRepository.GetById(chatRoomId);
+        if (room == null)
+            return ApiResponse<ChatRoomDetailResponse>.Fail("Không tìm thấy phòng chat");
+
+        // Gọi sang RoomAPI hoặc PostAPI để lấy thông tin bài post
+        var postResponse = await _rentalPostClientService.GetById(room.PostId);
+        if (postResponse == null)
+            return ApiResponse<ChatRoomDetailResponse>.Fail("Không lấy được thông tin bài đăng");
+        var messages = await _chatMessageRepository.GetByChatRoomId(room.Id);
+
+        var messageDtos = messages
+            .OrderBy(m => m.SentAt)
+            .Select(m => new ChatMessageResponse
+            {
+                Id = m.Id,
+                SenderId = m.SenderId,
+                Content = m.Content,
+                Image = m.Image,
+                SentAt = m.SentAt,
+                IsRead = m.IsRead
+            })
+            .ToList();
+
+        return ApiResponse<ChatRoomDetailResponse>.Success(new ChatRoomDetailResponse
+        {
+            RoomId = room.Id,
+            PostInfo = postResponse,
+            CreatedAt = room.CreatedAt,
+            LastMessageAt = room.LastMessageAt,
+            Messages = messageDtos
+        });
+    }
+
     public async Task<ApiResponse<List<ChatMessageResponse>>> GetMessages(Guid chatRoomId)
     {
         var messages = await _chatMessageRepository.GetByChatRoomId(chatRoomId);
@@ -77,7 +112,7 @@ public class ChatService: IChatService
           response.User = tenantInfo; 
           var ownerInfor = await _accountClientService.GetByIdAsync(r.OwnerId);
           response.Owner = ownerInfor; 
-          var post = await _rentalPostClientService.GetByIdAsync(r.PostId);
+          var post = await _rentalPostClientService.GetById(r.PostId);
           response.RentalPost = post;
           result.Add(response);
       } 
@@ -109,6 +144,7 @@ public class ChatService: IChatService
     //  //   await _chatRoomRepository.UpdateLastMessageAt(chatRoomId, message.SentAt);
     //     return ApiResponse<ChatMessageResponse>.Success(_mapper.Map<ChatMessageResponse>(messageDto), "ok");
     // }
+  
     
     public async Task<ApiResponse<List<ChatRoomResponse>>> GetChatRoomsByOwner(Guid ownerId)
     {

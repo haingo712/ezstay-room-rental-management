@@ -4,5 +4,5 @@ namespace ChatAPI.Service.Interface;
 
 public interface IRentalPostClientService
 {
-    Task<RentalpostResponse?> GetByIdAsync(Guid postId);
+    Task<RentalPostResponse?> GetById(Guid postId);
 }

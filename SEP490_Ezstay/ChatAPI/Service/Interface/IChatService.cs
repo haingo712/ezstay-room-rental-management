@@ -27,6 +27,7 @@ public interface IChatService
    // Task<ApiResponse<ChatRoomResponse>> Add(Guid postId, CreateChatRoom request);
 
    Task<ApiResponse<ChatRoomResponse>> Add(Guid postId, Guid userId);
+   Task<ApiResponse<ChatRoomDetailResponse>> GetRoomWithPost(Guid chatRoomId);
    Task<ApiResponse<List<ChatMessageResponse>>> GetMessages(Guid chatRoomId);
    Task<ApiResponse<List<ChatRoomResponse>>> GetAllChatRoomByOwner(Guid ownerId);
    Task<ApiResponse<ChatMessageResponse>> SendMessage(Guid chatRoomId, Guid senderId,CreateChatMessage request);
