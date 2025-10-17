@@ -13,9 +13,12 @@ namespace BoardingHouseAPI.Models
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid HouseLocationId { get; set; }
         public string HouseName { get; set; } = null!;
+        public string? ImageUrl { get; set; }
         public string? Description { get; set; }
         [BsonRepresentation(BsonType.DateTime)]
         public DateTime CreatedAt { get; set; }
+        [BsonRepresentation(BsonType.DateTime)]
+        public DateTime? UpdatedAt { get; set; }
         public HouseLocation? Location { get; set; }
     }
 }

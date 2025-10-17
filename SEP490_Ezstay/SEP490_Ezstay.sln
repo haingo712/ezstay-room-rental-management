@@ -46,8 +46,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoogleMapAPI", "GoogleMapAP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentAPI", "PaymentAPI\PaymentAPI.csproj", "{57AC7EE4-6001-4996-904C-32E3F8C54CD4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoardingHouseAPI", "BoardingHouseAPI\BoardingHouseAPI.csproj", "{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagerAPI", "UserManagerAPI\UserManagerAPI.csproj", "{D67B53F6-BFF1-4BF2-9D89-0275148D3173}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationAPI", "NotificationAPI\NotificationAPI.csproj", "{4507CEDC-2655-4DB9-8299-EAAFA1DD5125}"
@@ -63,6 +61,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{1FA5EF3B-1446-4675-9213-2029BA84676F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAPI", "ChatAPI\ChatAPI.csproj", "{23234280-8A03-4C6B-A9F8-32199DF7D938}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardingHouseAPI", "BoardingHouseAPI\BoardingHouseAPI.csproj", "{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -146,10 +146,6 @@ Global
 		{57AC7EE4-6001-4996-904C-32E3F8C54CD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57AC7EE4-6001-4996-904C-32E3F8C54CD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57AC7EE4-6001-4996-904C-32E3F8C54CD4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D67B53F6-BFF1-4BF2-9D89-0275148D3173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D67B53F6-BFF1-4BF2-9D89-0275148D3173}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D67B53F6-BFF1-4BF2-9D89-0275148D3173}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -182,6 +178,10 @@ Global
 		{23234280-8A03-4C6B-A9F8-32199DF7D938}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23234280-8A03-4C6B-A9F8-32199DF7D938}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23234280-8A03-4C6B-A9F8-32199DF7D938}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

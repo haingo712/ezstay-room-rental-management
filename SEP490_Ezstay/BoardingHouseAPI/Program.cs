@@ -25,19 +25,23 @@ namespace BoardingHouseAPI
             // Add services to the container.
 
             builder.Services.AddControllers();
-            builder.Services.Configure<MongoSettings>(
-             builder.Configuration.GetSection("ConnectionStrings"));
+            builder.Services.Configure<MongoSettings>(builder.Configuration.GetSection("ConnectionStrings"));
             builder.Services.AddSingleton<MongoDbService>();
-
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            var serviceUrls = builder.Configuration.GetSection("ServiceUrls");
             builder.Services.AddHttpClient("Gateway", client =>
             {
-                client.BaseAddress = new Uri("https://localhost:7000");
+                client.BaseAddress = new Uri(serviceUrls["Gateway"]!);
             });
-            builder.Services.AddHttpClient("RoomAPI", client =>
+            builder.Services.AddHttpClient<IImageClientService, ImageClientService>(client =>
             {
-                client.BaseAddress = new Uri("http://localhost:5058");
+                client.BaseAddress = new Uri(serviceUrls["ImageAPI"]!);
             });
+            builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
+            {
+                client.BaseAddress = new Uri(serviceUrls["RoomAPI"]!);
+            });          
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IBoardingHouseRepository, BoardingHouseRepository>();            

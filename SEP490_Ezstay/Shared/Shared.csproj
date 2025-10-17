@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="DTOs\BoardingHouse\" />
       <Folder Include="DTOs\ReviewReport\Response\" />
     </ItemGroup>
     
