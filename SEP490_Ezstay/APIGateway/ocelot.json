@@ -17,25 +17,57 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/Chat/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7140
+            "DownstreamPathTemplate": "/api/Chat/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7140
+                }
+            ],
+            "UpstreamPathTemplate": "/api/Chat/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+      {
+        "DownstreamPathTemplate": "/api/BankGateWay/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7212
+          }
+        ],
+        "UpstreamPathTemplate": "/api/BankGateWay/{everything}",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
         }
-      ],
-      "UpstreamPathTemplate": "/api/Chat/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
-    },
-    {
-      "DownstreamPathTemplate": "/api/Contract/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
+      },
+      {
+        "DownstreamPathTemplate": "/api/Payment/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7212
+          }
+        ],
+        "UpstreamPathTemplate": "/api/Payment/{everything}",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        }
+      },
+     {
+            "DownstreamPathTemplate": "/api/Contract/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
           "Port": 7153
