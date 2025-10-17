@@ -1,4 +1,4 @@
-﻿using BoardingHouseAPI.DTO.Response
+﻿using BoardingHouseAPI.DTO.Response;
 
 namespace BoardingHouseAPI.Service.Interface
 {
