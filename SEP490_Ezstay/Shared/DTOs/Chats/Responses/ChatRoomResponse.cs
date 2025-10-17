@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.DTOs.Accounts.Responses;
+using Shared.DTOs.Auths.Responses;
 using Shared.DTOs.RentalPosts.Responses;
 
 namespace Shared.DTOs.Chats.Responses;

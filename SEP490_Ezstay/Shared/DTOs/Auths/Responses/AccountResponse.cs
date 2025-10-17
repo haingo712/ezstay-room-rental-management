@@ -1,4 +1,4 @@
-﻿namespace Shared.DTOs.Accounts.Responses
+﻿namespace Shared.DTOs.Auths.Responses
 {
     public class AccountResponse
     {
