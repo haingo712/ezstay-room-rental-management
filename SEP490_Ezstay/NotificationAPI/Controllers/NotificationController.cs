@@ -3,8 +3,11 @@ using AuthApi.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using NotificationAPI.DTOs.Resquest;
 using NotificationAPI.Service.Interfaces;
+using NotificationAPI.Sinair;
+using System.Security.Claims;
 
 namespace NotificationAPI.Controllers
 {
@@ -16,77 +19,116 @@ namespace NotificationAPI.Controllers
         private readonly INotificationService _service;
         private readonly IUserClaimHelper _userHelper;
 
-        public NotificationController(INotificationService service, IUserClaimHelper userHelper)
+        private readonly IHubContext<NotificationHub> _hubContext; // ✅ thêm HubContext
+
+        public NotificationController(INotificationService service, IUserClaimHelper userHelper, IHubContext<NotificationHub> hubContext)
         {
             _service = service;
             _userHelper = userHelper;
+            _hubContext = hubContext;
         }
+
 
         // GET: api/notification
-        [HttpGet]
-        public async Task<IActionResult> GetMyNotifications()
+        private Guid GetUserIdFromToken()
         {
-            var userId = _userHelper.GetUserId(User);
-            var result = await _service.GetUserNotifications(userId);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim))
+                throw new UnauthorizedAccessException("Token không hợp lệ hoặc thiếu userId.");
+            return Guid.Parse(userIdClaim);
+        }
+
+        //[HttpGet]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    var userId = GetUserIdFromToken();
+        //    var result = await _service.GetAllByUserAsync(userId);
+          
+
+        //    return Ok(result);
+        //}
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var result = await _service.GetByIdAsync(id);
+            if (result == null) return NotFound();
             return Ok(result);
         }
 
-
-        // GET: api/notification/all
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAllNotifications()
-        {
-            var result = await _service.GetAllNotifications(); // ➕ gọi Service
-            return Ok(result);
-        }
-
-
-        // POST: api/notification
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateNotificationRequestDto dto)
+        public async Task<IActionResult> Create([FromBody] NotifyRequest request)
         {
-            var result = await _service.CreateAsync(dto); // ❌ Không lấy từ token nữa
+            var userId = GetUserIdFromToken();
+            var result = await _service.CreateAsync(userId, request);
+            await _hubContext.Clients.User(userId.ToString())
+             .SendAsync("ReceiveNotification", result);
             return Ok(result);
         }
 
-
-        // PUT: api/notification/{id}/read
-        [HttpPut("{id:guid}/read")]
-        public async Task<IActionResult> MarkAsRead(Guid id)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] NotifyRequest request)
         {
-            var success = await _service.MarkAsRead(id);
-            return success ? Ok("Đã đánh dấu là đã đọc") : NotFound("Không tìm thấy thông báo");
+            var result = await _service.UpdateAsync(id, request);
+            if (result == null) return NotFound();
+            await _hubContext.Clients.All.SendAsync("UpdateNotification", result);
+            return Ok(result);
         }
 
-        // DELETE: api/notification/{id}
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var success = await _service.DeleteAsync(id);
-            return success ? NoContent() : NotFound("Không tìm thấy thông báo");
+            await _service.DeleteAsync(id);
+            await _hubContext.Clients.All.SendAsync("DeleteNotification", id);
+            return NoContent();
         }
 
-        [HttpPost("role/{role}")]
-        [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> CreateNotifyByRole([FromBody] CreateNotificationRequestDto dto, RoleEnum role)
+
+        [HttpPost("by-role")]
+        public async Task<IActionResult> CreateByRole([FromBody] NotifyByRoleRequest request)
         {
-            var result = await _service.CreateNotifyByRoleAsync(dto, role);
-            if (result == null)
-                return NotFound("Không tìm thấy user nào thuộc role này.");
+            var result = await _service.CreateByRoleAsync(request);
+            await _hubContext.Clients.Group(request.TargetRole.ToString())
+                .SendAsync("ReceiveRoleNotification", result);
+            return Ok(result);
+        }
+
+        [HttpPut("mark-read/{id}")]
+        public async Task<IActionResult> MarkAsRead(Guid id)
+        {
+            var success = await _service.MarkAsReadAsync(id);
+            await _hubContext.Clients.All.SendAsync("MarkAsRead", id);
+            return success ? Ok("Đã đánh dấu đã đọc") : NotFound();
+        }
+
+        [HttpPut("UpdateByrole{id}")]
+        public async Task<IActionResult> UpdateByRole(Guid id, [FromBody] NotifyRequest request)
+        {
+            var result = await _service.UpdateAsync(id, request);
+            if (result == null) return NotFound();
+            return Ok(result);
+        }
+
+
+        [HttpGet("all-by-role")]
+        public async Task<IActionResult> GetAllByRoleOrUser()
+        {
+            var userId = GetUserIdFromToken();
+            var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+            if (string.IsNullOrEmpty(roleClaim))
+                return Unauthorized("Không tìm thấy thông tin vai trò trong token.");
+
+            if (!Enum.TryParse<RoleEnum>(roleClaim, out var role))
+                return BadRequest("Role không hợp lệ.");
+
+
+            var result = await _service.GetAllByRoleOrUserAsync(userId, role);
             return Ok(result);
         }
 
 
 
-        [HttpPut("{id:guid}/role")]
-        public async Task<IActionResult> UpdateNotifyByRole(Guid id, [FromQuery] RoleEnum role, [FromBody] UpdateNotificationRequestDto dto)
-        {
-            var result = await _service.UpdateNotifyByRole(id, dto, role);
-            if (result == null)
-                return NotFound($"Không tìm thấy thông báo hoặc không có tài khoản thuộc role {role}");
-
-            return Ok(result);
-        }
-    }
 
     }
+
+}

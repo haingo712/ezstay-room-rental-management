@@ -6,12 +6,29 @@ namespace NotificationAPI.Service.Interfaces
 {
     public interface INotificationService 
     {
-        Task<IEnumerable<NotificationResponseDto>> GetUserNotifications(Guid userId);
-        Task<NotificationResponseDto> CreateAsync(CreateNotificationRequestDto dto);
-        Task<IEnumerable<NotificationResponseDto>> GetAllNotifications();
-        Task<NotificationResponseDto?> CreateNotifyByRoleAsync(CreateNotificationRequestDto dto, RoleEnum role);
-        Task<NotificationResponseDto?> UpdateNotifyByRole(Guid id, UpdateNotificationRequestDto dto, RoleEnum role);
-        Task<bool> MarkAsRead(Guid id);
-        Task<bool> DeleteAsync(Guid id);
-    }
+        //Task<List<NotificationResponseDto>> GetAllByUserAsync(Guid userId);
+
+        // 🔹 Lấy chi tiết thông báo
+        Task<NotificationResponseDto?> GetByIdAsync(Guid id);
+
+        // 🔹 Tạo thông báo cho 1 user cụ thể
+        Task<NotificationResponseDto> CreateAsync(Guid userId, NotifyRequest request);
+
+        // 🔹 Cập nhật thông báo
+        Task<NotificationResponseDto?> UpdateAsync(Guid id, NotifyRequest request);
+
+        // 🔹 Xoá thông báo
+        Task DeleteAsync(Guid id);
+
+        // 🔹 Tạo thông báo cho 1 role
+        Task<NotificationResponseDto> CreateByRoleAsync(NotifyByRoleRequest request);
+
+
+        // 🔹 Đánh dấu thông báo đã đọc
+        Task<bool> MarkAsReadAsync(Guid id);
+        Task<NotificationResponseDto?> UpdateAsyncByRole(Guid id, NotifyRequest request);
+        Task<List<NotificationResponseDto>> GetAllByRoleOrUserAsync(Guid userId, RoleEnum role);
+
+
+        }
 }
