@@ -10,11 +10,6 @@
       <Folder Include="DTOs\ReviewReport\Response\" />
     </ItemGroup>
     
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OData" Version="9.3.2" />
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
-    </ItemGroup>
+  
 
 </Project>
