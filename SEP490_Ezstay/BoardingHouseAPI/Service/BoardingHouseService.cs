@@ -81,8 +81,9 @@ namespace BoardingHouseAPI.Service
             //if (exist)
             //    return ApiResponse<BoardingHouseDTO>.Fail("Nhà trọ với tên và địa chỉ này đã tồn tại.");
             var house = _mapper.Map<BoardingHouse>(createDto);
-            house.OwnerId = ownerId; 
-            house.ImageUrl = await _imageClient.UploadImageAsync(createDto.ImageUrl!);
+            house.OwnerId = ownerId;
+            house.ImageUrls = await _imageClient.UploadMultipleImagesAsync(createDto.Files!);
+
             house.Location = houseLocation;
 
             await _boardingHouseRepo.AddAsync(house);
@@ -116,7 +117,7 @@ namespace BoardingHouseAPI.Service
                 //if (existAddress && (exist.HouseName != updateDto.HouseName || exist.Location.FullAddress != oldAddress))
                 //    return ApiResponse<bool>.Fail("Nhà trọ với tên và địa chỉ này đã tồn tại.");
             }
-            exist.ImageUrl = await _imageClient.UploadImageAsync(updateDto.ImageUrl!);
+            exist.ImageUrls = await _imageClient.UploadMultipleImagesAsync(updateDto.Files!);
             await _boardingHouseRepo.UpdateAsync(exist);
             return ApiResponse<bool>.Success(true, "Cập nhật trọ thành công");
         }        
