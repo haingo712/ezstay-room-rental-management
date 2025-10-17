@@ -32,6 +32,38 @@
                 "AllowedScopes": []
             }
         },
+      {
+        "DownstreamPathTemplate": "/api/BankGateWay/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7212
+          }
+        ],
+        "UpstreamPathTemplate": "/api/BankGateWay/{everything}",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        }
+      },
+      {
+        "DownstreamPathTemplate": "/api/Payment/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7212
+          }
+        ],
+        "UpstreamPathTemplate": "/api/Payment/{everything}",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        }
+      },
         {
             "DownstreamPathTemplate": "/api/Contract/{everything}",
             "DownstreamScheme": "https",
