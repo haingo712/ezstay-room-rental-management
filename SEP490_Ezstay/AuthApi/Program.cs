@@ -52,6 +52,13 @@ builder.Services.AddScoped<IOwnerRequestService, OwnerRequestService>();
 builder.Services.AddScoped<IOwnerRequestRepository, OwnerRequestRepository>();
 
 
+builder.Services.AddHttpClient("Gateway", (serviceProvider, client) =>
+{
+    var config = serviceProvider.GetRequiredService<IConfiguration>();
+    var baseUrl = config["ServiceUrls:Gateway"];  // đọc từ appsettings.json
+    client.BaseAddress = new Uri(baseUrl);
+});
+
 builder.Services.Configure<GoogleAuthSettings>(
 
     builder.Configuration.GetSection("GoogleAuth"));

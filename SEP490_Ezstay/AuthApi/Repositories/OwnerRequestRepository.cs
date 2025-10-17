@@ -25,7 +25,7 @@ namespace AuthApi.Repositories
         }
 
         public async Task UpdateAsync(OwnerRegistrationRequest request)
-        {
+        {   
             await _collection.ReplaceOneAsync(x => x.Id == request.Id, request);
         }
 

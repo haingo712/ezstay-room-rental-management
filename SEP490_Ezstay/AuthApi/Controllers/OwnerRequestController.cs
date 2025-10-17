@@ -19,17 +19,27 @@ namespace AuthApi.Controllers
         }
 
         // ✅ SubmitOwnerRequest không phân quyền, chỉ cần JWT hợp lệ
-        [HttpPost]
-        public async Task<IActionResult> SubmitOwnerRequest([FromBody] SubmitOwnerRequestDto dto)
+        [HttpPost("request-owner")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> RequestBecomeOwner([FromBody] SubmitOwnerRequestClientDto clientDto)
         {
-            // Lấy accountId từ dto hoặc service, không dùng Claim nếu không có
-            var resultDto = await _service.SubmitRequestAsync(dto);
+            var accountIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(accountIdClaim, out var accountId))
+                return BadRequest(new { message = "Không tìm thấy thông tin tài khoản trong token." });
+
+            var dto = new SubmitOwnerRequestDto
+            {
+                Reason = clientDto.Reason
+            };
+
+            var resultDto = await _service.SubmitRequestAsync(dto, accountId);
 
             if (resultDto == null)
                 return BadRequest(new { message = "Gửi đơn thất bại" });
 
             return Ok(resultDto);
         }
+
 
 
         // Duyệt đơn (Staff/Admin)

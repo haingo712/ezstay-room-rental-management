@@ -23,6 +23,6 @@ public class MongoDbService
     _database.GetCollection<PhoneVerification>("PhoneVerifications");
 
     public IMongoCollection<OwnerRegistrationRequest> OwnerRequests =>
-    _database.GetCollection<OwnerRegistrationRequest>("OwnerRequests");
+    _database.GetCollection<OwnerRegistrationRequest>("OwnerRegistrationRequest");
 
 }

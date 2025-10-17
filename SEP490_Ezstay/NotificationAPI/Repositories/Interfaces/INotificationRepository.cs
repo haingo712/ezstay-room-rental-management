@@ -19,8 +19,11 @@ namespace NotificationAPI.Repositories.Interfaces
         Task<List<Notify>> GetByUserIdsAsync(IEnumerable<Guid> userIds);
         Task UpdateManyAsync(IEnumerable<Notify> notifies);
         Task<List<Notify>> GetAllForRoleOrUserAsync(Guid userId, RoleEnum role);
+        Task CreateAsync(Notify notify);
+        List<object> GetAllNotificationTypes();
+        List<object> GetAllRoles();
 
 
 
-        }
+    }
 }
