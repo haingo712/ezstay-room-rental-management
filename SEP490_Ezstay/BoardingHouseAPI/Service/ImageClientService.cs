@@ -15,7 +15,7 @@ namespace BoardingHouseAPI.Service
         
         public async Task<string> UploadImageAsync(IFormFile file)
         {
-            await using var stream = file.OpenReadStream();
+            var stream = file.OpenReadStream();
             using var form = new MultipartFormDataContent();
             var streamContent = new StreamContent(stream);
 
@@ -36,7 +36,7 @@ namespace BoardingHouseAPI.Service
             using var form = new MultipartFormDataContent();
             foreach (var file in files)
             {
-                await using var stream = file.OpenReadStream();
+                var stream = file.OpenReadStream();
                 var streamContent = new StreamContent(stream);
                 streamContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
                 form.Add(streamContent, "Files", file.FileName);
@@ -44,7 +44,7 @@ namespace BoardingHouseAPI.Service
             var response = await _httpClient.PostAsync("api/images/upload-multiple", form);
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<ImageMultipleResponse>(json, 
+            var result = JsonSerializer.Deserialize<ImageMultipleResponse>(json,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             return result?.Urls ?? new List<string>();
         }
