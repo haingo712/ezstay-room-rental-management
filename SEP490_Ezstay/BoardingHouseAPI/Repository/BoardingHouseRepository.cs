@@ -39,12 +39,14 @@ namespace BoardingHouseAPI.Repository
                 house.Location.Id = Guid.NewGuid();
                 await _locations.InsertOneAsync(house.Location);
             }
+            house.CreatedAt = DateTime.UtcNow;
             house.HouseLocationId = house.Location?.Id ?? Guid.Empty;
             await _houses.InsertOneAsync(house);
         }
 
         public async Task UpdateAsync(BoardingHouse house)
         {
+            house.UpdatedAt = DateTime.UtcNow;
             await _houses.ReplaceOneAsync(h => h.Id == house.Id, house);
             if (house.Location != null)
             {

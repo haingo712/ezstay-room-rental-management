@@ -13,16 +13,18 @@ namespace BoardingHouseAPI.Service
     {
         private readonly IBoardingHouseRepository _boardingHouseRepo;        
         private readonly IMapper _mapper;
+        private readonly IImageClientService _imageClient; 
+        private readonly IRoomClientService _roomClient;
         private readonly HttpClient _http;
-        private readonly HttpClient _httpRoom;
 
         public BoardingHouseService(IBoardingHouseRepository boardingHouseRepo, IMapper mapper, 
-           IHttpClientFactory factory)
+            IImageClientService imageClient, IRoomClientService roomClient,IHttpClientFactory factory)
         {
             _boardingHouseRepo = boardingHouseRepo;            
             _mapper = mapper;
+            _imageClient = imageClient;
+            _roomClient = roomClient;
             _http = factory.CreateClient("Gateway");  
-            _httpRoom = factory.CreateClient("RoomAPI");
         }
 
         private async Task<string?> GetProvinceNameAsync(string provinceId)
@@ -75,12 +77,12 @@ namespace BoardingHouseAPI.Service
             if (locationExist)
                 return ApiResponse<BoardingHouseDTO>.Fail("Địa chỉ này đã tồn tại.");
 
-            var exist = await _boardingHouseRepo.LocationExistsWithHouseName(createDto.HouseName, houseLocation.FullAddress);
-            if (exist)
-                return ApiResponse<BoardingHouseDTO>.Fail("Nhà trọ với tên và địa chỉ này đã tồn tại.");
+            //var exist = await _boardingHouseRepo.LocationExistsWithHouseName(createDto.HouseName, houseLocation.FullAddress);
+            //if (exist)
+            //    return ApiResponse<BoardingHouseDTO>.Fail("Nhà trọ với tên và địa chỉ này đã tồn tại.");
             var house = _mapper.Map<BoardingHouse>(createDto);
-            house.OwnerId = ownerId;
-            house.CreatedAt = DateTime.UtcNow;            
+            house.OwnerId = ownerId; 
+            house.ImageUrl = await _imageClient.UploadImageAsync(createDto.ImageUrl!);
             house.Location = houseLocation;
 
             await _boardingHouseRepo.AddAsync(house);
@@ -110,10 +112,11 @@ namespace BoardingHouseAPI.Service
                     return ApiResponse<bool>.Fail("Địa chỉ này đã tồn tại.");
 
                 // Check trùng địa chỉ + tên
-                var existAddress = await _boardingHouseRepo.LocationExistsWithHouseName(updateDto.HouseName, exist.Location.FullAddress);
-                if (existAddress && (exist.HouseName != updateDto.HouseName || exist.Location.FullAddress != oldAddress))
-                    return ApiResponse<bool>.Fail("Nhà trọ với tên và địa chỉ này đã tồn tại.");
+                //var existAddress = await _boardingHouseRepo.LocationExistsWithHouseName(updateDto.HouseName, exist.Location.FullAddress);
+                //if (existAddress && (exist.HouseName != updateDto.HouseName || exist.Location.FullAddress != oldAddress))
+                //    return ApiResponse<bool>.Fail("Nhà trọ với tên và địa chỉ này đã tồn tại.");
             }
+            exist.ImageUrl = await _imageClient.UploadImageAsync(updateDto.ImageUrl!);
             await _boardingHouseRepo.UpdateAsync(exist);
             return ApiResponse<bool>.Success(true, "Cập nhật trọ thành công");
         }        
@@ -121,20 +124,11 @@ namespace BoardingHouseAPI.Service
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var house = await _boardingHouseRepo.GetByIdAsync(id);
-            if (house == null) throw new KeyNotFoundException("HouseId not found!");
-          
-            var response = await _httpRoom.GetAsync($"/api/Rooms/ByHouseId/{id}");            
-            var content = await response.Content.ReadAsStringAsync();
-            if (!response.IsSuccessStatusCode)
-            {
-                return ApiResponse<bool>.Fail($"Không thể kiểm tra phòng trong nhà trọ! (API trả về {response.StatusCode}: {content})");
-            }
-
-            var roomsJson = await response.Content.ReadAsStringAsync();            
-            var rooms = JsonSerializer.Deserialize<List<object>>(roomsJson);
-
+            if (house == null) throw new KeyNotFoundException("HouseId not found!");          
+            var rooms = await _roomClient.GetRoomsByHouseIdAsync(id);
             if (rooms != null && rooms.Count > 0)
                 return ApiResponse<bool>.Fail("Không thể xoá nhà trọ khi còn tồn tại phòng!");
+
 
             await _boardingHouseRepo.DeleteAsync(house);
             return ApiResponse<bool>.Success(true, "Xoá trọ thành công");
