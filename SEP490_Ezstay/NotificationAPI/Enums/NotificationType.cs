@@ -2,11 +2,9 @@
 {
     public enum NotificationType
     {
-        Comment,
-        Order,
-        Booking,
         System,
         Promotion,
-        Warning
+        Warning,
+        OwnerRegister
     }
 }

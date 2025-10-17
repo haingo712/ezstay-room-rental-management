@@ -1,5 +1,6 @@
 ﻿using AuthApi.Enums;
 using MongoDB.Driver;
+using NotificationAPI.Enums;
 using NotificationAPI.Model;
 using NotificationAPI.Repositories.Interfaces;
 
@@ -95,14 +96,62 @@ namespace NotificationAPI.Repositories
             // Các role khác chỉ thấy:
             // - Thông báo chung cho role đó
             // - Thông báo riêng cho user đó
-            var filter = Builders<Notify>.Filter.Or(
-                Builders<Notify>.Filter.Eq(x => x.TargetRole, role),
-                Builders<Notify>.Filter.Eq(x => x.UserId, userId)
-            );
+            var roleFilter = Builders<Notify>.Filter.Eq(x => x.TargetRole, role);
+            var userFilter = Builders<Notify>.Filter.Eq(x => x.UserId, userId);
 
-            return await _notifications.Find(filter)
+            // OR giữa 2 điều kiện trên
+            var filter = Builders<Notify>.Filter.Or(roleFilter, userFilter);
+
+            // Lấy danh sách thông báo theo filter
+            var result = await _notifications.Find(filter)
                 .SortByDescending(x => x.CreatedAt)
                 .ToListAsync();
+
+            // Lọc kỹ lại lần nữa (đề phòng dữ liệu lỗi)
+            result = result
+                .Where(n =>
+                    n.TargetRole == null ||
+                    n.TargetRole == role ||
+                    n.UserId == userId
+                )
+                .ToList();
+
+            return result;
+        }
+
+
+        public async Task CreateAsync(Notify notify)
+        {
+            await _notifications.InsertOneAsync(notify);
+        }
+        public List<object> GetAllNotificationTypes()
+        {
+            var types = Enum.GetValues(typeof(NotificationType))
+                            .Cast<NotificationType>()
+                            .Where(t => t != NotificationType.OwnerRegister) // 👈 loại bỏ OwnerRegister
+                            .Select(t => new
+                            {
+                                Id = (int)t,
+                                Name = t.ToString()
+                            })
+                            .ToList<object>();
+
+            return types;
+        }
+
+
+        public List<object> GetAllRoles()
+        {
+            var roles = Enum.GetValues(typeof(RoleEnum))
+                            .Cast<RoleEnum>()
+                            .Select(r => new
+                            {
+                                Id = (int)r,
+                                Name = r.ToString()
+                            })
+                            .ToList<object>();
+
+            return roles;
         }
 
 

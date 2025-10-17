@@ -15,48 +15,42 @@ namespace AuthApi.Services
         private readonly IOwnerRequestRepository _ownerRequestRepo;
         private readonly IMapper _mapper;
 
-        public OwnerRequestService(
-            IAccountRepository accountRepo,
-            IOwnerRequestRepository ownerRequestRepo,
-            IMapper mapper)
-        {
-            _accountRepo = accountRepo;
-            _ownerRequestRepo = ownerRequestRepo;
-            _mapper = mapper;
-        }
+       private readonly HttpClient _httpClient;
 
-        // Submit owner request
-        public async Task<OwnerRequestResponseDto?> SubmitRequestAsync(SubmitOwnerRequestDto dto)
+
+    public OwnerRequestService(
+        IAccountRepository accountRepo,
+        IOwnerRequestRepository ownerRequestRepo,
+        IMapper mapper,
+        IHttpClientFactory httpFactory)
+    {
+        _accountRepo = accountRepo;
+        _ownerRequestRepo = ownerRequestRepo;
+        _mapper = mapper;
+        _httpClient = httpFactory.CreateClient();
+    }
+
+        public async Task<OwnerRequestResponseDto?> SubmitRequestAsync(SubmitOwnerRequestDto dto, Guid accountId)
         {
-            // Tạo entity từ DTO
             var entity = _mapper.Map<OwnerRegistrationRequest>(dto);
 
-            // Tạo Id mới nếu chưa có
-            if (entity.Id == Guid.Empty)
-                entity.Id = Guid.NewGuid();
-
-            // Set thời gian submit
+            entity.Id = Guid.NewGuid();
+            entity.AccountId = accountId;           // Lấy từ token
             entity.SubmittedAt = DateTime.UtcNow;
-
-            // Trạng thái mặc định
             entity.Status = Enums.RequestStatusEnum.Pending;
 
             try
             {
-                // Lưu vào MongoDB
                 await _ownerRequestRepo.CreateAsync(entity);
-
-                // Map entity thành DTO trả về
-                var responseDto = _mapper.Map<OwnerRequestResponseDto>(entity);
-                return responseDto;
+                return _mapper.Map<OwnerRequestResponseDto>(entity);
             }
             catch (Exception ex)
             {
-                // Log lỗi nếu muốn
                 Console.WriteLine($"Submit owner request failed: {ex.Message}");
                 return null;
             }
         }
+
 
 
 
@@ -115,13 +109,6 @@ namespace AuthApi.Services
 
             return _mapper.Map<List<OwnerRequestResponseDto>>(pendingRequests);
         }
-
-
-
-
-
-
-
 
     }
 }

@@ -150,24 +150,27 @@ namespace UserManagerAPI.Controllers
         }
         [HttpPost("request-owner")]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> RequestBecomeOwner([FromBody] SubmitOwnerRequestDto dto)
+        public async Task<IActionResult> RequestBecomeOwner([FromBody] SubmitOwnerRequestClientDto clientDto)
         {
             var accountId = _userClaimHelper.GetUserIdOrNull(User);
             if (accountId == null)
                 return BadRequest(new { message = "Không tìm thấy thông tin tài khoản trong token." });
 
-            // Gắn AccountId vào DTO trước khi gửi service
-            dto.AccountId = accountId.Value;
 
-
-            // Gọi client/service để tạo OwnerRequest, trả về DTO
-            var resultDto = await _accountApi.SubmitOwnerRequestAsync(dto);
+            Console.WriteLine($"Submitting owner request for AccountId: {accountId.Value}");
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            _accountApi.SetJwtToken(token);
+            // Gọi service/client API, gán accountId tự động
+            var resultDto = await _accountApi.SubmitOwnerRequestAsync(clientDto, accountId.Value);
 
             if (resultDto == null)
                 return BadRequest("Gửi đơn thất bại");
 
             return Ok(resultDto); // Trả về DTO đầy đủ
         }
+
+
+
 
         [HttpPut("request-owner/approve/{requestId}")]
         [Authorize(Roles = "Staff")]
@@ -179,13 +182,20 @@ namespace UserManagerAPI.Controllers
 
             _accountApi.SetJwtToken(token);
 
-            var resultDto = await _accountApi.ApproveOwnerRequestAsync(requestId);
+            // ✅ Lấy accountId từ ClaimsPrincipal, KHÔNG phải token string
+            var accountId = _userClaimHelper.GetUserIdOrNull(User);
+            if (accountId == null)
+                return Unauthorized(new { message = "Không tìm thấy AccountId trong token" });
+
+            var resultDto = await _accountApi.ApproveOwnerRequestAsync(requestId, accountId.Value);
 
             if (resultDto == null)
                 return BadRequest(new { message = "Duyệt đơn thất bại hoặc đơn không tồn tại." });
 
-            return Ok(resultDto); // Trả về DTO chứa thông tin đơn đã duyệt
+            return Ok(resultDto);
         }
+
+
 
         [HttpPut("request-owner/reject/{requestId}")]
         [Authorize(Roles = "Staff")]
@@ -197,7 +207,11 @@ namespace UserManagerAPI.Controllers
 
             _accountApi.SetJwtToken(token);
 
-            var result = await _accountApi.RejectOwnerRequestAsync(requestId, dto.RejectionReason);
+            var accountId = _userClaimHelper.GetUserIdOrNull(User);
+            if (accountId == null)
+                return Unauthorized(new { message = "Không tìm thấy AccountId trong token" });
+
+            var result = await _accountApi.RejectOwnerRequestAsync(requestId, dto.RejectionReason,accountId.Value);
             if (result == null)
                 return BadRequest(new { message = "Từ chối đơn thất bại hoặc đơn không tồn tại." });
 

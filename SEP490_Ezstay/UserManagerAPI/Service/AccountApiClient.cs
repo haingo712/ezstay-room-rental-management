@@ -2,7 +2,9 @@
 using System.Net.Http.Json;
 using AuthApi.DTO.Request;
 using AuthApi.DTO.Response;
- // AccountRequest, UpdateAccountRequest, AccountResponse
+using AuthApi.Models;
+
+// AccountRequest, UpdateAccountRequest, AccountResponse
 using UserManagerAPI.Service.Interfaces;
 
 namespace UserManagerAPI.Service
@@ -12,12 +14,17 @@ namespace UserManagerAPI.Service
         private readonly HttpClient _http;
         private readonly string _baseUrl;
         private readonly string _ownerRequestApiUrl;
+        private readonly string _NotifyApiUrl;
+
 
         public AccountApiClient(HttpClient http, IConfiguration config)
         {
             _http = http;
+            _NotifyApiUrl = config["ApiSettings:NotifyApiUrl"]
+      ?? throw new Exception("NotifyApiUrl not configured");
+
             _baseUrl = config["ApiSettings:AccountApiBaseUrl"]
-                       ?? throw new Exception("AccountApiBaseUrl not configured");
+                           ?? throw new Exception("AccountApiBaseUrl not configured");
             _ownerRequestApiUrl = config["ApiSettings:OwnerRequestApiUrl"]
          ?? throw new Exception("OwnerRequestApiUrl not configured");
         }
@@ -70,23 +77,50 @@ namespace UserManagerAPI.Service
         }
 
 
-        public async Task<OwnerRequestResponseDto?> SubmitOwnerRequestAsync(SubmitOwnerRequestDto dto)
+        public async Task<OwnerRequestResponseDto?> SubmitOwnerRequestAsync(SubmitOwnerRequestClientDto dto, Guid accountId)
         {
-            // POST thẳng JSON đến API, dùng JWT đã set trong HttpClient
-            var response = await _http.PostAsJsonAsync(_ownerRequestApiUrl, dto);
+            // Payload gửi AuthAPI
+            var payload = new
+            {
+                Reason = dto.Reason,
+                AccountId = accountId
+            };
 
+            var response = await _http.PostAsJsonAsync($"{_ownerRequestApiUrl}/request-owner", payload);
             if (!response.IsSuccessStatusCode)
             {
-                Console.WriteLine($"Failed to submit owner request. StatusCode: {response.StatusCode}");
+                var content = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Failed to submit owner request. StatusCode: {response.StatusCode}, Content: {content}");
                 return null;
             }
 
-            // Deserialize thẳng sang DTO
-            return await response.Content.ReadFromJsonAsync<OwnerRequestResponseDto>();
+            var resultDto = await response.Content.ReadFromJsonAsync<OwnerRequestResponseDto>();
+
+            // ✅ Gửi notification nếu submit thành công
+            if (resultDto != null)
+            {
+                var notifyPayload = new
+                {
+                    Title = "Yêu cầu đăng ký chủ trọ mới",
+                    Message = $"User {accountId} vừa gửi đơn đăng ký làm chủ trọ. Vui lòng kiểm tra.",
+                    NotificationType = "OwnerRegister",
+                };
+
+                var notifyResponse = await _http.PostAsJsonAsync($"{_NotifyApiUrl}/trigger-owner-register", notifyPayload);
+                if (!notifyResponse.IsSuccessStatusCode)
+                {
+                    var notifyContent = await notifyResponse.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Failed to create notification. StatusCode: {notifyResponse.StatusCode}, Content: {notifyContent}");
+                }
+            }
+
+            return resultDto;
         }
 
 
-        public async Task<OwnerRequestResponseDto?> ApproveOwnerRequestAsync(Guid requestId)
+
+
+        public async Task<OwnerRequestResponseDto?> ApproveOwnerRequestAsync(Guid requestId, Guid accountId)
         {
             var response = await _http.PutAsync($"{_ownerRequestApiUrl}/approve/{requestId}", null);
 
@@ -96,10 +130,28 @@ namespace UserManagerAPI.Service
                 return null;
             }
 
-            return await response.Content.ReadFromJsonAsync<OwnerRequestResponseDto>();
+            var resultDto = await response.Content.ReadFromJsonAsync<OwnerRequestResponseDto>();
+            if (resultDto != null)
+            {
+                var notifyPayload = new
+                {
+                    Title = "Yêu cầu đăng ký chủ trọ mới",
+                    Message = $"User {accountId} vừa gửi đơn đăng ký làm chủ trọ. Vui lòng kiểm tra.",
+                    NotificationType = "OwnerRegister"
+                };
+
+                var notifyResponse = await _http.PostAsJsonAsync($"{_NotifyApiUrl}/triger-aprove-Owner", notifyPayload);
+                if (!notifyResponse.IsSuccessStatusCode)
+                {
+                    var notifyContent = await notifyResponse.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Failed to create notification. StatusCode: {notifyResponse.StatusCode}, Content: {notifyContent}");
+                }
+            }
+
+            return resultDto;
         }
 
-        public async Task<OwnerRequestResponseDto?> RejectOwnerRequestAsync(Guid requestId, string rejectionReason)
+        public async Task<OwnerRequestResponseDto?> RejectOwnerRequestAsync(Guid requestId, string rejectionReason,Guid accountId)
         {
             var payload = new RejectOwnerRequestDto
             {
@@ -113,8 +165,18 @@ namespace UserManagerAPI.Service
                 Console.WriteLine($"Failed to reject owner request. StatusCode: {response.StatusCode}");
                 return null;
             }
+            var resultDto = await response.Content.ReadFromJsonAsync<OwnerRequestResponseDto>();
+            
+                var notifyResponse = await _http.PostAsJsonAsync($"{_NotifyApiUrl}/triger-reject-Owner", null);
+                if (!notifyResponse.IsSuccessStatusCode)
+                {
+                   await notifyResponse.Content.ReadAsStringAsync();
+                   
+                }
+            
+            return resultDto;
 
-            return await response.Content.ReadFromJsonAsync<OwnerRequestResponseDto>();
+
         }
 
         public async Task<List<OwnerRequestResponseDto>?> GetPendingRequestsForStaffAsync()

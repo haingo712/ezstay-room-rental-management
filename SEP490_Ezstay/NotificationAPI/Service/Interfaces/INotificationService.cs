@@ -28,7 +28,15 @@ namespace NotificationAPI.Service.Interfaces
         Task<bool> MarkAsReadAsync(Guid id);
         Task<NotificationResponseDto?> UpdateAsyncByRole(Guid id, NotifyRequest request);
         Task<List<NotificationResponseDto>> GetAllByRoleOrUserAsync(Guid userId, RoleEnum role);
+        Task CreateNotifyForOwnerRegisterAsync(Guid UserId, TriggerOwnerRegisterRequest dto);
+        Task AproveNotifyForOwnerRegisterAsync(Guid UserId, TriggerOwnerRegisterRequest dto);
+        Task RejectNotifyForOwnerRegisterAsync(Guid UserId, TriggerOwnerRegisterRequest dto);
+
+        List<object> GetAllNotificationTypes();
+        List<object> GetAllRoles();
 
 
-        }
+
+
+    }
 }

@@ -13,7 +13,6 @@ namespace NotificationAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "User")]
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _service;
@@ -38,17 +37,25 @@ namespace NotificationAPI.Controllers
             return Guid.Parse(userIdClaim);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetAll()
-        //{
-        //    var userId = GetUserIdFromToken();
-        //    var result = await _service.GetAllByUserAsync(userId);
-          
+        [HttpGet("types")]
+        [Authorize(Roles = "Admin,Staff,Owner")]
+        public IActionResult GetNotificationTypes()
+        {
+            var types = _service.GetAllNotificationTypes();
+            return Ok(types);
+        }
 
-        //    return Ok(result);
-        //}
+        [HttpGet("roles")]
+        [Authorize(Roles = "Admin,Staff,Owner")]
+        public IActionResult GetAllRoles()
+        {
+            var roles = _service.GetAllRoles();
+            return Ok(roles);
+        }
+
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin,Staff,Owner")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _service.GetByIdAsync(id);
@@ -57,6 +64,7 @@ namespace NotificationAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Staff,Owner")]
         public async Task<IActionResult> Create([FromBody] NotifyRequest request)
         {
             var userId = GetUserIdFromToken();
@@ -67,6 +75,7 @@ namespace NotificationAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Staff,Owner")]
         public async Task<IActionResult> Update(Guid id, [FromBody] NotifyRequest request)
         {
             var result = await _service.UpdateAsync(id, request);
@@ -76,6 +85,7 @@ namespace NotificationAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Staff,Owner")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _service.DeleteAsync(id);
@@ -85,6 +95,7 @@ namespace NotificationAPI.Controllers
 
 
         [HttpPost("by-role")]
+          [Authorize(Roles = "Admin,Staff,Owner")]
         public async Task<IActionResult> CreateByRole([FromBody] NotifyByRoleRequest request)
         {
             var result = await _service.CreateByRoleAsync(request);
@@ -94,6 +105,7 @@ namespace NotificationAPI.Controllers
         }
 
         [HttpPut("mark-read/{id}")]
+        [Authorize(Roles = "Admin,Staff,Owner")]
         public async Task<IActionResult> MarkAsRead(Guid id)
         {
             var success = await _service.MarkAsReadAsync(id);
@@ -102,6 +114,7 @@ namespace NotificationAPI.Controllers
         }
 
         [HttpPut("UpdateByrole{id}")]
+        [Authorize(Roles = "Admin,Staff,Owner")]
         public async Task<IActionResult> UpdateByRole(Guid id, [FromBody] NotifyRequest request)
         {
             var result = await _service.UpdateAsync(id, request);
@@ -111,6 +124,7 @@ namespace NotificationAPI.Controllers
 
 
         [HttpGet("all-by-role")]
+        [Authorize(Roles = "Admin,Staff,Owner")]
         public async Task<IActionResult> GetAllByRoleOrUser()
         {
             var userId = GetUserIdFromToken();
@@ -127,8 +141,37 @@ namespace NotificationAPI.Controllers
         }
 
 
+        [HttpPost("trigger-owner-register")]
+        public async Task<IActionResult> TriggerOwnerRegister( [FromBody] TriggerOwnerRegisterRequest dto)
+        {
+            var userId = GetUserIdFromToken();
+            if (dto == null)
+                return BadRequest(new { message = "Thiếu thông tin AccountId." });
 
+            await _service.CreateNotifyForOwnerRegisterAsync(userId,dto);
+            return Ok(new { message = "Thông báo đã được tạo cho Staff." });
+        }
 
+        [HttpPost("triger-aprove-Owner")]
+        public async Task<IActionResult> TriggerAproveOwnerRegister([FromBody] TriggerOwnerRegisterRequest dto)
+        {
+            var userId = GetUserIdFromToken();
+            if (dto == null)
+                return BadRequest(new { message = "Thiếu thông tin AccountId." });
+
+            await _service.AproveNotifyForOwnerRegisterAsync(userId, dto);
+            return Ok(new { message = "Thông báo đã được tạo cho Owner." });
+        }
+
+        [HttpPost("triger-reject-Owner")]
+        public async Task<IActionResult> TriggerRejectOwnerRegister([FromBody] TriggerOwnerRegisterRequest dto)
+        {
+            var userId = GetUserIdFromToken();
+            if (dto == null)
+                return BadRequest(new { message = "Thiếu thông tin AccountId." });
+
+            await _service.RejectNotifyForOwnerRegisterAsync(userId, dto);
+            return Ok(new { message = "Thông báo đã được tạo cho User." });
+        }
     }
-
 }

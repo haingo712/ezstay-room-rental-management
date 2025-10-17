@@ -15,12 +15,10 @@ namespace NotificationAPI.Model
         public Guid UserId { get; set; }
 
 
-        public NotificationType NotificationType { get; set; }
+        public NotificationType NotificationType { get; set; } // loại thông báo
         public string Title { get; set; }
         public string Message { get; set; }
 
-        public RelatedItemType RelatedItemType { get; set; }
-        public int RelatedItemId { get; set; }
 
         public bool IsRead { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
