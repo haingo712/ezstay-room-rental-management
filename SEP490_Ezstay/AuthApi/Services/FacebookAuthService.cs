@@ -1,8 +1,10 @@
 ﻿using AuthApi.DTO.Request;
+using AuthApi.Enums;
 using AuthApi.Models;
 using AuthApi.Repositories.Interfaces;
 using AuthApi.Services.Interfaces;
 using Microsoft.Extensions.Options;
+using System.Data;
 using System.Text.Json;
 
 namespace AuthApi.Services
@@ -22,9 +24,9 @@ namespace AuthApi.Services
 
         public async Task<Account> FacebookLoginAsync(string accessToken)
         {
-            // Lấy thông tin người dùng từ Facebook
             var url = $"https://graph.facebook.com/me?fields=id,name,email&access_token={accessToken}";
             var response = await _http.GetAsync(url);
+
             if (!response.IsSuccessStatusCode)
                 throw new Exception("Facebook token không hợp lệ");
 
@@ -34,15 +36,31 @@ namespace AuthApi.Services
                 PropertyNameCaseInsensitive = true
             });
 
-            if (fbData == null || string.IsNullOrEmpty(fbData.Email))
-                throw new Exception("Không thể lấy email từ Facebook");
+            if (fbData == null)
+                throw new Exception("Không thể lấy thông tin người dùng từ Facebook");
+
+            if (string.IsNullOrEmpty(fbData.Email))
+                fbData.Email = $"{fbData.Id}@facebook.com"; // fallback email
 
             var existingUser = await _accountRepo.GetByEmailAsync(fbData.Email);
             if (existingUser != null)
                 return existingUser;
 
-            throw new Exception("Tài khoản chưa đăng ký");
+            var newUser = new Account
+            {
+                FullName = fbData.Name ?? "Facebook User",
+                Email = fbData.Email,
+                Password = string.Empty,
+                Phone = string.Empty,
+                Role = RoleEnum.User,
+                IsVerified = true,
+                CreateAt = DateTime.UtcNow
+            };
+
+            await _accountRepo.CreateAsync(newUser);
+            return newUser;
         }
+
 
     }
 }

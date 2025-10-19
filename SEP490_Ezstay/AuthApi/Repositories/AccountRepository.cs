@@ -52,7 +52,7 @@ namespace AuthApi.Repositories
             return await _accounts.Find(a => a.Role == role).ToListAsync();
         }
 
-
+        public async Task AddAsync(Account account) => await CreateAsync(account);
 
 
     }

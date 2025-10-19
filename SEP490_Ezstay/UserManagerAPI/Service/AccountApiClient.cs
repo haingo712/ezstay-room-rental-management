@@ -166,14 +166,22 @@ namespace UserManagerAPI.Service
                 return null;
             }
             var resultDto = await response.Content.ReadFromJsonAsync<OwnerRequestResponseDto>();
-            
-                var notifyResponse = await _http.PostAsJsonAsync($"{_NotifyApiUrl}/triger-reject-Owner", null);
+            if (resultDto != null)
+            {
+                var notifyPayload = new
+                {
+                    Title = "Yêu cầu đăng ký chủ trọ mới",
+                    Message = $"User {accountId} vừa gửi đơn đăng ký làm chủ trọ. Vui lòng kiểm tra.",
+                    NotificationType = "OwnerRegister"
+                };
+
+                var notifyResponse = await _http.PostAsJsonAsync($"{_NotifyApiUrl}/triger-reject-Owner", notifyPayload);
                 if (!notifyResponse.IsSuccessStatusCode)
                 {
-                   await notifyResponse.Content.ReadAsStringAsync();
-                   
+                    var notifyContent = await notifyResponse.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Failed to create notification. StatusCode: {notifyResponse.StatusCode}, Content: {notifyContent}");
                 }
-            
+            }
             return resultDto;
 
 

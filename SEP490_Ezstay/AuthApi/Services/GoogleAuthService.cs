@@ -29,16 +29,33 @@ namespace AuthApi.Services
                 Audience = new[] { _googleSettings.ClientId }
             });
 
+            // Lấy thông tin từ Google
             var email = payload.Email;
+            var name = payload.Name;
 
+            // Kiểm tra tài khoản có tồn tại chưa
             var existingUser = await _userRepo.GetByEmailAsync(email);
             if (existingUser != null)
             {
                 return existingUser;
             }
 
-            // Không tạo tài khoản mới
-            throw new Exception("Tài khoản chưa đăng ký");
+            // 👉 Nếu chưa có thì tạo tài khoản mới
+            var newUser = new Account
+            {
+                FullName = name,
+                Email = email,
+                Password = string.Empty, // login google không cần mật khẩu
+                Phone = string.Empty,
+                Role = RoleEnum.User, // hoặc 1 role mặc định bạn chọn
+                IsVerified = true, // xác minh luôn vì Google đã verify email
+                CreateAt = DateTime.UtcNow
+            };
+
+            await _userRepo.AddAsync(newUser);
+
+            return newUser;
         }
+
     }
 }

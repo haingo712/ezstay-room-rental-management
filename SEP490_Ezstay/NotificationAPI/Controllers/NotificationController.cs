@@ -124,7 +124,7 @@ namespace NotificationAPI.Controllers
 
 
         [HttpGet("all-by-role")]
-        [Authorize(Roles = "Admin,Staff,Owner")]
+        [Authorize(Roles = "Admin,Staff,Owner,User")]
         public async Task<IActionResult> GetAllByRoleOrUser()
         {
             var userId = GetUserIdFromToken();
@@ -173,5 +173,19 @@ namespace NotificationAPI.Controllers
             await _service.RejectNotifyForOwnerRegisterAsync(userId, dto);
             return Ok(new { message = "Thông báo đã được tạo cho User." });
         }
+
+        [HttpPost("schedule")]
+        [Authorize(Roles = "Admin,Staff,Owner")]
+        public async Task<IActionResult> ScheduleNotify([FromBody] NotifyByRoleRequest request)
+        {
+            if (request.ScheduledTime.HasValue && request.ScheduledTime.Value <= DateTime.UtcNow)
+                return BadRequest(new { message = "Thời gian hẹn phải lớn hơn hiện tại." });
+
+            var userId = GetUserIdFromToken();
+            await _service.CreateNotifyAsync(request, userId);
+            return Ok(new { message = "Đã tạo thông báo hẹn giờ thành công." });
+        }
+
+
     }
 }
