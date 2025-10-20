@@ -14,6 +14,6 @@ namespace AuthApi.Repositories.Interfaces
         Task MarkAsVerified(string email);
         Task BanAccountAsync(Guid id, bool isBanned);
         Task<List<Account>> GetByRoleAsync(RoleEnum role);
-
+        Task AddAsync(Account account) ;
     }
 }

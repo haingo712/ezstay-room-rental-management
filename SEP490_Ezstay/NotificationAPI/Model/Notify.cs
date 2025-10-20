@@ -24,5 +24,10 @@ namespace NotificationAPI.Model
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public RoleEnum? TargetRole { get; set; }
 
+
+        public DateTime? ScheduledTime { get; set; } // thời gian hẹn gửi
+        public bool IsSent { get; set; } = false;    // đã gửi hay chưa
+
+
     }
 }

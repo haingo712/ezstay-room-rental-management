@@ -69,9 +69,22 @@ namespace NotificationAPI.Repositories
 
         public async Task<List<Notify>> GetByUserIdsAsync(IEnumerable<Guid> userIds)
         {
-            var filter = Builders<Notify>.Filter.In(n => n.UserId, userIds);
+            var now = DateTime.UtcNow;
+
+            var filter = Builders<Notify>.Filter.And(
+                Builders<Notify>.Filter.In(n => n.UserId, userIds),
+                Builders<Notify>.Filter.Or(
+                    Builders<Notify>.Filter.Eq(n => n.ScheduledTime, null),     // thông báo gửi ngay
+                    Builders<Notify>.Filter.Lte(n => n.ScheduledTime, now)      // thông báo đến giờ hẹn
+                ),
+                Builders<Notify>.Filter.Eq(n => n.IsSent, true)                 // ✅ chỉ lấy thông báo đã gửi
+            );
+
             return await _notifications.Find(filter).ToListAsync();
         }
+
+
+
 
         public async Task UpdateManyAsync(IEnumerable<Notify> notifies)
         {
@@ -153,6 +166,32 @@ namespace NotificationAPI.Repositories
 
             return roles;
         }
+
+
+        public async Task<List<Notify>> GetDueNotifiesAsync()
+        {
+            var now = DateTime.UtcNow;
+            var filter = Builders<Notify>.Filter.And(
+                Builders<Notify>.Filter.Eq(n => n.IsSent, false),
+                Builders<Notify>.Filter.Lte(n => n.ScheduledTime, now)
+            );
+            return await _notifications.Find(filter).ToListAsync();
+        }
+
+        public async Task MarkAsSentAsync(Guid id)
+        {
+            var update = Builders<Notify>.Update.Set(n => n.IsSent, true);
+            await _notifications.UpdateOneAsync(
+                Builders<Notify>.Filter.Eq(n => n.Id, id),
+                update
+            );
+        }
+
+        public async Task<UpdateResult> UpdateManyAsync(FilterDefinition<Notify> filter, UpdateDefinition<Notify> update)
+        {
+            return await _notifications.UpdateManyAsync(filter, update);
+        }
+
 
 
 

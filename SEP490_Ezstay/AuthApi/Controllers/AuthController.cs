@@ -213,6 +213,7 @@ namespace AuthApi.Controllers
         }
 
 
+
         [HttpPost("send-phone-otp")]
         public async Task<IActionResult> SendPhoneOtp([FromBody] PhoneVerificationRequestDto dto)
         {

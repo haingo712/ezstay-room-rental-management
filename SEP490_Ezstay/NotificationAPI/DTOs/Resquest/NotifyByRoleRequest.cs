@@ -11,7 +11,9 @@ namespace NotificationAPI.DTOs.Resquest
         public string Message { get; set; } = string.Empty;
   
         public RoleEnum TargetRole { get; set; }
-    
+
+        public DateTime? ScheduledTime { get; set; }
+
 
     }
 }
