@@ -63,6 +63,12 @@ namespace AccountAPI.Controllers
             var profile = await _userService.GetPhone(phone);
             return Ok(profile);
         }
+        [HttpGet("search-cccd/{citizenIdNumber}")]
+        public async Task<IActionResult> GetCitizenIdNumber(string citizenIdNumber)
+        {
+            var profile = await _userService. GetCitizenIdNumber(citizenIdNumber);
+            return Ok(profile);
+        }
 
         [HttpPut("update-phone")]
         [Authorize(Roles = "User,Owner,Staff")]

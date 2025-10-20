@@ -16,8 +16,8 @@ namespace AccountAPI.Service.Interfaces
         Task<bool> SendOtpToPhoneAsync(string phone);
         Task<bool> UpdateEmailAsync(string currentEmail, string newEmail, string otp);
         Task<UserResponseDTO> GetPhone(string phone);
-
-
+        Task<UserResponseDTO> GetCitizenIdNumber(string citizenIdNumber);
+        
 
     }
 

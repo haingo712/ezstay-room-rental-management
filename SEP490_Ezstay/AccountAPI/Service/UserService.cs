@@ -202,5 +202,11 @@ namespace AccountAPI.Service
             return _mapper.Map<UserResponseDTO>(Phone);
            
         }
+        public async Task<UserResponseDTO> GetCitizenIdNumber(string citizenIdNumber)
+        {
+            var Phone = await _userRepository.GetPhone(citizenIdNumber);
+            return _mapper.Map<UserResponseDTO>(Phone);
+           
+        }
     }
 }
