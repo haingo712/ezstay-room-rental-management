@@ -46,14 +46,14 @@ public class ReviewService : IReviewService
         return ApiResponse<IEnumerable<ReviewResponse>>.Success(dto);
     }
 
-    public async Task<ApiResponse<IEnumerable<ReviewResponse>>> GetAllByPostId(Guid postId)
-    {
-        var entities = await _reviewRepository.GetAllByPostId(postId);
-        var dto = _mapper.Map<IEnumerable<ReviewResponse>>(entities);
-        if (!dto.Any())
-            return ApiResponse<IEnumerable<ReviewResponse>>.Fail("Bài viết chưa có review nào.");
-        return ApiResponse<IEnumerable<ReviewResponse>>.Success(dto);
-    }
+    // public async Task<ApiResponse<IEnumerable<ReviewResponse>>> GetAllByPostId(Guid postId)
+    // {
+    //     var entities = await _reviewRepository.GetAllByPostId(postId);
+    //     var dto = _mapper.Map<IEnumerable<ReviewResponse>>(entities);
+    //     if (!dto.Any())
+    //         return ApiResponse<IEnumerable<ReviewResponse>>.Fail("Bài viết chưa có review nào.");
+    //     return ApiResponse<IEnumerable<ReviewResponse>>.Success(dto);
+    // }
 
     // public IQueryable<ReviewDto> GetAllByPostIdAsQueryable(Guid postId)
     // {
@@ -102,10 +102,9 @@ public class ReviewService : IReviewService
         var contract = await _contractClientService.GetContractById(contractId);
         if (contract == null)
             return ApiResponse<ReviewResponse>.Fail("Không tìm thấy hợp đồng.");
-        var existingReview = await _reviewRepository.GetByContractIdAsync(contractId);
-        if (existingReview != null)
-            return ApiResponse<ReviewResponse>.Fail("Hợp đồng này đã được review, không thể review thêm.");
-        
+        // var existingReview = await _reviewRepository.GetByContractIdAsync(contractId);
+        // if (existingReview != null)
+        //     return ApiResponse<ReviewResponse>.Fail("Hợp đồng này đã được review, không thể review thêm.");
         if(contract.CheckoutDate.AddMonths(1) < DateTime.UtcNow)
             return  ApiResponse<ReviewResponse>.Fail("K dc qua"+ contract.CheckoutDate.AddMonths(1) +" ngay");
         var post =  await _postClientService.GetPostIdByRoomIdAsync(contract.RoomId);
@@ -115,7 +114,8 @@ public class ReviewService : IReviewService
         review.ReviewDeadline = contract.CheckoutDate.AddMonths(1);
         review.UserId = userId;
         review.ContractId = contractId;
-        review.PostId = post.Value;
+        review.RoomId= contract.RoomId;
+    //    review.PostId = post.Value;
         review.CreatedAt = DateTime.UtcNow;
         review.ImageUrl =  _imageClient.UploadImageAsync(request.ImageUrl).Result;
         await _reviewRepository.AddAsync(review);

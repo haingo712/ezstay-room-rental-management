@@ -13,9 +13,12 @@ public class Review
     public Guid UserId { get; set; } 
     public string ImageUrl { get; set; }
     
-    [BsonGuidRepresentation(GuidRepresentation.Standard)]
-    public Guid PostId { get; set; }
+    // [BsonGuidRepresentation(GuidRepresentation.Standard)]
+    // public Guid PostId { get; set; }
     
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
+    public Guid RoomId { get; set; }
+
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid ContractId { get; set; }
     

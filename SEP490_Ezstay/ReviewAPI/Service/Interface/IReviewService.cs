@@ -9,7 +9,7 @@ public interface IReviewService
 {
     Task<ApiResponse<IEnumerable<ReviewResponse>>> GetAll();
     IQueryable<ReviewResponse> GetAllAsQueryable();
-    Task<ApiResponse<IEnumerable<ReviewResponse>>> GetAllByPostId(Guid postId);
+  //  Task<ApiResponse<IEnumerable<ReviewResponse>>> GetAllByPostId(Guid postId);
     Task<ReviewResponse?> GetByContractIdAsync(Guid contractId);
     Task<ReviewResponse> GetByIdAsync(Guid id);
     //Task<ApiResponse<ReviewResponseDto>> AddAsync(Guid userId,Guid postId, CreateReviewDto request);
