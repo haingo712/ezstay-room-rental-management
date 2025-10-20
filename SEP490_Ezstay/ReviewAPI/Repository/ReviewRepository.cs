@@ -23,10 +23,10 @@ public class ReviewRepository : IReviewRepository
         => await _reviews.Find(x => x.ContractId == contractId).FirstOrDefaultAsync();
 
 
-    public async Task<IEnumerable<Review>> GetAllByPostId(Guid postId)
-    {
-        return await _reviews.Find(r => r.PostId == postId).ToListAsync();
-    }
+    // public async Task<IEnumerable<Review>> GetAllByPostId(Guid postId)
+    // {
+    //     return await _reviews.Find(r => r.PostId == postId).ToListAsync();
+    // }
 
     public async Task<Review?> GetByIdAsync(Guid id)
     {

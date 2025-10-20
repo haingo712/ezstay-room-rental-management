@@ -9,7 +9,7 @@ namespace AccountAPI.Repositories.Interfaces
         Task<User?> GetByUserIdAsync(Guid userId);
         Task UpdateAsync(User user);
         Task<User> GetPhone(string phone);
-        Task<User> GetCitizenIdNumber(string phone);
+        Task<User> GetCitizenIdNumber(string cccd);
 
     }
 }

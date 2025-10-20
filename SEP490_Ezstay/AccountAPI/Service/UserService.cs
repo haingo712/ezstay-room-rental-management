@@ -204,8 +204,8 @@ namespace AccountAPI.Service
         }
         public async Task<UserResponseDTO> GetCitizenIdNumber(string citizenIdNumber)
         {
-            var Phone = await _userRepository.GetPhone(citizenIdNumber);
-            return _mapper.Map<UserResponseDTO>(Phone);
+            var result = await _userRepository.GetCitizenIdNumber(citizenIdNumber);
+            return _mapper.Map<UserResponseDTO>(result);
            
         }
     }
