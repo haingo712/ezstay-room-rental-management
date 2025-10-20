@@ -36,14 +36,10 @@ public class UtilityReadingService: IUtilityReadingService
             throw new KeyNotFoundException(" UtilityReading Id not found");
         return _mapper.Map<UtilityReadingResponse>(utilityReading);
     }
-
-    // Get lastest reading by roomId and type
-    public UtilityReadingResponse GetLastestReading(Guid roomId, UtilityType type)
+    
+    public async Task<UtilityReadingResponse> GetLastestReading(Guid roomId, UtilityType type)
     {
-        var utilityReading = _utilityReadingRepository.GetAllAsQueryable()
-            .Where(x => x.RoomId == roomId && x.Type == type)
-            .OrderByDescending(x => x.ReadingDate)
-            .FirstOrDefault();
+        var utilityReading =await _utilityReadingRepository.GetLatestReading(roomId, type);
         if (utilityReading == null)
             throw new KeyNotFoundException("No utility reading found for the specified room and type.");
         return _mapper.Map<UtilityReadingResponse>(utilityReading);
@@ -107,7 +103,6 @@ public class UtilityReadingService: IUtilityReadingService
     //     var result = _mapper.Map<UtilityReadingResponse>(utilityReading);
     //     return ApiResponse<UtilityReadingResponse>.Success(result, $"Thêm chỉ số {request.Type} thành công.");
     // }
-   
     public async Task<ApiResponse<UtilityReadingResponse>> AddUtilityReadingContract(Guid roomId,UtilityType utilityType, CreateUtilityReadingContract  request)
     {
       

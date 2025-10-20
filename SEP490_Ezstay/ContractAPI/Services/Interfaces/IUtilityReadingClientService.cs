@@ -13,4 +13,6 @@ public interface IUtilityReadingClientService
     Task<ApiResponse<bool>> Update(Guid roomId, UtilityType type, UpdateUtilityReading request);
    
     Task<ApiResponse<UtilityReadingResponse>> GetById(Guid id);
+    Task<UtilityReadingResponse> GetLastestReading(Guid roomId, UtilityType utilityType);
+
 }
