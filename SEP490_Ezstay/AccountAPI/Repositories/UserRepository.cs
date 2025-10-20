@@ -34,5 +34,10 @@ namespace AccountAPI.Repositories
             return await _collection.Find(u => u.Phone == phone).FirstOrDefaultAsync();
         }
 
+        public async Task<User> GetCitizenIdNumber(string cccd)
+        {
+            return await _collection.Find(u => u.CitizenIdNumber == cccd).FirstOrDefaultAsync();
+
+        }
     }
 }
