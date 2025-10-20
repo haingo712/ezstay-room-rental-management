@@ -33,8 +33,21 @@ public class UtilityReadingController : ControllerBase
     {        
         try
         {
-            var amenity = _utilityReadingService.GetLastestReading(roomId, utilityType);
-            return Ok(amenity);
+            var result = _utilityReadingService.GetLastestReading(roomId, utilityType);
+            return Ok(result);
+        }
+        catch (KeyNotFoundException e)
+        {
+            return NotFound(new { message = e.Message });
+        }
+    }
+    [HttpGet("latest/{roomId}/{utilityType}")]
+    public async Task<IActionResult> GetLatestUtilityReadingByRoomAndType(Guid roomId, UtilityType utilityType)
+    {        
+        try
+        {
+            var result =await _utilityReadingService.GetLastestReading(roomId, utilityType);
+            return Ok(result);
         }
         catch (KeyNotFoundException e)
         {
@@ -48,8 +61,8 @@ public class UtilityReadingController : ControllerBase
     {
         try
         {
-            var amenity = await _utilityReadingService.GetByIdAsync(id);
-            return Ok(amenity);
+            var result = await _utilityReadingService.GetByIdAsync(id);
+            return Ok(result);
         }
         catch (KeyNotFoundException e)
         {
@@ -79,17 +92,17 @@ public class UtilityReadingController : ControllerBase
   
    
     [HttpPost("{roomId}/utilitytype/{utilityType}/contract")]
-    public async Task<ActionResult<UtilityReadingResponse>> PostUtilityReadindContract(Guid roomId,UtilityType utilityType , CreateUtilityReadingContract request)
+    public async Task<ActionResult<UtilityReadingResponse>> AddUtilityReadindContract(Guid roomId,UtilityType utilityType , CreateUtilityReadingContract request)
     {
         try
         {
-            var create = await _utilityReadingService.AddUtilityReadingContract(roomId, utilityType, request);
-            if (!create.IsSuccess)
+            var result = await _utilityReadingService.AddUtilityReadingContract(roomId, utilityType, request);
+            if (!result.IsSuccess)
             {
-                return BadRequest(new { message = create.Message });
+                return BadRequest(new { message = result.Message });
             }
 
-            return Ok(create);
+            return Ok(result);
         }
         catch (Exception e)
         {

@@ -17,6 +17,14 @@ public class UtilityReadingRepository:IUtilityReadingRepository
     }
 
     public IQueryable<UtilityReading> GetAllAsQueryable()=> _utilityReadings.AsQueryable();
+    public async Task<UtilityReading?> GetLatestReading(Guid roomId, UtilityType type)
+    {
+     return  await _utilityReadings
+         .AsQueryable()
+         .Where(r => r.RoomId == roomId && r.Type == type)
+         .OrderByDescending(r => r.ReadingDate)
+         .FirstOrDefaultAsync();
+    }
 
     public async Task<bool> ExistsUtilityReadingInMonthAsync(Guid roomId, UtilityType type, DateTime readingDate)
     {
