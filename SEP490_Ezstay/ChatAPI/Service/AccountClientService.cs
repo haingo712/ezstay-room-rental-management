@@ -1,6 +1,6 @@
 using ChatAPI.Service.Interface;
 using Shared.DTOs;
-using Shared.DTOs.Accounts.Responses;
+using Shared.DTOs.Auths.Responses;
 
 namespace ChatAPI.Service;
 
@@ -17,10 +17,10 @@ public class AccountClientService:IAccountClientService
     {
         var response = await _httpClient.GetAsync($"api/Accounts/{accountId}");
 
-        if (!response.IsSuccessStatusCode)
-        {
-            return null;
-        }
+        // if (!response.IsSuccessStatusCode)
+        // {
+        //     return null;
+        // }
         var apiResponse = await response.Content.ReadFromJsonAsync<AccountResponse>();
         return apiResponse;
     }
