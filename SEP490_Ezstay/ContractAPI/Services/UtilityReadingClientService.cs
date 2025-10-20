@@ -73,4 +73,17 @@ public class UtilityReadingClientService : IUtilityReadingClientService
         var result = await response.Content.ReadFromJsonAsync<ApiResponse<UtilityReadingResponse>>();
         return result!;
     }
+
+    public async Task<UtilityReadingResponse> GetLastestReading(Guid roomId, UtilityType utilityType)
+    {
+        var response = await _httpClient.GetAsync($"api/UtilityReading/latest/{roomId}/{utilityType}");
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"UtilityReading API call failed: {response.StatusCode}");
+            return null;
+        }
+
+        var result =await response.Content.ReadFromJsonAsync<UtilityReadingResponse>();
+         return result;
+    }
 }

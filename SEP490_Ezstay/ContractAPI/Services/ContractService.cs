@@ -53,7 +53,20 @@ public class ContractService : IContractService
             .ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
 
     public async Task<ContractResponse?> GetByIdAsync(Guid id)
-    => _mapper.Map<ContractResponse>(await _contractRepository.GetByIdAsync(id));
+    {
+        var contract = await _contractRepository.GetByIdAsync(id);
+        if (contract == null) return null;
+        
+        var response = _mapper.Map<ContractResponse>(contract);
+            response.IdentityProfiles = contract.ProfilesInContract
+                .Select(p => _mapper.Map<IdentityProfileResponse>(p))
+                .ToList();
+            Console.WriteLine("cccc "+  _utilityReadingClientService.GetLastestReading(contract.RoomId, UtilityType.Electric));
+            response.ElectricityReading = await _utilityReadingClientService.GetLastestReading(contract.RoomId, UtilityType.Electric);
+            response.WaterReading = await _utilityReadingClientService.GetLastestReading(contract.RoomId, UtilityType.Water);
+            return response;
+    }
+  //  => _mapper.Map<ContractResponse>(await _contractRepository.GetByIdAsync(id));
     
    // public async Task<bool> HasContractAsync(Guid tenantId, Guid roomId)=>await _contractRepository.HasContractAsync(tenantId, roomId);
   

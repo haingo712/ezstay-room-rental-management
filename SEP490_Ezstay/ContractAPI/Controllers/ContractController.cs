@@ -153,7 +153,7 @@ namespace ContractAPI.Controllers
         // hàm upload hợp đồng 
         [Authorize(Roles = "Owner")]
         [HttpPut("{id}/upload-image")]
-        public async Task<IActionResult> CancelContract(Guid id, [FromForm] List<IFormFile> request )
+        public async Task<IActionResult> UploadContractImage(Guid id, [FromForm] List<IFormFile> request )
         {
             try
             {
