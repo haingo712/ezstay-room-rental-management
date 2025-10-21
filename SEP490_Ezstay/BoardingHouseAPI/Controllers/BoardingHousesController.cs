@@ -1,4 +1,6 @@
 ﻿using BoardingHouseAPI.DTO.Request;
+using BoardingHouseAPI.DTO.Response;
+using BoardingHouseAPI.Enum;
 using BoardingHouseAPI.Service.Interface;
 using EasyNetQ;
 using Microsoft.AspNetCore.Authorization;
@@ -139,5 +141,46 @@ namespace BoardingHouseAPI.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpGet("rank")]
+        public async Task<ActionResult<List<BoardingHouseRankResponse>>> GetRankedBoardingHouses(
+            [FromQuery] RankType type,
+            [FromQuery] string order = "desc",
+            [FromQuery] int limit = 10)
+        {
+            try
+            {
+                var result = await _boardingHouseService.GetRankedBoardingHousesAsync(type, order, limit);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("{id}/sentiment-feedback")]
+        public async Task<IActionResult> GetSentimentFeedback(Guid id)
+        {
+            var response = await _boardingHouseService.GetSentimentSummaryAsync(id);
+
+            if (!response.IsSuccess)
+                return BadRequest(response);
+
+            return Ok(response);
+        }
+
+        [HttpGet("{id}/rating-feedback")]
+        public async Task<IActionResult> GetRatingFeedback(Guid id)
+        {
+            var response = await _boardingHouseService.GetRatingSummaryAsync(id);
+
+            if (!response.IsSuccess)
+                return BadRequest(response);
+
+            return Ok(response);
+        }
+
+
     }
 }
