@@ -107,9 +107,9 @@ public class ReviewService : IReviewService
         //     return ApiResponse<ReviewResponse>.Fail("Hợp đồng này đã được review, không thể review thêm.");
         if(contract.CheckoutDate.AddMonths(1) < DateTime.UtcNow)
             return  ApiResponse<ReviewResponse>.Fail("K dc qua"+ contract.CheckoutDate.AddMonths(1) +" ngay");
-        var post =  await _postClientService.GetPostIdByRoomIdAsync(contract.RoomId);
-        if (post == null)
-            return ApiResponse<ReviewResponse>.Fail("Không tìm thấy bài đăng cho phòng này.");
+        // var post =  await _postClientService.GetPostIdByRoomIdAsync(contract.RoomId);
+        // if (post == null)
+        //     return ApiResponse<ReviewResponse>.Fail("Không tìm thấy bài đăng cho phòng này.");
         var review = _mapper.Map<Review>(request);
         review.ReviewDeadline = contract.CheckoutDate.AddMonths(1);
         review.UserId = userId;
