@@ -1,5 +1,6 @@
 ﻿using AuthApi.DTO.Request;
 using AuthApi.DTO.Response;
+using Shared.DTOs.Auths.Responses;
 
 
 

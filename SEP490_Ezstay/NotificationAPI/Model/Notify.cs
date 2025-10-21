@@ -1,7 +1,8 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using NotificationAPI.Enums;
-using AuthApi.Enums;
+using Shared.Enums;
+
 
 namespace NotificationAPI.Model
 {
@@ -22,7 +23,8 @@ namespace NotificationAPI.Model
 
         public bool IsRead { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public RoleEnum? TargetRole { get; set; }
+        public List<RoleEnum> TargetRoles { get; set; } = new();
+
 
 
         public DateTime? ScheduledTime { get; set; } // thời gian hẹn gửi

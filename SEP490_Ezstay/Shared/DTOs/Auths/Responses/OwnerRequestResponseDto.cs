@@ -1,5 +1,5 @@
-﻿using AuthApi.Enums;
-
+﻿using Shared.DTOs.Auths.Responses;
+using Shared.Enums;
 namespace AuthApi.DTO.Response
 {
     public class OwnerRequestResponseDto

@@ -1,5 +1,5 @@
 ﻿using AuthApi.DTO.Request;
-using AuthApi.Enums;
+
 using AuthApi.Models;
 using AuthApi.Repositories.Interfaces;
 using AuthApi.Services.Interfaces;
@@ -47,7 +47,7 @@ namespace AuthApi.Services
                 Email = email,
                 Password = string.Empty, // login google không cần mật khẩu
                 Phone = string.Empty,
-                Role = RoleEnum.User, // hoặc 1 role mặc định bạn chọn
+                Role = Shared.Enums.RoleEnum.User, // hoặc 1 role mặc định bạn chọn
                 IsVerified = true, // xác minh luôn vì Google đã verify email
                 CreateAt = DateTime.UtcNow
             };

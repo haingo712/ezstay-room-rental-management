@@ -1,9 +1,10 @@
 ﻿using APIGateway.Helper.Interfaces;
 using AuthApi.DTO.Request;
-using AuthApi.Enums;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using UserManagerAPI.Service;

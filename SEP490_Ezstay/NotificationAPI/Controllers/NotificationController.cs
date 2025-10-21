@@ -1,5 +1,5 @@
 ﻿using APIGateway.Helper.Interfaces;
-using AuthApi.Enums;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.SignalR;
 using NotificationAPI.DTOs.Resquest;
 using NotificationAPI.Service.Interfaces;
 using NotificationAPI.Sinair;
+using Shared.Enums;
 using System.Security.Claims;
 
 namespace NotificationAPI.Controllers
@@ -95,14 +96,21 @@ namespace NotificationAPI.Controllers
 
 
         [HttpPost("by-role")]
-          [Authorize(Roles = "Admin,Staff,Owner")]
+        [Authorize(Roles = "Admin,Staff,Owner")]
         public async Task<IActionResult> CreateByRole([FromBody] NotifyByRoleRequest request)
         {
             var result = await _service.CreateByRoleAsync(request);
-            await _hubContext.Clients.Group(request.TargetRole.ToString())
-                .SendAsync("ReceiveRoleNotification", result);
+
+            // Nếu có nhiều role
+            foreach (var role in request.TargetRoles)
+            {
+                await _hubContext.Clients.Group(role.ToString())
+                    .SendAsync("ReceiveRoleNotification", result);
+            }
+
             return Ok(result);
         }
+
 
         [HttpPut("mark-read/{id}")]
         [Authorize(Roles = "Admin,Staff,Owner")]
@@ -122,24 +130,17 @@ namespace NotificationAPI.Controllers
             return Ok(result);
         }
 
-
-        [HttpGet("all-by-role")]
-        [Authorize(Roles = "Admin,Staff,Owner,User")]
-        public async Task<IActionResult> GetAllByRoleOrUser()
+        [HttpGet("all-by-user")]
+        [Authorize] // Chỉ cần đăng nhập, không cần kiểm tra role
+        public async Task<IActionResult> GetAllByUser()
         {
             var userId = GetUserIdFromToken();
-            var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
-            if (string.IsNullOrEmpty(roleClaim))
-                return Unauthorized("Không tìm thấy thông tin vai trò trong token.");
+            if (userId == Guid.Empty)
+                return Unauthorized("Không tìm thấy userId trong token.");
 
-            if (!Enum.TryParse<RoleEnum>(roleClaim, out var role))
-                return BadRequest("Role không hợp lệ.");
-
-
-            var result = await _service.GetAllByRoleOrUserAsync(userId, role);
+            var result = await _service.GetAllByUserAsync(userId);
             return Ok(result);
         }
-
 
         [HttpPost("trigger-owner-register")]
         public async Task<IActionResult> TriggerOwnerRegister( [FromBody] TriggerOwnerRegisterRequest dto)

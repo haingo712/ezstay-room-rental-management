@@ -9,15 +9,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AccountAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/User")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class AccountController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IUserClaimHelper _userClaimHelper;
         private readonly IAuthApiClient _authApiClient;
 
-        public UserController(IUserService userService, IUserClaimHelper userClaimHelper, IAuthApiClient authApiClient)
+        public AccountController(IUserService userService, IUserClaimHelper userClaimHelper, IAuthApiClient authApiClient)
         {
             _userService = userService;
             _userClaimHelper = userClaimHelper;
@@ -139,16 +139,5 @@ namespace AccountAPI.Controllers
                 ? Ok(ApiResponse<string>.Ok(null, message))
                 : BadRequest(ApiResponse<string>.Fail(message));
         }
-
-
-
-
-
-
-
-
-
-
-
     }
 }

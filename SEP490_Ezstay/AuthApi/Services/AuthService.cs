@@ -8,6 +8,8 @@ using AutoMapper;
 using System.Net.Http.Json;
 using BCrypt.Net;
 using System.Security.Claims;
+using Auths.Responses;
+
 
 namespace AuthApi.Services
 {
@@ -114,7 +116,7 @@ namespace AuthApi.Services
 
             var account = _mapper.Map<Account>(dto);
             account.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-            account.Role = AuthApi.Enums.RoleEnum.Staff;
+            account.Role = Shared.Enums.RoleEnum.Staff;
             account.IsVerified = true; // Staff accounts are created by admin and are verified by default
 
             await _repo.CreateAsync(account);
@@ -193,13 +195,6 @@ namespace AuthApi.Services
             };
         }
 
-
-
-
-
-
-
-
         public async Task<RegisterResponseDto> SendPhoneOtpAsync(string phone)
         {
             // Kiểm tra số điện thoại đã tồn tại trong DB chưa
@@ -230,16 +225,5 @@ namespace AuthApi.Services
 
             return new RegisterResponseDto { Success = true, Message = "Phone verified successfully." };
         }
-
-
-
-
-
-
-
-
-
     }
-
-
 }

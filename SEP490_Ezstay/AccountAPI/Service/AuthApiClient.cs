@@ -18,7 +18,6 @@ namespace AccountAPI.Service
 
         }
     
-
         public async Task<bool> ConfirmOtpAsync(string email, string otp)
         {
             var response = await _http.PostAsJsonAsync("/api/Auth/confirm-otp", new
@@ -52,7 +51,6 @@ namespace AccountAPI.Service
             var response = await _http.PutAsJsonAsync($"/api/Accounts/update-fullname/{id}", fullName);
             return response.IsSuccessStatusCode;
         }
-
 
         public async Task<string> ChangePasswordAsync(ChangePasswordRequest dto)
         {

@@ -1,6 +1,6 @@
-﻿using AuthApi.Enums;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using NotificationAPI.Model;
+using Shared.Enums;
 
 namespace NotificationAPI.Repositories.Interfaces
 {
@@ -19,7 +19,7 @@ namespace NotificationAPI.Repositories.Interfaces
 
         Task<List<Notify>> GetByUserIdsAsync(IEnumerable<Guid> userIds);
         Task UpdateManyAsync(IEnumerable<Notify> notifies);
-        Task<List<Notify>> GetAllForRoleOrUserAsync(Guid userId, RoleEnum role);
+        Task<List<Notify>> GetAllForUserAsync(Guid userId);
         Task CreateAsync(Notify notify);
         List<object> GetAllNotificationTypes();
         List<object> GetAllRoles();

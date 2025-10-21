@@ -1,7 +1,7 @@
 ﻿    using APIGateway.Helper.Interfaces;
     using AuthApi.DTO.Request;
     using AuthApi.DTO.Response;
-    using AuthApi.Enums;
+
     using AuthApi.Models;
     using AutoMapper;
     using MongoDB.Driver;
@@ -11,7 +11,9 @@
     using NotificationAPI.Model;
     using NotificationAPI.Repositories.Interfaces;
     using NotificationAPI.Service.Interfaces;
-    using System.Data;
+using Shared.DTOs.Auths.Responses;
+using Shared.Enums;
+using System.Data;
     using Twilio.Rest.Conversations.V1.Service.Configuration;
 
     namespace NotificationAPI.Service
@@ -126,9 +128,9 @@
                 await _repo.DeleteAsync(id);
             }
 
-           public async Task<List<NotificationResponseDto>> GetAllByRoleOrUserAsync(Guid userId, RoleEnum role)
+        public async Task<List<NotificationResponseDto>> GetAllByUserAsync(Guid userId)
         {
-            var list = await _repo.GetAllForRoleOrUserAsync(userId, role);
+            var list = await _repo.GetAllForUserAsync(userId);
 
             // ⚙️ Chỉ lấy những notify đã gửi hoặc không hẹn giờ
             var now = DateTime.UtcNow;
@@ -141,36 +143,39 @@
         }
 
 
-            public async Task<NotificationResponseDto> CreateByRoleAsync(NotifyByRoleRequest request)
+
+        public async Task<NotificationResponseDto> CreateByRoleAsync(NotifyByRoleRequest request)
+        {
+            // Lấy tất cả user của các role trong danh sách
+            var allUsers = new List<AccountResponse>();
+
+            foreach (var role in request.TargetRoles)
             {
-                // Gọi qua Auth API để lấy danh sách user thuộc role
-                var usersResponse = await _httpClient.GetFromJsonAsync<List<AccountResponse>>(
-                    $"api/accounts/role/{(int)request.TargetRole}");
-
-                if (usersResponse == null || !usersResponse.Any())
-                    throw new Exception($"Không tìm thấy user nào thuộc role {request.TargetRole}");
-
-                // Tạo thông báo (chỉ một bản, dành cho role)
-                var notify = new Notify
-                {
-                    NotificationType = request.NotificationType,
-                    Title = request.Title,
-                    Message = request.Message,
-                    CreatedAt = DateTime.UtcNow,
-
-                    // 👇 thêm dòng này để lưu role, giúp hiển thị hoặc lọc về sau
-                    TargetRole = request.TargetRole
-                };
-
-                // Lưu vào MongoDB
-                await _repo.AddAsync(notify);
-
-                // Map sang DTO trả về
-                var response = _mapper.Map<NotificationResponseDto>(notify);
-                return response;
+                var users = await _httpClient.GetFromJsonAsync<List<AccountResponse>>(
+                    $"api/accounts/role/{(int)role}");
+                if (users != null)
+                    allUsers.AddRange(users);
             }
 
-            public async Task<NotificationResponseDto?> UpdateAsyncByRole(Guid id, NotifyRequest request)
+            if (!allUsers.Any())
+                throw new Exception("Không tìm thấy user nào thuộc các role được chọn");
+
+            // Tạo notify lưu danh sách role
+            var notify = new Notify
+            {
+                NotificationType = request.NotificationType,
+                Title = request.Title,
+                Message = request.Message,
+                CreatedAt = DateTime.UtcNow,
+                TargetRoles = request.TargetRoles
+            };
+
+            await _repo.AddAsync(notify);
+            return _mapper.Map<NotificationResponseDto>(notify);
+        }
+
+
+        public async Task<NotificationResponseDto?> UpdateAsyncByRole(Guid id, NotifyRequest request)
             {
                 var notify = await _repo.GetByIdAsync(id);
                 if (notify == null) return null;
@@ -191,22 +196,23 @@
             }
 
 
-            public async Task CreateNotifyForOwnerRegisterAsync(Guid UserId,TriggerOwnerRegisterRequest dto)
+        public async Task CreateNotifyForOwnerRegisterAsync(Guid userId, TriggerOwnerRegisterRequest dto)
+        {
+            var notify = new Notify
             {
-                var notify = new Notify
-                {
-                    Title = "Yêu cầu đăng ký chủ trọ mới",
-                    Message = "Một người dùng vừa gửi đơn đăng ký làm chủ trọ. Vui lòng kiểm tra.",
-                    NotificationType = NotificationType.OwnerRegister,
-                    UserId = UserId, // không gán cho user cụ thể
-                    TargetRole = RoleEnum.Staff,
-                    CreatedAt = DateTime.UtcNow
-                };
-                await _repo.AddAsync(notify); // gọi đúng method lưu vào MongoDB
-            }
+                Title = "Yêu cầu đăng ký chủ trọ mới",
+                Message = $"Người dùng có ID {userId} vừa gửi đơn đăng ký làm chủ trọ. Vui lòng kiểm tra.",
+                NotificationType = NotificationType.OwnerRegister,
+                TargetRoles = new List<RoleEnum> { RoleEnum.Staff }, // 👈 Gửi cho nhiều role nếu muốn
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _repo.AddAsync(notify); // Lưu thông báo vào MongoDB
+        }
 
 
-            public async Task AproveNotifyForOwnerRegisterAsync(Guid UserId, TriggerOwnerRegisterRequest dto)
+
+        public async Task AproveNotifyForOwnerRegisterAsync(Guid UserId, TriggerOwnerRegisterRequest dto)
             {
                 var notify = new Notify
                 {
@@ -215,7 +221,7 @@
                     NotificationType = NotificationType.OwnerRegister,
 
                     UserId = UserId, // không gán cho user cụ thể
-                    TargetRole = RoleEnum.User,
+                    TargetRoles = new List<RoleEnum> { RoleEnum.Staff },
                     CreatedAt = DateTime.UtcNow
                 };
                 await _repo.AddAsync(notify); // gọi đúng method lưu vào MongoDB
@@ -230,7 +236,7 @@
                     NotificationType = NotificationType.OwnerRegister,
 
                     UserId = UserId, // không gán cho user cụ thể
-                    TargetRole = RoleEnum.User,
+                    TargetRoles = new List<RoleEnum> { RoleEnum.Staff },
                     CreatedAt = DateTime.UtcNow
                 };
                 await _repo.AddAsync(notify); // gọi đúng method lưu vào MongoDB
@@ -248,15 +254,16 @@
                 NotificationType = dto.NotificationType,
                 Title = dto.Title,
                 Message = dto.Message,
-                TargetRole = dto.TargetRole,
+                TargetRoles = dto.TargetRoles, // 👈 đổi sang danh sách role
                 ScheduledTime = dto.ScheduledTime,
                 CreatedAt = DateTime.UtcNow,
-                IsSent = !dto.ScheduledTime.HasValue, // 👈 nếu không hẹn giờ → gửi luôn
+                IsSent = !dto.ScheduledTime.HasValue, // nếu không hẹn giờ thì gửi ngay
                 IsRead = false
             };
 
             await _repo.CreateAsync(notify);
         }
+
 
 
 

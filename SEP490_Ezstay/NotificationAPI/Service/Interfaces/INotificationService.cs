@@ -1,6 +1,7 @@
-﻿using AuthApi.Enums;
+﻿
 using NotificationAPI.DTOs.Respone;
 using NotificationAPI.DTOs.Resquest;
+using Shared.Enums;
 
 namespace NotificationAPI.Service.Interfaces
 {
@@ -27,7 +28,7 @@ namespace NotificationAPI.Service.Interfaces
         // 🔹 Đánh dấu thông báo đã đọc
         Task<bool> MarkAsReadAsync(Guid id);
         Task<NotificationResponseDto?> UpdateAsyncByRole(Guid id, NotifyRequest request);
-        Task<List<NotificationResponseDto>> GetAllByRoleOrUserAsync(Guid userId, RoleEnum role);
+        Task<List<NotificationResponseDto>> GetAllByUserAsync(Guid userId);
         Task CreateNotifyForOwnerRegisterAsync(Guid UserId, TriggerOwnerRegisterRequest dto);
         Task AproveNotifyForOwnerRegisterAsync(Guid UserId, TriggerOwnerRegisterRequest dto);
         Task RejectNotifyForOwnerRegisterAsync(Guid UserId, TriggerOwnerRegisterRequest dto);

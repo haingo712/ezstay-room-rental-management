@@ -1,15 +1,16 @@
 ﻿using AuthApi.DTO.Request;
 using AuthApi.DTO.Response;
-using AuthApi.Enums;
 using AuthApi.Services;
 using AuthApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Enums;
 using System.Security.Claims;
 
 namespace AuthApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService _service;
