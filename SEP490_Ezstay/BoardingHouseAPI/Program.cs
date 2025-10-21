@@ -24,7 +24,10 @@ namespace BoardingHouseAPI
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+            });
             builder.Services.Configure<MongoSettings>(builder.Configuration.GetSection("ConnectionStrings"));
             builder.Services.AddSingleton<MongoDbService>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -37,6 +40,14 @@ namespace BoardingHouseAPI
             builder.Services.AddHttpClient<IImageClientService, ImageClientService>(client =>
             {
                 client.BaseAddress = new Uri(serviceUrls["ImageAPI"]!);
+            });                      
+            builder.Services.AddHttpClient<IReviewClientService, ReviewClientService>(client =>
+            {
+                client.BaseAddress = new Uri(serviceUrls["ReviewAPI"]!);
+            });
+            builder.Services.AddHttpClient<ISentimentAnalysisClientService, SentimentAnalysisClientService>(client =>
+            {
+                client.BaseAddress = new Uri(serviceUrls["SentimentAnalysisAPI"]!);
             });
             builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
             {
