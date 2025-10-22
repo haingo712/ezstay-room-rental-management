@@ -2,6 +2,7 @@
 using AuthApi.DTO.Response;
 using AuthApi.Models;
 using AutoMapper;
+using Shared.DTOs.Auths.Responses;
 
 namespace AuthApi.Mapping
 {

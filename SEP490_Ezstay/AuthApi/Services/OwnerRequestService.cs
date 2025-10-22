@@ -1,10 +1,11 @@
 ﻿using AuthApi.DTO.Request;
 using AuthApi.DTO.Response;
-using AuthApi.Enums;
+
 using AuthApi.Models;
 using AuthApi.Repositories.Interfaces;
 using AuthApi.Services.Interfaces;
 using AutoMapper;
+using Shared.Enums;
 using System.Security.Claims;
 
 namespace AuthApi.Services
@@ -37,7 +38,7 @@ namespace AuthApi.Services
             entity.Id = Guid.NewGuid();
             entity.AccountId = accountId;           // Lấy từ token
             entity.SubmittedAt = DateTime.UtcNow;
-            entity.Status = Enums.RequestStatusEnum.Pending;
+            entity.Status = RequestStatusEnum.Pending;
 
             try
             {
@@ -50,9 +51,6 @@ namespace AuthApi.Services
                 return null;
             }
         }
-
-
-
 
         public async Task<OwnerRequestResponseDto?> ApproveRequestAsync(Guid requestId, Guid staffId)
         {
@@ -74,7 +72,7 @@ namespace AuthApi.Services
             var account = await _accountRepo.GetByIdAsync(request.AccountId);
             if (account != null)
             {
-                account.Role = RoleEnum.Owner;
+                account.Role = Shared.Enums.RoleEnum.Owner;
                 await _accountRepo.UpdateAsync(account);
             }
 

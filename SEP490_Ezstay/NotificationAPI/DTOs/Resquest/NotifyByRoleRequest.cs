@@ -1,5 +1,6 @@
-﻿using AuthApi.Enums;
+﻿
 using NotificationAPI.Enums;
+using Shared.Enums;
 
 namespace NotificationAPI.DTOs.Resquest
 {
@@ -9,8 +10,8 @@ namespace NotificationAPI.DTOs.Resquest
         public NotificationType NotificationType { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
-  
-        public RoleEnum TargetRole { get; set; }
+
+        public List<RoleEnum> TargetRoles { get; set; } = new();
 
         public DateTime? ScheduledTime { get; set; }
 

@@ -1,13 +1,13 @@
 ﻿using AuthApi.DTO.Request;
-using AuthApi.DTO.Response;
-using AuthApi.Enums;
+using Shared.DTOs.Auths.Responses; // 👈 thay vì dùng AuthApi.DTO.Response
+
+
 using AuthApi.Models;
-using AuthApi.Repositories;
 using AuthApi.Repositories.Interfaces;
 using AuthApi.Services.Interfaces;
 using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using Shared.Enums;
 
 namespace AuthApi.Services
 {
@@ -180,7 +180,7 @@ namespace AuthApi.Services
                 : "Đổi mật khẩu thất bại.";
         }
 
-        public async Task<List<AccountResponse>> GetByRoleAsync(RoleEnum role)
+        public async Task<List<AccountResponse>> GetByRoleAsync(Shared.Enums.RoleEnum role)
         {
             var list = await _repo.GetByRoleAsync(role);
             return _mapper.Map<List<AccountResponse>>(list);

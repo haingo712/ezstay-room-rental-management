@@ -1,8 +1,9 @@
-﻿using AuthApi.Enums;
+﻿
 using MongoDB.Driver;
 using NotificationAPI.Enums;
 using NotificationAPI.Model;
 using NotificationAPI.Repositories.Interfaces;
+using Shared.Enums;
 
 namespace NotificationAPI.Repositories
 {
@@ -96,41 +97,18 @@ namespace NotificationAPI.Repositories
             await Task.WhenAll(tasks);
         }
 
-        public async Task<List<Notify>> GetAllForRoleOrUserAsync(Guid userId, RoleEnum role)
+        public async Task<List<Notify>> GetAllForUserAsync(Guid userId)
         {
-            if (role == RoleEnum.Admin)
-            {
-                // Admin thấy tất cả
-                return await _notifications.Find(_ => true)
-                    .SortByDescending(x => x.CreatedAt)
-                    .ToListAsync();
-            }
+            // Chỉ lấy thông báo dành riêng cho user này
+            var filter = Builders<Notify>.Filter.Eq(x => x.UserId, userId);
 
-            // Các role khác chỉ thấy:
-            // - Thông báo chung cho role đó
-            // - Thông báo riêng cho user đó
-            var roleFilter = Builders<Notify>.Filter.Eq(x => x.TargetRole, role);
-            var userFilter = Builders<Notify>.Filter.Eq(x => x.UserId, userId);
-
-            // OR giữa 2 điều kiện trên
-            var filter = Builders<Notify>.Filter.Or(roleFilter, userFilter);
-
-            // Lấy danh sách thông báo theo filter
             var result = await _notifications.Find(filter)
                 .SortByDescending(x => x.CreatedAt)
                 .ToListAsync();
 
-            // Lọc kỹ lại lần nữa (đề phòng dữ liệu lỗi)
-            result = result
-                .Where(n =>
-                    n.TargetRole == null ||
-                    n.TargetRole == role ||
-                    n.UserId == userId
-                )
-                .ToList();
-
             return result;
         }
+
 
 
         public async Task CreateAsync(Notify notify)

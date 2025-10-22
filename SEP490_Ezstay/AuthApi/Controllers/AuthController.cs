@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using AuthApi.Models;
 using AutoMapper;
 using System.Text.Json;
+using Auths.Responses;
 
 namespace AuthApi.Controllers
 {
@@ -90,7 +91,7 @@ namespace AuthApi.Controllers
             var account = _mapper.Map<Account>(registerDto);
             account.Password = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
             account.IsVerified = true;
-            account.Role = Enums.RoleEnum.User; // Default role
+            account.Role = Shared.Enums.RoleEnum.User; // Default role
 
             await _accountRepo.CreateAsync(account);
 

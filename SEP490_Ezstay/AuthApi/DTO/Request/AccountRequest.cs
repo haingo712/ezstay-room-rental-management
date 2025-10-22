@@ -1,4 +1,5 @@
-﻿using AuthApi.Enums;
+﻿
+using Shared.Enums;
 
 namespace AuthApi.DTO.Request
 {

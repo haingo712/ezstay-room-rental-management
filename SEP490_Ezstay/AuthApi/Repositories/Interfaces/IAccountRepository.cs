@@ -1,5 +1,6 @@
-﻿using AuthApi.Enums;
+﻿
 using AuthApi.Models;
+using Shared.Enums;
 
 namespace AuthApi.Repositories.Interfaces
 {

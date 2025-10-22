@@ -1,5 +1,6 @@
 ﻿using AuthApi.DTO.Request;
 using AuthApi.DTO.Response;
+using Auths.Responses;
 
 namespace AuthApi.Services.Interfaces
 {

@@ -1,4 +1,4 @@
-﻿namespace Auths.Responses
+﻿namespace Shared.DTOs.Auths.Responses
 {
     public class LoginResponseDto
     {

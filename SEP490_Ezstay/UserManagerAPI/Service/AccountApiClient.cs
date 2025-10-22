@@ -3,6 +3,8 @@ using System.Net.Http.Json;
 using AuthApi.DTO.Request;
 using AuthApi.DTO.Response;
 using AuthApi.Models;
+using Shared.DTOs.Auths.Responses;
+
 
 // AccountRequest, UpdateAccountRequest, AccountResponse
 using UserManagerAPI.Service.Interfaces;

@@ -1,8 +1,9 @@
 ﻿using AuthApi.Data;
-using AuthApi.Enums;
+
 using AuthApi.Models;
 using AuthApi.Repositories.Interfaces;
 using MongoDB.Driver;
+using Shared.Enums;
 
 namespace AuthApi.Repositories
 {

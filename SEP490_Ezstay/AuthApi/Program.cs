@@ -1,5 +1,4 @@
 using AuthApi.Data;
-using AuthApi.Enums;
 using AuthApi.Models;
 using AuthApi.Repositories;
 using AuthApi.Repositories.Interfaces;
@@ -115,7 +114,7 @@ using (var scope = app.Services.CreateScope())
                 Email = "admin@gmail.com",
                 Password = BCrypt.Net.BCrypt.HashPassword("admin123"),
                 Phone = "0000000000",
-                Role = RoleEnum.Admin,
+                Role = Shared.Enums.RoleEnum.Admin,
                 IsVerified = true,
                 CreateAt = DateTime.UtcNow
             };
@@ -138,7 +137,7 @@ using (var scope = app.Services.CreateScope())
                 Email = "staff1@gmail.com",
                 Password = BCrypt.Net.BCrypt.HashPassword("123"),
                 Phone = "1234567890",
-                Role = RoleEnum.Staff,
+                Role = Shared.Enums.RoleEnum.Staff,
                 IsVerified = true,
                 CreateAt = DateTime.UtcNow
             };

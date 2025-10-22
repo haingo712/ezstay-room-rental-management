@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
-using AuthApi.Enums;
+
+using Shared.Enums;
 
 namespace AuthApi.Models
 {

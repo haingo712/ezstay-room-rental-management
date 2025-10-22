@@ -1,5 +1,5 @@
 ﻿using AuthApi.DTO.Request;
-using AuthApi.Enums;
+
 using AuthApi.Models;
 using AuthApi.Repositories.Interfaces;
 using AuthApi.Services.Interfaces;
@@ -52,7 +52,7 @@ namespace AuthApi.Services
                 Email = fbData.Email,
                 Password = string.Empty,
                 Phone = string.Empty,
-                Role = RoleEnum.User,
+                Role = Shared.Enums.RoleEnum.User,
                 IsVerified = true,
                 CreateAt = DateTime.UtcNow
             };

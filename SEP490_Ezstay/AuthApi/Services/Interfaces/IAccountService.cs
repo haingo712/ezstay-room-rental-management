@@ -1,6 +1,6 @@
 ﻿using AuthApi.DTO.Request;
-using AuthApi.DTO.Response;
-using AuthApi.Enums;
+using Shared.DTOs.Auths.Responses;
+using Shared.Enums;
 
 namespace AuthApi.Services.Interfaces
 {
