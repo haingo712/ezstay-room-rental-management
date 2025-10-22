@@ -88,7 +88,17 @@ public class ReviewController : ControllerBase
 
         return Ok(result);
     }
-    
+  //  [Authorize(Roles = "Staff")]
+    [HttpPut("{id}/hide/{hide}")]
+    public async Task<IActionResult> HideReview(Guid id, bool hide)
+    {
+        var result = await _reviewService.HideReview(id, hide);
+        if (!result.IsSuccess)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
+
     [Authorize(Roles = "Staff")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)

@@ -21,7 +21,8 @@ public class Review
 
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid ContractId { get; set; }
-    
+    public bool IsHidden { get; set; }
+
     public int Rating { get; set; } 
     public string Content { get; set; }
     public DateTime ReviewDeadline { get; set; }

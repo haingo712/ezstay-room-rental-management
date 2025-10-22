@@ -15,5 +15,6 @@ public interface IReviewService
     //Task<ApiResponse<ReviewResponseDto>> AddAsync(Guid userId,Guid postId, CreateReviewDto request);
     Task<ApiResponse<ReviewResponse>> AddAsync(Guid userId, Guid contractId, CreateReviewDto request);
     Task<ApiResponse<bool>> UpdateAsync(Guid id, Guid userId, UpdateReviewDto request);
+    Task<ApiResponse<bool>> HideReview(Guid id, bool hidden);
     Task DeleteAsync(Guid id);
 }

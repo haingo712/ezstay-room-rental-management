@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using ReviewAPI.DTO.Requests.ReviewReply;
 using ReviewAPI.DTO.Response.ReviewReply;
+using ReviewAPI.Service;
 using ReviewAPI.Service.Interface;
 
 namespace ReviewAPI.Controllers;
@@ -12,16 +13,18 @@ namespace ReviewAPI.Controllers;
 public class ReviewReplyController: ControllerBase
 {
     private readonly IReviewReplyService _reviewReplyService;
-    public ReviewReplyController(IReviewReplyService reviewReplyService)
+    private readonly ITokenService _tokenService;
+    public ReviewReplyController(IReviewReplyService reviewReplyService, ITokenService tokenService)
     {
         _reviewReplyService = reviewReplyService;
+        _tokenService = tokenService;
     }
-
     [HttpPost("{reviewId}")]
     [Authorize(Roles = "Owner")]
     public async Task<IActionResult> Create(Guid reviewId, [FromForm] CreateReviewReplyRequest request)
     {
-            var create = await _reviewReplyService.AddAsync(reviewId, request);
+            var ownerId = _tokenService.GetUserIdFromClaims(User);
+            var create = await _reviewReplyService.AddAsync(reviewId, ownerId, request);
             if (!create.IsSuccess)
                 return BadRequest(new { message = create.Message });
             return CreatedAtAction("GetById", new { id = create.Data.Id }, create);
