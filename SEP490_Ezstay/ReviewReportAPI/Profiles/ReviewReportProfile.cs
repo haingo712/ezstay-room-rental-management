@@ -10,7 +10,8 @@ public class ReviewReportProfile : Profile
     public ReviewReportProfile()
     {
         CreateMap<CreateReviewReportRequest, ReviewReport>();
-        CreateMap<UpdateReviewReportDto, ReviewReport>();
+        CreateMap<UpdateReviewReportRequest, ReviewReport>();
+        CreateMap<UpdateReportStatusRequest, ReviewReport>();
         CreateMap<ReviewReport, ReviewReportResponse>();
     }
 }

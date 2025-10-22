@@ -13,23 +13,25 @@ public class ReviewReportRepository : IReviewReportRepository
         _collection = database.GetCollection<ReviewReport>("ReviewReports");
     }
 
-    public async Task AddAsync(ReviewReport report)
+    public async Task Add(ReviewReport report)
     {
         await _collection.InsertOneAsync(report);
     }
 
-    public async Task<ReviewReport?> GetByIdAsync(Guid id)
+    public async Task<ReviewReport> GetById(Guid id)
     {
         return await _collection.Find(r => r.Id == id).FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<ReviewReport>> GetAllAsync()
-    {
-        return await _collection.Find(_ => true).ToListAsync();
-    }
+    public IQueryable<ReviewReport> GetAll() => _collection.AsQueryable();
+    
 
-    public async Task UpdateAsync(ReviewReport report)
+    public async Task Update(ReviewReport report)
     {
         await _collection.ReplaceOneAsync(r => r.Id == report.Id, report);
+    }
+    public async Task Delete(ReviewReport report)
+    {
+        await _collection.DeleteOneAsync(r => r.Id == report.Id);
     }
 }

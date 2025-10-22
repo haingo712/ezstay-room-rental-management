@@ -1,87 +1,88 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ReviewReportAPI.DTO.Requests;
 using ReviewReportAPI.DTO.Response;
+using ReviewReportAPI.Enum;
 using ReviewReportAPI.Model;
 using ReviewReportAPI.Repository.Interface;
 using ReviewReportAPI.Service.Interface;
-
+using Shared.DTOs;
 namespace ReviewReportAPI.Service;
 
 public class ReviewReportService : IReviewReportService
 {
     private readonly IReviewReportRepository _reportRepository;
-   // private readonly IReviewRepository _reviewRepository;
+    private readonly IReviewClientService _reviewClientService;
+    private readonly IImageClientService _imageClientService;
     private readonly IMapper _mapper;
-
-    // public ReviewReportService(IReviewReportRepository reportRepository, IReviewRepository reviewRepository, IMapper mapper)
-    // {
-    //     _reportRepository = reportRepository;
-    //     _reviewRepository = reviewRepository;
-    //     _mapper = mapper;
-    // }
-    public ReviewReportService(IReviewReportRepository reportRepository, IMapper mapper)
+    public ReviewReportService(IReviewReportRepository reportRepository, IReviewClientService reviewClientService, IMapper mapper, IImageClientService imageClientService)
     {
         _reportRepository = reportRepository;
-       
+        _reviewClientService = reviewClientService;
+        _imageClientService = imageClientService;
         _mapper = mapper;
     }
-    public async Task<ApiResponse<ReviewReportResponse>> AddAsync(Guid reviewId, CreateReviewReportRequest request)
+    public  IQueryable<ReviewReportResponse> GetAll()
+        => _reportRepository.GetAll().ProjectTo<ReviewReportResponse>(_mapper.ConfigurationProvider);
+
+
+    public async Task<ReviewReportResponse> GetById(Guid id)
     {
-       // var review = await _reviewRepository.GetByIdAsync(reviewId);
-        // if (review == null)
-        //     return ApiResponse<ReviewReportResponseDto>.Fail("Không tìm thấy review.");
-        var r= _mapper.Map<ReviewReport>(request);
-
-        await _reportRepository.AddAsync(r);
-
-        var dto = _mapper.Map<ReviewReportResponse>(request);
-        return ApiResponse<ReviewReportResponse>.Success(dto, "Tạo báo cáo thành công.");
+        return _mapper.Map<ReviewReportResponse>(await _reportRepository.GetById(id));
     }
-
-    public async Task<ApiResponse<ReviewReportResponse>> ApproveAsync(Guid reportId)
+   
+    public async Task<ApiResponse<ReviewReportResponse>> Add(Guid reviewId, CreateReviewReportRequest request)
     {
-        var report = await _reportRepository.GetByIdAsync(reportId);
-        if (report == null)
-            return ApiResponse<ReviewReportResponse>.Fail("Không tìm thấy báo cáo.");
-
-        // report.Status = ReportStatus.Approved;
-        // report.UpdatedAt = DateTime.UtcNow;
-        // report.ReviewedAt = DateTime.UtcNow;
-        //
-        // // Cập nhật review (ẩn/xóa review tuỳ yêu cầu)
-        // var review = await _reviewRepository.GetByIdAsync(report.ReviewId);
-        // if (review != null)
-        // {
-        //     review.IsHidden = true; // hoặc review.Status = ReviewStatus.Hidden
-        //     await _reviewRepository.UpdateAsync(review);
-        // }
-
-        await _reportRepository.UpdateAsync(report);
-
+       // var review = await _reviewRepository.GetById(reviewId);
+       //  if (review == null)
+       //      return ApiResponse<ReviewReportResponseDto>.Fail("Không tìm thấy review.");
+        var report= _mapper.Map<ReviewReport>(request);
+        report.CreatedAt = DateTime.UtcNow;
+        report.ReviewId = reviewId;
+        report.Status = ReportStatus.Pending;
+        //Console.WriteLine("ss "+ report.);
+        report.Images =  await _imageClientService.UploadMultipleImage(request.Images);
+        await _reportRepository.Add(report);
+       
+        var result = _mapper.Map<ReviewReportResponse>(report);
+        return ApiResponse<ReviewReportResponse>.Success(result, "Tạo báo cáo thành công.");
+    }
+    public async Task<ApiResponse<ReviewReportResponse>> Update(Guid id, UpdateReviewReportRequest request)
+    {
+        var report = await _reportRepository.GetById(id);
+         if (report == null)
+             return ApiResponse<ReviewReportResponse>.Fail("Không tìm thấy review.");
+         if (report.Status != ReportStatus.Pending)
+             return ApiResponse<ReviewReportResponse>.Fail("Không dc cập nhật vì đơn này đã dc duyệt .");
+        _mapper.Map(request, report);
+        report.CreatedAt = DateTime.UtcNow;
+        report.Status = ReportStatus.Pending;
+        await _reportRepository.Update(report);
+        await _imageClientService.UploadMultipleImage(request.Images);
         var dto = _mapper.Map<ReviewReportResponse>(report);
-        return ApiResponse<ReviewReportResponse>.Success(dto, "Đã duyệt báo cáo, review bị ẩn.");
+        return ApiResponse<ReviewReportResponse>.Success(dto, "Update báo cáo thành công.");
     }
-
-    public async Task<ApiResponse<ReviewReportResponse>> RejectAsync(Guid reportId, string reason)
+    public async Task<ApiResponse<bool>> SetStatus(Guid reportId, UpdateReportStatusRequest request)
     {
-        var report = await _reportRepository.GetByIdAsync(reportId);
+        var report = await _reportRepository.GetById(reportId);
         if (report == null)
-            return ApiResponse<ReviewReportResponse>.Fail("Không tìm thấy báo cáo.");
+            return ApiResponse<bool>.Fail("Không tìm thấy báo cáo.");
+        _mapper.Map(request, report);
+        report.ReviewedAt = DateTime.UtcNow;
+        await _reportRepository.Update(report);
+        if (request.Status == ReportStatus.Approved)
+        {
+            await _reviewClientService.HideReview(report.ReviewId, true);
+            Console.WriteLine("cc"+ await _reviewClientService.HideReview(report.ReviewId, true));
+        }
+        else
+        {
+            await _reviewClientService.HideReview(report.ReviewId, false);
+            Console.WriteLine("cccc"+ await _reviewClientService.HideReview(report.ReviewId, false));
+        }
 
-        // report.Status = ReportStatus.Rejected;
-        // report.Reason += $" | RejectReason: {reason}";
-        // report.UpdatedAt = DateTime.UtcNow;
-        // report.ReviewedAt = DateTime.UtcNow;
-
-        await _reportRepository.UpdateAsync(report);
-
-        var dto = _mapper.Map<ReviewReportResponse>(report);
-        return ApiResponse<ReviewReportResponse>.Success(dto, "Đã từ chối báo cáo.");
-    }
-
-    public async Task<IEnumerable<ReviewReportResponse>> GetAllAsync()
-    {
-        var reports = await _reportRepository.GetAllAsync();
-        return _mapper.Map<IEnumerable<ReviewReportResponse>>(reports);
+    
+       // await _reviewClientService.HideReview(report.ReviewId, false);
+        return ApiResponse<bool>.Success(true, "Set duyệt đơn thành công");
     }
 }
