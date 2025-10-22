@@ -33,6 +33,22 @@
             }
         },
       {
+        "DownstreamPathTemplate": "/api/ReviewReport/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7074
+          }
+        ],
+        "UpstreamPathTemplate": "/api/ReviewReport/{everything}",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        }
+      },
+      {
         "DownstreamPathTemplate": "/api/BankGateWay/{everything}",
         "DownstreamScheme": "https",
         "DownstreamHostAndPorts": [
@@ -308,7 +324,7 @@
             "DownstreamPathTemplate": "/address-kit/latest/provinces",
             "DownstreamScheme": "https",
             "DownstreamHostAndPorts": [
-                {
+                { 
                     "Host": "production.cas.so",
                     "Port": 443
                 }
@@ -338,6 +354,22 @@
           }
         ],
         "UpstreamPathTemplate": "/api/Review/{everything}",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+        "AuthenticationOptions": {
+          "AuthenticationProviderKey": "Bearer",
+          "AllowedScopes": []
+        }
+      },
+      {
+        "DownstreamPathTemplate": "/api/ReviewReply/{everything}",
+        "DownstreamScheme": "https",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": 7037
+          }
+        ],
+        "UpstreamPathTemplate": "/api/ReviewReply/{everything}",
         "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
         "AuthenticationOptions": {
           "AuthenticationProviderKey": "Bearer",
