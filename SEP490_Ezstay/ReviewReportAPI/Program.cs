@@ -6,8 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
-using ReviewAPI.DTO.Response;
-using ReviewAPI.DTO.Response.ReviewReply;
 using ReviewAPI.Service;
 using ReviewAPI.Service.Interface;
 using ReviewReportAPI.DTO.Response;
@@ -23,17 +21,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
 builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
-
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IReviewReportRepository, ReviewReportRepository>();
 builder.Services.AddScoped<IReviewReportService, ReviewReportService>();
-
 builder.Services.AddHttpClient<IReviewClientService, ReviewClientService>(client =>
 { 
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ReviewApi"]);
 });
-
+builder.Services.AddHttpClient<IImageClientService, ImageClientService>(client =>
+{ 
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]);
+});
 var odatabuilder = new ODataConventionModelBuilder();
 odatabuilder.EntitySet<ReviewReportResponse>("ReviewReports");
 var odata = odatabuilder.GetEdmModel();
@@ -114,8 +112,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
+
+           builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
           

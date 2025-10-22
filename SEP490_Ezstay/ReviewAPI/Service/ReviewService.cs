@@ -115,6 +115,7 @@ public class ReviewService : IReviewService
         review.UserId = userId;
         review.ContractId = contractId;
         review.RoomId= contract.RoomId;
+        review.IsHidden = false;
     //    review.PostId = post.Value;
         review.CreatedAt = DateTime.UtcNow;
         review.ImageUrl =  _imageClient.UploadImageAsync(request.ImageUrl).Result;
@@ -140,6 +141,22 @@ public class ReviewService : IReviewService
 
         return ApiResponse<bool>.Success(true, "Cập nhật review thành công");
     }
+    public async Task<ApiResponse<bool>> HideReview(Guid id, bool hidden)
+    {
+        var review = await _reviewRepository.GetByIdAsync(id);
+        if (review == null)
+            return ApiResponse<bool>.Fail("Không tìm thấy review.");
+
+        // if (review.Status == ReviewStatus.Hidden)
+        //     return ApiResponse<bool>.Fail("Review này đã bị ẩn trước đó.");
+       // _mapper.Map(hidden, review);
+         review.IsHidden = hidden;
+        review.UpdatedAt = DateTime.UtcNow;
+
+        await _reviewRepository.UpdateAsync(review);
+        return ApiResponse<bool>.Success(true, "Ẩn review thành công.");
+    }
+
 
     public async Task DeleteAsync(Guid id)
     {
