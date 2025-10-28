@@ -11,5 +11,6 @@ public interface IReviewRepository
     Task<Review?> GetByIdAsync(Guid id);
     Task AddAsync(Review review);
     Task UpdateAsync(Review review);
-     Task DeleteAsync(Review review);
+    Task DeleteAsync(Review review);
+    Task<List<Review>> GetByRoomIdsAsync(List<Guid> roomIds);
 }

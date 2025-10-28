@@ -90,55 +90,83 @@ namespace RentalPostsAPI.Service
         }
 
 
-        /*  public async Task<IEnumerable<RentalpostDTO>> GetAllForUserAsync()
-          {
-              var entities = await _repo.GetAllAsync();
-              var dtos = _mapper.Map<List<RentalpostDTO>>(entities);
+        /* public async Task<IEnumerable<RentalpostDTO>> GetAllForUserAsync()
+         {
+             var entities = await _repo.GetAllAsync();
+             var dtos = _mapper.Map<List<RentalpostDTO>>(entities);
 
-              for (int i = 0; i < entities.Count(); i++)
-              {
-                  var entity = entities.ElementAt(i);
-                  var dto = dtos[i];
+             for (int i = 0; i < entities.Count(); i++)
+             {
+                 var entity = entities.ElementAt(i);
+                 var dto = dtos[i];
 
-                  // lấy thông tin chủ bài đăng
-                  var owner = await _externalService.GetAccountByIdAsync(entity.AuthorId);
+                 // lấy thông tin chủ bài đăng
+                 var owner = await _externalService.GetAccountByIdAsync(entity.AuthorId);
 
 
-                  var room = await _externalService.GetRoomByIdAsync(entity.RoomId);
-                  var house = room != null
-                      ? await _externalService.GetBoardingHouseByIdAsync(room.HouseId)
-                      : null;
+                 var room = await _externalService.GetRoomByIdAsync(entity.RoomId);
+                 var house = room != null
+                     ? await _externalService.GetBoardingHouseByIdAsync(room.HouseId)
+                     : null;
 
-                  dto.AuthorName = owner?.FullName ?? "Unknown";
-                  dto.ContactPhone = owner?.Phone ?? "";
-                  dto.RoomName = room?.RoomName ?? "";
-                  dto.HouseName = house?.HouseName ?? "";
-              }
+                 dto.AuthorName = owner?.FullName ?? "Unknown";
+                 dto.ContactPhone = owner?.Phone ?? "";
+                 dto.RoomName = room?.RoomName ?? "";
+                 dto.HouseName = house?.HouseName ?? "";
+             }
 
-              return dtos;
-          }*/
+             return dtos;
+         }
+ */
         public async Task<IEnumerable<RentalpostDTO>> GetAllForUserAsync()
         {
-            // Chỉ lấy IsActive = true
-            var entities = (await _repo.GetAllAsync()).Where(x => x.IsActive).ToList();
-            return _mapper.Map<List<RentalpostDTO>>(entities);
-        }
-        public async Task<IEnumerable<RentalpostDTO>> GetAllForOwnerAsync(ClaimsPrincipal user)
-        {
-            var ownerId = _tokenService.GetUserIdFromClaims(user);
-            var entities = await _repo.GetAllByOwnerIdAsync(ownerId);
+            var entities = (await _repo.GetAllAsync()).ToList();
             var dtos = _mapper.Map<List<RentalpostDTO>>(entities);
 
-            // Gắn thông tin từ token (đã có sẵn trong claim)
-            foreach (var dto in dtos)
+            // Lấy toàn bộ AuthorId duy nhất, tránh gọi trùng
+            var authorIds = entities.Select(e => e.AuthorId).Distinct().ToList();
+            var authorTasks = authorIds.ToDictionary(
+                id => id,
+                id => _externalService.GetAccountByIdAsync(id)
+            );
+            await Task.WhenAll(authorTasks.Values);
+
+            for (int i = 0; i < entities.Count; i++)
             {
-                dto.AuthorName = _tokenService.GetFullNameFromClaims(user) ?? "Unknown";
-                dto.ContactPhone = _tokenService.GetPhoneFromClaims(user) ?? "";
+                var entity = entities[i];
+                var dto = dtos[i];
+
+                var owner = await authorTasks[entity.AuthorId];
+                dto.AuthorName = owner?.FullName ?? "Unknown";
+                dto.ContactPhone = owner?.Phone ?? "";
+
+                // Nếu bài có nhiều phòng
+                if (entity.RoomId != null && entity.RoomId.Any())
+                {
+                    var roomTasks = entity.RoomId
+                        .Select(id => _externalService.GetRoomByIdAsync(id))
+                        .ToList();
+
+                    var rooms = await Task.WhenAll(roomTasks);
+                    var roomNames = rooms
+                        .Where(r => r != null)
+                        .Select(r => r!.RoomName)
+                        .ToList();
+
+                    dto.RoomName = string.Join(", ", roomNames);
+
+                    // Lấy house đầu tiên (nếu có)
+                    var firstRoom = rooms.FirstOrDefault(r => r != null);
+                    if (firstRoom != null)
+                    {
+                        var house = await _externalService.GetBoardingHouseByIdAsync(firstRoom.HouseId);
+                        dto.HouseName = house?.HouseName ?? "";
+                    }
+                }
             }
 
             return dtos;
         }
-
 
         /* public async Task<IEnumerable<RentalpostDTO>> GetAllForOwnerAsync(ClaimsPrincipal user)
          {
@@ -165,23 +193,166 @@ namespace RentalPostsAPI.Service
 
              return dtos;
          }*/
+
+        public async Task<IEnumerable<RentalpostDTO>> GetAllForOwnerAsync(ClaimsPrincipal user)
+        {
+            var ownerId = _tokenService.GetUserIdFromClaims(user);
+            var entities = (await _repo.GetAllByOwnerIdAsync(ownerId)).ToList();
+            var dtos = _mapper.Map<List<RentalpostDTO>>(entities);
+
+            var authorIds = entities.Select(e => e.AuthorId).Distinct().ToList();
+            var authorTasks = authorIds.ToDictionary(
+                id => id,
+                id => _externalService.GetAccountByIdAsync(id)
+            );
+            await Task.WhenAll(authorTasks.Values);
+
+            for (int i = 0; i < entities.Count; i++)
+            {
+                var entity = entities[i];
+                var dto = dtos[i];
+
+                var owner = await authorTasks[entity.AuthorId];
+                dto.AuthorName = owner?.FullName ?? "Unknown";
+                dto.ContactPhone = owner?.Phone ?? "";
+
+                if (entity.RoomId != null && entity.RoomId.Any())
+                {
+                 
+                    var roomTasks = entity.RoomId
+                        .Select(id => _externalService.GetRoomByIdAsync(id))
+                        .ToList();
+
+                    var rooms = await Task.WhenAll(roomTasks);
+                    var roomNames = rooms
+                        .Where(r => r != null)
+                        .Select(r => r!.RoomName)
+                        .ToList();
+
+                    dto.RoomName = string.Join(", ", roomNames);
+
+                  
+                    var firstRoom = rooms.FirstOrDefault(r => r != null);
+                    if (firstRoom != null)
+                    {
+                        var house = await _externalService.GetBoardingHouseByIdAsync(firstRoom.HouseId);
+                        dto.HouseName = house?.HouseName ?? "";
+                    }
+                }
+            }
+
+            return dtos;
+        }
         public async Task<RentalpostDTO?> GetByIdAsync(Guid id)
         {
             var entity = await _repo.GetByIdAsync(id);
-            return entity == null ? null : _mapper.Map<RentalpostDTO>(entity);
+            if (entity == null)
+                return null;
+
+            var dto = _mapper.Map<RentalpostDTO>(entity);
+
+          
+            var authorTask = _externalService.GetAccountByIdAsync(entity.AuthorId);
+
+            Task<RoomDto?>[]? roomTasks = null;
+            if (entity.RoomId != null && entity.RoomId.Any())
+            {
+                roomTasks = entity.RoomId
+                    .Select(rid => _externalService.GetRoomByIdAsync(rid))
+                    .ToArray();
+            }
+
+            await Task.WhenAll(authorTask, roomTasks != null ? Task.WhenAll(roomTasks) : Task.CompletedTask);
+
+            var author = await authorTask;
+            dto.AuthorName = author?.FullName ?? "Unknown";
+            dto.ContactPhone = author?.Phone ?? "";
+
+
+            if (roomTasks != null)
+            {
+                var rooms = (await Task.WhenAll(roomTasks))
+                    .Where(r => r != null)
+                    .ToList();
+
+                dto.RoomName = string.Join(", ", rooms.Where(r => r != null).Select(r => r!.RoomName));
+
+                // Gọi house của phòng đầu tiên (nếu có)
+                var firstRoom = rooms.FirstOrDefault();
+                if (firstRoom != null)
+                {
+                    var house = await _externalService.GetBoardingHouseByIdAsync(firstRoom.HouseId);
+                    dto.HouseName = house?.HouseName ?? "";
+                }
+            }
+            if (entity.RoomId != null && entity.RoomId.Any())
+            {
+                var reviews = await _externalService.GetReviewsByRoomIdsAsync(entity.RoomId);
+                dto.Reviews = reviews;
+            }
+
+            dto.ImageUrls = entity.ImageUrls ?? new List<string>();
+
+            return dto;
         }
+
+
 
         public async Task<RentalpostDTO?> UpdateAsync(Guid id, UpdateRentalPostDTO dto)
         {
             var entity = await _repo.GetByIdAsync(id);
-            if (entity == null) return null;
+            if (entity == null)
+                return null;
 
             _mapper.Map(dto, entity);
             entity.UpdatedAt = DateTime.UtcNow;
 
             var updated = await _repo.UpdateAsync(entity);
-            return updated == null ? null : _mapper.Map<RentalpostDTO>(updated);
+            if (updated == null)
+                return null;
+
+            var result = _mapper.Map<RentalpostDTO>(updated);
+
+           
+            var authorTask = _externalService.GetAccountByIdAsync(entity.AuthorId);
+
+         
+            Task<RoomDto?>[]? roomTasks = null;
+            if (entity.RoomId != null && entity.RoomId.Any())
+            {
+                roomTasks = entity.RoomId
+                    .Select(rid => _externalService.GetRoomByIdAsync(rid))
+                    .ToArray();
+            }
+
+            await Task.WhenAll(authorTask, roomTasks != null ? Task.WhenAll(roomTasks) : Task.CompletedTask);
+
+       
+            var author = await authorTask;
+            result.AuthorName = author?.FullName ?? "Unknown";
+            result.ContactPhone = author?.Phone ?? "";
+
+   
+            if (roomTasks != null)
+            {
+                var rooms = (await Task.WhenAll(roomTasks))
+                    .Where(r => r != null)
+                    .ToList();
+
+                result.RoomName = string.Join(", ", rooms.Select(r => r!.RoomName));
+
+                var firstRoom = rooms.FirstOrDefault();
+                if (firstRoom != null)
+                {
+                    var house = await _externalService.GetBoardingHouseByIdAsync(firstRoom.HouseId);
+                    result.HouseName = house?.HouseName ?? "";
+                }
+            }
+            result.ImageUrls = entity.ImageUrls ?? new List<string>();
+
+            return result;
         }
+
 
         public async Task<bool> DeleteAsync(Guid id, Guid deletedBy)
         {

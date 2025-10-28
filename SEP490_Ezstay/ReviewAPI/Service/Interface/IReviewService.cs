@@ -17,4 +17,5 @@ public interface IReviewService
     Task<ApiResponse<bool>> UpdateAsync(Guid id, Guid userId, UpdateReviewDto request);
     Task<ApiResponse<bool>> HideReview(Guid id, bool hidden);
     Task DeleteAsync(Guid id);
+    Task<List<ReviewResponse>> GetByRoomIdsAsync(List<Guid> roomIds);
 }

@@ -13,7 +13,8 @@ namespace RentalPostsAPI.Profiles
                  .ForMember(dest => dest.AuthorName, opt => opt.Ignore())
                  .ForMember(dest => dest.RoomName, opt => opt.Ignore())
                  .ForMember(dest => dest.HouseName, opt => opt.Ignore());
-            CreateMap<UpdateRentalPostDTO,RentalPosts>();
+            CreateMap<UpdateRentalPostDTO, RentalPosts>();
+     
         }
 
     }
