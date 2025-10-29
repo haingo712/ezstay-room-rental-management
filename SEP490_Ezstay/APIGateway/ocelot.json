@@ -49,7 +49,7 @@
         }
       },
       {
-        "DownstreamPathTemplate": "/api/Payment/{everything}",
+        "DownstreamPathTemplate": "/api/BankAccount/{everything}",
         "DownstreamScheme": "https",
         "DownstreamHostAndPorts": [
           {
@@ -57,13 +57,29 @@
             "Port": 7212
           }
         ],
-        "UpstreamPathTemplate": "/api/Payment/{everything}",
+        "UpstreamPathTemplate": "/api/BankAccount/{everything}",
         "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
         "AuthenticationOptions": {
           "AuthenticationProviderKey": "Bearer",
           "AllowedScopes": []
         }
       },
+    {
+      "DownstreamPathTemplate": "/api/Payment/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7212
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Payment/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
      {
             "DownstreamPathTemplate": "/api/Contract/{everything}",
             "DownstreamScheme": "https",
