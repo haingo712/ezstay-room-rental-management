@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
 using UtilityBillAPI.Data;
-using UtilityBillAPI.DTO.Request;
+using UtilityBillAPI.DTO;
 using UtilityBillAPI.HostedService; 
 using UtilityBillAPI.Repository;
 using UtilityBillAPI.Repository.Interface;
@@ -13,7 +13,6 @@ using UtilityBillAPI.Service.Interface;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 
 namespace UtilityBillAPI
 {
@@ -33,16 +32,18 @@ namespace UtilityBillAPI
             builder.Services.AddScoped<IUtilityBillService, UtilityBillService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
 
-            var serviceUrls = builder.Configuration.GetSection("ServiceUrls");
-            builder.Services.AddHttpClient<IRoomClient, RoomClient>(client =>
-            {
-                client.BaseAddress = new Uri(serviceUrls["RoomAPI"]!);
-            });
-            builder.Services.AddHttpClient<IUtilityReadingClient, UtilityReadingClient>(client =>
+            builder.Services.AddHttpContextAccessor();            
+
+            var serviceUrls = builder.Configuration.GetSection("ServiceUrls");           
+            builder.Services.AddHttpClient<IUtilityReadingClientService, UtilityReadingClientService>(client =>
             {
                 client.BaseAddress = new Uri(serviceUrls["UtilityReadingAPI"]!);
             });
-           
+            builder.Services.AddHttpClient<IContractClientService, ContractClientService>(client =>
+            {
+                client.BaseAddress = new Uri(serviceUrls["ContractAPI"]!);
+            });
+
             //builder.Services.AddHostedService<BillHostedService>();
 
             var odataBuilder = new ODataConventionModelBuilder();

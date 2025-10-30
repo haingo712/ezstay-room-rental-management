@@ -1,4 +1,4 @@
-﻿namespace UtilityBillAPI.DTO.Request
+﻿namespace UtilityBillAPI.DTO
 {
     public class BillSettingDTO
     {

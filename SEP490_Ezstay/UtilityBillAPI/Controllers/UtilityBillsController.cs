@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
-using UtilityBillAPI.DTO.Request;
-using UtilityBillAPI.Enum;
+using UtilityBillAPI.DTO;
 using UtilityBillAPI.Service.Interface;
 
 namespace UtilityBillAPI.Controllers
@@ -46,7 +44,7 @@ namespace UtilityBillAPI.Controllers
         // GET: api/UtilityBills/tenant
         /* Get utility bills for the owner with filter by status, roomId
          * 
-         * Ex: api/UtilityBills/owner?$filter=Status eq 'Unpaid' and RoomId eq 123e4567-e89b-12d3-a456-426614174000
+         * Ex: api/UtilityBills/tenant?$filter=Status eq 'Unpaid' and RoomId eq 123e4567-e89b-12d3-a456-426614174000
          * 
          */
         [HttpGet("tenant")]
@@ -73,39 +71,25 @@ namespace UtilityBillAPI.Controllers
             }
         }
 
-        // POST: api/UtilityBills/generate/{roomId}
-        [HttpPost("generate/{roomId}")]
+        // POST: api/UtilityBills/generate/{contractId}
+        [HttpPost("generate/{contractId}")]
         [Authorize(Roles = "Owner")]
-        public async Task<ActionResult<UtilityBillDTO>> GenerateBillForRoom(Guid roomId, [FromQuery] Guid? tenantId)
+        public async Task<ActionResult<UtilityBillDTO>> GenerateBillForContract(Guid contractId)
         {
-            var ownerId = _tokenService.GetUserIdFromClaims(User);
-            var response = await _utilityBillService.GenerateBillForRoomAsync(ownerId, roomId, tenantId);
+            var response = await _utilityBillService.GenerateUtilityBillAsync(contractId);
             if (!response.IsSuccess)
             {
                 return BadRequest(new { message = response.Message });
             }
-            return CreatedAtAction(nameof(GetUtilityBill), new { id = response.Data.Id }, response);           
-        }
-
-        // PUT: api/UtilityBills/{id}
-        [HttpPut("{billId}")]
-        [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> Update(Guid billId, [FromForm] UpdateUtilityBillDTO dto)
-        {
-            var response = await _utilityBillService.UpdateBillAsync(billId, dto);
-            if (!response.IsSuccess)
-            {
-                return BadRequest(new { message = response.Message });
-            }
-            return Ok(response);
+            return CreatedAtAction(nameof(GetUtilityBill), new { id = response.Data.Id }, response);
         }
 
         // PUT: api/UtilityBills/{id}/pay
         [HttpPut("{billId}/pay")]
         [Authorize(Roles = "User, Owner")]
-        public async Task<IActionResult> MarkAsPaid(Guid billId, [FromBody] PayBillDTO dto)
+        public async Task<IActionResult> MarkAsPaid(Guid billId)
         {
-            var response = await _utilityBillService.MarkAsPaidAsync(billId, dto.PaymentMethod);
+            var response = await _utilityBillService.MarkAsPaidAsync(billId);
             if (!response.IsSuccess)
             {
                 return BadRequest(new { message = response.Message });
@@ -116,28 +100,15 @@ namespace UtilityBillAPI.Controllers
         // PUT: api/UtilityBills/{id}/cancel
         [HttpPut("{billId}/cancel")]
         [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> Cancel(Guid billId, [FromBody] CancelBillDTO dto)
+        public async Task<IActionResult> Cancel(Guid billId, [FromBody] string? reason)
         {
-            var response = await _utilityBillService.CancelAsync(billId, dto.CancelNote);
+            var response = await _utilityBillService.CancelAsync(billId, reason);
             if (!response.IsSuccess)
             {
                 return BadRequest(new { message = response.Message });
             }
             return Ok(response);
-        }
-
-        // DELETE: api/UtilityBills/{id}
-        /*[HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            var response = await _utilityBillService.DeleteAsync(id);
-            if (!response.IsSuccess)
-            {
-                return BadRequest(new { message = response.Message });
-            }
-            return Ok(response);
-        }*/
-
+        }      
 
 
     }

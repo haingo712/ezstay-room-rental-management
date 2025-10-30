@@ -26,21 +26,7 @@ public class UtilityReadingController : ControllerBase
 
         return _utilityReadingService.GetAllByOwnerId(roomId, utilityType);
     }
-
-
-    [HttpGet("lastest/{roomId}")]
-    public ActionResult<UtilityReadingResponse> GetLastestUtilityReadingByRoomIdAndType(Guid roomId, UtilityType utilityType)
-    {        
-        try
-        {
-            var result = _utilityReadingService.GetLastestReading(roomId, utilityType);
-            return Ok(result);
-        }
-        catch (KeyNotFoundException e)
-        {
-            return NotFound(new { message = e.Message });
-        }
-    }
+    
     [HttpGet("latest/{roomId}/{utilityType}")]
     public async Task<IActionResult> GetLatestUtilityReadingByRoomAndType(Guid roomId, UtilityType utilityType)
     {        

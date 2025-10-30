@@ -4,14 +4,13 @@ namespace UtilityBillAPI.Repository.Interface
 {
     public interface IUtilityBillRepository
     {
-        IQueryable<UtilityBill> GetAll();      
-        //Task<IEnumerable<UtilityBill>> GetOverdueBills();
+        IQueryable<UtilityBill> GetAll();
+        IQueryable<UtilityBill> GetAllByTenant(Guid tenantId);
+        IQueryable<UtilityBill> GetAllByOwner(Guid ownerId);
+        IQueryable<UtilityBill> GetAllByContract(Guid contractId); 
         Task<UtilityBill?> GetByIdAsync(Guid id);               
-        Task CreateAsync(UtilityBill bill);
-        Task UpdateAsync(UtilityBill bill);
-        Task DeleteAsync(UtilityBill bill);                
-        Task MarkAsPaidAsync(Guid billId, string paymentMethod);
-        Task CancelAsync(Guid billId, string? cancelNote);
-        //Task MarkAsOverdueAsync(Guid billId);        
+        Task CreateAsync(UtilityBill bill);                   
+        Task MarkAsPaidAsync(Guid billId);
+        Task CancelAsync(Guid billId, string? reason);                
     }
 }

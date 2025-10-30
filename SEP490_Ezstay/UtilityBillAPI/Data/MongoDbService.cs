@@ -1,6 +1,5 @@
 using UtilityBillAPI.Models;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace UtilityBillAPI.Data;
@@ -18,5 +17,6 @@ public class MongoDbService
     }
 
     public IMongoCollection<UtilityBill> UtilityBills => _database.GetCollection<UtilityBill>("UtilityBills");
+    public IMongoCollection<UtilityBillDetail> UtilityBillDetails => _database.GetCollection<UtilityBillDetail>("UtilityBillDetails");
     public IMongoCollection<BillSetting> BillSettings => _database.GetCollection<BillSetting>("BillSettings");
 }

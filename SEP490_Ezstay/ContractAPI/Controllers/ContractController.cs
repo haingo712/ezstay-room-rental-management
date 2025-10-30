@@ -99,9 +99,9 @@ namespace ContractAPI.Controllers
            var ownerId=  _tokenService.GetUserIdFromClaims(User);
            return _contractService.GetAllByOwnerId(ownerId, contractStatus);
        }
-       
+
         // GET: api/Tenant/5
-        // [Authorize(Roles = "Owner, User")]
+        [Authorize(Roles = "Owner, User")]
         [HttpGet("{id}")]
         public async Task<ActionResult<ContractResponse>> GetContractById(Guid id)
         {

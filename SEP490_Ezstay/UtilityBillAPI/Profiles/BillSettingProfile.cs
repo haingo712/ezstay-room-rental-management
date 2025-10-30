@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using UtilityBillAPI.DTO.Request;
+using UtilityBillAPI.DTO;
 using UtilityBillAPI.Models;
 
 namespace UtilityBillAPI.Profiles
