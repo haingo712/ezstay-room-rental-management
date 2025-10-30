@@ -1,9 +1,10 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using UtilityBillAPI.Enum;
+using Shared.Enums;
 
 namespace UtilityBillAPI.Models
 {
+    [BsonIgnoreExtraElements]
     public class UtilityBill
     {
         [BsonId]
@@ -14,21 +15,22 @@ namespace UtilityBillAPI.Models
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid TenantId { get; set; }
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid RoomId { get; set; }
+        public Guid ContractId { get; set; }
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid ElectricityId { get; set; }
-        [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid WaterId { get; set; }
-        public decimal Amount { get; set; }
+        public Guid RoomId { get; set; }        
+        [BsonRepresentation(BsonType.Decimal128)]
+        public decimal RoomPrice { get; set; }
+        public List<UtilityBillDetail> Details { get; set; } = new();
+        [BsonRepresentation(BsonType.Decimal128)]
+        public decimal TotalAmount { get; set; }
+        [BsonRepresentation(BsonType.DateTime)]
+        public DateTime PeriodStart { get; set; }
+        [BsonRepresentation(BsonType.DateTime)]
+        public DateTime PeriodEnd { get; set; }
         [BsonRepresentation(BsonType.DateTime)]
         public DateTime CreatedAt { get; set; }
         [BsonRepresentation(BsonType.DateTime)]
-        public DateTime? UpdatedAt { get; set; }
-        [BsonRepresentation(BsonType.DateTime)]
-        public DateTime? PaymentDate { get; set; }
-        /*[BsonRepresentation(BsonType.DateTime)]
-        public DateTime DueDate { get; set; }   */
-        public string? PaymentMethod { get; set; }
+        public DateTime? UpdatedAt { get; set; }               
         [BsonRepresentation(BsonType.String)]
         public UtilityBillStatus Status { get; set; }
         public string? Note { get; set; }        

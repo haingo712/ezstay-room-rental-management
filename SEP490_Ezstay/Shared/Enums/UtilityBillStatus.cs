@@ -1,10 +1,9 @@
-﻿namespace UtilityBillAPI.Enum
+﻿namespace Shared.Enums
 {
     public enum UtilityBillStatus
     {
         Unpaid = 0, // Chưa thanh toán
         Paid = 1, // Đã thanh toán
-        Cancelled = 2, // Đã hủy
-        Overdue = 3, // Quá hạn
+        Cancelled = 2 // Đã hủy        
     }
 }

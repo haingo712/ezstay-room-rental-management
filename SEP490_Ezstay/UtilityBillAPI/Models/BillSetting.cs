@@ -8,12 +8,11 @@ namespace UtilityBillAPI.Models
         [BsonId]
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; }
-
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid OwnerId { get; set; }
-
-        public int GenerateDay { get; set; }  
-        public int DueAfterDays { get; set; }
+        public Guid OnwerId { get; set; }
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid? HouseId { get; set; }
+        public int GenerateDay { get; set; }          
         public bool IsAutoGenerateEnabled { get; set; }
     }
 }

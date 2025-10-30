@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using UtilityBillAPI.DTO.Request;
+using UtilityBillAPI.DTO;
 using UtilityBillAPI.Models;
 
 namespace UtilityBillAPI.Profiles
@@ -8,9 +8,8 @@ namespace UtilityBillAPI.Profiles
     {
         public UtilityBillProfile()
         {
-            CreateMap<UtilityBill, UtilityBillDTO>();
-            CreateMap<UtilityBillDTO, UtilityBill>();
-            CreateMap<UpdateUtilityBillDTO, UtilityBill>();
+            CreateMap<UtilityBill, UtilityBillDTO>().ReverseMap();
+            CreateMap<UtilityBillDetail, UtilityBillDetailDTO>().ReverseMap();
         }
     }
 }
