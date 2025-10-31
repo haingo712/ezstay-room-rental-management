@@ -32,7 +32,12 @@ public class ReviewRepository : IReviewRepository
     {
         return await _reviews.Find(r => r.Id == id).FirstOrDefaultAsync();
     }
-
+    public async Task<List<Review>> GetByRoomIdsAsync(List<Guid> roomIds)
+    {
+        return await _reviews
+            .Find(r => roomIds.Contains(r.RoomId))
+            .ToListAsync();
+    }
     public async Task AddAsync(Review review)
     {
         await _reviews.InsertOneAsync(review);

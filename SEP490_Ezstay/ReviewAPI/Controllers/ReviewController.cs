@@ -5,6 +5,7 @@ using ReviewAPI.DTO.Requests;
 using ReviewAPI.DTO.Response;
 using ReviewAPI.Service;
 using ReviewAPI.Service.Interface;
+using Shared.DTOs;
 using Shared.DTOs.Reviews.Responses;
 
 namespace ReviewAPI.Controllers;
@@ -20,7 +21,7 @@ public class ReviewController : ControllerBase
         _reviewService = reviewService;
         _tokenService = tokenService;
     }
-    
+
     // [HttpGet]
     // // [Authorize(Roles = "Staff")]
     // public async Task<IActionResult> GetAll()
@@ -47,14 +48,14 @@ public class ReviewController : ControllerBase
     //     var result = await _reviewService.GetAllByPostId(postId);
     //     return Ok(result);
     // }
-    
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
         var result = await _reviewService.GetByIdAsync(id);
         return Ok(result);
     }
-    
+
     // [Authorize(Roles = "User")]
     // [HttpPost("Post/{postId}")]
     // public async Task<IActionResult> Create(Guid postId, [FromBody] CreateReviewDto request)
@@ -72,10 +73,10 @@ public class ReviewController : ControllerBase
         var userId = _tokenService.GetUserIdFromClaims(User);
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var result = await _reviewService.AddAsync(userId, contractId,request);
+        var result = await _reviewService.AddAsync(userId, contractId, request);
         return Ok(result);
     }
-    
+
     [Authorize(Roles = "User")]
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, [FromForm] UpdateReviewDto request)
@@ -88,7 +89,7 @@ public class ReviewController : ControllerBase
 
         return Ok(result);
     }
-  //  [Authorize(Roles = "Staff")]
+    //  [Authorize(Roles = "Staff")]
     [HttpPut("{id}/hide/{hide}")]
     public async Task<IActionResult> HideReview(Guid id, bool hide)
     {
@@ -105,5 +106,15 @@ public class ReviewController : ControllerBase
     {
         await _reviewService.DeleteAsync(id);
         return NoContent();
+    }
+
+    [HttpGet("by-room")]
+    public async Task<IActionResult> GetReviewsByRoom([FromQuery] List<Guid> roomIds)
+    {
+        if (roomIds == null || !roomIds.Any())
+            return Ok(new List<ReviewResponse>());
+
+        var reviews = await _reviewService.GetByRoomIdsAsync(roomIds);
+        return Ok(reviews);
     }
 }

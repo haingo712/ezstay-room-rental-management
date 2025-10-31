@@ -11,6 +11,11 @@ namespace RentalPostsAPI.Service
     {
         private readonly HttpClient _httpClient;
         private readonly ExternalServiceSettings _settings;
+        private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
 
         public ExternalService(HttpClient httpClient, IOptions<ExternalServiceSettings> settings)
         {
@@ -60,7 +65,7 @@ namespace RentalPostsAPI.Service
 
         public Task<AccountDto?> GetAccountByIdAsync(Guid id)
         {
-            var url = $"{_settings.AccountApiBaseUrl}api/Accounts/{id}";
+            var url = $"{_settings.AuthApiBaseUrl}api/Accounts/{id}";
             return GetFromApiAsync<AccountDto>(url);
         }
         public async Task<List<string>?> UploadImagesAsync(List<IFormFile> files)
@@ -99,5 +104,26 @@ namespace RentalPostsAPI.Service
                 return new List<string> { result }; // fallback nếu API chỉ trả về 1 string
             }
         }
+
+        public async Task<List<ReviewDto>?> GetReviewsByRoomIdsAsync(List<Guid> roomIds)
+        {
+            if (roomIds == null || !roomIds.Any())
+                return new List<ReviewDto>();
+
+            var query = string.Join("&", roomIds.Select(id => $"roomIds={id}"));
+            var response = await _httpClient.GetAsync($"https://localhost:7037/api/Review/by-room?{query}");
+
+            if (!response.IsSuccessStatusCode)
+                return new List<ReviewDto>();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            // Vì API trả về { isSuccess, message, data: [...] }
+            var wrapper = JsonSerializer.Deserialize<List<ReviewDto>>(content, _jsonOptions);
+
+            return wrapper ?? new List<ReviewDto>();
+        }
+
+
     }
 }

@@ -88,7 +88,7 @@ namespace RentalPostsAPI
 
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BoardingHouseAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RentalPostAPI", Version = "v1" });
 
                 // Thêm JWT Security
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
