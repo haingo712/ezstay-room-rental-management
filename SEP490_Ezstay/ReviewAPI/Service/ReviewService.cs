@@ -18,9 +18,9 @@ public class ReviewService : IReviewService
     private readonly IReviewRepository _reviewRepository;
     private readonly IContractClientService _contractClientService;
     private readonly IPostClientService _postClientService;
-    private readonly IImageAPI _imageClient;
+    private readonly IImageClientService _imageClient;
 
-    public ReviewService(IMapper mapper, IReviewRepository reviewRepository, IContractClientService contractClientService, IPostClientService postClientService, IImageAPI imageClient)
+    public ReviewService(IMapper mapper, IReviewRepository reviewRepository, IContractClientService contractClientService, IPostClientService postClientService, IImageClientService imageClient)
     {
         _mapper = mapper;
         _reviewRepository = reviewRepository;
@@ -118,7 +118,7 @@ public class ReviewService : IReviewService
         review.IsHidden = false;
         //    review.PostId = post.Value;
         review.CreatedAt = DateTime.UtcNow;
-        review.ImageUrl = _imageClient.UploadImageAsync(request.ImageUrl).Result;
+        review.ImageUrl = _imageClient.UploadMultipleImage(request.ImageUrl).Result;
         await _reviewRepository.AddAsync(review);
         var dto = _mapper.Map<ReviewResponse>(review);
         return ApiResponse<ReviewResponse>.Success(dto, "Thêm review thành công");
@@ -136,7 +136,7 @@ public class ReviewService : IReviewService
             return ApiResponse<bool>.Fail("K dc qua" + review.ReviewDeadline + " ngay");
         _mapper.Map(request, review);
         review.UpdatedAt = DateTime.UtcNow;
-        review.ImageUrl = _imageClient.UploadImageAsync(request.ImageUrl).Result;
+        review.ImageUrl = _imageClient.UploadMultipleImage(request.ImageUrl).Result;
         await _reviewRepository.UpdateAsync(review);
 
         return ApiResponse<bool>.Success(true, "Cập nhật review thành công");

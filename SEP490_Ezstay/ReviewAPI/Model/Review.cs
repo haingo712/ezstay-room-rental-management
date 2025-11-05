@@ -11,7 +11,7 @@ public class Review
     public Guid Id { get; set; } = Guid.NewGuid();
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid UserId { get; set; } 
-    public string ImageUrl { get; set; }
+    public List<string> ImageUrl  { get; set; }
     
     // [BsonGuidRepresentation(GuidRepresentation.Standard)]
     // public Guid PostId { get; set; }

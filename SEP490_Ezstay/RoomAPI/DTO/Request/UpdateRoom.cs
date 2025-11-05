@@ -16,5 +16,5 @@ public class UpdateRoom
     [Required]
     public RoomStatus RoomStatus { get; set; }
     [Required]
-    public IFormFile ImageUrl { get; set;}
+    public IFormFileCollection ImageUrl { get; set;}
 }

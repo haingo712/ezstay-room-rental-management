@@ -16,10 +16,10 @@ public class ReviewReplyService: IReviewReplyService
     private readonly IMapper _mapper;
     private readonly IReviewReplyRepository _reviewReplyRepository;
    
-    private readonly IImageAPI _imageClient;
+    private readonly IImageClientService _imageClient;
     private readonly IReviewService _reviewService;
 
-    public ReviewReplyService(IMapper mapper, IReviewReplyRepository reviewReplyRepository, IImageAPI imageClient, IReviewService reviewService)
+    public ReviewReplyService(IMapper mapper, IReviewReplyRepository reviewReplyRepository, IImageClientService imageClient, IReviewService reviewService)
     {
         _mapper = mapper;
         _reviewReplyRepository = reviewReplyRepository;
@@ -44,7 +44,7 @@ public class ReviewReplyService: IReviewReplyService
         reviewReplyDto.CreatedAt = DateTime.UtcNow;
         reviewReplyDto.ReviewId = reviewId;
         reviewReplyDto.OwnerId = ownerId;
-        _imageClient.UploadImageAsync(request.Image);
+        _imageClient.UploadMultipleImage(request.Image);
         await _reviewReplyRepository.AddAsync(reviewReplyDto);
        
         var dto = _mapper.Map<ReviewReplyResponse>(reviewReplyDto);
@@ -66,7 +66,7 @@ public class ReviewReplyService: IReviewReplyService
         entity.UpdatedAt = DateTime.UtcNow;
        
         _reviewReplyRepository.UpdateAsync(entity);
-        _imageClient.UploadImageAsync(request.Image);
+        _imageClient.UploadMultipleImage(request.Image);
         return ApiResponse<bool>.Success(true, "Thêm ReviewReply thành công");
     }
 
