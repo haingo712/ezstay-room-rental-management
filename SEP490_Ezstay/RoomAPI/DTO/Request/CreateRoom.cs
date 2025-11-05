@@ -13,6 +13,6 @@ public class CreateRoom
     [Range(0.01, double.MaxValue, ErrorMessage = "Area must be greater than zero.")]
     public decimal Price { get; set; }
     [Required]
-    public IFormFile ImageUrl { get; set;}
+    public IFormFileCollection ImageUrl { get; set;}
     
 }

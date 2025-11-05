@@ -18,7 +18,7 @@ public class RoomService: IRoomService
     private readonly IRoomRepository _roomRepository;
     private readonly IRoomAmenityAPI _roomAmenityClient;
     private readonly IAmenityClientService _amenityClient;
-    private readonly IImageAPI _imageClient;
+    private readonly IImageClientService _imageClient;
     private readonly IRentalPostClientService _rentalPostClient;
     private readonly IMapper _mapper;
     private readonly IContractClientService _contractClient;
@@ -27,7 +27,7 @@ public class RoomService: IRoomService
         IRoomRepository roomRepository,
         IRoomAmenityAPI roomAmenityClient,
         IAmenityClientService amenityClient,
-        IImageAPI imageClient,
+        IImageClientService imageClient,
         IRentalPostClientService rentalPostClient,
         IContractClientService contractClient,
         IMapper mapper)
@@ -87,7 +87,7 @@ public class RoomService: IRoomService
         if (exist)
             return ApiResponse<RoomResponse>.Fail("Tên phòng đã tồn tại trong nhà trọ.");
         var room = _mapper.Map<Room>(request);
-        room.ImageUrl= _imageClient.UploadImageAsync(request.ImageUrl).Result;
+        room.ImageUrl= _imageClient.UploadMultipleImage(request.ImageUrl).Result;
         room.HouseId = houseId;
         room.RoomStatus= RoomStatus.Available;
         room.CreatedAt = DateTime.UtcNow;
@@ -117,7 +117,7 @@ public class RoomService: IRoomService
             return ApiResponse<bool>.Fail("K dc set trang thai nay");  
          _mapper.Map(request, checkRoom);
          checkRoom.UpdatedAt = DateTime.UtcNow;
-         checkRoom.ImageUrl= _imageClient.UploadImageAsync(request.ImageUrl).Result;
+         checkRoom.ImageUrl= _imageClient.UploadMultipleImage(request.ImageUrl).Result;
          await _roomRepository.Update(checkRoom);
          // return _mapper.Map<RoomDto>(checkRoom);
          return  ApiResponse<bool>.Success(true, "Cặp nhật phòng thành công");
