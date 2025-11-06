@@ -1,38 +1,26 @@
-﻿using MailKit.Net.Smtp;
-using MimeKit;
-using MailApi.DTOs.Request;
+﻿using MailApi.DTOs.Request;
+using MailApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MailApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MailController : ControllerBase
+    public class MailController(IMailService _mailService) : ControllerBase
     {
-        [HttpPost("send-verification")]
-        public IActionResult SendVerification([FromBody] VerificationEmailRequest request)
+        [HttpPost("send-otp")]
+        public async Task<IActionResult> SendOtp([FromBody] VerificationEmailContractRequest request)
         {
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("EzStay", "qui4982@gmail.com"));
-            message.To.Add(new MailboxAddress("", request.Email));
-            message.Subject = "EzStay - Your OTP Code";
+            await _mailService.SendOtp(request.Email, request.ContractId);
+            return Ok(new { success = true, message = "OTP sent successfully" });
+        }
 
-            message.Body = new TextPart("plain")
-            {
-                Text = $"Your OTP code is: {request.Otp}. It expires in 5 minutes."
-            };
-
-            using var client = new SmtpClient();
-
-            // ✅ Fix SSL handshake error (nếu bị)
-            client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-
-            client.Connect("smtp.gmail.com", 587, false);
-            client.Authenticate("qui4982@gmail.com", "mjzs ixor nlgb udiz"); // ✅ App Password
-            client.Send(message);
-            client.Disconnect(true);
-
-            return Ok(new { success = true, message = "OTP sent" });
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOtp([FromBody] VerificationEmailContractRequest request)
+        {
+            var (success, message) = await _mailService.VerifyOtp(request.Email, request.Otp);
+            if (!success) return BadRequest(new { success, message });
+            return Ok(new { success, message });
         }
     }
 }
