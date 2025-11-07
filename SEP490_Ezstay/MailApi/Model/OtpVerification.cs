@@ -11,16 +11,17 @@ public class OtpVerification
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid ContractId { get; set; }
     
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
+    public Guid  SignerId { get; set; }
     public string Email { get; set; } 
     
-   
     public string OtpCode { get; set; }
     
     public DateTime ExpireAt { get; set; }
-    
-  
     public bool IsUsed { get; set; }
     
-   
-   
+    // public bool IsTenantOtpVerified { get; set; }
+    // public bool IsLandlordOtpVerified { get; set; }
+
+  
 }
