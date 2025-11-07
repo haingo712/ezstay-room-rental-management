@@ -97,7 +97,7 @@ volumes:
       context: .
       dockerfile: RentalRequest/Dockerfile
 
-services:
+  services:
   rentalrequestapi:
     image: rentalrequestapi
     build:

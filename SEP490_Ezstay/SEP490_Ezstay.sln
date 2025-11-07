@@ -30,8 +30,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthApi", "AuthApi\AuthApi.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UtilityRate.GrpcContracts", "UtilityRate.GrpcContracts\UtilityRate.GrpcContracts.csproj", "{D56342AF-C208-4F4B-984F-DDC2735087FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AggregatorAPI", "AggregatorAPI\AggregatorAPI.csproj", "{A528FFE3-3331-4710-8231-CAFD04AF3E59}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReviewAPI", "ReviewAPI\ReviewAPI.csproj", "{6B5472EF-35FB-4EF0-A87C-83288B077FCB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReviewResponseAPI", "ReviewResponseAPI\ReviewResponseAPI.csproj", "{0CAC58CE-1983-45F9-AC52-57F598F60CA0}"
@@ -114,10 +112,6 @@ Global
 		{D56342AF-C208-4F4B-984F-DDC2735087FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D56342AF-C208-4F4B-984F-DDC2735087FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D56342AF-C208-4F4B-984F-DDC2735087FC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A528FFE3-3331-4710-8231-CAFD04AF3E59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A528FFE3-3331-4710-8231-CAFD04AF3E59}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A528FFE3-3331-4710-8231-CAFD04AF3E59}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A528FFE3-3331-4710-8231-CAFD04AF3E59}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6B5472EF-35FB-4EF0-A87C-83288B077FCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6B5472EF-35FB-4EF0-A87C-83288B077FCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B5472EF-35FB-4EF0-A87C-83288B077FCB}.Release|Any CPU.ActiveCfg = Release|Any CPU

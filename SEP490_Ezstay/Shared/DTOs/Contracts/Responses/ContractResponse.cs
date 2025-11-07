@@ -26,7 +26,13 @@ public class ContractResponse
     public int NumberOfOccupants { get; set; }
     public string? Notes { get; set; }
     
+    public IdentityProfileResponse SignerProfile { get; set; }
     public List<IdentityProfileResponse> IdentityProfiles { get; set; } 
     public UtilityReadingResponse ElectricityReading { get; set; }
     public UtilityReadingResponse WaterReading { get; set; }
+    
+    public string OwnerSignature { get; set; }      
+    public DateTime OwnerSignedAt { get; set; }
+    public string TenantSignature { get; set; }     
+    public DateTime TenantSignedAt { get; set; }
 }
