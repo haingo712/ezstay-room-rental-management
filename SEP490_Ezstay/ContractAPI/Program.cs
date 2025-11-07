@@ -26,7 +26,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IContractRepository, ContractRepository>();
 builder.Services.AddScoped<IContractService, ContractService>();
 
-builder.Services.AddHttpClient<IImageAPI, ImageAPI >(client =>
+builder.Services.AddHttpClient<IImageClientService, ImageClientService >(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
 });

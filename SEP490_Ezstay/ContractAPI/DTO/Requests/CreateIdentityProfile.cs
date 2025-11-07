@@ -33,6 +33,6 @@ public class CreateIdentityProfile
     public string? AvatarUrl { get; set; }
     [Required]
     public string FrontImageUrl { get; set; }
-  [Required]
+    [Required]
     public string BackImageUrl { get; set; }
 }

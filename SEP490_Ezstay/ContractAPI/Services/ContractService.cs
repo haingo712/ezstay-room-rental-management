@@ -14,25 +14,12 @@ using Shared.Enums;
 
 namespace ContractAPI.Services;
 
-public class ContractService : IContractService
+public class ContractService(IMapper _mapper,IContractRepository _contractRepository,IRoomClientService _roomClient,
+    IImageClientService _imageClient,
+    IAccountAPI _accountClient,
+    IUtilityReadingClientService _utilityReadingClientService
+) : IContractService
 {
-    private readonly IMapper _mapper;
-    private readonly IContractRepository _contractRepository;
-    private readonly IRoomClientService _roomClient; 
-    private readonly IImageAPI _imageClient;
-    private readonly IAccountAPI _accountClient;
-    private readonly IUtilityReadingClientService _utilityReadingClientService;
-
-    public ContractService(IMapper mapper, IContractRepository contractRepository, IRoomClientService roomClient, IImageAPI imageClient, IAccountAPI accountClient, IUtilityReadingClientService utilityReadingClientService)
-    {
-        _mapper = mapper;
-        _contractRepository = contractRepository;
-        _roomClient = roomClient;
-        _imageClient = imageClient;
-        _accountClient = accountClient;
-        _utilityReadingClientService = utilityReadingClientService;
-    }
-
     public IQueryable<ContractResponse> GetAllQueryable()
         => _contractRepository.GetAllQueryable().ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
 
@@ -202,29 +189,13 @@ public class ContractService : IContractService
         await _contractRepository.DeleteAsync(contract);
         return ApiResponse<bool>.Success(true, "Xoá hợp đồng thành công");
     }
-    public async Task<ApiResponse<List<string>>> UploadContractImages(Guid contractId, List<IFormFile> images)
+    public async Task<ApiResponse<List<string>>> UploadContractImages(Guid contractId, IFormFileCollection images)
     {
         var contract = await _contractRepository.GetByIdAsync(contractId);
         if (contract == null)
             return ApiResponse<List<string>>.Fail("Không tìm thấy hợp đồng");
-
-        if (images == null || images.Count == 0)
-            return ApiResponse<List<string>>.Fail("Không có file nào được tải lên");
-
-        var uploadedUrls = new List<string>();
-
-        foreach (var i in images)
-        {
-            var uploadResult = await _imageClient.UploadImage(i); 
-            if (uploadResult != null && !string.IsNullOrEmpty(uploadResult))
-            {
-                uploadedUrls.Add(uploadResult);
-            }
-        }
-        // if (contract.ScannedContractImages == null)
-        //     contract.ScannedContractImages = new List<string>();
-        //
-        // contract.ScannedContractImages.AddRange(uploadedUrls);
+        
+        var uploadedUrls = await _imageClient.UploadMultipleImage(images);
         contract.ContractImage = uploadedUrls;
         contract.ContractUploadedAt = DateTime.UtcNow;
         contract.ContractStatus = ContractStatus.Active;
@@ -238,47 +209,37 @@ public class ContractService : IContractService
         var exists = await _contractRepository.ExistsByRoomId(roomId);
         return ApiResponse<bool>.Success(exists);
     }
-}
+    public async Task<ApiResponse<ContractResponse>> SignContract(Guid contractId, string ownerSignature, string role)
+    {
+        var contract = await _contractRepository.GetByIdAsync(contractId);
+        if (contract.ContractStatus == ContractStatus.Active)
+            return ApiResponse<ContractResponse>.Fail("Hợp đồng đã được ký");
 
-
-// nếu nhiều người kí
-// contract.ProfilesInContract = request.ProfilesInContract
-//     .Select(p =>
-//     {
-//         var profile = _mapper.Map<IdentityProfile>(p);
-//         // Nếu IsSigner thì gán SignerProfile
-//         if (p.IsSigner)
-//         {
-//             contract.SignerProfile = profile;
-//             contract.SignerProfileId = profile.ProfileId != Guid.Empty
-//                 ? profile.ProfileId
-//                 : Guid.NewGuid();
-//             profile.IsSigner = true;
-//         }
-//         else
-//         {
-//             profile.IsSigner = false;
-//         }
-//         return profile;
-//     }).ToList();
+        if (contract.ContractStatus == ContractStatus.Cancelled)
+            return ApiResponse<ContractResponse>.Fail("Hợp đồng đã bị hủy");
         
-//         // Map SignerProfile
-//         var signer = _mapper.Map<IdentityProfile>(request.SignerProfile);
-//         signer.IsSigner = true;
-//
-// // Map tất cả người ở
-//         var members = request.ProfilesInContract
-//             .Select(p =>
-//             {
-//                 var profile = _mapper.Map<IdentityProfile>(p);
-//                 profile.IsSigner = false;
-//                 return profile;
-//             }).ToList();
-//
-// // Gán vào contract
-//         contract.SignerProfile = signer;
-//         contract.SignerProfile.UserId = signer.UserId != Guid.Empty ? signer.UserId : Guid.NewGuid();
-//
-// // Thêm signer vào danh sách members
-//         members.Insert(0, signer);
-//         contract.ProfilesInContract = members;
+        if (role.Equals("Owner"))
+        {
+            contract.OwnerSignature =ownerSignature;
+            contract.OwnerSignedAt = DateTime.UtcNow;
+        } 
+        if (role.Equals("User"))
+        {
+            contract.TenantSignature = ownerSignature;
+            contract.TenantSignedAt = DateTime.UtcNow;
+        }
+        
+        if (!string.IsNullOrEmpty(contract.OwnerSignature) && !string.IsNullOrEmpty(contract.TenantSignature))
+        {
+            contract.ContractStatus = ContractStatus.Active;
+            contract.UpdatedAt = DateTime.UtcNow;
+            await _roomClient.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
+        }
+        await _contractRepository.UpdateAsync(contract);
+        var result = _mapper.Map<ContractResponse>(contract);
+        return ApiResponse<ContractResponse>.Success(result, 
+            contract.ContractStatus == ContractStatus.Active 
+                ? "Hợp đồng đã được ký thành công bởi cả hai bên" 
+                : $"Chữ ký {role} đã được lưu");
+    }
+}

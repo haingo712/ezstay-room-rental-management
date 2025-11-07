@@ -18,16 +18,6 @@ namespace ContractAPI.Controllers
    
     public class ContractController(IContractService _contractService, ITokenService _tokenService) : ControllerBase
     {
-        // private readonly IContractService _contractService;
-        // private readonly ITokenService _tokenService;
-        //
-        //
-        // public ContractController(IContractService contractService, ITokenService tokenService)
-        // {
-        //     _contractService = contractService;
-        //     _tokenService = tokenService;
-        // }
-        
       //  [Authorize(Roles = "User")]
         // [HttpGet("HasContract/{tenantId}/roomId/{roomId}")]
         // public async Task<IActionResult> HasContract(Guid tenantId, Guid roomId)
@@ -153,7 +143,7 @@ namespace ContractAPI.Controllers
         // hàm upload hợp đồng 
         [Authorize(Roles = "Owner")]
         [HttpPut("{id}/upload-image")]
-        public async Task<IActionResult> UploadContractImage(Guid id, [FromForm] List<IFormFile> request )
+        public async Task<IActionResult> UploadContractImage(Guid id, [FromForm] IFormFileCollection request )
         {
             try
             {
@@ -167,8 +157,7 @@ namespace ContractAPI.Controllers
                 return NotFound(new { message = e.Message });
             }
         }
-        // làm 
-        // // DELETE: api/Tenant/5
+      
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -190,6 +179,26 @@ namespace ContractAPI.Controllers
         {
             var result = await _contractService.ExistsByRoomId(roomId);
             return Ok(result);
+        }
+        
+        
+        // hàm này dùng để 2 người kí 
+        [Authorize(Roles = "Owner, User")]
+        [HttpPut("{id}/sign-contract")]
+        public async Task<IActionResult> SignContract(Guid id, [FromQuery] string ownerSignature )
+        {
+            try
+            {
+                var role = _tokenService.GetRoleFromClaims(User);
+                var result = await _contractService.SignContract(id, ownerSignature, role);
+                if (!result.IsSuccess)
+                    return BadRequest(new { message = result.Message });
+                return Ok(result);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
+            }
         }
     }
 }

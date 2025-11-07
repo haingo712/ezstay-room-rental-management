@@ -16,6 +16,10 @@ public class TokenService : ITokenService {
     {
         return user.FindFirst("fullName")?.Value;
     }
+    public string? GetRoleFromClaims(ClaimsPrincipal user)
+    {
+        return user.FindFirst(ClaimTypes.Role)?.Value;
+    }
 
     public string? GetPhoneFromClaims(ClaimsPrincipal user)
     {
