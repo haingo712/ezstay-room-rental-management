@@ -27,8 +27,33 @@ namespace MailApi.Repository
             }
         }
 
-        public async Task<OtpVerification?> GetByEmailAndCodeAsync(string email, string otp) =>
-            await _collection.Find(x => x.Email == email && x.OtpCode == otp).FirstOrDefaultAsync();
+        public async Task<OtpVerification?> GetByContractAndCodeAsync(Guid contractId, string otp)
+        {
+            var filterBuilder = Builders<OtpVerification>.Filter;
+            var filter = filterBuilder.Eq(x => x.ContractId, contractId)
+                         & filterBuilder.Eq(x => x.OtpCode, otp);
+
+            return await _collection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<OtpVerification?> GetByContractAndSignerId(Guid contractId, string otp, Guid signerId)
+        {
+            var filterBuilder = Builders<OtpVerification>.Filter;
+            var filter = filterBuilder.Eq(x => x.ContractId, contractId)
+                         & filterBuilder.Eq(x => x.SignerId, signerId)
+                         & filterBuilder.Eq(x => x.OtpCode, otp);
+
+            return await _collection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<OtpVerification?> GetByEmailAndCodeAsync(string email, string otp, Guid? contractId)
+        {
+            var filterBuilder = Builders<OtpVerification>.Filter;
+            var filter = filterBuilder.Eq(x => x.Email, email) & filterBuilder.Eq(x => x.OtpCode, otp);
+            if (contractId.HasValue)
+                filter &= filterBuilder.Eq(x => x.ContractId, contractId.Value);
+            return await _collection.Find(filter).FirstOrDefaultAsync();
+        }
 
         public async Task<OtpVerification?> GetByIdAsync(Guid id)
             => await _collection.Find(t => t.Id == id).FirstOrDefaultAsync();
@@ -41,8 +66,5 @@ namespace MailApi.Repository
         
         public async Task Update(OtpVerification otp) =>
             await _collection.ReplaceOneAsync(x => x.Id == otp.Id, otp);
-        
-        public async Task DeleteAsync(OtpVerification otpVerification)
-            => await _collection.DeleteOneAsync(r => r.Id == otpVerification.Id);
     }
 }

@@ -1,10 +1,9 @@
 ﻿using System.Security.Claims;
 
-namespace ContractAPI.Services.Interfaces
-{
+namespace MailApi.Services.Interfaces;
     public interface ITokenService
     {
         Guid GetUserIdFromClaims(ClaimsPrincipal user);
         string? GetRoleFromClaims(ClaimsPrincipal user);
     }
-}
+

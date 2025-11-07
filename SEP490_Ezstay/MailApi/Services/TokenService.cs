@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using ContractAPI.Services.Interfaces;
-namespace ContractAPI.Services;
+using MailApi.Services.Interfaces;
+namespace MailApi.Services;
 public class TokenService : ITokenService {
     public Guid GetUserIdFromClaims(ClaimsPrincipal user)
     {
@@ -12,18 +12,10 @@ public class TokenService : ITokenService {
         return Guid.Parse(claim);
     }
 
-    public string? GetFullNameFromClaims(ClaimsPrincipal user)
-    {
-        return user.FindFirst("fullName")?.Value;
-    }
+   
     public string? GetRoleFromClaims(ClaimsPrincipal user)
     {
         return user.FindFirst(ClaimTypes.Role)?.Value;
-    }
-
-    public string? GetPhoneFromClaims(ClaimsPrincipal user)
-    {
-        return user.FindFirst("phone")?.Value;
     }
         
 }
