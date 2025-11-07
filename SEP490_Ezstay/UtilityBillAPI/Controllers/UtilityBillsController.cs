@@ -97,6 +97,22 @@ namespace UtilityBillAPI.Controllers
             return Ok(response);
         }
 
+        // PUT: api/UtilityBills/{id}/mark-paid-internal
+        // Internal endpoint for PaymentAPI to mark bill as paid (no auth required)
+        [HttpPut("{billId}/mark-paid-internal")]
+        [AllowAnonymous]
+        public async Task<IActionResult> MarkAsPaidInternal(Guid billId)
+        {
+            // TODO: Add internal service authentication (API key or internal token)
+            // For now, allow anonymous for internal service-to-service calls
+            var response = await _utilityBillService.MarkAsPaidAsync(billId);
+            if (!response.IsSuccess)
+            {
+                return BadRequest(new { message = response.Message });
+            }
+            return Ok(response);
+        }
+
         // PUT: api/UtilityBills/{id}/cancel
         [HttpPut("{billId}/cancel")]
         [Authorize(Roles = "Owner")]

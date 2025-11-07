@@ -1,5 +1,27 @@
 {
   "Routes": [
+    
+    {
+      "DownstreamPathTemplate": "/api/Mail/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7125
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Mail/{everything}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
     {
       "DownstreamPathTemplate": "/odata/{everything}",
       "DownstreamScheme": "https",
@@ -10,60 +32,78 @@
         }
       ],
       "UpstreamPathTemplate": "/odata/{everything}",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
       }
     },
     {
-            "DownstreamPathTemplate": "/api/Chat/{everything}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7140
-                }
-            ],
-            "UpstreamPathTemplate": "/api/Chat/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": []
-            }
-        },
-      {
-        "DownstreamPathTemplate": "/api/BankGateWay/{everything}",
-        "DownstreamScheme": "https",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "localhost",
-            "Port": 7212
-          }
-        ],
-        "UpstreamPathTemplate": "/api/BankGateWay/{everything}",
-        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-        "AuthenticationOptions": {
-          "AuthenticationProviderKey": "Bearer",
-          "AllowedScopes": []
+      "DownstreamPathTemplate": "/api/Chat/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7140
         }
-      },
-      {
-        "DownstreamPathTemplate": "/api/BankAccount/{everything}",
-        "DownstreamScheme": "https",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "localhost",
-            "Port": 7212
-          }
-        ],
-        "UpstreamPathTemplate": "/api/BankAccount/{everything}",
-        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-        "AuthenticationOptions": {
-          "AuthenticationProviderKey": "Bearer",
-          "AllowedScopes": []
+      ],
+      "UpstreamPathTemplate": "/api/Chat/{everything}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/BankGateWay/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7212
         }
-      },
+      ],
+      "UpstreamPathTemplate": "/api/BankGateWay/{everything}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/BankAccount/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7212
+        }
+      ],
+      "UpstreamPathTemplate": "/api/BankAccount/{everything}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+   
     {
       "DownstreamPathTemplate": "/api/Payment/{everything}",
       "DownstreamScheme": "https",
@@ -74,23 +114,29 @@
         }
       ],
       "UpstreamPathTemplate": "/api/Payment/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ]
     },
-     {
-            "DownstreamPathTemplate": "/api/Contract/{everything}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
+    {
+      "DownstreamPathTemplate": "/api/Contract/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
           "Port": 7153
         }
       ],
       "UpstreamPathTemplate": "/api/Contract/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -106,7 +152,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/User/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -122,7 +173,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/Amenity/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -138,8 +194,15 @@
         }
       ],
       "UpstreamPathTemplate": "/api/RentalRequest/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
-      "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer" }
+      "UpstreamHttpMethod": [
+        "POST",
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/Auth/{everything}",
@@ -151,7 +214,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/Auth/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ]
+      "UpstreamHttpMethod": [
+        "POST",
+        "GET",
+        "PUT",
+        "DELETE"
+      ]
     },
     {
       "DownstreamPathTemplate": "/api/Accounts/{everything}",
@@ -163,8 +231,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/Accounts/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ]
-
+      "UpstreamHttpMethod": [
+        "POST",
+        "GET",
+        "PUT",
+        "DELETE"
+      ]
     },
     {
       "DownstreamPathTemplate": "/api/OwnerRequest/{everything}",
@@ -176,8 +248,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/OwnerRequest/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ]
-
+      "UpstreamHttpMethod": [
+        "POST",
+        "GET",
+        "PUT",
+        "DELETE"
+      ]
     },
     {
       "DownstreamPathTemplate": "/api/signalR",
@@ -189,7 +265,10 @@
         }
       ],
       "UpstreamPathTemplate": "/signalR",
-      "UpstreamHttpMethod": [ "Get", "Post" ]
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ]
     },
     {
       "DownstreamPathTemplate": "/api/RoomAmenity/{everything}",
@@ -201,7 +280,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/RoomAmenity/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "POST",
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -217,7 +301,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/Rooms/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "POST",
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -233,7 +322,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/BoardingHouses/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -249,7 +343,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/RentalPosts/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -265,7 +364,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/UtilityRate/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "POST",
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -281,7 +385,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/UtilityReading/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -297,7 +406,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/UtilityBills/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -313,7 +427,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/Image/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -329,7 +448,9 @@
         }
       ],
       "UpstreamPathTemplate": "/api/provinces",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [
+        "Get"
+      ]
     },
     {
       "DownstreamPathTemplate": "/address-kit/latest/provinces/{provinceId}/communes",
@@ -341,7 +462,9 @@
         }
       ],
       "UpstreamPathTemplate": "/api/provinces/{provinceId}/communes",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [
+        "Get"
+      ]
     },
     {
       "DownstreamPathTemplate": "/api/Review/{everything}",
@@ -353,7 +476,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/Review/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -369,7 +497,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/ReviewReply/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -385,7 +518,12 @@
         }
       ],
       "UpstreamPathTemplate": "/api/ReviewReport/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -401,7 +539,13 @@
         }
       ],
       "UpstreamPathTemplate": "/api/TestAccount/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -417,15 +561,20 @@
         }
       ],
       "UpstreamPathTemplate": "/api/Notification/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
       }
     }
   ],
-
-    "GlobalConfiguration": {
-        "BaseUrl": "https://localhost:7000"
-    }
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7000"
+  }
 }
