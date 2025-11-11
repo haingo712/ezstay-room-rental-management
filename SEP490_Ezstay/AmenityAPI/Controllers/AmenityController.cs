@@ -28,18 +28,11 @@ namespace AmenityAPI.Controllers
         
         [HttpGet]
         [EnableQuery]
-        public IQueryable<AmenityResponse> GetAmenitiesOdata()
+        public IQueryable<AmenityResponse> GetAmenities()
         {
-            return  _amenityService.GetAllAsQueryable();
+            return  _amenityService.GetAll();
         }
         
-        // [HttpGet]
-        // public  async Task<ActionResult<AmenityResponseDto>> GetAmenities()
-        // {
-        //     return Ok(await _amenityService.GetAll());
-        // }
-      
-        // GET: api/Amenity/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Amenity>> GetById(Guid id)
         {
@@ -54,7 +47,6 @@ namespace AmenityAPI.Controllers
             }
         }
         
-        // PUT: api/Amenity/5
         [HttpPut("{id}")]
         [Authorize(Roles = "Staff")]
         public async Task<IActionResult> Put(Guid id, [FromForm] UpdateAmenity request)
@@ -93,7 +85,7 @@ namespace AmenityAPI.Controllers
             }
           
         }
-        // DELETE: api/Amenity/5
+      
         [HttpDelete("{id}")]
         [Authorize(Roles = "Staff")]
         public async Task<IActionResult> Delete(Guid id)

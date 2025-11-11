@@ -16,11 +16,7 @@ public class AmenityRepository:IAmenityRepository
     }
    
 
-    public IQueryable<Amenity> GetAllAsQueryable()=> _amenities.AsQueryable();
-    public async Task<IEnumerable<Amenity>> GetAll()
-    {
-        return await _amenities.Find(_ => true).ToListAsync();
-    }
+    public IQueryable<Amenity> GetAll()=> _amenities.AsQueryable();
     
     public async Task<Amenity?> GetById(Guid id)
     {

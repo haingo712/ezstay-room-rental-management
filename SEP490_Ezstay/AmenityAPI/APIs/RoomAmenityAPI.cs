@@ -11,7 +11,7 @@ public class RoomAmenityAPI : IRoomAmenityAPI
         _client = client;
     }
 
-    public async Task<bool> HasRoomAmenityByAmenityId(Guid amenityId)
+    public async Task<bool> RoomAmenityExistsByAmenityId(Guid amenityId)
     {
         var response = await _client.GetAsync($"api/RoomAmenity/check-by-amenity/{amenityId}");
         if (!response.IsSuccessStatusCode)

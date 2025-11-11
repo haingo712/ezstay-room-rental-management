@@ -45,6 +45,7 @@ public class ChatService: IChatService
         if (existing != null)
             return ApiResponse<ChatRoomResponse>.Success(_mapper.Map<ChatRoomResponse>(existing),"ok");
       var post = _rentalPostClientService.GetById(postId);
+      // var reviewReport= _mapper.Map<ChatRoom>(request);
         var chatRoom = new ChatRoom
         {
             PostId = postId,
@@ -53,6 +54,7 @@ public class ChatService: IChatService
             CreatedAt = DateTime.UtcNow,
             LastMessageAt = DateTime.UtcNow
         };
+        
         var result= await _chatRoomRepository.Add(chatRoom);
         
         return ApiResponse<ChatRoomResponse>.Success(_mapper.Map<ChatRoomResponse>(result),"ok");
@@ -118,34 +120,23 @@ public class ChatService: IChatService
       } 
        return ApiResponse<List<ChatRoomResponse>>.Success( _mapper.Map<List<ChatRoomResponse>>(result), "ok");
     }
-    public async Task<ApiResponse<ChatMessageResponse>> SendMessage(Guid chatRoomId,Guid senderId,CreateChatMessage request)
+
+    public async Task<ApiResponse<ChatMessageResponse>> SendMessage(Guid chatRoomId, Guid senderId,
+        CreateChatMessage request)
     {
-        var chatMessage = _chatMessageRepository.GetByChatRoomId(chatRoomId);
-        if(chatMessage == null)
+        var chatMessage1 = _chatMessageRepository.GetByChatRoomId(chatRoomId);
+        if (chatMessage1 == null)
             throw new KeyNotFoundException("ChatRoom not found");
-        var messageDto = _mapper.Map<ChatMessage>(request);
-        messageDto.ChatRoomId = chatRoomId;
-        messageDto.SentAt = DateTime.UtcNow;
-        messageDto.SenderId = senderId;
-        await _chatMessageRepository.Add(messageDto);
+        var chatMessage = _mapper.Map<ChatMessage>(request);
+        chatMessage.ChatRoomId = chatRoomId;
+        chatMessage.SentAt = DateTime.UtcNow;
+        chatMessage.SenderId = senderId;
+        await _chatMessageRepository.Add(chatMessage);
         //   await _chatRoomRepository.UpdateLastMessageAt(chatRoomId, message.SentAt);
-        return ApiResponse<ChatMessageResponse>.Success(_mapper.Map<ChatMessageResponse>(messageDto), "Guiwr message thanh cong");
+        return ApiResponse<ChatMessageResponse>.Success(_mapper.Map<ChatMessageResponse>(chatMessage),
+            "GUiwr message thanh cong");
     }
-    // // Gửi tin nhắn
-    // public async Task<ApiResponse<ChatMessageResponse>> SendMessage(Guid chatRoomId,CreateChatMessage request)
-    // {
-    //     var chatMessage = _chatMessageRepository.GetByChatRoomId(chatRoomId);
-    //     if(chatMessage == null)
-    //         throw new KeyNotFoundException("ChatRoom not found");
-    //     var messageDto = _mapper.Map<ChatMessage>(request);
-    //     messageDto.ChatRoomId = chatRoomId;
-    //     messageDto.SentAt = DateTime.UtcNow;
-    //      await _chatMessageRepository.Add(messageDto);
-    //  //   await _chatRoomRepository.UpdateLastMessageAt(chatRoomId, message.SentAt);
-    //     return ApiResponse<ChatMessageResponse>.Success(_mapper.Map<ChatMessageResponse>(messageDto), "ok");
-    // }
-  
-    
+
     public async Task<ApiResponse<List<ChatRoomResponse>>> GetChatRoomsByOwner(Guid ownerId)
     {
         var rooms = await _chatRoomRepository.GetByOwner(ownerId);

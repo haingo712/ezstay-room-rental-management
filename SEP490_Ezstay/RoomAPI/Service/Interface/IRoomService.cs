@@ -8,7 +8,7 @@ namespace RoomAPI.Service.Interface;
 
 public interface IRoomService
 {
-    IQueryable<RoomResponse>  GetAllQueryable();
+    IQueryable<RoomResponse>  GetAll();
     //Task<IEnumerable<RoomDto>> GetAllByHouseId(int houseId);
     IQueryable<RoomResponse> GetAllByHouseId(Guid houseId);
     IQueryable<RoomResponse> GetAllStatusActiveByHouseId(Guid houseId);

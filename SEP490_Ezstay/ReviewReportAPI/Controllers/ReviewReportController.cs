@@ -23,7 +23,7 @@ public class ReviewReportController : ControllerBase
     [HttpGet]
     [EnableQuery]
     [Authorize(Roles = "Staff")]
-    public IQueryable<ReviewReportResponse>  GetAll()
+    public IQueryable<ReviewReportResponse> GetAll()
     {
         return _reviewReportService.GetAll();
     }
@@ -37,7 +37,6 @@ public class ReviewReportController : ControllerBase
     [Authorize(Roles = "Owner")]
     public async Task<IActionResult> Add(Guid reviewId, [FromForm] CreateReviewReportRequest request)
     {
-     //   var ownerId = ...; // lấy từ token
         var result = await _reviewReportService.Add(reviewId, request);
         if (!result.IsSuccess)
             return BadRequest(result);
@@ -54,11 +53,11 @@ public class ReviewReportController : ControllerBase
     }
 
     // Nhân viên duyệt báo cáo
-    [HttpPut("status/{reportId}")]
+    [HttpPut("status/{id}")]
     [Authorize(Roles = "Staff")]
-    public async Task<IActionResult> SetStatus(Guid reportId, [FromBody] UpdateReportStatusRequest request)
+    public async Task<IActionResult> SetStatus(Guid id, [FromBody] UpdateReportStatusRequest request)
     {
-        var result = await _reviewReportService.SetStatus(reportId, request);
+        var result = await _reviewReportService.SetStatus(id, request);
         if (!result.IsSuccess)
             return BadRequest(result);
         return Ok(result);

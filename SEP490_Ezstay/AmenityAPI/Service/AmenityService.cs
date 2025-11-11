@@ -28,35 +28,13 @@ public class AmenityService: IAmenityService
         _imageClient = imageClient;
         _roomAmenityAPI = roomAmenityAPI;
     }
-
-    // public async Task<ApiResponse<IEnumerable<AmenityResponseDto>>> GetAllByStaffId(Guid staffId)
-      // {
-      //     var amenity =  await _amenityRepository.GetAllByStaffId(staffId);
-      //     var c=  _mapper.Map<IEnumerable<AmenityResponseDto>>(amenity);
-      //     return ApiResponse<IEnumerable<AmenityResponseDto>>.Success(c, "ok");
-      // }
-      public async Task<ApiResponse<IEnumerable<AmenityResponse>>> GetAll()
+    
+      public IQueryable<AmenityResponse> GetAll()
       {
-         var result =  _mapper.Map<IEnumerable<AmenityResponse>>(await _amenityRepository.GetAll()) ;
-         if (result == null)
-         {
-             return ApiResponse<IEnumerable<AmenityResponse>>.Fail("Không có tiện ích nào.");
-         }
-           return ApiResponse<IEnumerable<AmenityResponse>>.Success(result);
-      }
-      public IQueryable<AmenityResponse> GetAllAsQueryable()
-      {
-          var amenity = _amenityRepository.GetAllAsQueryable();
+          var amenity = _amenityRepository.GetAll();
       
           return amenity.ProjectTo<AmenityResponse>(_mapper.ConfigurationProvider);
       }
-    // public IQueryable<AmenityResponseDto> GetAllByStaffIdAsQueryable(Guid staffId)
-    // {
-    //      
-    //     var amenity =   _amenityRepository.GetAllAsQueryable().Where(x=> x.StaffId == staffId);
-    //   
-    //     return amenity.ProjectTo<AmenityResponseDto>(_mapper.ConfigurationProvider);
-    // }
     public async Task<AmenityResponse> GetById(Guid id)
     {
         var amenity = await _amenityRepository.GetById(id);
@@ -99,7 +77,7 @@ public class AmenityService: IAmenityService
         var amenity = await _amenityRepository.GetById(id);
         if (amenity==null) 
             throw new KeyNotFoundException("AmentityId not found");
-        var check = await _roomAmenityAPI.HasRoomAmenityByAmenityId(id);
+        var check = await _roomAmenityAPI.RoomAmenityExistsByAmenityId(id);
         if (check)
             return ApiResponse<bool>.Fail("Không thể xóa tiện ích vì đang được sử dụng trong một hoặc nhiều phòng.");
         await _amenityRepository.Delete(amenity);

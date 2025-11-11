@@ -4,9 +4,7 @@ namespace AmenityAPI.Repository.Interface;
 
 public interface IAmenityRepository
 {
-    IQueryable<Amenity> GetAllAsQueryable();
-    Task<IEnumerable<Amenity>> GetAll();
-  //  Task<IEnumerable<Amenity>> GetAllByStaffId(Guid staffId);
+    IQueryable<Amenity> GetAll();
     Task<Amenity?> GetById(Guid id);
     
     Task Add(Amenity amenity);

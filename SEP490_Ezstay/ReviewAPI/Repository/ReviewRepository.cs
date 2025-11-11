@@ -13,42 +13,36 @@ public class ReviewRepository : IReviewRepository
         _reviews = database.GetCollection<Review>("Reviews");
     }
 
-    public IQueryable<Review> GetAllAsQueryable() => _reviews.AsQueryable();
-
-    public async Task<IEnumerable<Review>> GetAll()
+    public IQueryable<Review> GetAll() => _reviews.AsQueryable();
+    public Task<bool> ReviewExistsByContractId(Guid contractId)
     {
-        return await _reviews.Find(_ => true).ToListAsync();
+        return _reviews.Find(r => r.ContractId == contractId).AnyAsync();
     }
-    public async Task<Review?> GetByContractIdAsync(Guid contractId)
-        => await _reviews.Find(x => x.ContractId == contractId).FirstOrDefaultAsync();
 
-
-    // public async Task<IEnumerable<Review>> GetAllByPostId(Guid postId)
-    // {
-    //     return await _reviews.Find(r => r.PostId == postId).ToListAsync();
-    // }
-
-    public async Task<Review?> GetByIdAsync(Guid id)
+    // public async Task<Review?> GetByContractId(Guid contractId)
+    //     => await _reviews.Find(x => x.ContractId == contractId).FirstOrDefaultAsync();
+    //
+    public async Task<Review?> GetById(Guid id)
     {
         return await _reviews.Find(r => r.Id == id).FirstOrDefaultAsync();
     }
-    public async Task<List<Review>> GetByRoomIdsAsync(List<Guid> roomIds)
+    public async Task<List<Review>> GetByRoomIds(List<Guid> roomIds)
     {
         return await _reviews
             .Find(r => roomIds.Contains(r.RoomId))
             .ToListAsync();
     }
-    public async Task AddAsync(Review review)
+    public async Task Add(Review review)
     {
         await _reviews.InsertOneAsync(review);
     }
 
-    public async Task UpdateAsync(Review review)
+    public async Task Update(Review review)
     {
         await _reviews.ReplaceOneAsync(r => r.Id == review.Id, review);
     }
 
-    public async Task DeleteAsync(Review review)
+    public async Task Delete(Review review)
     {
         await _reviews.DeleteOneAsync(r => r.Id == review.Id);
     }

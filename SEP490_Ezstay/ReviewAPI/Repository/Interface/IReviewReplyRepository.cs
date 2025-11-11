@@ -4,10 +4,10 @@ namespace ReviewAPI.Repository.Interface;
 
 public interface IReviewReplyRepository
 {
-    IQueryable<ReviewReply> GetAllQueryable();
-    Task<ReviewReply?> GetByIdAsync(Guid id);
-    Task<ReviewReply?> GetByReviewIdAsync(Guid reviewId);
-    Task AddAsync(ReviewReply reply);
-    Task UpdateAsync(ReviewReply reply);
-    Task DeleteAsync(Guid replyId);
+    IQueryable<ReviewReply> GetAll();
+    Task<ReviewReply?> GetById(Guid id);
+    Task<ReviewReply?> GetByReviewId(Guid reviewId);
+    Task Add(ReviewReply reviewReply);
+    Task Update(ReviewReply reviewReply);
+    Task Delete(Guid id);
 }

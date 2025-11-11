@@ -50,17 +50,17 @@ public class ChatController : ControllerBase
     //     var userId= _tokenService.GetUserIdFromClaims(User);
     //   return   Ok(await _chatService.GetChatRoomsByTenant(userId));
     // }
-    // lam
+    // lam 
     [Authorize(Roles = "User, Owner")]
     [HttpGet("messages/{chatRoomId}")]
     public async Task<IActionResult> GetMessages(Guid chatRoomId)
         => Ok(await _chatService.GetMessages(chatRoomId));
-    //lam
+    //lam r
     [HttpPost("message")]
     [Authorize(Roles = "User, Owner")]
     public async Task<IActionResult> SendMessage([FromQuery] Guid chatRoomId, [FromBody] CreateChatMessage request)
     {
-        var userId= _tokenService.GetUserIdFromClaims(User);
-       return  Ok(await _chatService.SendMessage(chatRoomId, userId, request));
+        var senderId= _tokenService.GetUserIdFromClaims(User);
+       return  Ok(await _chatService.SendMessage(chatRoomId, senderId, request));
     }
 }
