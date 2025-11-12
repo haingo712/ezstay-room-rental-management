@@ -55,7 +55,7 @@ public class MailService(
         return (true, $"OTP verified successfully for ");
     }
 
-    public async Task<(bool success, string message)> SendOtp(string email, Guid contractId, Guid signerId)
+    public async Task<(bool success, string message, Guid? otpId)> SendOtp(string email, Guid contractId, Guid signerId)
     {
         // Get contract details to determine who should receive this OTP
         // var contract = await _contractAPI.GetContractByIdAsync(contractId);
@@ -72,11 +72,11 @@ public class MailService(
             SignerId = signerId
         };
         
-        await _mailRepository.AddAsync(otp);
+        var cr= await _mailRepository.AddAsync(otp);
         await SendEmail(email, $"EzStay - OTP for Contract Signing )",
             $"Your OTP code is: {otpCode}. This is for  to sign the contract. It expires in 5 minutes.");
         
-        return (true, $"OTP sent successfully to ");
+        return (true, $"OTP sent successfully to{email} ",cr.Id);
     }
     
     public async Task SendEmail(string toEmail, string subject, string body)
