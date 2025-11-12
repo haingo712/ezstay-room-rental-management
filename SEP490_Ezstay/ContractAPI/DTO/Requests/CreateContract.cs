@@ -30,5 +30,5 @@ public class CreateContract
     public CreateUtilityReadingContract ElectricityReading { get; set; }
     [Required]
     public CreateUtilityReadingContract WaterReading { get; set; }
-    public List<CreateService> ServiceInfors { get; set; }
+    public List<CreateService>? ServiceInfors { get; set; }
 }

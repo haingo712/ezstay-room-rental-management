@@ -5,5 +5,5 @@ namespace ContractAPI.Services.Interfaces;
 
 public interface IAccountService
 {
-    Task<AccountResponse> GetProfileByUserId(Guid userId);
+    Task<AccountResponse> GetProfileByUserId(Guid id );
 }

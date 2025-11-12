@@ -39,7 +39,7 @@ namespace AccountAPI.Controllers
                 ? Ok("Tạo profile thành công.")
                 : BadRequest("Không tạo được profile.");
         }
-
+        
 
         [HttpGet("profile")]
         [Authorize(Roles = "User,Owner,Staff")]
@@ -50,9 +50,19 @@ namespace AccountAPI.Controllers
 
             if (profile == null)
                 return NotFound("Không tìm thấy profile.");
-
-          
-
+            
+            return Ok(profile);
+        }
+        
+        [HttpGet("profile/{userId}")]
+        
+        public async Task<IActionResult> GetProfile1(Guid userId)
+        {
+            var profile = await _userService.GetProfileAsync(userId);
+        
+            if (profile == null)
+                return NotFound("Không tìm thấy profile.");
+            
             return Ok(profile);
         }
 
