@@ -2,5 +2,5 @@ namespace RoomAPI.Service.Interface;
 
 public interface IRentalPostClientService
 {
-    Task<bool> HasPostsForRoomAsync(Guid roomId);
+    Task<bool> RentalPostExistsByRoomId(Guid roomId);
 }

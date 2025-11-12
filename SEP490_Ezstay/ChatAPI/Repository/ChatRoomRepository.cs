@@ -15,9 +15,9 @@ public class ChatRoomRepository:IChatRoomRepository
         _collection = database.GetCollection<ChatRoom>("Chats");
     }
     
-    public async Task<ChatRoom?> GetByUsersAsync(Guid ownerId, Guid tenantId)
-        => await _collection.Find(r => r.OwnerId == ownerId && r.TenantId == tenantId)
-            .FirstOrDefaultAsync();
+    // public async Task<ChatRoom?> GetByUsersAsync(Guid ownerId, Guid tenantId)
+    //     => await _collection.Find(r => r.OwnerId == ownerId && r.TenantId == tenantId)
+    //         .FirstOrDefaultAsync();
 
     public IQueryable<ChatRoom> GetAllAsQueryable()=> _collection.AsQueryable();
     
@@ -31,9 +31,12 @@ public class ChatRoomRepository:IChatRoomRepository
         await _collection.InsertOneAsync(chatRoom);
         return chatRoom;
     }
-    public async Task<IEnumerable<ChatRoom>> GetByChatRoomByOwner(Guid ownerId)
+
+   
+
+    public async Task<IEnumerable<ChatRoom>> GetAllChatRoom(Guid accountId)
     {
-        return await _collection.Find(r => r.OwnerId == ownerId ||  r.TenantId == ownerId )
+        return await _collection.Find(r => r.OwnerId == accountId ||  r.TenantId == accountId )
             .ToListAsync();
     }
   
@@ -44,12 +47,12 @@ public class ChatRoomRepository:IChatRoomRepository
             r.TenantId == tenantId).FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<ChatRoom>> GetByOwner(Guid ownerId)
-    {
-        return await _collection.Find(r => r.OwnerId == ownerId)
-            .SortByDescending(r => r.LastMessageAt)
-            .ToListAsync();
-    }
+    // public async Task<IEnumerable<ChatRoom>> GetByOwner(Guid ownerId)
+    // {
+    //     return await _collection.Find(r => r.OwnerId == ownerId)
+    //         .SortByDescending(r => r.LastMessageAt)
+    //         .ToListAsync();
+    // }
     
     public async Task<IEnumerable<ChatRoom>> GetByTenant(Guid tenantId)
     {

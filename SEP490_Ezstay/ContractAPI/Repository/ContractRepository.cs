@@ -2,6 +2,7 @@ using ContractAPI.Model;
 using MongoDB.Driver;
 using ContractAPI.Enum;
 using ContractAPI.Repository.Interface;
+using MongoDB.Driver.Linq;
 using Shared.Enums;
 
 namespace ContractAPI.Repository
@@ -14,29 +15,20 @@ namespace ContractAPI.Repository
         {
             _contracts = database.GetCollection<Contract>("Contracts");
         }
-        // public Task<bool> HasContractAsync(Guid tenantId, Guid roomId)
-        // {
-        //     return _contracts.Find(c => c.TenantId == tenantId && c.RoomId == roomId).AnyAsync();
-        // }
-
-
-        public IQueryable<Contract> GetAllQueryable() => _contracts.AsQueryable();
+        public IQueryable<Contract> GetAllByOwnerId(Guid ownerId)
+            => _contracts.AsQueryable().Where(c => c.ProfilesInContract.Any(p => p.UserId == ownerId));
         
-        public async Task<IEnumerable<Contract>> GetAllByOwnerIdAsync(Guid ownerId)
-            => await _contracts.Find(t => t.OwnerId == ownerId).ToListAsync();
-        
-        public async Task<IEnumerable<Contract>> GetAllByTenantIdAsync(Guid tenantId)
-            => await _contracts.Find(t => t.SignerProfile.TenantId == tenantId).ToListAsync();
-        
+        // public async Task<IEnumerable<Contract>> GetAllByTenantId(Guid tenantId)
+        //     => await _contracts.Find(t => t.SignerProfile.TenantId == tenantId).ToListAsync();
+        //
         public async Task<Contract?> GetByIdAsync(Guid id)
             => await _contracts.Find(t => t.Id == id).FirstOrDefaultAsync();
 
         public async Task<Contract> AddAsync(Contract contract)
         {
-           await _contracts.InsertOneAsync(contract);
+            await _contracts.InsertOneAsync(contract);
             return contract;
         }
-         
         
         public async Task UpdateAsync(Contract contract)
             => await _contracts.ReplaceOneAsync(t => t.Id == contract.Id, contract);

@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using RoomAPI.Model;
 using RoomAPI.Repository.Interface;
+using Shared.Enums;
 
 namespace RoomAPI.Repository;
 
@@ -15,7 +16,14 @@ public class RoomRepository:IRoomRepository
         _rooms = database.GetCollection<Room>("Rooms");
     }
 
-    public IQueryable<Room>  GetAllQueryable()=> _rooms.AsQueryable();
+    public IQueryable<Room>  GetAll()=> _rooms.AsQueryable();
+
+    public IQueryable<Room> GetAllByHouseId(Guid houseId)
+        => _rooms.AsQueryable().Where(r => r.HouseId == houseId);
+
+    public IQueryable<Room> GetAllStatusActiveByHouseId(Guid houseId, RoomStatus roomStatus)
+        => _rooms.AsQueryable().Where(r => r.HouseId == houseId && r.RoomStatus == roomStatus);
+
     public async Task<Room?> GetById(Guid id)
     {
       return await _rooms.Find(a => a.Id == id).FirstOrDefaultAsync();

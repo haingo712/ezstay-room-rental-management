@@ -12,7 +12,7 @@ public class RentalPostClientService: IRentalPostClientService
         _httpClient = httpClient;
     }
     
-    public async Task<bool> HasPostsForRoomAsync(Guid roomId)
+    public async Task<bool> RentalPostExistsByRoomId(Guid roomId)
     {
         var response = await _httpClient.GetAsync($"odata/RentalPosts?$filter=RoomId eq {roomId}");
         if (!response.IsSuccessStatusCode) return false;

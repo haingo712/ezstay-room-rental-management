@@ -12,7 +12,7 @@ public class ContractClientService : IContractClientService
         _httpClient = httpClient;
     }
 
-    public async Task<bool> HasContractByRoomId(Guid roomId)
+    public async Task<bool> ContractExistsByRoomId(Guid roomId)
     {
         var response = await _httpClient.GetAsync($"api/Contract/room/{roomId}/exists");
         if (!response.IsSuccessStatusCode)

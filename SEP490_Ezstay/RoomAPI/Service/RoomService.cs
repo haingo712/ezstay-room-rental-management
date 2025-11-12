@@ -12,53 +12,32 @@ using Shared.DTOs.Rooms.Responses;
 
 namespace RoomAPI.Service;
 
-public class RoomService: IRoomService
-{
-
-    private readonly IRoomRepository _roomRepository;
-    private readonly IRoomAmenityAPI _roomAmenityClient;
-    private readonly IAmenityClientService _amenityClient;
-    private readonly IImageClientService _imageClient;
-    private readonly IRentalPostClientService _rentalPostClient;
-    private readonly IMapper _mapper;
-    private readonly IContractClientService _contractClient;
-
-    public RoomService(
-        IRoomRepository roomRepository,
-        IRoomAmenityAPI roomAmenityClient,
-        IAmenityClientService amenityClient,
-        IImageClientService imageClient,
-        IRentalPostClientService rentalPostClient,
-        IContractClientService contractClient,
-        IMapper mapper)
-    {
-        _roomRepository = roomRepository;
-        _roomAmenityClient = roomAmenityClient;
-        _amenityClient = amenityClient;
-        _imageClient = imageClient;
-        _rentalPostClient = rentalPostClient;
-        _contractClient = contractClient;
-        _mapper = mapper;
-    }
-
-
+public class RoomService(
+    IRoomRepository _roomRepository,
+    IRoomAmenityClientService _roomAmenityClient,
+    IAmenityClientService _amenityClient,
+    IImageClientService _imageClient,
+    IRentalPostClientService _rentalPostClient,
+    IContractClientService _contractClient,
+    IMapper _mapper
+) : IRoomService{
     public IQueryable<RoomResponse> GetAllStatusActiveByHouseId(Guid houseId)
     {
-        var rooms = _roomRepository. GetAllQueryable().Where(x => x.HouseId == houseId && x.RoomStatus == RoomStatus.Available);
+        var rooms = _roomRepository. GetAllStatusActiveByHouseId(houseId, RoomStatus.Available);
      
         return rooms.ProjectTo<RoomResponse>(_mapper.ConfigurationProvider);
     }
     
     public IQueryable<RoomResponse> GetAllByHouseId(Guid houseId)
     {
-        var rooms = _roomRepository. GetAllQueryable().Where(x => x.HouseId == houseId);
-     
+      //  var rooms = _roomRepository. GetAll().Where(x => x.HouseId == houseId);
+      var rooms = _roomRepository.GetAllByHouseId(houseId);
         return rooms.ProjectTo<RoomResponse>(_mapper.ConfigurationProvider);
     }
-    public IQueryable<RoomResponse>  GetAllQueryable()
+    public IQueryable<RoomResponse>  GetAll()
     {
-        var book = _roomRepository.GetAllQueryable();
-    return book.ProjectTo<RoomResponse>(_mapper.ConfigurationProvider);
+        var book = _roomRepository.GetAll();
+        return book.ProjectTo<RoomResponse>(_mapper.ConfigurationProvider);
     }
 
     public async Task<RoomResponse> GetById(Guid id)
@@ -91,18 +70,9 @@ public class RoomService: IRoomService
         room.HouseId = houseId;
         room.RoomStatus= RoomStatus.Available;
         room.CreatedAt = DateTime.UtcNow;
-        
         await _roomRepository.Add(room);
-        // if (request.RoomAmenity != null )
-        // {
-        //     var amenityRequest = request.AmenityIds
-        //         .Select(aid => new CreateRoomAmenityDto { AmenityId = aid })
-        //         .ToList();
-        //
-        //     await _roomAmenityClient.AddRoomAmenitiesAsync(room.Id, amenityRequest);
-        // }
         var result = _mapper.Map<RoomResponse>(room);
-        return ApiResponse<RoomResponse>.Success(result, "Thêm phòng thành công");
+        return ApiResponse<RoomResponse>.Success(result, "Add Room Successfully");
     }
 
     public async Task<ApiResponse<bool>>  Update(Guid id, UpdateRoom request)
@@ -112,32 +82,32 @@ public class RoomService: IRoomService
             throw new KeyNotFoundException("Room not found");
         var existRoomName = await _roomRepository.RoomNameExistsInHouse(checkRoom.HouseId, request.RoomName, id);
         if(existRoomName)
-            return ApiResponse<bool>.Fail("Tên phòng đã tồn tại trong nhà trọ.");    
+            return ApiResponse<bool>.Fail("Room name already exists in house");    
         if (request.RoomStatus == RoomStatus.Occupied)
             return ApiResponse<bool>.Fail("K dc set trang thai nay");  
          _mapper.Map(request, checkRoom);
          checkRoom.UpdatedAt = DateTime.UtcNow;
          checkRoom.ImageUrl= _imageClient.UploadMultipleImage(request.ImageUrl).Result;
          await _roomRepository.Update(checkRoom);
-         // return _mapper.Map<RoomDto>(checkRoom);
-         return  ApiResponse<bool>.Success(true, "Cặp nhật phòng thành công");
+         return  ApiResponse<bool>.Success(true, "Update Room Successfully");
     }
     public async Task<ApiResponse<bool>> Delete(Guid id)
     {
         var room = await _roomRepository.GetById(id);
         if (room==null) 
             throw new KeyNotFoundException("k tim thay phong tro");
-        var hasPosts = await _rentalPostClient.HasPostsForRoomAsync(room.Id);
-        Console.WriteLine("sss"+ hasPosts);
+        var hasPosts = await _rentalPostClient.RentalPostExistsByRoomId(room.Id);
         if (hasPosts)
-            return  ApiResponse<bool>.Fail("Không thể xóa phòng vì đang có bài đăng");
-        var checkContract = await _contractClient.HasContractByRoomId(room.Id);
-        Console.WriteLine("xxxs"+ hasPosts);
-        if (checkContract)
-            return  ApiResponse<bool>.Fail("Không thể xóa phòng vì đang có contract");
+            return  ApiResponse<bool>.Fail("Can not delete room because it has rental posts.");
         
+        var checkContract = await _contractClient.ContractExistsByRoomId(room.Id);
+        if (checkContract)
+            return  ApiResponse<bool>.Fail("Can not delete room because it has contracts.");
+        
+        await _roomAmenityClient.DeleteAmenityByRoomId(room.Id);
         await _roomRepository.Delete(room);
-        return ApiResponse<bool>.Success(true, "Xoá phòng thành công");
+        
+        return ApiResponse<bool>.Success(true, "Delete Room Successfully");
     }
     public async Task<RoomWithAmenitiesResponse> GetRoomWithAmenitiesAsync(Guid id)
     {

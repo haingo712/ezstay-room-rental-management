@@ -35,4 +35,6 @@ public class ContractResponse
     public DateTime OwnerSignedAt { get; set; }
     public string TenantSignature { get; set; }     
     public DateTime TenantSignedAt { get; set; }
+    public List<IdentityProfileResponse> ServiceInfors { get; set; } 
+    
 }

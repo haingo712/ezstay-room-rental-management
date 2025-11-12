@@ -1,8 +1,5 @@
-using System.Security.Claims;
+
 using System.Text;
-using AmenityAPI.APIs;
-using AmenityAPI.APIs.Interfaces;
-using AmenityAPI.DTO.Request;
 using Shared.DTOs.Amenities.Responses;
 using AmenityAPI.Mapping;
 using AmenityAPI.Repository;
@@ -11,8 +8,6 @@ using AmenityAPI.Service;
 using AmenityAPI.Service.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OData;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
@@ -22,31 +17,20 @@ using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
+// builder.Services.AddGrpc();
 
-
-builder.Services.AddGrpc();
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
 builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
 builder.Services.AddScoped<IAmenityService, AmenityService>();
 builder.Services.AddAutoMapper(typeof(MappingAmenity).Assembly);
 
-// builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//     .AddJwtBearer(options =>
-//     {
-//         options.Authority = jwtSettings["Authority"];
-//         options.Audience = jwtSettings["Audience"];
-//         options.RequireHttpsMetadata = bool.Parse(jwtSettings["RequireHttpsMetadata"] ?? "true");
-//     });
-
-
-builder.Services.AddHttpClient<IImageAPI, ImageAPI >(client =>
+builder.Services.AddHttpClient<IImageService, ImageService >(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
 });
-builder.Services.AddHttpClient<IRoomAmenityAPI, RoomAmenityAPI >(client =>
+builder.Services.AddHttpClient<IRoomAmenityService, RoomAmenityService >(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RoomAmenityApi"]); 
 });
@@ -136,5 +120,5 @@ builder.Services.AddSwaggerGen();
 
 
             app.MapControllers();
-            app.MapGrpcService<AmenityGrpcService>();
+          //  app.MapGrpcService<AmenityGrpcService>();
             app.Run();

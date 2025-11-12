@@ -20,6 +20,13 @@ public class RoomAmenityClientService: IRoomAmenityClientService
 
          return response ??  new List<RoomAmenityResponse>();
      }
+
+     public async Task<bool> DeleteAmenityByRoomId(Guid roomId)
+     {
+         var response = await _httpClient.DeleteAsync($"api/RoomAmenity/byRoomId/{roomId}");
+         return response.IsSuccessStatusCode;
+     }
+
      public async Task AddAsync(Guid roomId, List<CreateRoomAmenity> request)
      {
          var response = await _httpClient.PostAsJsonAsync($"api/RoomAmenity/{roomId}/Amenity", request);

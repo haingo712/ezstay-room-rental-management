@@ -16,28 +16,18 @@ namespace ContractAPI.Services;
 
 public class ContractService(IMapper _mapper,IContractRepository _contractRepository,IRoomClientService _roomClient,
     IImageClientService _imageClient,
-    IAccountAPI _accountClient,
+    IAccountService _accountService,
     IUtilityReadingClientService _utilityReadingClientService
 ) : IContractService
 {
-    public IQueryable<ContractResponse> GetAllQueryable()
-        => _contractRepository.GetAllQueryable().ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
-
-    public IQueryable<ContractResponse> GetAllByTenantId(Guid tenantId)
-        => _contractRepository.GetAllQueryable()
-                              .Where(x => x.SignerProfile.TenantId == tenantId).OrderByDescending(d => d.CreatedAt)
-                              .ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
-
+    // public IQueryable<ContractResponse> GetAllByTenantId(Guid tenantId)
+    //     => _contractRepository.GetAllQueryable()
+    //                           .Where(x => x.SignerProfile.TenantId == tenantId).OrderByDescending(d => d.CreatedAt)
+    //                           .ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
     public IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId)
-        => _contractRepository.GetAllQueryable()
-                              .Where(x => x.OwnerId == ownerId).OrderByDescending(d => d.CreatedAt)
+        => _contractRepository.GetAllByOwnerId(ownerId).OrderByDescending(d => d.CreatedAt)
                               .ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
-
-        
-    public IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId, ContractStatus contractStatus)
-        => _contractRepository.GetAllQueryable()
-            .Where(x => x.OwnerId == ownerId && x.ContractStatus == contractStatus).OrderByDescending(d => d.CreatedAt)
-            .ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
+    
 
     public async Task<ContractResponse?> GetByIdAsync(Guid id)
     {
@@ -70,10 +60,18 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
             return ApiResponse<ContractResponse>.Fail("Không tìm thấy phòng");
         if (room.RoomStatus == RoomStatus.Occupied)
             return ApiResponse<ContractResponse>.Fail("Phòng đã có người thuê");
+        
         var contract = _mapper.Map<Contract>(request);
-        contract.OwnerId = ownerId;
+        
+        // contract.OwnerId = ownerId;
         contract.CreatedAt = DateTime.UtcNow;
-        //contract.ContractStatus = ContractStatus.Active;
+        
+        contract.ServiceInfors = request.ServiceInfors
+            .Select((p, index) =>
+            {
+                var serviceInfor = _mapper.Map<ServiceInfor>(p);
+                return serviceInfor;
+            }).ToList();
         
         var members = request.ProfilesInContract
             .Select((p, index) =>
@@ -83,15 +81,18 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
                 return profile;
             }).ToList();
    
+        var ownerProfile = await _accountService.GetProfileByUserId(ownerId);
+        if (ownerProfile == null) return ApiResponse<ContractResponse>.Fail("Không tìm thấy thông tin chủ trọ.");
+        
+        var ownerIdentity = _mapper.Map<IdentityProfile>(ownerProfile);
+        ownerIdentity.IsSigner = true; 
+        members.Add(ownerIdentity);
+        
         contract.ProfilesInContract = members;
-        // var signer = members.FirstOrDefault(p => p.IsSigner);
-        // if (signer == null)
-        //     return ApiResponse<ContractResponseDto>.Fail("Không tìm thấy người ký hợp đồng (IsSigner = true)");
-       // contract.SignerProfile = signer;
-        contract.SignerProfile = members.First(p => p.IsSigner); 
+       // contract.SignerProfile = members.First(p => p.IsSigner); 
         var saveContract =await _contractRepository.AddAsync(contract);
-    var createUtility = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Water, request.WaterReading);
-    var createUtiliyw = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Electric, request.ElectricityReading);
+        var createUtility = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Water, request.WaterReading);
+        var createUtiliyw = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Electric, request.ElectricityReading);
         var result = _mapper.Map<ContractResponse>(saveContract);
         result.WaterReading = createUtility.Data;
         result.ElectricityReading = createUtiliyw.Data;
@@ -141,7 +142,7 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
                 }).ToList();
 
             contract.ProfilesInContract = members;
-            contract.SignerProfile = members.First(p => p.IsSigner);
+            // contract.SignerProfile = members.First(p => p.IsSigner);
         }
             await _utilityReadingClientService.Update(contract.RoomId, UtilityType.Electric, request.ElectricityReading);
             await _utilityReadingClientService.Update(contract.RoomId, UtilityType.Water, request.WaterReading);

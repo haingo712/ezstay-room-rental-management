@@ -45,27 +45,19 @@ namespace RoomAPI.Controllers
             }
         }
 
-        [HttpGet("{id}/WithAmenities")]
-        public async Task<ActionResult<RoomWithAmenitiesResponse>> GetRoomWithAmenities(Guid id)
-        {
-            try
-            {
-                var result = await _roomService.GetRoomWithAmenitiesAsync(id);
-                return Ok(result);
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(new { message = e.Message });
-            }
-        }
-        
-        
-        [HttpGet]
-        [EnableQuery]
-        public IQueryable<RoomResponse> GetAll()
-        {
-            return _roomService.GetAllQueryable();
-        }
+        // [HttpGet("{id}/WithAmenities")]
+        // public async Task<ActionResult<RoomWithAmenitiesResponse>> GetRoomWithAmenities(Guid id)
+        // {
+        //     try
+        //     {
+        //         var result = await _roomService.GetRoomWithAmenitiesAsync(id);
+        //         return Ok(result);
+        //     }
+        //     catch (KeyNotFoundException e)
+        //     {
+        //         return NotFound(new { message = e.Message });
+        //     }
+        // }
         
         [HttpGet("ByHouseId/{houseId}")]
         [EnableQuery]        
@@ -79,21 +71,14 @@ namespace RoomAPI.Controllers
         {
             return _roomService.GetAllStatusActiveByHouseId(houseId);
         }
-        // [HttpGet("ByHouseId/{houseId}")]
-        // [EnableQuery]        
-        // public IQueryable<RoomDto> GetRoomsStatusActiveByHouseId(Guid houseId)
-        // {
-        //     return _roomService.GetAllByHouseId(houseId);
-        // }
-    
         // GET: api/Rooms/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RoomResponse>> GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             try
             {
                 var room = await _roomService.GetById(id);
-                return room;
+                return Ok(room);
             }
             catch (KeyNotFoundException e)
             {
@@ -128,7 +113,7 @@ namespace RoomAPI.Controllers
         try
         {
             //  var ownerId = _tokenService.GetUserIdFromClaims(User);
-            var createRoom =   await  _roomService.Add( houseId,request);
+            var createRoom =   await  _roomService.Add(houseId, request);
             if (!createRoom.IsSuccess)
                 return BadRequest(new { message = createRoom.Message });
          

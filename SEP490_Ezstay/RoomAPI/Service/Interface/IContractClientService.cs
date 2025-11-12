@@ -2,5 +2,5 @@ namespace RoomAPI.Service.Interface;
 
 public interface IContractClientService
 {
-    Task<bool> HasContractByRoomId(Guid roomId);
+    Task<bool> ContractExistsByRoomId(Guid roomId);
 }
