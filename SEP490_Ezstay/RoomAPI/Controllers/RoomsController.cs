@@ -45,27 +45,19 @@ namespace RoomAPI.Controllers
             }
         }
 
-        [HttpGet("{id}/WithAmenities")]
-        public async Task<ActionResult<RoomWithAmenitiesResponse>> GetRoomWithAmenities(Guid id)
-        {
-            try
-            {
-                var result = await _roomService.GetRoomWithAmenitiesAsync(id);
-                return Ok(result);
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(new { message = e.Message });
-            }
-        }
-        
-        
-        [HttpGet]
-        [EnableQuery]
-        public IQueryable<RoomResponse> GetAll()
-        {
-            return _roomService.GetAll();
-        }
+        // [HttpGet("{id}/WithAmenities")]
+        // public async Task<ActionResult<RoomWithAmenitiesResponse>> GetRoomWithAmenities(Guid id)
+        // {
+        //     try
+        //     {
+        //         var result = await _roomService.GetRoomWithAmenitiesAsync(id);
+        //         return Ok(result);
+        //     }
+        //     catch (KeyNotFoundException e)
+        //     {
+        //         return NotFound(new { message = e.Message });
+        //     }
+        // }
         
         [HttpGet("ByHouseId/{houseId}")]
         [EnableQuery]        
@@ -81,12 +73,12 @@ namespace RoomAPI.Controllers
         }
         // GET: api/Rooms/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RoomResponse>> GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             try
             {
                 var room = await _roomService.GetById(id);
-                return room;
+                return Ok(room);
             }
             catch (KeyNotFoundException e)
             {

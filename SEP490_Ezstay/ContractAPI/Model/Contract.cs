@@ -13,12 +13,11 @@ namespace ContractAPI.Model;
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; } = Guid.NewGuid();
         
-        [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid OwnerId { get; set; }
+        // [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        // public Guid OwnerId { get; set; }
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid RoomId {get; set;}
-        public IdentityProfile SignerProfile {get; set;}
-        
+        // public IdentityProfile SignerProfile {get; set;}
         public List<IdentityProfile> ProfilesInContract { get; set; }
         public DateTime CheckinDate { get; set;}
         public DateTime CheckoutDate { get; set;}
@@ -42,4 +41,7 @@ namespace ContractAPI.Model;
         public DateTime OwnerSignedAt { get; set; }
         public string TenantSignature { get; set; }     
         public DateTime TenantSignedAt { get; set; }
+        
+        public List<ServiceInfor> ServiceInfors { get; set; }
+        
     }

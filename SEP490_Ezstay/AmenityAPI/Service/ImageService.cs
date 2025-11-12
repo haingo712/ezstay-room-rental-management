@@ -1,16 +1,15 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
-using AmenityAPI.APIs.Interfaces;
+using AmenityAPI.Service.Interface;
 using Shared.DTOs;
-using Shared.DTOs.Amenities.Responses;
 
-namespace AmenityAPI.APIs;
+namespace AmenityAPI.Service;
 
-public class ImageAPI:IImageAPI
+public class ImageService:IImageService
 {
         private readonly HttpClient _httpClient;
 
-        public ImageAPI(HttpClient httpClient)
+        public ImageService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

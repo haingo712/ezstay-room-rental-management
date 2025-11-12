@@ -55,22 +55,14 @@ namespace ContractAPI.Controllers
                 return NotFound(new { message = e.Message });
             }
         }
-       // [Authorize(Roles = "Owner")]
-       // này m test coi thôi chứ k cần làm nha này là getAll coi thôi 
-       [HttpGet]
-       [EnableQuery]
-       public IQueryable<ContractResponse> GetContracts()
-       {
-           return _contractService.GetAllQueryable();
-       }
-       
+   
        [Authorize(Roles = "User")]
        [HttpGet("MyContract")]
        [EnableQuery]
        public IQueryable<ContractResponse> GetContractsByTenantId()
        {
            var tenantId = _tokenService.GetUserIdFromClaims(User);
-           return _contractService.GetAllByTenantId(tenantId);
+           return _contractService.GetAllByOwnerId(tenantId);
        }
        
        [Authorize(Roles = "Owner")]
@@ -81,15 +73,7 @@ namespace ContractAPI.Controllers
          var ownerId=  _tokenService.GetUserIdFromClaims(User);
            return _contractService.GetAllByOwnerId(ownerId);
        }
-       [Authorize(Roles = "Owner")]
-       [HttpGet("ContractStatus")]
-       [EnableQuery]
-       public IQueryable<ContractResponse> GetContractsStatusByOwnerId(ContractStatus contractStatus)
-       {
-           var ownerId=  _tokenService.GetUserIdFromClaims(User);
-           return _contractService.GetAllByOwnerId(ownerId, contractStatus);
-       }
-
+       
         // GET: api/Tenant/5
         [Authorize(Roles = "Owner, User")]
         [HttpGet("{id}")]

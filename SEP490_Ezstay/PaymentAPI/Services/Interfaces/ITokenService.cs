@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace AmenityAPI.Service.Interface
+namespace PaymentAPI.Services.Interfaces
 {
     public interface ITokenService
     {

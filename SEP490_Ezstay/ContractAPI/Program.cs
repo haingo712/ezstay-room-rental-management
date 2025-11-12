@@ -34,7 +34,7 @@ builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RoomApi"]);
 });
-builder.Services.AddHttpClient<IAccountAPI, AccountAPI>(client =>
+builder.Services.AddHttpClient<IAccountService, AccountService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:AccountApi"]);
 });

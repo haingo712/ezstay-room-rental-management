@@ -28,13 +28,13 @@ namespace AmenityAPI.Controllers
         
         [HttpGet]
         [EnableQuery]
-        public IQueryable<AmenityResponse> GetAmenities()
+        public IQueryable<AmenityResponse> GetAllAmenities()
         {
             return  _amenityService.GetAll();
         }
         
         [HttpGet("{id}")]
-        public async Task<ActionResult<Amenity>> GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace AmenityAPI.Controllers
         
         [HttpPost]
         [Authorize(Roles = "Staff")]
-        public async Task<ActionResult<AmenityResponse>> Post([FromForm] CreateAmenity request)
+        public async Task<IActionResult> Post([FromForm] CreateAmenity request)
         {
             try
             {

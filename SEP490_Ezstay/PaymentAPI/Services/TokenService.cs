@@ -1,12 +1,10 @@
-﻿ 
-    using System.IdentityModel.Tokens.Jwt;
-    using System.Security.Claims;
-    using AmenityAPI.Service.Interface;
+﻿using System.Security.Claims;
+using PaymentAPI.Services.Interfaces;
 
-    namespace AmenityAPI.Service
+namespace PaymentAPI.Services
+{
+    public class TokenService : ITokenService
     {
-        public class TokenService : ITokenService
-        {
         public Guid GetUserIdFromClaims(ClaimsPrincipal user)
         {
             var claim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -25,6 +23,5 @@
         {
             return user.FindFirst("phone")?.Value;
         }
-
     }
 }

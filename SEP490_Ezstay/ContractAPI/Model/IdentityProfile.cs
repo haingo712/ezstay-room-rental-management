@@ -9,7 +9,7 @@ namespace ContractAPI.Model
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; } = Guid.NewGuid();
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid TenantId { get; set; } 
+        public Guid UserId { get; set; } 
         public string FullName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string PhoneNumber { get; set; }

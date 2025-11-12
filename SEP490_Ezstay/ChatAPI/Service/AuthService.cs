@@ -4,16 +4,16 @@ using Shared.DTOs.Auths.Responses;
 
 namespace ChatAPI.Service;
 
-public class AccountClientService:IAccountClientService
+public class AuthService:IAuthService
 {
     private readonly HttpClient _httpClient;
 
-    public AccountClientService(HttpClient httpClient)
+    public AuthService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }
     
-    public async Task<AccountResponse?> GetByIdAsync(Guid accountId)
+    public async Task<AccountResponse?> GetById(Guid accountId)
     {
         var response = await _httpClient.GetAsync($"api/Accounts/{accountId}");
 

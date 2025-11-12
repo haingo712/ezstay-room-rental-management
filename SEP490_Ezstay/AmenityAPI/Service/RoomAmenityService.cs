@@ -1,12 +1,12 @@
-using AmenityAPI.APIs.Interfaces;
+using AmenityAPI.Service.Interface;
 
-namespace AmenityAPI.APIs;
+namespace AmenityAPI.Service;
 
-public class RoomAmenityAPI : IRoomAmenityAPI
+public class RoomAmenityService : IRoomAmenityService
 {
     private readonly HttpClient _client;
 
-    public RoomAmenityAPI(HttpClient client)
+    public RoomAmenityService(HttpClient client)
     {
         _client = client;
     }

@@ -26,7 +26,7 @@ builder.Services.AddHttpClient<IRentalPostClientService, RentalPostClientService
 {
      client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RentalPostApi"]);
 });
-builder.Services.AddHttpClient<IAccountClientService, AccountClientService>(client =>
+builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:AuthApi"]);
 });

@@ -9,8 +9,6 @@ public class Amenity
     [BsonId] 
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid Id { get; set; } = Guid.NewGuid();
-    // [BsonGuidRepresentation(GuidRepresentation.Standard)]
-    // public Guid StaffId { get; set; }
     public string AmenityName { get; set; }
     public string ImageUrl { get; set; }
     public DateTime CreatedAt { get; set; }
