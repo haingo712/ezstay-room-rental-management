@@ -51,7 +51,7 @@ namespace MailApi.Controllers
             if (!result.success) 
                 return BadRequest(new { success = false, message = result.message });
             
-            return Ok(new { success = true, message = result.message });
+            return Ok(new { success = true,   result.message, result.otpId });
         }
 
         /// <summary>
