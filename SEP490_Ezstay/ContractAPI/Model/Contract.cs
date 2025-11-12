@@ -13,11 +13,9 @@ namespace ContractAPI.Model;
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; } = Guid.NewGuid();
         
-        // [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        // public Guid OwnerId { get; set; }
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid RoomId {get; set;}
-        // public IdentityProfile SignerProfile {get; set;}
+              
         public List<IdentityProfile> ProfilesInContract { get; set; }
         public DateTime CheckinDate { get; set;}
         public DateTime CheckoutDate { get; set;}
@@ -31,8 +29,6 @@ namespace ContractAPI.Model;
         public decimal RoomPrice { get; set;}
         
         public decimal DepositAmount { get; set; }  //  Tiền cọc
-        public DateTime CreatedAt {get;set;}
-        public DateTime UpdatedAt {get;set;}
         public List<string> ContractImage { get; set; }
         public DateTime ContractUploadedAt { get; set; }
         
@@ -43,5 +39,8 @@ namespace ContractAPI.Model;
         public DateTime TenantSignedAt { get; set; }
         
         public List<ServiceInfor> ServiceInfors { get; set; }
+        
+        public DateTime CreatedAt {get;set;}
+        public DateTime UpdatedAt {get;set;}
         
     }

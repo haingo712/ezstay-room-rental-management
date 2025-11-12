@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Shared.DTOs;
 using Shared.DTOs.Contracts.Responses;
 using Shared.Enums;
+using IdentityProfileResponse = Shared.DTOs.Contracts.Responses.IdentityProfileResponse;
 
 namespace ContractAPI.Services;
 
@@ -82,21 +83,42 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
             }).ToList();
    
         var ownerProfile = await _accountService.GetProfileByUserId(ownerId);
-        if (ownerProfile == null) return ApiResponse<ContractResponse>.Fail("Không tìm thấy thông tin chủ trọ.");
+        if (ownerProfile == null) 
+            return ApiResponse<ContractResponse>.Fail("Không tìm thấy thông tin chủ trọ.");
         
-        var ownerIdentity = _mapper.Map<IdentityProfile>(ownerProfile);
+      //  var ownerIdentity = _mapper.Map<IdentityProfile>(ownerProfile);
+    var ownerIdentity = new IdentityProfile
+    {
+        UserId = ownerProfile.UserId,
+        Avatar = ownerProfile.Avatar,
+        FullName = ownerProfile.FullName,
+        Phone = ownerProfile.Phone,
+        Email = ownerProfile.Email,
+        Gender = ownerProfile.Gender.ToString(),
+        Address = ownerProfile.DetailAddress,
+        IsSigner = true,
+        DateOfBirth = ownerProfile.DateOfBirth.Value,
+        ProvinceId = ownerProfile.ProvinceId,
+       ProvinceName = ownerProfile.ProvinceName,
+       WardId = ownerProfile.WardId,
+       WardName = ownerProfile.WardName, 
+       FrontImageUrl = ownerProfile.FrontImageUrl,
+       BackImageUrl =  ownerProfile.BackImageUrl,
+       TemporaryResidence = ownerProfile.TemporaryResidence,
+       CitizenIdNumber = ownerProfile.CitizenIdNumber,
+       CitizenIdIssuedDate= ownerProfile.CitizenIdIssuedDate.Value,
+       CitizenIdIssuedPlace = ownerProfile.CitizenIdIssuedPlace
+    };
         ownerIdentity.IsSigner = true; 
         members.Add(ownerIdentity);
-        
         contract.ProfilesInContract = members;
-       // contract.SignerProfile = members.First(p => p.IsSigner); 
         var saveContract =await _contractRepository.AddAsync(contract);
         var createUtility = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Water, request.WaterReading);
         var createUtiliyw = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Electric, request.ElectricityReading);
         var result = _mapper.Map<ContractResponse>(saveContract);
         result.WaterReading = createUtility.Data;
         result.ElectricityReading = createUtiliyw.Data;
-      //  await _roomClient.UpdateRoomStatusAsync(request.RoomId, RoomStatus.Occupied);
+     
         return ApiResponse<ContractResponse>.Success(result, "Thuê thành công.");
     }
     public async Task<ApiResponse<ContractResponse>> CancelContract(Guid contractId, string reason)

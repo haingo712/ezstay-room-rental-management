@@ -20,6 +20,7 @@ namespace ContractAPI.DTO.Response
         public string ProvinceName { get; set; }   // Tên tỉnh
         public string WardId { get; set; }         // Mã xã/phường
         public string WardName { get; set; }       // Tên xã/phường
+
         public string? FrontImageUrl { get; set; }
         public string? BackImageUrl { get; set; }
         public string? TemporaryResidence { get; set; }

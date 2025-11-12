@@ -15,6 +15,7 @@ using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Shared.DTOs.Contracts.Responses;
+using IdentityProfileResponse = Shared.DTOs.Contracts.Responses.IdentityProfileResponse;
 
 var builder = WebApplication.CreateBuilder(args);
 
