@@ -1,15 +1,15 @@
-using RoomAPI.Service.Interface;
+using ChatAPI.Service.Interface;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Shared.DTOs;
 using Shared.DTOs.Images.Responses;
 
-namespace RoomAPI.Service;
+namespace ChatAPI.Service;
 
- public class ImageClientService : IImageClientService
+ public class ImageService : IImageService
     {       
         private readonly HttpClient _httpClient;
-        public ImageClientService(HttpClient httpClient)
+        public ImageService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

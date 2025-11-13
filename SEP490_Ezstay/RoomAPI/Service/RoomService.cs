@@ -16,7 +16,7 @@ public class RoomService(
     IRoomRepository _roomRepository,
     IRoomAmenityClientService _roomAmenityClient,
     IAmenityClientService _amenityClient,
-    IImageClientService _imageClient,
+    IImageService image,
     IRentalPostClientService _rentalPostClient,
     IContractClientService _contractClient,
     IMapper _mapper
@@ -66,7 +66,7 @@ public class RoomService(
         if (exist)
             return ApiResponse<RoomResponse>.Fail("Tên phòng đã tồn tại trong nhà trọ.");
         var room = _mapper.Map<Room>(request);
-        room.ImageUrl= _imageClient.UploadMultipleImage(request.ImageUrl).Result;
+        room.ImageUrl= image.UploadMultipleImage(request.ImageUrl).Result;
         room.HouseId = houseId;
         room.RoomStatus= RoomStatus.Available;
         room.CreatedAt = DateTime.UtcNow;
@@ -87,7 +87,7 @@ public class RoomService(
             return ApiResponse<bool>.Fail("K dc set trang thai nay");  
          _mapper.Map(request, checkRoom);
          checkRoom.UpdatedAt = DateTime.UtcNow;
-         checkRoom.ImageUrl= _imageClient.UploadMultipleImage(request.ImageUrl).Result;
+         checkRoom.ImageUrl= image.UploadMultipleImage(request.ImageUrl).Result;
          await _roomRepository.Update(checkRoom);
          return  ApiResponse<bool>.Success(true, "Update Room Successfully");
     }

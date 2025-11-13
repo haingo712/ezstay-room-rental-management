@@ -26,9 +26,23 @@ public class ChatMessageRepository:IChatMessageRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task Add(ChatMessage message)
+    public async Task<ChatMessage> GetById(Guid id)
+    => await _collection.Find(m => m.Id == id).FirstOrDefaultAsync();
+    
+
+    public async Task Add(ChatMessage chatMessage)
     {
-        await _collection.InsertOneAsync(message);
+        await _collection.InsertOneAsync(chatMessage);
+    }
+    public async  Task Update(ChatMessage chatMessage)
+    {
+        await _collection.ReplaceOneAsync(r => r.Id == chatMessage.Id, chatMessage);
+    }
+
+   
+    public async Task Delete(ChatMessage chatMessage)
+    { 
+        await _collection.DeleteOneAsync(r => r.Id == chatMessage.Id);
     }
 
     public async Task MarkAsRead(Guid roomId, Guid receiverId)
