@@ -60,7 +60,7 @@ namespace BoardingHouseAPI.Controllers
         // PUT: api/BoardingHouses/{id}
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> PutBoardingHouse(Guid id, [FromBody] UpdateBoardingHouseDTO dto)
+        public async Task<IActionResult> PutBoardingHouse(Guid id, [FromForm] UpdateBoardingHouseDTO dto)
         {
             try
             {
@@ -88,7 +88,7 @@ namespace BoardingHouseAPI.Controllers
         // POST: api/BoardingHouses
         [HttpPost]
         [Authorize(Roles = "Owner")]
-        public async Task<ActionResult<BoardingHouseDTO>> PostBoardingHouse([FromBody] CreateBoardingHouseDTO dto)
+        public async Task<ActionResult<BoardingHouseDTO>> PostBoardingHouse([FromForm] CreateBoardingHouseDTO dto)
         {
             var ownerId = _tokenService.GetUserIdFromClaims(User);            
             try

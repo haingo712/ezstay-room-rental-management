@@ -7,6 +7,7 @@ using BoardingHouseAPI.Enum;
 using BoardingHouseAPI.Models;
 using BoardingHouseAPI.Repository.Interface;
 using BoardingHouseAPI.Service.Interface;
+using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 
 namespace BoardingHouseAPI.Service
 {
@@ -88,7 +89,9 @@ namespace BoardingHouseAPI.Service
             //if (exist)
             //    return ApiResponse<BoardingHouseDTO>.Fail("Nhà trọ với tên và địa chỉ này đã tồn tại.");
             var house = _mapper.Map<BoardingHouse>(createDto);
-            house.OwnerId = ownerId;            
+            house.OwnerId = ownerId;
+            house.ImageUrls = await _imageClient.UploadMultipleImagesAsync(createDto.Files!);
+
             house.Location = houseLocation;
 
             await _boardingHouseRepo.AddAsync(house);
@@ -121,7 +124,8 @@ namespace BoardingHouseAPI.Service
                 //var existAddress = await _boardingHouseRepo.LocationExistsWithHouseName(updateDto.HouseName, exist.Location.FullAddress);
                 //if (existAddress && (exist.HouseName != updateDto.HouseName || exist.Location.FullAddress != oldAddress))
                 //    return ApiResponse<bool>.Fail("Nhà trọ với tên và địa chỉ này đã tồn tại.");
-            }            
+            }
+            exist.ImageUrls = await _imageClient.UploadMultipleImagesAsync(updateDto.Files!);
             await _boardingHouseRepo.UpdateAsync(exist);
             return ApiResponse<bool>.Success(true, "Cập nhật trọ thành công");
         }
