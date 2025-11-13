@@ -6,7 +6,7 @@ namespace ContractAPI.DTO.Requests;
 public class CreateIdentityProfile
 {
     [Required]
-    public Guid UserId { get; set; } 
+    public Guid UserId { get; set; }
     [Required]
     public string Gender { get; set; }
     [Required]
@@ -19,11 +19,15 @@ public class CreateIdentityProfile
     [Phone]
     public string Phone { get; set; }
     [EmailAddress]
-    public string Email { get; set; }
+    public string Email { get; set; } 
+    // [Required]
+    // public string ProvinceId { get; set; }     
     [Required]
-    public string ProvinceId { get; set; }     // Mã tỉnh
+    public string ProvinceName { get; set; } 
+    // [Required]
+    // public string WardId { get; set; }        
     [Required]
-    public string WardId { get; set; }         // Mã xã/phường
+    public string WardName { get; set; }      
    [Required]
     public string Address { get; set; }
     [Required]

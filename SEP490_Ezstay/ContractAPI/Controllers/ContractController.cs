@@ -169,7 +169,7 @@ namespace ContractAPI.Controllers
         // hàm này dùng để 2 người kí 
         [Authorize(Roles = "Owner, User")]
         [HttpPut("{id}/sign-contract")]
-        public async Task<IActionResult> SignContract(Guid id, [FromQuery] string ownerSignature )
+        public async Task<IActionResult> SignContract(Guid id, [FromBody] string ownerSignature )
         {
             try
             {

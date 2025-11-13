@@ -98,9 +98,9 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
         Address = ownerProfile.DetailAddress,
         IsSigner = true,
         DateOfBirth = ownerProfile.DateOfBirth.Value,
-        ProvinceId = ownerProfile.ProvinceId,
+        // ProvinceId = ownerProfile.ProvinceId,
        ProvinceName = ownerProfile.ProvinceName,
-       WardId = ownerProfile.WardId,
+       // WardId = ownerProfile.WardId,
        WardName = ownerProfile.WardName, 
        FrontImageUrl = ownerProfile.FrontImageUrl,
        BackImageUrl =  ownerProfile.BackImageUrl,
@@ -118,7 +118,6 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
         var result = _mapper.Map<ContractResponse>(saveContract);
         result.WaterReading = createUtility.Data;
         result.ElectricityReading = createUtiliyw.Data;
-     
         return ApiResponse<ContractResponse>.Success(result, "Thuê thành công.");
     }
     public async Task<ApiResponse<ContractResponse>> CancelContract(Guid contractId, string reason)
@@ -243,12 +242,12 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
         
         if (role.Equals("Owner"))
         {
-            contract.OwnerSignature =ownerSignature;
+            contract.OwnerSignature =ownerSignature.Trim('"');
             contract.OwnerSignedAt = DateTime.UtcNow;
         } 
         if (role.Equals("User"))
         {
-            contract.TenantSignature = ownerSignature;
+            contract.TenantSignature = ownerSignature.Trim('"');
             contract.TenantSignedAt = DateTime.UtcNow;
         }
         
