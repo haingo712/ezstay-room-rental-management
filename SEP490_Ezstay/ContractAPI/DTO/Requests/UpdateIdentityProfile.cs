@@ -9,7 +9,7 @@ public class UpdateIdentityProfile
     [Required]
     public string Gender { get; set; }
     [Required]
-    public string Avatar { get; set; }
+    public string Avatar { get; set; } 
     [Required]
     public string FullName { get; set; }
     [Required]
@@ -17,12 +17,15 @@ public class UpdateIdentityProfile
     [Required]
     [Phone]
     public string Phone { get; set; }
+    [Required]
     [EmailAddress]
     public string Email { get; set; }
     [Required]
-    public string ProvinceId { get; set; }     // Mã tỉnh
+    // public string ProvinceId { get; set; }     
+    public string ProvinceName { get; set; }  
     [Required]
-    public string WardId { get; set; }         // Mã xã/phường
+    // public string WardId { get; set; }       
+    public string WardName { get; set; }      
     [Required]
     public string Address { get; set; }
     [Required]
