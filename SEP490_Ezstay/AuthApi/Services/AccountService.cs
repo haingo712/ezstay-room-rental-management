@@ -13,12 +13,12 @@ namespace AuthApi.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly IAccountRepository _repo;
+        private readonly IAuthRepository _repo;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
      
 
-        public AccountService(IAccountRepository repo, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public AccountService(IAuthRepository repo, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _repo = repo;
             _mapper = mapper;

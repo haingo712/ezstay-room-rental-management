@@ -1,13 +1,13 @@
 ﻿using AuthApi.DTO.Request;
 using AuthApi.DTO.Response;
-using Auths.Responses;
+
 
 namespace AuthApi.Services.Interfaces
 {
     public interface IAuthService
     {
         Task<RegisterResponseDto> RegisterAsync(RegisterRequestDto dto);
-        Task<LoginResponseDto> LoginAsync(LoginRequestDto dto);
+        Task<Shared.DTOs.Auths.Responses.LoginResponseDto> LoginAsync(LoginRequestDto dto);
         Task<RegisterResponseDto> ResendOtpAsync(string email);
         Task<RegisterResponseDto> CreateStaffAsync(CreateStaffRequestDto dto);
         Task<RegisterResponseDto> ResetPasswordAsync(ResetPasswordRequestDto dto);

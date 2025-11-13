@@ -7,11 +7,11 @@ using Shared.Enums;
 
 namespace AuthApi.Repositories
 {
-    public class AccountRepository : IAccountRepository
+    public class AuthRepository : IAuthRepository
     {
         private readonly IMongoCollection<Account> _accounts;
 
-        public AccountRepository(MongoDbService dbService)
+        public AuthRepository(MongoDbService dbService)
         {
             _accounts = dbService.Account;
         }

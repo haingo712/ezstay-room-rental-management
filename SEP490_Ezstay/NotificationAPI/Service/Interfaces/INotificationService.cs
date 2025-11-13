@@ -36,6 +36,7 @@ namespace NotificationAPI.Service.Interfaces
         List<object> GetAllNotificationTypes();
         List<object> GetAllRoles();
         Task CreateNotifyAsync(NotifyByRoleRequest dto, Guid userId);
+        Task<List<NotificationResponseDto>> GetAllForRoleOrUserAsync(Guid userId, RoleEnum role);
 
 
 

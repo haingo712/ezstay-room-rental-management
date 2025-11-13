@@ -170,9 +170,6 @@ namespace UserManagerAPI.Controllers
             return Ok(resultDto); // Trả về DTO đầy đủ
         }
 
-
-
-
         [HttpPut("request-owner/approve/{requestId}")]
         [Authorize(Roles = "Staff")]
         public async Task<IActionResult> ApproveOwnerRequest(Guid requestId)

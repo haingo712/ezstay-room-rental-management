@@ -41,7 +41,7 @@ builder.Services.AddHttpClient("MailApi", client =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
@@ -100,7 +100,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var accountRepo = services.GetRequiredService<IAccountRepository>();
+    var accountRepo = services.GetRequiredService<IAuthRepository>();
     var logger = services.GetRequiredService<ILogger<Program>>();
     try
     {

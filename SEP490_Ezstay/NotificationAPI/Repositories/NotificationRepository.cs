@@ -170,7 +170,19 @@ namespace NotificationAPI.Repositories
             return await _notifications.UpdateManyAsync(filter, update);
         }
 
+        public async Task<List<Notify>> GetAllForRoleOrUserAsync(Guid userId, RoleEnum role)
+        {
+            var filter = Builders<Notify>.Filter.Or(
+                Builders<Notify>.Filter.AnyEq(n => n.TargetRoles, role),
+                Builders<Notify>.Filter.Eq(n => n.UserId, userId)
+            );
 
+            var result = await _notifications.Find(filter)
+                .SortByDescending(x => x.CreatedAt)
+                .ToListAsync();
+
+            return result;
+        }
 
 
 

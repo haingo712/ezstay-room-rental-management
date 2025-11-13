@@ -21,7 +21,7 @@ namespace AccountAPI.Repositories
 
         public async Task<User?> GetByUserIdAsync(Guid userId)
         {
-            return await _collection.Find(u => u.UserId == userId).FirstOrDefaultAsync();
+            return await _collection.Find(u => u.Id == userId).FirstOrDefaultAsync();
         }
 
         public async Task UpdateAsync(User user)

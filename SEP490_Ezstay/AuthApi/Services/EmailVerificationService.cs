@@ -43,8 +43,6 @@ namespace AuthApi.Services
             });
         }
 
-
-
         public async Task SendOtpAsync(string userPayload)
         {
             var dto = JsonSerializer.Deserialize<RegisterRequestDto>(userPayload);

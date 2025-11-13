@@ -8,13 +8,11 @@ namespace AccountAPI.Data
     {
         [BsonId]
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
         public GenderEnum Gender { get; set; } 
         public string Avatar { get; set; }
         public string Bio {get; set;}
-        public DateTime DateOfBirth { get; set;}
-        [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid UserId { get; set; }
+        public DateTime DateOfBirth { get; set;} 
         public string FullName { get; set; }
         public string Phone { get; set; }
         public string? DetailAddress { get; set; }

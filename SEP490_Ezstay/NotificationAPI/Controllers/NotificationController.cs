@@ -188,5 +188,24 @@ namespace NotificationAPI.Controllers
         }
 
 
+        [HttpGet("by-role")]
+        [Authorize(Roles = "Admin,Staff,Owner,User")]
+        public async Task<IActionResult> GetByRoleOrUser()
+        {
+            var userId = GetUserIdFromToken();
+
+            // 🔍 Lấy role từ token
+            var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+            if (string.IsNullOrEmpty(roleClaim))
+                return Unauthorized("Không tìm thấy role trong token.");
+
+            // Ép kiểu role string → enum RoleEnum
+            if (!Enum.TryParse(roleClaim, true, out RoleEnum role))
+                return BadRequest($"Role không hợp lệ: {roleClaim}");
+
+            var result = await _service.GetAllForRoleOrUserAsync(userId, role);
+            return Ok(result);
+        }
+
     }
 }
