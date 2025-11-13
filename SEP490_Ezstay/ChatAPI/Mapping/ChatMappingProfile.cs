@@ -9,10 +9,7 @@ public class ChatMappingProfile:Profile
 {
     public ChatMappingProfile()
     {
-        CreateMap<CreateChatRoom, ChatRoom>();
-        // CreateMap<UpdateAmenity, ChatRoom>();
         CreateMap<CreateChatMessage, ChatMessage>();
-
         CreateMap<ChatRoom, ChatRoomResponse>();
         CreateMap<ChatMessage, ChatMessageResponse>();
 

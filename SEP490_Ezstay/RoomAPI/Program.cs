@@ -27,7 +27,7 @@ builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IRoomAmenityAPI, RoomAmenityAPI>();
 
-builder.Services.AddHttpClient<IImageClientService, ImageClientService>(client =>
+builder.Services.AddHttpClient<IImageService, ImageService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
 });

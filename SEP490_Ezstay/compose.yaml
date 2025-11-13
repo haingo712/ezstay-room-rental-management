@@ -30,3 +30,15 @@
 #      - authapi
       - contractapi
 #      - amenityapi
+
+  contractapi-1:
+    image: contractapi-1
+    build:
+      context: .
+      dockerfile: ContractAPI/Dockerfile
+
+  contractapi-2:
+    image: contractapi-2
+    build:
+      context: .
+      dockerfile: ContractAPI/Dockerfile

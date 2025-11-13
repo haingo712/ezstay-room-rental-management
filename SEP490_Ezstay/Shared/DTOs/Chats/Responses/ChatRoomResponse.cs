@@ -7,15 +7,8 @@ namespace Shared.DTOs.Chats.Responses;
 public class ChatRoomResponse
 {
     public Guid Id { get; set; } 
-    
-    public Guid PostId { get; set; } 
-    
     public Guid OwnerId { get; set; } 
-    
-    public Guid TenantId { get; set; } 
-    public DateTime CreatedAt { get; set; } 
-    public DateTime? LastMessageAt { get; set; } 
+    public Guid UserId { get; set; } 
     public AccountResponse User { get; set; }
     public AccountResponse Owner { get; set; }
-    public RentalPostResponse? RentalPost { get; set; }
 }

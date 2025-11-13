@@ -23,17 +23,6 @@ public class ChatController : ControllerBase
     public async Task<IActionResult> GetMessagesByChatRoomId(Guid chatRoomId)
         => Ok(await _chatService.GetByChatRoomId(chatRoomId));
     
-    
-    // [HttpGet("chat-room/{chatRoomId}")]
-    // public async Task<IActionResult> GetRoomWithPost(Guid chatRoomId)
-    // {
-    //     var response = await _chatService.GetRoomWithPost(chatRoomId);
-    //     if (!response.IsSuccess)
-    //         return NotFound(response); 
-    //     return Ok(response); 
-    // }
-  
-
     [Authorize(Roles = "Owner, User")]
     [HttpGet]
     public async Task<IActionResult> GetAllChatRoom()
@@ -41,23 +30,26 @@ public class ChatController : ControllerBase
         var accountId= _tokenService.GetUserIdFromClaims(User);
       return  Ok(await _chatService.GetAllChatRoom(accountId));
     }
-
-   
-    // lam 
-    [HttpPost]
-    [Authorize(Roles = "User, Owner")]
-    public async Task<IActionResult> CreateChatRoom([FromQuery] Guid postId)
+    
+    [HttpPost("{ownerId}")]
+    [Authorize(Roles = "User")]
+    public async Task<IActionResult> CreateChatRoom(Guid ownerId)
     {
         var userId= _tokenService.GetUserIdFromClaims(User);
-        return Ok(await _chatService.Add(postId, userId));
+        return Ok(await _chatService.Add(ownerId, userId));
     }
     
-    //lam r
-    [HttpPost("message")]
+    [HttpPost("message/{chatRoomId}")]
     [Authorize(Roles = "User, Owner")]
-    public async Task<IActionResult> SendMessage([FromQuery] Guid chatRoomId, [FromBody] CreateChatMessage request)
+    public async Task<IActionResult> SendMessage(Guid chatRoomId, [FromForm] CreateChatMessage request)
     {
         var senderId= _tokenService.GetUserIdFromClaims(User);
        return  Ok(await _chatService.SendMessage(chatRoomId, senderId, request));
+    }
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "User, Owner")]
+    public async Task<IActionResult> RevokeMessage(Guid id)
+    {
+        return Ok(await _chatService.Delete(id));
     }
 }

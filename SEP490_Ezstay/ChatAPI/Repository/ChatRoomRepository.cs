@@ -14,13 +14,6 @@ public class ChatRoomRepository:IChatRoomRepository
     {
         _collection = database.GetCollection<ChatRoom>("Chats");
     }
-    
-    // public async Task<ChatRoom?> GetByUsersAsync(Guid ownerId, Guid tenantId)
-    //     => await _collection.Find(r => r.OwnerId == ownerId && r.TenantId == tenantId)
-    //         .FirstOrDefaultAsync();
-
-    public IQueryable<ChatRoom> GetAllAsQueryable()=> _collection.AsQueryable();
-    
     public async Task<ChatRoom> GetById(Guid id)
     {
       return await _collection.Find(a => a.Id == id).FirstOrDefaultAsync();
@@ -31,35 +24,25 @@ public class ChatRoomRepository:IChatRoomRepository
         await _collection.InsertOneAsync(chatRoom);
         return chatRoom;
     }
-
-   
-
+    
     public async Task<IEnumerable<ChatRoom>> GetAllChatRoom(Guid accountId)
     {
-        return await _collection.Find(r => r.OwnerId == accountId ||  r.TenantId == accountId )
+        return await _collection.Find(r => r.OwnerId == accountId ||  r.UserId == accountId )
             .ToListAsync();
     }
-  
-    public async Task<ChatRoom?> GetByPostAndUsers(Guid postId, Guid tenantId)
+    public async Task<ChatRoom?> GetByOwnerAndUsers(Guid ownerId, Guid userId)
     {
         return await _collection.Find(r =>
-            r.PostId == postId &&
-            r.TenantId == tenantId).FirstOrDefaultAsync();
+            r.OwnerId == ownerId &&
+            r.UserId == userId).FirstOrDefaultAsync();
     }
-
-    // public async Task<IEnumerable<ChatRoom>> GetByOwner(Guid ownerId)
+    
+    // public async Task<IEnumerable<ChatRoom>> GetByTenant(Guid userId)
     // {
-    //     return await _collection.Find(r => r.OwnerId == ownerId)
-    //         .SortByDescending(r => r.LastMessageAt)
+    //     return await _collection.Find(r => r.UserId == userId)
+    //         .SortByDescending(r => r.CreatedAt)
     //         .ToListAsync();
     // }
-    
-    public async Task<IEnumerable<ChatRoom>> GetByTenant(Guid tenantId)
-    {
-        return await _collection.Find(r => r.TenantId == tenantId)
-            .SortByDescending(r => r.LastMessageAt)
-            .ToListAsync();
-    }
     
     // public async Task UpdateLastMessageAt(Guid roomId, DateTime sentAt)
     // {

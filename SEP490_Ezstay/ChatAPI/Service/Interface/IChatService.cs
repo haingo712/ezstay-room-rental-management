@@ -5,10 +5,11 @@ using Shared.DTOs.Chats.Responses;
 
 namespace ChatAPI.Service.Interface;
 public interface IChatService
-{  Task<ApiResponse<ChatRoomResponse>> Add(Guid postId, Guid userId);
-   Task<ApiResponse<ChatRoomDetailResponse>> GetRoomWithPost(Guid chatRoomId);
+{ 
+   Task<ApiResponse<ChatRoomResponse>> Add(Guid ownerId, Guid userId);
+  // Task<ApiResponse<ChatRoomResponse>> Update(Guid id, );
+   Task<ApiResponse<bool>> Delete(Guid id);
    Task<ApiResponse<List<ChatMessageResponse>>> GetByChatRoomId(Guid chatRoomId);
    Task<ApiResponse<List<ChatRoomResponse>>> GetAllChatRoom(Guid accountId);
    Task<ApiResponse<ChatMessageResponse>> SendMessage(Guid chatRoomId, Guid senderId,CreateChatMessage request);
-
 }
