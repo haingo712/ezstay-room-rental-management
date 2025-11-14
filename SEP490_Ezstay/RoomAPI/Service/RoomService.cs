@@ -16,9 +16,9 @@ public class RoomService(
     IRoomRepository _roomRepository,
     IRoomAmenityClientService _roomAmenityClient,
     IAmenityClientService _amenityClient,
-    IImageService image,
-    IRentalPostClientService _rentalPostClient,
-    IContractClientService _contractClient,
+    IImageService _imageService,
+    IRentalPostService _rentalPostService,
+    IContractService _contractService,
     IMapper _mapper
 ) : IRoomService{
     public IQueryable<RoomResponse> GetAllStatusActiveByHouseId(Guid houseId)
@@ -30,35 +30,14 @@ public class RoomService(
     
     public IQueryable<RoomResponse> GetAllByHouseId(Guid houseId)
     {
-      //  var rooms = _roomRepository. GetAll().Where(x => x.HouseId == houseId);
       var rooms = _roomRepository.GetAllByHouseId(houseId);
         return rooms.ProjectTo<RoomResponse>(_mapper.ConfigurationProvider);
     }
-    public IQueryable<RoomResponse>  GetAll()
-    {
-        var book = _roomRepository.GetAll();
-        return book.ProjectTo<RoomResponse>(_mapper.ConfigurationProvider);
-    }
-
     public async Task<RoomResponse> GetById(Guid id)
     {
         var room = await _roomRepository.GetById(id);
       return   _mapper.Map<RoomResponse>(room);
     }
-    // public async Task<ApiResponse<RoomDto>> Add(  Guid houseId, Guid houseLocationId,  CreateRoomDto request)
-    // { 
-    //     var exist = await _roomRepository.RoomNameExistsInHouse(houseId, request.RoomName, houseLocationId);
-    //     if (exist)
-    //         return ApiResponse<RoomDto>.Fail("Tên phòng đã tồn tại trong nhà trọ.");
-    //     var room = _mapper.Map<Room>(request);
-    //     room.HouseId = houseId;
-    //     room.HouseLocationId = houseLocationId;
-    //     room.RoomStatus= RoomStatus.Available;
-    //     room.CreatedAt = DateTime.UtcNow;
-    //     await _roomRepository.Add(room);
-    //     var result = _mapper.Map<RoomDto>(room);
-    //     return ApiResponse<RoomDto>.Success(result, "Thêm phòng thành công");
-    // }
     
     public async Task<ApiResponse<RoomResponse>> Add(Guid houseId,  CreateRoom request)
     { 
@@ -66,7 +45,7 @@ public class RoomService(
         if (exist)
             return ApiResponse<RoomResponse>.Fail("Tên phòng đã tồn tại trong nhà trọ.");
         var room = _mapper.Map<Room>(request);
-        room.ImageUrl= image.UploadMultipleImage(request.ImageUrl).Result;
+        room.ImageUrl= _imageService.UploadMultipleImage(request.ImageUrl).Result;
         room.HouseId = houseId;
         room.RoomStatus= RoomStatus.Available;
         room.CreatedAt = DateTime.UtcNow;
@@ -77,18 +56,21 @@ public class RoomService(
 
     public async Task<ApiResponse<bool>>  Update(Guid id, UpdateRoom request)
     {
-        var checkRoom =await _roomRepository.GetById(id);
-        if (checkRoom == null)
+        var room =await _roomRepository.GetById(id);
+        if (room == null)
             throw new KeyNotFoundException("Room not found");
-        var existRoomName = await _roomRepository.RoomNameExistsInHouse(checkRoom.HouseId, request.RoomName, id);
-        if(existRoomName)
-            return ApiResponse<bool>.Fail("Room name already exists in house");    
+      
+        var existRoomName = await _roomRepository.RoomNameExistsInHouse(room.HouseId, request.RoomName);
+        if (existRoomName &&  request.RoomName != room.RoomName)
+            return ApiResponse<bool>.Fail("Room name already exists in house");   
+        // if(existRoomName)
+        //     return ApiResponse<bool>.Fail("Room name already exists in house");    
         if (request.RoomStatus == RoomStatus.Occupied)
             return ApiResponse<bool>.Fail("K dc set trang thai nay");  
-         _mapper.Map(request, checkRoom);
-         checkRoom.UpdatedAt = DateTime.UtcNow;
-         checkRoom.ImageUrl= image.UploadMultipleImage(request.ImageUrl).Result;
-         await _roomRepository.Update(checkRoom);
+         _mapper.Map(request, room);
+         room.UpdatedAt = DateTime.UtcNow;
+         room.ImageUrl= _imageService.UploadMultipleImage(request.ImageUrl).Result;
+         await _roomRepository.Update(room);
          return  ApiResponse<bool>.Success(true, "Update Room Successfully");
     }
     public async Task<ApiResponse<bool>> Delete(Guid id)
@@ -96,11 +78,11 @@ public class RoomService(
         var room = await _roomRepository.GetById(id);
         if (room==null) 
             throw new KeyNotFoundException("k tim thay phong tro");
-        var hasPosts = await _rentalPostClient.RentalPostExistsByRoomId(room.Id);
+        var hasPosts = await _rentalPostService.RentalPostExistsByRoomId(room.Id);
         if (hasPosts)
             return  ApiResponse<bool>.Fail("Can not delete room because it has rental posts.");
         
-        var checkContract = await _contractClient.ContractExistsByRoomId(room.Id);
+        var checkContract = await _contractService.ContractExistsByRoomId(room.Id);
         if (checkContract)
             return  ApiResponse<bool>.Fail("Can not delete room because it has contracts.");
         
@@ -130,7 +112,7 @@ public class RoomService(
        // };
     }
     
-    public async Task<ApiResponse<bool>> UpdateStatusAsync(Guid roomId,RoomStatus roomStatus)
+    public async Task<ApiResponse<bool>> UpdateStatus(Guid roomId,RoomStatus roomStatus)
     {
         var room = await _roomRepository.GetById(roomId);
         if (room == null)

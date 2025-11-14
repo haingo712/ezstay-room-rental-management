@@ -28,7 +28,7 @@ namespace AmenityAPI.Controllers
         
         [HttpGet]
         [EnableQuery]
-        public IQueryable<AmenityResponse> GetAllAmenities()
+        public IQueryable<AmenityResponse> GetAll()
         {
             return  _amenityService.GetAll();
         }

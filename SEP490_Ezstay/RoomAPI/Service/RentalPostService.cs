@@ -3,11 +3,11 @@ using RoomAPI.Service.Interface;
 
 namespace RoomAPI.Service;
 
-public class RentalPostClientService: IRentalPostClientService
+public class RentalPostService: IRentalPostService
 {
     private readonly HttpClient _httpClient;
 
-    public RentalPostClientService(HttpClient httpClient)
+    public RentalPostService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }

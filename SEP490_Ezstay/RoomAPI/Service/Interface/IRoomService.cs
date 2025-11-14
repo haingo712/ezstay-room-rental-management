@@ -17,6 +17,6 @@ public interface IRoomService
     Task<ApiResponse<bool>> Delete(Guid id);
     Task<RoomWithAmenitiesResponse> GetRoomWithAmenitiesAsync(Guid roomId);
     
-    Task<ApiResponse<bool>> UpdateStatusAsync(Guid roomId, RoomStatus roomStatus);
+    Task<ApiResponse<bool>> UpdateStatus(Guid roomId, RoomStatus roomStatus);
 
 }
