@@ -32,9 +32,9 @@ public class ChatService(
         return ApiResponse<ChatRoomResponse>.Success(   _mapper.Map<ChatRoomResponse>(result),"ok");
     }
     
-    public async Task<ApiResponse<bool>> Delete(Guid id)
+    public async Task<ApiResponse<bool>> Delete(Guid chatMessageId)
     {
-        var room = await _chatMessageRepository.GetById(id);
+        var room = await _chatMessageRepository.GetById(chatMessageId);
         if (room==null) 
             throw new KeyNotFoundException("Not found");
         await _chatMessageRepository.Delete(room);

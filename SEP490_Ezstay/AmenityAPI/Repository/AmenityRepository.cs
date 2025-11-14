@@ -27,13 +27,6 @@ public class AmenityRepository:IAmenityRepository
     {
         await _collection.InsertOneAsync(amenity);
     }
-    // public async Task<bool> AmenityNameExistsAsync(string amenityNameExists)
-    // {
-    //     var filter = Builders<Amenity>.Filter.Regex(a => a.AmenityName, new MongoDB.Bson.BsonRegularExpression($"^{amenityNameExists}$", "i"));
-    //     var result = await _amenities.Find(filter).AnyAsync();
-    //     return result;
-    // }
-    
     public async Task<bool> AmenityNameExists(string amenityName)
     {
          return await _collection

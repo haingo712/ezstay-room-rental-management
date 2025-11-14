@@ -3,11 +3,11 @@ using Shared.DTOs;
 
 namespace RoomAPI.Service;
 
-public class ContractClientService : IContractClientService
+public class ContractService : IContractService
 {
     private readonly HttpClient _httpClient;
 
-    public ContractClientService(HttpClient httpClient)
+    public ContractService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }

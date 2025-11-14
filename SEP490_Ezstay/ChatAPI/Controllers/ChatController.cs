@@ -46,10 +46,10 @@ public class ChatController : ControllerBase
         var senderId= _tokenService.GetUserIdFromClaims(User);
        return  Ok(await _chatService.SendMessage(chatRoomId, senderId, request));
     }
-    [HttpDelete("{id}")]
+    [HttpDelete("{chatMessageId}")]
     [Authorize(Roles = "User, Owner")]
-    public async Task<IActionResult> RevokeMessage(Guid id)
+    public async Task<IActionResult> RevokeMessage(Guid chatMessageId)
     {
-        return Ok(await _chatService.Delete(id));
+        return Ok(await _chatService.Delete(chatMessageId));
     }
 }
