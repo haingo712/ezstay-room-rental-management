@@ -4,7 +4,7 @@ using Shared.Enums;
 
 namespace AuthApi.Repositories.Interfaces
 {
-    public interface IAccountRepository
+    public interface IAuthRepository
     {
         Task<Account?> GetByEmailAsync(string email);
         Task<Account?> GetByPhoneAsync(string phone);

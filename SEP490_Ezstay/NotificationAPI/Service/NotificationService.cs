@@ -278,6 +278,22 @@ using System.Data;
                 await _repo.MarkAsSentAsync(id);
             }
 
+        public async Task<List<NotificationResponseDto>> GetAllForRoleOrUserAsync(Guid userId, RoleEnum role)
+        {
+            var list = await _repo.GetAllForRoleOrUserAsync(userId, role);
+
+            // ⚙️ Chỉ lấy những notify đã gửi hoặc không hẹn giờ
+            var now = DateTime.UtcNow;
+            var filtered = list.Where(n =>
+                           n.ScheduledTime == null ||
+                                          (n.ScheduledTime <= now && n.IsSent == true)
+                                                     ).ToList();
+
+            return _mapper.Map<List<NotificationResponseDto>>(filtered);    
+        }
+
 
         }
+
+
     }

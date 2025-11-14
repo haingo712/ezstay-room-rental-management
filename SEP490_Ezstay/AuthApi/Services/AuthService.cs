@@ -1,5 +1,4 @@
-﻿using AuthApi.DTO.Request;
-using AuthApi.DTO.Response;
+﻿
 using AuthApi.Models;
 using AuthApi.Repositories.Interfaces;
 using AuthApi.Services.Interfaces;
@@ -8,24 +7,25 @@ using AutoMapper;
 using System.Net.Http.Json;
 using BCrypt.Net;
 using System.Security.Claims;
-using Auths.Responses;
+
+using AuthApi.DTO.Response;
+using AuthApi.DTO.Request;
+using Shared.DTOs.Auths.Responses;
 
 
 namespace AuthApi.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IAccountRepository _repo;
+        private readonly IAuthRepository _repo;
         private readonly IMapper _mapper;
         private readonly HttpClient _httpClient;
         private readonly IEmailVerificationService _emailVerificationService;
         private readonly GenerateJwtToken _tokenGenerator;
-
-
         private readonly IPhoneVerificationService _phoneVerificationService;
 
         public AuthService(
-            IAccountRepository repo,
+            IAuthRepository repo,
             IMapper mapper,
             IHttpClientFactory factory,
             IEmailVerificationService emailVerificationService,
@@ -75,18 +75,18 @@ namespace AuthApi.Services
             };
         }
 
-        public async Task<LoginResponseDto> LoginAsync(LoginRequestDto dto)
+        public async Task<Shared.DTOs.Auths.Responses.LoginResponseDto> LoginAsync(LoginRequestDto dto)
         {
             var account = await _repo.GetByEmailAsync(dto.Email);
 
             if (account == null)
-                return new LoginResponseDto { Success = false, Message = "Account not found." };
+                return new Shared.DTOs.Auths.Responses.LoginResponseDto { Success = false, Message = "Account not found." };
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, account.Password))
-                return new LoginResponseDto { Success = false, Message = "Incorrect password." };
+                return new Shared.DTOs.Auths.Responses.LoginResponseDto { Success = false, Message = "Incorrect password." };
             if(account.IsBanned == true)
-                return new LoginResponseDto { Success = false, Message = "Account has been banned." };  
+                return new Shared.DTOs.Auths.Responses.LoginResponseDto { Success = false, Message = "Account has been banned." };  
             if (!account.IsVerified)
-                return new LoginResponseDto { Success = false, Message = "Account has not been verified." };
+                return new Shared.DTOs.Auths.Responses.LoginResponseDto { Success = false, Message = "Account has not been verified." };
 
 
             // ✅ Tạo token
@@ -96,7 +96,7 @@ namespace AuthApi.Services
                 userId: account.Id.ToString()
             );
 
-            return new LoginResponseDto
+            return new Shared.DTOs.Auths.Responses.LoginResponseDto
             {
                 Success = true,
                 Token = token,
@@ -225,5 +225,7 @@ namespace AuthApi.Services
 
             return new RegisterResponseDto { Success = true, Message = "Phone verified successfully." };
         }
+
+       
     }
 }

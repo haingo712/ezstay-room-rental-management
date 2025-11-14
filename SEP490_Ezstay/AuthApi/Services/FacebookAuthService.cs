@@ -11,11 +11,11 @@ namespace AuthApi.Services
 {
     public class FacebookAuthService : IFacebookAuthService
     {
-        private readonly IAccountRepository _accountRepo;
+        private readonly IAuthRepository _accountRepo;
         private readonly FacebookAuthSettings _fbSettings;
         private readonly HttpClient _http;
 
-        public FacebookAuthService(IAccountRepository accountRepo, IOptions<FacebookAuthSettings> fbOptions)
+        public FacebookAuthService(IAuthRepository accountRepo, IOptions<FacebookAuthSettings> fbOptions)
         {
             _accountRepo = accountRepo;
             _fbSettings = fbOptions.Value;

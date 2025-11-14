@@ -46,19 +46,19 @@ namespace AccountAPI.Service
         }
 
 
-        public async Task<bool> CreateProfileAsync(Guid userId, UserDTO userDto)
+        public async Task<bool> CreateProfileAsync(Guid id, UserDTO userDto)
         {
-            var existingPhone = await _authApiClient.GetByIdAsync(userId);
+            var existingPhone = await _authApiClient.GetByIdAsync(id);
             if (existingPhone != null)
             {
-                   var existingUser = await _userRepository.GetByUserIdAsync(userId);
+                   var existingUser = await _userRepository.GetByUserIdAsync(id);
                 if (existingUser != null)
                 {
                     return false; // User profile already exists
                 }
             }
             var user = _mapper.Map<User>(userDto);
-            user.UserId = userId;
+            user.Id = id;
             user.FullName = existingPhone.FullName;
             user.Phone = existingPhone.Phone;
             user.Email = existingPhone.Email;

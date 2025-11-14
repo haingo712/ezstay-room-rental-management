@@ -13,10 +13,10 @@ namespace AuthApi.Services
 {
     public class GoogleAuthService : IGoogleAuthService
     {
-        private readonly IAccountRepository _userRepo;
+        private readonly IAuthRepository _userRepo;
         private readonly GoogleAuthSettings _googleSettings;
 
-        public GoogleAuthService(IAccountRepository userRepo, IOptions<GoogleAuthSettings> googleOptions)
+        public GoogleAuthService(IAuthRepository userRepo, IOptions<GoogleAuthSettings> googleOptions)
         {
             _userRepo = userRepo;
             _googleSettings = googleOptions.Value;

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using AuthApi.Models;
 using AutoMapper;
 using System.Text.Json;
-using Auths.Responses;
+
 
 namespace AuthApi.Controllers
 {
@@ -19,7 +19,7 @@ namespace AuthApi.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IEmailVerificationService _emailVerificationService;
-        private readonly IAccountRepository _accountRepo;
+        private readonly IAuthRepository _accountRepo;
         private readonly IMapper _mapper;
         private readonly IGoogleAuthService _googleAuthService;
         private readonly IFacebookAuthService _facebookAuthService;
@@ -28,7 +28,7 @@ namespace AuthApi.Controllers
         public AuthController(
             IAuthService authService,
             IEmailVerificationService emailVerificationService,
-            IAccountRepository accountRepo,
+            IAuthRepository accountRepo,
             IMapper mapper,
             IGoogleAuthService googleAuthService,
             IFacebookAuthService facebookAuthService)
@@ -52,7 +52,7 @@ namespace AuthApi.Controllers
             return Ok(result);
         }
         [HttpPost("login")]
-        public async Task<ActionResult<LoginResponseDto>> Login([FromBody] LoginRequestDto dto)
+        public async Task<ActionResult<Shared.DTOs.Auths.Responses.LoginResponseDto>> Login([FromBody] LoginRequestDto dto)
         {
             var result = await _authService.LoginAsync(dto);
 

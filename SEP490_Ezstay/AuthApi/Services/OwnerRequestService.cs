@@ -12,7 +12,7 @@ namespace AuthApi.Services
 {
     public class OwnerRequestService : IOwnerRequestService
     {
-        private readonly IAccountRepository _accountRepo;
+        private readonly IAuthRepository _accountRepo;
         private readonly IOwnerRequestRepository _ownerRequestRepo;
         private readonly IMapper _mapper;
 
@@ -20,7 +20,7 @@ namespace AuthApi.Services
 
 
     public OwnerRequestService(
-        IAccountRepository accountRepo,
+        IAuthRepository accountRepo,
         IOwnerRequestRepository ownerRequestRepo,
         IMapper mapper,
         IHttpClientFactory httpFactory)

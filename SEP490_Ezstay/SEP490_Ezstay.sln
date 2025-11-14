@@ -46,19 +46,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagerAPI", "UserManag
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationAPI", "NotificationAPI\NotificationAPI.csproj", "{4507CEDC-2655-4DB9-8299-EAAFA1DD5125}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FavoritePostAPI", "FavoritePostAPI\FavoritePostAPI.csproj", "{8F902F76-5BFA-47B0-9B8D-2CCFAE3388AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FavoritePostAPI", "FavoritePostAPI\FavoritePostAPI.csproj", "{8F902F76-5BFA-47B0-9B8D-2CCFAE3388AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContractAPI", "ContractAPI\ContractAPI.csproj", "{DCD823AA-D44E-49D9-88A7-4D47C0D672C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContractAPI", "ContractAPI\ContractAPI.csproj", "{DCD823AA-D44E-49D9-88A7-4D47C0D672C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReviewReportAPI", "ReviewReportAPI\ReviewReportAPI.csproj", "{2B236296-FD7C-4B53-8114-D0FBBE6D38AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReviewReportAPI", "ReviewReportAPI\ReviewReportAPI.csproj", "{2B236296-FD7C-4B53-8114-D0FBBE6D38AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{1FA5EF3B-1446-4675-9213-2029BA84676F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{1FA5EF3B-1446-4675-9213-2029BA84676F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAPI", "ChatAPI\ChatAPI.csproj", "{23234280-8A03-4C6B-A9F8-32199DF7D938}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatAPI", "ChatAPI\ChatAPI.csproj", "{23234280-8A03-4C6B-A9F8-32199DF7D938}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardingHouseAPI", "BoardingHouseAPI\BoardingHouseAPI.csproj", "{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoardingHouseAPI", "BoardingHouseAPI\BoardingHouseAPI.csproj", "{E6F255B8-6167-D633-C0B2-3CF40A19E9F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityBillAPI", "UtilityBillAPI\UtilityBillAPI.csproj", "{A11EC25D-F9F2-7049-F646-28FD494C2CF5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UtilityBillAPI", "UtilityBillAPI\UtilityBillAPI.csproj", "{A11EC25D-F9F2-7049-F646-28FD494C2CF5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceAPI", "ServiceAPI\ServiceAPI.csproj", "{663CD693-34F9-4AC1-97AF-996AB2FD62E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SupportAPI", "SupportAPI\SupportAPI.csproj", "{DF682A95-E95D-4484-80AA-D3CB9614515C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -170,6 +174,14 @@ Global
 		{A11EC25D-F9F2-7049-F646-28FD494C2CF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A11EC25D-F9F2-7049-F646-28FD494C2CF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A11EC25D-F9F2-7049-F646-28FD494C2CF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{663CD693-34F9-4AC1-97AF-996AB2FD62E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{663CD693-34F9-4AC1-97AF-996AB2FD62E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{663CD693-34F9-4AC1-97AF-996AB2FD62E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{663CD693-34F9-4AC1-97AF-996AB2FD62E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF682A95-E95D-4484-80AA-D3CB9614515C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF682A95-E95D-4484-80AA-D3CB9614515C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF682A95-E95D-4484-80AA-D3CB9614515C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF682A95-E95D-4484-80AA-D3CB9614515C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

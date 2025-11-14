@@ -28,6 +28,7 @@ namespace NotificationAPI.Repositories.Interfaces
         Task MarkAsSentAsync(Guid id);
 
         Task<UpdateResult> UpdateManyAsync(FilterDefinition<Notify> filter, UpdateDefinition<Notify> update);
+        Task<List<Notify>> GetAllForRoleOrUserAsync(Guid userId, RoleEnum role);
 
 
 
