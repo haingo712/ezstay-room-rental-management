@@ -124,8 +124,7 @@ namespace UtilityBillAPI.Service
             var bill = new UtilityBillDTO
             {
                 Id = Guid.NewGuid(),
-                OwnerId = contract.OwnerId,
-                TenantId = contract.IdentityProfiles.FirstOrDefault(s => s.IsSigner == true)?.TenantId ?? Guid.Empty,
+                TenantId = contract.IdentityProfiles.FirstOrDefault(s => s.IsSigner == true)?.UserId ?? Guid.Empty,
                 RoomId = contract.RoomId,
                 ContractId = contract.Id,
                 RoomPrice = contract.RoomPrice,

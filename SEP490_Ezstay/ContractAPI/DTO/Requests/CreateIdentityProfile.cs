@@ -5,20 +5,29 @@ namespace ContractAPI.DTO.Requests;
 
 public class CreateIdentityProfile
 {
-    public Guid? TenantId { get; set; } 
-   [Required]
+    [Required]
+    public Guid UserId { get; set; }
+    [Required]
+    public string Gender { get; set; }
+    [Required]
     public string FullName { get; set; }
-   [Required]
+    [Required]
+    public string Avatar { get; set; }
+    [Required]
     public DateTime DateOfBirth { get; set; }
     [Required]
     [Phone]
-    public string PhoneNumber { get; set; }
+    public string Phone { get; set; }
     [EmailAddress]
-    public string Email { get; set; }
+    public string Email { get; set; } 
+    // [Required]
+    // public string ProvinceId { get; set; }     
     [Required]
-    public string ProvinceId { get; set; }     // Mã tỉnh
+    public string ProvinceName { get; set; } 
+    // [Required]
+    // public string WardId { get; set; }        
     [Required]
-    public string WardId { get; set; }         // Mã xã/phường
+    public string WardName { get; set; }      
    [Required]
     public string Address { get; set; }
     [Required]
@@ -29,10 +38,8 @@ public class CreateIdentityProfile
     public DateTime CitizenIdIssuedDate { get; set; }
     [Required]
     public string CitizenIdIssuedPlace { get; set; }
-    public string? Notes { get; set; }
-    public string? AvatarUrl { get; set; }
     [Required]
     public string FrontImageUrl { get; set; }
-  [Required]
+    [Required]
     public string BackImageUrl { get; set; }
 }

@@ -30,7 +30,7 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IReviewReplyService, ReviewReplyService>();
 builder.Services.AddScoped<IReviewReplyRepository, ReviewReplyRepository>();
-builder.Services.AddHttpClient<IImageAPI, ImageAPI >(client =>
+builder.Services.AddHttpClient<IImageClientService, ImageClientService >(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
 });

@@ -15,6 +15,7 @@ using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Shared.DTOs.Contracts.Responses;
+using IdentityProfileResponse = Shared.DTOs.Contracts.Responses.IdentityProfileResponse;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IContractRepository, ContractRepository>();
 builder.Services.AddScoped<IContractService, ContractService>();
 
-builder.Services.AddHttpClient<IImageAPI, ImageAPI >(client =>
+builder.Services.AddHttpClient<IImageClientService, ImageClientService >(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
 });
@@ -34,7 +35,7 @@ builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RoomApi"]);
 });
-builder.Services.AddHttpClient<IAccountAPI, AccountAPI>(client =>
+builder.Services.AddHttpClient<IAccountService, AccountService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:AccountApi"]);
 });

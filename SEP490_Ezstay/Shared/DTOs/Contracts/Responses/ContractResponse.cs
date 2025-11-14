@@ -1,6 +1,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Shared.DTOs.ServiceInfors.Response;
 using Shared.DTOs.UtilityReadings.Responses;
 using Shared.Enums;
 
@@ -10,8 +11,6 @@ namespace Shared.DTOs.Contracts.Responses;
 public class ContractResponse
 {
     public Guid Id { get; set; }
-    public Guid OwnerId { get; set; }
-    // public Guid TenantId { get; set; }
     public Guid RoomId { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -24,9 +23,17 @@ public class ContractResponse
     public string Reason { get; set; }
     public decimal DepositAmount { get; set; }
     public int NumberOfOccupants { get; set; }
-    public string? Notes { get; set; }
-    
+    public string Notes { get; set; }
     public List<IdentityProfileResponse> IdentityProfiles { get; set; } 
     public UtilityReadingResponse ElectricityReading { get; set; }
     public UtilityReadingResponse WaterReading { get; set; }
+    
+    public string OwnerSignature { get; set; }      
+    public DateTime OwnerSignedAt { get; set; }
+    public string TenantSignature { get; set; }     
+    public DateTime TenantSignedAt { get; set; }
+    public List<ServiceInforResponse> ServiceInfors { get; set; } 
+    
 }
+
+

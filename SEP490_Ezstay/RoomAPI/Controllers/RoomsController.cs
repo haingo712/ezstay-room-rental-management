@@ -34,7 +34,7 @@ namespace RoomAPI.Controllers
         {
             try
             {
-                var result = await _roomService.UpdateStatusAsync(id, roomStatus);
+                var result = await _roomService.UpdateStatus(id, roomStatus);
                 if (!result.IsSuccess)
                     return BadRequest(new { message = result.Message });
                 return Ok(result);
@@ -45,27 +45,19 @@ namespace RoomAPI.Controllers
             }
         }
 
-        [HttpGet("{id}/WithAmenities")]
-        public async Task<ActionResult<RoomWithAmenitiesResponse>> GetRoomWithAmenities(Guid id)
-        {
-            try
-            {
-                var result = await _roomService.GetRoomWithAmenitiesAsync(id);
-                return Ok(result);
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(new { message = e.Message });
-            }
-        }
-        
-        
-        [HttpGet]
-        [EnableQuery]
-        public IQueryable<RoomResponse> GetAll()
-        {
-            return _roomService.GetAllQueryable();
-        }
+        // [HttpGet("{id}/WithAmenities")]
+        // public async Task<ActionResult<RoomWithAmenitiesResponse>> GetRoomWithAmenities(Guid id)
+        // {
+        //     try
+        //     {
+        //         var result = await _roomService.GetRoomWithAmenitiesAsync(id);
+        //         return Ok(result);
+        //     }
+        //     catch (KeyNotFoundException e)
+        //     {
+        //         return NotFound(new { message = e.Message });
+        //     }
+        // }
         
         [HttpGet("ByHouseId/{houseId}")]
         [EnableQuery]        
@@ -74,26 +66,19 @@ namespace RoomAPI.Controllers
             return _roomService.GetAllByHouseId(houseId);
         }
         [HttpGet("ByHouseId/{houseId}/Status")]
-        [EnableQuery]        
+        [EnableQuery]           
         public IQueryable<RoomResponse> GetRoomsStatusByHouseId(Guid houseId)
         {
             return _roomService.GetAllStatusActiveByHouseId(houseId);
         }
-        // [HttpGet("ByHouseId/{houseId}")]
-        // [EnableQuery]        
-        // public IQueryable<RoomDto> GetRoomsStatusActiveByHouseId(Guid houseId)
-        // {
-        //     return _roomService.GetAllByHouseId(houseId);
-        // }
-    
-        // GET: api/Rooms/5
+      
         [HttpGet("{id}")]
-        public async Task<ActionResult<RoomResponse>> GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             try
             {
                 var room = await _roomService.GetById(id);
-                return room;
+                return Ok(room);
             }
             catch (KeyNotFoundException e)
             {
@@ -101,10 +86,8 @@ namespace RoomAPI.Controllers
             }
           
         }
-        // PUT: api/Rooms/5
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner")]
-    
         public async Task<IActionResult> Put(Guid id,[FromForm] UpdateRoom request) {
         try
         {
@@ -127,19 +110,15 @@ namespace RoomAPI.Controllers
     {
         try
         {
-            //  var ownerId = _tokenService.GetUserIdFromClaims(User);
-            var createRoom =   await  _roomService.Add( houseId,request);
+            var createRoom =   await  _roomService.Add(houseId, request);
             if (!createRoom.IsSuccess)
                 return BadRequest(new { message = createRoom.Message });
-         
             return CreatedAtAction("GetById", new { id = createRoom.Data.HouseId }, createRoom);
-
         }catch (Exception e) {
             return Conflict(new { message = e.Message });
         }
     }
-    //     // DELETE: api/Rooms/5
-    // [Authorize(Roles = "Owner")]
+    [Authorize(Roles = "Owner")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {

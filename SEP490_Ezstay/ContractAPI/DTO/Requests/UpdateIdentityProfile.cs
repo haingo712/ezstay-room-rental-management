@@ -4,18 +4,28 @@ namespace ContractAPI.DTO.Requests;
 
 public class UpdateIdentityProfile
 {
-    public Guid? UserId { get; set; } 
+    [Required]
+    public Guid UserId { get; set; } 
+    [Required]
+    public string Gender { get; set; }
+    [Required]
+    public string Avatar { get; set; } 
     [Required]
     public string FullName { get; set; }
+    [Required]
     public DateTime DateOfBirth { get; set; }
     [Required]
-    public string PhoneNumber { get; set; }
+    [Phone]
+    public string Phone { get; set; }
+    [Required]
     [EmailAddress]
     public string Email { get; set; }
     [Required]
-    public string ProvinceId { get; set; }     // Mã tỉnh
+    // public string ProvinceId { get; set; }     
+    public string ProvinceName { get; set; }  
     [Required]
-    public string WardId { get; set; }         // Mã xã/phường
+    // public string WardId { get; set; }       
+    public string WardName { get; set; }      
     [Required]
     public string Address { get; set; }
     [Required]
@@ -26,8 +36,6 @@ public class UpdateIdentityProfile
     public DateTime CitizenIdIssuedDate { get; set; }
     [Required]
     public string CitizenIdIssuedPlace { get; set; }
-    public string? Notes { get; set; }
-    public string? AvatarUrl { get; set; } 
     [Required]
     public string FrontImageUrl { get; set; }
     [Required]

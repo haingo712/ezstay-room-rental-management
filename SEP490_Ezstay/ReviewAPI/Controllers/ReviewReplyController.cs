@@ -24,7 +24,7 @@ public class ReviewReplyController: ControllerBase
     public async Task<IActionResult> Create(Guid reviewId, [FromForm] CreateReviewReplyRequest request)
     {
             var ownerId = _tokenService.GetUserIdFromClaims(User);
-            var create = await _reviewReplyService.AddAsync(reviewId, ownerId, request);
+            var create = await _reviewReplyService.Add(reviewId, ownerId, request);
             if (!create.IsSuccess)
                 return BadRequest(new { message = create.Message });
             return CreatedAtAction("GetById", new { id = create.Data.Id }, create);
@@ -45,7 +45,7 @@ public class ReviewReplyController: ControllerBase
     [Authorize(Roles = "Owner")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        await _reviewReplyService.DeleteReplyAsync(id);
+        await _reviewReplyService.Delete(id);
         return NoContent();
     }
     

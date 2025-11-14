@@ -22,12 +22,11 @@ var builder = WebApplication.CreateBuilder(args);
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
 builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
 //builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IRoomAmenityAPI, RoomAmenityAPI>();
 
-builder.Services.AddHttpClient<IImageClientService, ImageClientService>(client =>
+builder.Services.AddHttpClient<IImageService, ImageService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
 });
@@ -43,12 +42,12 @@ builder.Services.AddHttpClient<IRoomAmenityClientService, RoomAmenityClientServi
 {
     client.BaseAddress = new Uri(serviceUrls["RoomAmenityApi"]);
 });
-builder.Services.AddHttpClient<IContractClientService, ContractClientService>(client =>
+builder.Services.AddHttpClient<IContractService, ContractService>(client =>
 {
     client.BaseAddress = new Uri(serviceUrls["ContractApi"]);
 });
 
-builder.Services.AddHttpClient<IRentalPostClientService, RentalPostClientService>(client =>
+builder.Services.AddHttpClient<IRentalPostService, RentalPostService>(client =>
 {
     client.BaseAddress = new Uri(serviceUrls["RentalPostApi"]);
    // client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RentalPostApi"]);

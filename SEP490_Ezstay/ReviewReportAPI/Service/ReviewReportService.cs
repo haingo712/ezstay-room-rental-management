@@ -36,53 +36,64 @@ public class ReviewReportService : IReviewReportService
        // var review = await _reviewRepository.GetById(reviewId);
        //  if (review == null)
        //      return ApiResponse<ReviewReportResponseDto>.Fail("Không tìm thấy review.");
-        var report= _mapper.Map<ReviewReport>(request);
-        report.CreatedAt = DateTime.UtcNow;
-        report.ReviewId = reviewId;
-        report.Status = ReportStatus.Pending;
-        //Console.WriteLine("ss "+ report.);
-        report.Images =  await _imageClientService.UploadMultipleImage(request.Images);
-        await _reportRepository.Add(report);
-       
-        var result = _mapper.Map<ReviewReportResponse>(report);
-        return ApiResponse<ReviewReportResponse>.Success(result, "Tạo báo cáo thành công.");
+        var reviewReport= _mapper.Map<ReviewReport>(request);
+        reviewReport.CreatedAt = DateTime.UtcNow;
+        reviewReport.ReviewId = reviewId;
+        reviewReport.Status = ReportStatus.Pending;
+        reviewReport.Images =  await _imageClientService.UploadMultipleImage(request.Images);
+        await _reportRepository.Add(reviewReport);
+        var result = _mapper.Map<ReviewReportResponse>(reviewReport);
+        return ApiResponse<ReviewReportResponse>.Success(result, "Create Review Report Successfully");
     }
-    public async Task<ApiResponse<ReviewReportResponse>> Update(Guid id, UpdateReviewReportRequest request)
+    public async Task<ApiResponse<bool>> Update(Guid id, UpdateReviewReportRequest request)
+    {
+        var reviewReport = await _reportRepository.GetById(id);
+        if (reviewReport == null)
+            return ApiResponse<bool>.Fail("Không tìm thấy review.");
+        if (reviewReport.Status != ReportStatus.Pending)
+            return ApiResponse<bool>.Fail("Không dc cập nhật vì đơn này đã dc duyệt .");
+        _mapper.Map(request, reviewReport);
+        reviewReport.CreatedAt = DateTime.UtcNow;
+        reviewReport.Status = ReportStatus.Pending;
+        await _reportRepository.Update(reviewReport);
+        await _imageClientService.UploadMultipleImage(request.Images);
+        var dto = _mapper.Map<ReviewReportResponse>(reviewReport);
+        return ApiResponse<bool>.Success(true, "Update Review Report Successfully");
+    }
+    // public async Task<ApiResponse<ReviewReportResponse>> Update(Guid id, UpdateReviewReportRequest request)
+    // {
+    //     var reviewReport = await _reportRepository.GetById(id);
+    //      if (reviewReport == null)
+    //          return ApiResponse<ReviewReportResponse>.Fail("Không tìm thấy review.");
+    //      if (reviewReport.Status != ReportStatus.Pending)
+    //          return ApiResponse<ReviewReportResponse>.Fail("Không dc cập nhật vì đơn này đã dc duyệt .");
+    //     _mapper.Map(request, reviewReport);
+    //     reviewReport.CreatedAt = DateTime.UtcNow;
+    //     reviewReport.Status = ReportStatus.Pending;
+    //     await _reportRepository.Update(reviewReport);
+    //     await _imageClientService.UploadMultipleImage(request.Images);
+    //     var dto = _mapper.Map<ReviewReportResponse>(reviewReport);
+    //     return ApiResponse<ReviewReportResponse>.Success(dto, "Update Review Report Successfully");
+    // }
+    public async Task<ApiResponse<bool>> SetStatus(Guid id, UpdateReportStatusRequest request)
     {
         var report = await _reportRepository.GetById(id);
-         if (report == null)
-             return ApiResponse<ReviewReportResponse>.Fail("Không tìm thấy review.");
-         if (report.Status != ReportStatus.Pending)
-             return ApiResponse<ReviewReportResponse>.Fail("Không dc cập nhật vì đơn này đã dc duyệt .");
-        _mapper.Map(request, report);
-        report.CreatedAt = DateTime.UtcNow;
-        report.Status = ReportStatus.Pending;
-        await _reportRepository.Update(report);
-        await _imageClientService.UploadMultipleImage(request.Images);
-        var dto = _mapper.Map<ReviewReportResponse>(report);
-        return ApiResponse<ReviewReportResponse>.Success(dto, "Update báo cáo thành công.");
-    }
-    public async Task<ApiResponse<bool>> SetStatus(Guid reportId, UpdateReportStatusRequest request)
-    {
-        var report = await _reportRepository.GetById(reportId);
         if (report == null)
             return ApiResponse<bool>.Fail("Không tìm thấy báo cáo.");
         _mapper.Map(request, report);
         report.ReviewedAt = DateTime.UtcNow;
         await _reportRepository.Update(report);
-        if (request.Status == ReportStatus.Approved)
-        {
-            await _reviewClientService.HideReview(report.ReviewId, true);
-            Console.WriteLine("cc"+ await _reviewClientService.HideReview(report.ReviewId, true));
-        }
-        else
-        {
-            await _reviewClientService.HideReview(report.ReviewId, false);
-            Console.WriteLine("cccc"+ await _reviewClientService.HideReview(report.ReviewId, false));
-        }
-
-    
-       // await _reviewClientService.HideReview(report.ReviewId, false);
-        return ApiResponse<bool>.Success(true, "Set duyệt đơn thành công");
+        // if (request.Status == ReportStatus.Approved)
+        // {
+        //     await _reviewClientService.HideReview(report.ReviewId, true);
+        //     //  Console.WriteLine("cc"+ await _reviewClientService.HideReview(report.ReviewId, true));
+        // }
+        // else
+        // {
+        //     await _reviewClientService.HideReview(report.ReviewId, false);
+        //     //   Console.WriteLine("cccc"+ await _reviewClientService.HideReview(report.ReviewId, false));
+        // }
+        await _reviewClientService.HideReview(report.ReviewId, request.Status == ReportStatus.Approved);
+        return ApiResponse<bool>.Success(true, "Set Status Successfully");
     }
 }

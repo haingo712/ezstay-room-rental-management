@@ -7,15 +7,17 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["AmenityAPI/AmenityAPI.csproj", "AmenityAPI/"]
-RUN dotnet restore "AmenityAPI/AmenityAPI.csproj"
+
+# ae  COPY chỉ cần tên file vì context đã là ./ContractAPI
+COPY ["AmenityAPI.csproj", "./"]
+RUN dotnet restore "AmenityAPI.csproj"
+
 COPY . .
-WORKDIR "/src/AmenityAPI"
-RUN dotnet build "./AmenityAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "AmenityAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./AmenityAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "AmenityAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

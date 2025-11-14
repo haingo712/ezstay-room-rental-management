@@ -28,59 +28,57 @@ public class ReviewReplyService: IReviewReplyService
     }
 
     public IQueryable<ReviewReplyResponse> GetAllQueryable()
-    => _reviewReplyRepository.GetAllQueryable().ProjectTo<ReviewReplyResponse>(_mapper.ConfigurationProvider);
+    => _reviewReplyRepository.GetAll().ProjectTo<ReviewReplyResponse>(_mapper.ConfigurationProvider);
 
     public async Task<ReviewReplyResponse?> GetByIdAsync(Guid id)
     { 
-        return  _mapper.Map<ReviewReplyResponse>(await  _reviewReplyRepository.GetByIdAsync(id));
+        return  _mapper.Map<ReviewReplyResponse>(await  _reviewReplyRepository.GetById(id));
     }
 
-    public async Task<ApiResponse<ReviewReplyResponse>> AddAsync(Guid reviewId, Guid ownerId, CreateReviewReplyRequest request)
+    public async Task<ApiResponse<ReviewReplyResponse>> Add(Guid reviewId, Guid ownerId, CreateReviewReplyRequest request)
     {
-        var review = await _reviewService.GetByIdAsync(reviewId);
+        var review = await _reviewService.GetById(reviewId);
         if (review == null)
             return ApiResponse<ReviewReplyResponse>.Fail("Không tìm thấy.");
-        var reviewReplyDto = _mapper.Map<ReviewReply>(request);
-        reviewReplyDto.CreatedAt = DateTime.UtcNow;
-        reviewReplyDto.ReviewId = reviewId;
-        reviewReplyDto.OwnerId = ownerId;
+        var reviewReply = _mapper.Map<ReviewReply>(request);
+        reviewReply.CreatedAt = DateTime.UtcNow;
+        reviewReply.ReviewId = reviewId;
+        reviewReply.OwnerId = ownerId;
         _imageClient.UploadMultipleImage(request.Image);
-        await _reviewReplyRepository.AddAsync(reviewReplyDto);
+        await _reviewReplyRepository.Add(reviewReply);
        
-        var dto = _mapper.Map<ReviewReplyResponse>(reviewReplyDto);
-        return ApiResponse<ReviewReplyResponse>.Success(dto, "Thêm ReviewReply thành công");
+        var dto = _mapper.Map<ReviewReplyResponse>(reviewReply);
+        return ApiResponse<ReviewReplyResponse>.Success(dto, "Add ReviewReply Successfully");
     }
 
     public async Task<ReviewReplyResponse> GetReplyByReviewIdAsync(Guid reviewId)
     {
-       var review =  await  _reviewReplyRepository.GetByReviewIdAsync(reviewId);
+       var review =  await  _reviewReplyRepository.GetByReviewId(reviewId);
       return  _mapper.Map<ReviewReplyResponse>(review);
     }
 
     public async Task<ApiResponse<bool>> UpdateReplyAsync(Guid id, UpdateReviewReplyRequest request)
     {
-        var entity = await _reviewReplyRepository.GetByIdAsync(id);
-        if (entity == null)
+        var reviewReply = await _reviewReplyRepository.GetById(id);
+        if (reviewReply == null)
             throw new KeyNotFoundException("ReviewId not found");
-        _mapper.Map(request, entity);
-        entity.UpdatedAt = DateTime.UtcNow;
+        _mapper.Map(request, reviewReply);
+        reviewReply.UpdatedAt = DateTime.UtcNow;
        
-        _reviewReplyRepository.UpdateAsync(entity);
+        _reviewReplyRepository.Update(reviewReply);
         _imageClient.UploadMultipleImage(request.Image);
-        return ApiResponse<bool>.Success(true, "Thêm ReviewReply thành công");
+        return ApiResponse<bool>.Success(true, "Update ReviewReply Successfully");
     }
 
-    public async Task DeleteReplyAsync(Guid replyId)
+    public async Task Delete(Guid id)
     {
-        var entity = await _reviewReplyRepository.GetByIdAsync(replyId);
-      //  Console.WriteLine("eeee "+ entity.ReviewId+ "  "+entity);
+        var entity = await _reviewReplyRepository.GetById(id);
         if (entity == null)
             throw new KeyNotFoundException("ReviewId not found");
-        
         // var userId = GetUserIdFromToken();
         // if (entity.UserId != userId)
         //     throw new UnauthorizedAccessException("Bạn không có quyền xóa review này");
-        await _reviewReplyRepository.DeleteAsync(replyId);
+        await _reviewReplyRepository.Delete(id);
     }
     
 }

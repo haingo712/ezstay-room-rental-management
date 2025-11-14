@@ -11,13 +11,8 @@ public class ChatRoom
     public Guid Id { get; set; } = Guid.NewGuid();
 
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
-    public Guid PostId { get; set; } 
-
-    [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid OwnerId { get; set; } 
 
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
-    public Guid TenantId { get; set; } 
-    public DateTime CreatedAt { get; set; } 
-    public DateTime? LastMessageAt { get; set; } 
+    public Guid UserId { get; set; } 
 }

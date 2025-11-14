@@ -1,172 +1,44 @@
-﻿version: '3.8'
+﻿services:
+#  authapi:
+#    build:
+#      context: .
+#      dockerfile: AuthApi/Dockerfile
+#    ports:
+#      - "5001:8080"
 
-services:
-  amenityapi:
-    image: amenityapi
+  contractapi:
     build:
       context: .
-      dockerfile: AmenityAPI/Dockerfile
+      dockerfile: ContractAPI/Dockerfile
     ports:
-      - "5000:5000"   # Nếu bạn muốn map port API
-    depends_on:
-      - mongodb
+      - "5003:8080"
 
-  mongodb:
-    image: mongo:8.0
-    container_name: mongodb
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: sa
-      MONGO_INITDB_ROOT_PASSWORD: 123456
-    volumes:
-      - mongodb_data:/data/db
-
-volumes:
-  mongodb_data:
-
-  roomamenityapi:
-    image: roomamenityapi
-    build:
-      context: .
-      dockerfile: RoomAmenityAPI/Dockerfile
-
-  roomapi:
-    image: roomapi
-    build:
-      context: .
-      dockerfile: RoomAPI/Dockerfile
+#  amenityapi:
+#    build:
+#      context: .
+#      dockerfile: AmenityAPI/Dockerfile
+#    ports:
+#      - "5004:8080"
 
   apigateway:
-    image: apigateway
     build:
       context: .
-      dockerfile: APIGateway/Dockerfile
+      dockerfile: ApiGateway/Dockerfile
+    ports:
+      - "8000:8080"
+    depends_on:
+#      - authapi
+      - contractapi
+#      - amenityapi
 
-  signalrhubserver:
-    image: signalrhubserver
+  contractapi-1:
+    image: contractapi-1
     build:
       context: .
-      dockerfile: SignalRHubServer/Dockerfile
+      dockerfile: ContractAPI/Dockerfile
 
-  electricityreadingapi:
-    image: electricityreadingapi
+  contractapi-2:
+    image: contractapi-2
     build:
       context: .
-      dockerfile: ElectricityReadingAPI/Dockerfile
-
-  waterreadingapi:
-    image: waterreadingapi
-    build:
-      context: .
-      dockerfile: WaterReadingAPI/Dockerfile
-
-  utility:
-    image: utility
-    build:
-      context: .
-      dockerfile: Utility/Dockerfile
-
-  utilityreading:
-    image: utilityreading
-    build:
-      context: .
-      dockerfile: UtilityReading/Dockerfile
-
-  utilityreadingapi:
-    image: utilityreadingapi
-    build:
-      context: .
-      dockerfile: UtilityReadingAPI/Dockerfile
-
-  signalrhubapi:
-    image: signalrhubapi
-    build:
-      context: .
-      dockerfile: SignalRHubAPI/Dockerfile
-
-  rentalrequest:
-    image: rentalrequest
-    build:
-      context: .
-      dockerfile: RentalRequest/Dockerfile
-
-  rentalrequest:
-    image: rentalrequest
-    build:
-      context: .
-      dockerfile: RentalRequest/Dockerfile
-
-services:
-  rentalrequestapi:
-    image: rentalrequestapi
-    build:
-      context: .
-      dockerfile: RentalRequestAPI/Dockerfile
-
-services:
-  utilityrateapi:
-    image: utilityrateapi
-    build:
-      context: .
-      dockerfile: UtilityRateAPI/Dockerfile
-
-services:
-  grpcservice:
-    image: grpcservice
-    build:
-      context: .
-      dockerfile: GrpcService/Dockerfile
-
-services:
-  utilityreading.grpccontracts:
-    image: utilityreading.grpccontracts
-    build:
-      context: .
-      dockerfile: UtilityReading.GrpcContracts/Dockerfile
-
-services:
-  utilityrate.grpccontracts:
-    image: utilityrate.grpccontracts
-    build:
-      context: .
-      dockerfile: UtilityRate.GrpcContracts/Dockerfile
-
-services:
-  aggregatorapi:
-    image: aggregatorapi
-    build:
-      context: .
-      dockerfile: AggregatorAPI/Dockerfile
-
-services:
-  aggregatorapi:
-    image: aggregatorapi
-    build:
-      context: .
-      dockerfile: AggregatorAPI/Dockerfile
-
-services:
-  reviewapi:
-    image: reviewapi
-    build:
-      context: .
-      dockerfile: ReviewAPI/Dockerfile
-services:
-  reviewresponseapi:
-    image: reviewresponseapi
-    build:
-      context: .
-      dockerfile: ReviewResponseAPI/Dockerfile
-services:
-  paymentapi:
-    image: paymentapi
-    build:
-      context: .
-      dockerfile: PaymentAPI/Dockerfile
-services:
-  reviewreportapi:
-    image: reviewreportapi
-    build:
-      context: .
-      dockerfile: ReviewReportAPI/Dockerfile
+      dockerfile: ContractAPI/Dockerfile

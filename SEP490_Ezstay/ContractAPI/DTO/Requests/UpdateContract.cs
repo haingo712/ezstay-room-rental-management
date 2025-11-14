@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using ContractAPI.DTO.Requests.ServiceInfor;
 using ContractAPI.DTO.Requests.UtilityReading;
 using ContractAPI.Enum;
 using ContractAPI.Model;
@@ -25,5 +26,6 @@ public class UpdateContract
     public UpdateUtilityReading ElectricityReading { get; set; }
     [Required]
     public UpdateUtilityReading WaterReading { get; set; }
-    
+
+    public List<UpdateService> ServiceInfors { get; set; }
 }

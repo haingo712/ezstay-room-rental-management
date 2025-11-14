@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using ContractAPI.DTO.Requests.ServiceInfor;
 using ContractAPI.DTO.Requests.UtilityReading;
 
 
@@ -6,9 +7,6 @@ namespace ContractAPI.DTO.Requests;
 
 public class CreateContract
 {
-    
-    // [Required]
-    // public CreateIdentityProfile SignerProfile { get; set; }
     [Required]
     public Guid RoomId { get; set; }
     [Required]
@@ -32,5 +30,5 @@ public class CreateContract
     public CreateUtilityReadingContract ElectricityReading { get; set; }
     [Required]
     public CreateUtilityReadingContract WaterReading { get; set; }
-   // public List<CreateUtilityReadingContract> UtilityReadings { get; set; }
+    public List<CreateService>? ServiceInfors { get; set; }
 }

@@ -18,49 +18,38 @@ public class ChatController : ControllerBase
         _chatService = chatService;
         _tokenService = tokenService;
     }
-    [HttpGet("chat-room/{chatRoomId}")]
-    public async Task<IActionResult> GetRoomWithPost(Guid chatRoomId)
-    {
-        var response = await _chatService.GetRoomWithPost(chatRoomId);
-        if (!response.IsSuccess)
-            return NotFound(response); 
-        return Ok(response); 
-    }
-   
-    [HttpPost]
-    [Authorize(Roles = "User, Owner")]
-    public async Task<IActionResult> CreateChatRoom([FromQuery] Guid postId)
-    {
-        var userId= _tokenService.GetUserIdFromClaims(User);
-        return Ok(await _chatService.Add(postId, userId));
-    }
-
-    [Authorize(Roles = "Owner, User")]
-    [HttpGet]
-    public async Task<IActionResult> GetAllChatRoomByOwner()
-    {
-        var ownerId= _tokenService.GetUserIdFromClaims(User);
-      return  Ok(await _chatService.GetAllChatRoomByOwner(ownerId));
-    }
-
-    // [Authorize(Roles = "User")]
-    // [HttpGet("chat-room")]
-    // public async Task<IActionResult> GetUserRooms()
-    // {
-    //     var userId= _tokenService.GetUserIdFromClaims(User);
-    //   return   Ok(await _chatService.GetChatRoomsByTenant(userId));
-    // }
-    // lam
     [Authorize(Roles = "User, Owner")]
     [HttpGet("messages/{chatRoomId}")]
-    public async Task<IActionResult> GetMessages(Guid chatRoomId)
-        => Ok(await _chatService.GetMessages(chatRoomId));
-    //lam
-    [HttpPost("message")]
-    [Authorize(Roles = "User, Owner")]
-    public async Task<IActionResult> SendMessage([FromQuery] Guid chatRoomId, [FromBody] CreateChatMessage request)
+    public async Task<IActionResult> GetMessagesByChatRoomId(Guid chatRoomId)
+        => Ok(await _chatService.GetByChatRoomId(chatRoomId));
+    
+    [Authorize(Roles = "Owner, User")]
+    [HttpGet]
+    public async Task<IActionResult> GetAllChatRoom()
+    {
+        var accountId= _tokenService.GetUserIdFromClaims(User);
+      return  Ok(await _chatService.GetAllChatRoom(accountId));
+    }
+    
+    [HttpPost("{ownerId}")]
+    [Authorize(Roles = "User")]
+    public async Task<IActionResult> CreateChatRoom(Guid ownerId)
     {
         var userId= _tokenService.GetUserIdFromClaims(User);
-       return  Ok(await _chatService.SendMessage(chatRoomId, userId, request));
+        return Ok(await _chatService.Add(ownerId, userId));
+    }
+    
+    [HttpPost("message/{chatRoomId}")]
+    [Authorize(Roles = "User, Owner")]
+    public async Task<IActionResult> SendMessage(Guid chatRoomId, [FromForm] CreateChatMessage request)
+    {
+        var senderId= _tokenService.GetUserIdFromClaims(User);
+       return  Ok(await _chatService.SendMessage(chatRoomId, senderId, request));
+    }
+    [HttpDelete("{chatMessageId}")]
+    [Authorize(Roles = "User, Owner")]
+    public async Task<IActionResult> RevokeMessage(Guid chatMessageId)
+    {
+        return Ok(await _chatService.Delete(chatMessageId));
     }
 }
