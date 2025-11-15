@@ -64,7 +64,7 @@ public class UtilityReadingService: IUtilityReadingService
             }
             utilityReading.PreviousIndex = lastReading.CurrentIndex;
             utilityReading.CurrentIndex = request.CurrentIndex;
-            // utilityReading.Total = (request.Price ?? 0) * utilityReading.Consumption;
+        utilityReading.Total = request.Price * utilityReading.Consumption;
         //}
         utilityReading.RoomId = roomId;
         await _utilityReadingRepository.AddAsync(utilityReading);

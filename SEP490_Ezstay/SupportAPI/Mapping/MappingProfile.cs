@@ -9,11 +9,11 @@ namespace SupportAPI.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<CreateSupportRequest, SupportModel>();
-            CreateMap<UpdateSupportStatusRequest, SupportModel>();
+            CreateMap<CreateSupportRequest, Support>();
+            CreateMap<UpdateSupportStatusRequest, Support>();
 
             // Map model -> response
-            CreateMap<SupportModel, SupportResponse>();
+            CreateMap<Support, SupportResponse>();
         }
     }
 }

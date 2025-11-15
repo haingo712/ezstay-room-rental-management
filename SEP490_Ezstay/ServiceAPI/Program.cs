@@ -17,8 +17,8 @@ builder.Services.AddSingleton(mongoClient.GetDatabase(builder.Configuration["Con
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(ServiceProfile));
-builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
-builder.Services.AddScoped<ISService, SService>();
+builder.Services.AddScoped<IServiceItemRepository, ServiceItemRepository>();
+builder.Services.AddScoped<IServiceItemService, ServiceItemService>();
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 

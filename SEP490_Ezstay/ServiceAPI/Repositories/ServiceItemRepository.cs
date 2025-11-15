@@ -4,31 +4,31 @@ using ServiceAPI.Repositories.Interfaces;
 
 namespace ServiceAPI.Repositories
 {
-    public class ServiceRepository : IServiceRepository
+    public class ServiceItemRepository : IServiceItemRepository
     {
-        private readonly IMongoCollection<ServiceModel> _context;
+        private readonly IMongoCollection<ServiceItem> _context;
 
-        public ServiceRepository(IMongoDatabase database)
+        public ServiceItemRepository(IMongoDatabase database)
         {
-            _context = database.GetCollection<ServiceModel>("ServiceModel");
+            _context = database.GetCollection<ServiceItem>("ServiceModel");
         }
 
-        public async Task CreateServiceAsync(Model.ServiceModel service)
+        public async Task CreateServiceAsync(ServiceItem service)
         {
             await _context.InsertOneAsync(service);
         }
 
-        public async Task<List<Model.ServiceModel>> GetAllServicesAsync()
+        public async Task<List<ServiceItem>> GetAllServicesAsync()
         {
             return await _context.Find(_ => true).ToListAsync();
         }
 
-        public async Task<Model.ServiceModel> GetServiceByIdAsync(string id)
+        public async Task<ServiceItem> GetServiceByIdAsync(string id)
         {
             return await _context.Find(s => s.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task UpdateServiceAsync(string id, Model.ServiceModel updatedService)
+        public async Task UpdateServiceAsync(string id, ServiceItem updatedService)
         {
           
             updatedService.Id = id;

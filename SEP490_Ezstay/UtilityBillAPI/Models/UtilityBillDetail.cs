@@ -9,14 +9,12 @@ namespace UtilityBillAPI.Models
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; }
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid UtilityBillId { get; set; }
-        [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid? UtilityReadingId { get; set; }
+        public Guid UtilityBillId { get; set; }        
         public string Type { get; set; } = null!;
         [BsonRepresentation(BsonType.Decimal128)]
-        public decimal UnitPrice { get; set; }
+        public decimal? UnitPrice { get; set; }
         [BsonRepresentation(BsonType.Decimal128)]
-        public decimal Consumption { get; set; }
+        public decimal? Consumption { get; set; }
         [BsonRepresentation(BsonType.Decimal128)]
         public decimal Total { get; set; }        
     }

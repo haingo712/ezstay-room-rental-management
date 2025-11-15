@@ -50,7 +50,7 @@ namespace UtilityBillAPI.Service
             return bill == null ? throw new KeyNotFoundException("Bill not found!") : _mapper.Map<UtilityBillDTO>(bill);
         }
 
-        public async Task<ApiResponse<UtilityBillDTO>> GenerateUtilityBillAsync(Guid contractId)
+        public async Task<ApiResponse<UtilityBillDTO>> GenerateUtilityBillAsync(Guid contractId, Guid ownerId)
         {
             // Check if spam bill
             //var recentBill = _utilityBillRepo.GetAll()
@@ -115,8 +115,8 @@ namespace UtilityBillAPI.Service
                 UtilityReadingId = r.Id,
                 Type = r.Type.ToString(),
                 UnitPrice = r.Price,
-                Consumption = r.Consumption, 
-                Total = r.Price * r.Consumption
+                Consumption = r.Consumption,
+                Total = r.Total
             }).ToList();
 
             var totalAmount = contract.RoomPrice + details.Sum(r => r.Total);
@@ -125,6 +125,7 @@ namespace UtilityBillAPI.Service
             {
                 Id = Guid.NewGuid(),
                 TenantId = contract.IdentityProfiles.FirstOrDefault(s => s.IsSigner == true)?.UserId ?? Guid.Empty,
+                OwnerId = ownerId,
                 RoomId = contract.RoomId,
                 ContractId = contract.Id,
                 RoomPrice = contract.RoomPrice,

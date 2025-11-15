@@ -76,7 +76,8 @@ namespace UtilityBillAPI.Controllers
         [Authorize(Roles = "Owner")]
         public async Task<ActionResult<UtilityBillDTO>> GenerateBillForContract(Guid contractId)
         {
-            var response = await _utilityBillService.GenerateUtilityBillAsync(contractId);
+            var ownerId = _tokenService.GetUserIdFromClaims(User);
+            var response = await _utilityBillService.GenerateUtilityBillAsync(contractId, ownerId);
             if (!response.IsSuccess)
             {
                 return BadRequest(new { message = response.Message });
