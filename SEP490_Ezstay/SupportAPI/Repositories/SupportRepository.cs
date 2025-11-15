@@ -11,7 +11,7 @@ namespace SupportAPI.Repositories
 
         public SupportRepository(IMongoDatabase database)
         {
-            _supports = database.GetCollection<Support>("SupportModel");
+            _supports = database.GetCollection<Support>("Support");
         }
 
         public async Task<List<Support>> GetAllAsync() =>

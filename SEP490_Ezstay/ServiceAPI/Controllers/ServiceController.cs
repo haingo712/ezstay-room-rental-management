@@ -52,7 +52,7 @@ namespace ServiceAPI.Controllers
         // GET: api/service/{id}
         [HttpGet("{id}")]
         [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> GetServiceById(string id)
+        public async Task<IActionResult> GetServiceById(Guid id)
         {
             var result = await _service.GetServiceByIdAsync(id);
             if (result == null)
@@ -63,7 +63,7 @@ namespace ServiceAPI.Controllers
         // PUT: api/service/update/{id}
         [HttpPut("update/{id}")]
         [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> UpdateService(string id, [FromBody] ServiceItemRequestDto updatedService)
+        public async Task<IActionResult> UpdateService(Guid id, [FromBody] ServiceItemRequestDto updatedService)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace ServiceAPI.Controllers
         // DELETE: api/service/delete/{id}
         [HttpDelete("delete/{id}")]
         [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> DeleteService(string id)
+        public async Task<IActionResult> DeleteService(Guid id)
         {
             await _service.DeleteServiceAsync(id);
             return Ok(new { message = "Service deleted successfully" });

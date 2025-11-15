@@ -10,7 +10,7 @@ namespace ServiceAPI.Repositories
 
         public ServiceItemRepository(IMongoDatabase database)
         {
-            _context = database.GetCollection<ServiceItem>("ServiceModel");
+            _context = database.GetCollection<ServiceItem>("ServiceItem");
         }
 
         public async Task CreateServiceAsync(ServiceItem service)
@@ -23,12 +23,12 @@ namespace ServiceAPI.Repositories
             return await _context.Find(_ => true).ToListAsync();
         }
 
-        public async Task<ServiceItem> GetServiceByIdAsync(string id)
+        public async Task<ServiceItem> GetServiceByIdAsync(Guid id)
         {
             return await _context.Find(s => s.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task UpdateServiceAsync(string id, ServiceItem updatedService)
+        public async Task UpdateServiceAsync(Guid id, ServiceItem updatedService)
         {
           
             updatedService.Id = id;
@@ -37,7 +37,7 @@ namespace ServiceAPI.Repositories
         }
 
 
-        public async Task DeleteServiceAsync(string id)
+        public async Task DeleteServiceAsync(Guid id)
         {
             await _context.DeleteOneAsync(s => s.Id == id);
         }       
