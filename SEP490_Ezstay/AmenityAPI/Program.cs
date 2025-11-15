@@ -17,7 +17,6 @@ using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
-// builder.Services.AddGrpc();
 
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
 builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));

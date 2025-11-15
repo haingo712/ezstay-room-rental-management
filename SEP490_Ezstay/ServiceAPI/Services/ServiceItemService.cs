@@ -7,18 +7,18 @@ using ServiceAPI.Service.Interfaces;
 
 namespace ServiceAPI.Service
 {
-    public class SService : ISService
+    public class ServiceItemService : IServiceItemService
     {
-        private readonly IServiceRepository _serviceRepository;
+        private readonly IServiceItemRepository _serviceRepository;
         private readonly IMapper _mapper;
 
-        public SService(IServiceRepository serviceRepository, IMapper mapper)
+        public ServiceItemService(IServiceItemRepository serviceRepository, IMapper mapper)
         {
             _serviceRepository = serviceRepository;
             _mapper = mapper;
         }
 
-        public async Task<ServiceResponseDto> CreateServiceAsync(ServiceRequestDto request)
+        public async Task<ServiceItemResponseDto> CreateServiceAsync(ServiceItemRequestDto request)
         {
             // Validate dữ liệu
             if (string.IsNullOrEmpty(request.ServiceName))
@@ -27,31 +27,31 @@ namespace ServiceAPI.Service
                 throw new ArgumentException("Price must be non-negative.");
 
             // Map từ RequestDTO -> Model
-            var serviceModel = _mapper.Map<ServiceModel>(request);
+            var serviceModel = _mapper.Map<ServiceItem>(request);
 
             // Tạo service trong MongoDB
             await _serviceRepository.CreateServiceAsync(serviceModel);
 
             // Map ngược lại Model -> ResponseDTO
-            var response = _mapper.Map<ServiceResponseDto>(serviceModel);
+            var response = _mapper.Map<ServiceItemResponseDto>(serviceModel);
             return response;
         }
 
-        public async Task<List<ServiceResponseDto>> GetAllServicesAsync()
+        public async Task<List<ServiceItemResponseDto>> GetAllServicesAsync()
         {
             var services = await _serviceRepository.GetAllServicesAsync();
-            return _mapper.Map<List<ServiceResponseDto>>(services);
+            return _mapper.Map<List<ServiceItemResponseDto>>(services);
         }
 
-        public async Task<ServiceResponseDto> GetServiceByIdAsync(string id)
+        public async Task<ServiceItemResponseDto> GetServiceByIdAsync(string id)
         {
             var service = await _serviceRepository.GetServiceByIdAsync(id);
-            return _mapper.Map<ServiceResponseDto>(service);
+            return _mapper.Map<ServiceItemResponseDto>(service);
         }
 
-        public async Task UpdateServiceAsync(string id, ServiceRequestDto updatedService)
+        public async Task UpdateServiceAsync(string id, ServiceItemRequestDto updatedService)
         {
-            var serviceModel = _mapper.Map<ServiceModel>(updatedService);
+            var serviceModel = _mapper.Map<ServiceItem>(updatedService);
             await _serviceRepository.UpdateServiceAsync(id, serviceModel);
         }
 

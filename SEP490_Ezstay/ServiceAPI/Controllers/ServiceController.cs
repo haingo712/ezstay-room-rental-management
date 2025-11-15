@@ -13,9 +13,9 @@ namespace ServiceAPI.Controllers
     [ApiController]
     public class ServiceController : ControllerBase
     {
-        private readonly ISService _service;
+        private readonly IServiceItemService _service;
 
-        public ServiceController(ISService service)
+        public ServiceController(IServiceItemService service)
         {
             _service = service;
         }
@@ -23,7 +23,7 @@ namespace ServiceAPI.Controllers
         // POST: api/service/add
         [HttpPost("add")]
         [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> CreateService([FromBody] ServiceRequestDto request)
+        public async Task<IActionResult> CreateService([FromBody] ServiceItemRequestDto request)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace ServiceAPI.Controllers
         // PUT: api/service/update/{id}
         [HttpPut("update/{id}")]
         [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> UpdateService(string id, [FromBody] ServiceRequestDto updatedService)
+        public async Task<IActionResult> UpdateService(string id, [FromBody] ServiceItemRequestDto updatedService)
         {
             try
             {

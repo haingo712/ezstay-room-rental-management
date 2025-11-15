@@ -4,7 +4,7 @@ using SupportAPI.Enums;
 
 namespace SupportAPI.Model
 {
-    public class SupportModel
+    public class Support
     {
         [BsonId]
         [BsonGuidRepresentation(GuidRepresentation.Standard)]

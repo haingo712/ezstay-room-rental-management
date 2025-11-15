@@ -28,7 +28,7 @@ namespace SupportAPI.Service
 
         public async Task<SupportResponse> CreateAsync(CreateSupportRequest request)
         {
-            var support = _mapper.Map<SupportModel>(request);
+            var support = _mapper.Map<Support>(request);
             await _repository.CreateAsync(support);
             return _mapper.Map<SupportResponse>(support);
         }

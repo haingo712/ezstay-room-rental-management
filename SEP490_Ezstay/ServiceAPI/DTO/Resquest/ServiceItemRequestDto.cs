@@ -1,8 +1,8 @@
 ﻿namespace ServiceAPI.DTO.Resquest
 {
-    public class ServiceRequestDto
+    public class ServiceItemRequestDto
     {
         public string ServiceName { get; set; }
-        public double Price { get; set; }
+        public decimal Price { get; set; }
     }
 }

@@ -9,8 +9,8 @@ namespace ServiceAPI.Mapping
     {
         public ServiceProfile()
         {
-            CreateMap<ServiceRequestDto, ServiceModel>();
-            CreateMap<ServiceModel, ServiceResponseDto>();
+            CreateMap<ServiceItemRequestDto, ServiceItem>();
+            CreateMap<ServiceItem, ServiceItemResponseDto>();
         }
     }
 }
