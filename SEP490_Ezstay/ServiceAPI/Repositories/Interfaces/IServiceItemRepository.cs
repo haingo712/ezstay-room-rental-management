@@ -6,8 +6,8 @@ namespace ServiceAPI.Repositories.Interfaces
     {
         Task CreateServiceAsync(ServiceItem service);
         Task<List<ServiceItem>> GetAllServicesAsync();
-        Task<ServiceItem> GetServiceByIdAsync(string id);
-        Task UpdateServiceAsync(string id, ServiceItem updatedService);
-        Task DeleteServiceAsync(string id);
+        Task<ServiceItem> GetServiceByIdAsync(Guid id);
+        Task UpdateServiceAsync(Guid id, ServiceItem updatedService);
+        Task DeleteServiceAsync(Guid id);
     }
 }

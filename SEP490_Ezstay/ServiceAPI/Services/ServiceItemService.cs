@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using APIGateway.Helper.Interfaces;
+using AutoMapper;
 using ServiceAPI.DTO.Response;
 using ServiceAPI.DTO.Resquest;
 using ServiceAPI.Model;
@@ -11,12 +12,22 @@ namespace ServiceAPI.Service
     {
         private readonly IServiceItemRepository _serviceRepository;
         private readonly IMapper _mapper;
+        private readonly IUserClaimHelper _userClaimHelper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ServiceItemService(IServiceItemRepository serviceRepository, IMapper mapper)
+
+        public ServiceItemService(
+     IServiceItemRepository serviceRepository,
+     IMapper mapper,
+     IUserClaimHelper userClaimHelper,
+     IHttpContextAccessor httpContextAccessor)
         {
             _serviceRepository = serviceRepository;
             _mapper = mapper;
+            _userClaimHelper = userClaimHelper;
+            _httpContextAccessor = httpContextAccessor;
         }
+
 
         public async Task<ServiceItemResponseDto> CreateServiceAsync(ServiceItemRequestDto request)
         {
@@ -27,7 +38,10 @@ namespace ServiceAPI.Service
                 throw new ArgumentException("Price must be non-negative.");
 
             // Map từ RequestDTO -> Model
+           var user = _httpContextAccessor.HttpContext.User;
+            var userId = _userClaimHelper.GetUserId(user);
             var serviceModel = _mapper.Map<ServiceItem>(request);
+            serviceModel.OwnerId = userId;
 
             // Tạo service trong MongoDB
             await _serviceRepository.CreateServiceAsync(serviceModel);
@@ -43,19 +57,22 @@ namespace ServiceAPI.Service
             return _mapper.Map<List<ServiceItemResponseDto>>(services);
         }
 
-        public async Task<ServiceItemResponseDto> GetServiceByIdAsync(string id)
+        public async Task<ServiceItemResponseDto> GetServiceByIdAsync(Guid id)
         {
             var service = await _serviceRepository.GetServiceByIdAsync(id);
             return _mapper.Map<ServiceItemResponseDto>(service);
         }
 
-        public async Task UpdateServiceAsync(string id, ServiceItemRequestDto updatedService)
+        public async Task UpdateServiceAsync(Guid id, ServiceItemRequestDto updatedService)
         {
+            var user = _httpContextAccessor.HttpContext.User;
+            var userId = _userClaimHelper.GetUserId(user);
             var serviceModel = _mapper.Map<ServiceItem>(updatedService);
+            serviceModel.OwnerId = userId;
             await _serviceRepository.UpdateServiceAsync(id, serviceModel);
         }
 
-        public async Task DeleteServiceAsync(string id)
+        public async Task DeleteServiceAsync(Guid id)
         {
             await _serviceRepository.DeleteServiceAsync(id);
         }

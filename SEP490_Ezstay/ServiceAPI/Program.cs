@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using APIGateway.Helper;
+using APIGateway.Helper.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
@@ -19,6 +21,9 @@ builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(ServiceProfile));
 builder.Services.AddScoped<IServiceItemRepository, ServiceItemRepository>();
 builder.Services.AddScoped<IServiceItemService, ServiceItemService>();
+builder.Services.AddScoped<IUserClaimHelper, UserClaimHelper>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
@@ -44,7 +49,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "AmenityAPI", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ServiceAPI", Version = "v1" });
 
     // Thêm JWT Security
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
