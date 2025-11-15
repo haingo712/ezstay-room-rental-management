@@ -17,21 +17,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddGrpc();
-// Add services to the container.
-
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
 builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
-
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRoomAmenityRepository, RoomAmenityRepository>();
 builder.Services.AddScoped<IRoomAmenityService, RoomAmenityService>();
-
 var odatabuilder = new ODataConventionModelBuilder();
 odatabuilder.EntitySet<RoomAmenityResponse>("RoomAmenities");
 var odata = odatabuilder.GetEdmModel();
@@ -65,55 +54,59 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-            builder.Services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RoomAmenityAPI", Version = "v1" });
+ builder.Services.AddSwaggerGen(c =>
+ {
+     c.SwaggerDoc("v1", new OpenApiInfo { Title = "RoomAmenityAPI", Version = "v1" });
 
-                // Thêm JWT Security
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = @"Nhập vào JWT token theo định dạng: Bearer {token}",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
-                });
+     // Thêm JWT Security
+     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+     {
+         Description = @"Nhập vào JWT token theo định dạng: Bearer {token}",
+         Name = "Authorization",
+         In = ParameterLocation.Header,
+         Type = SecuritySchemeType.ApiKey,
+         Scheme = "Bearer"
+     });
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            },
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header,
-                        },
-                        new List<string>()
-                    }
-                });
-            });
-            
+     c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+     {
+         {
+             new OpenApiSecurityScheme
+             {
+                 Reference = new OpenApiReference
+                 {
+                     Type = ReferenceType.SecurityScheme,
+                     Id = "Bearer"
+                 },
+                 Scheme = "oauth2",
+                 Name = "Bearer",
+                 In = ParameterLocation.Header,
+             },
+             new List<string>()
+         }
+     });
+ });                                                                                      
 
-            var app = builder.Build();
+builder.Services.AddControllers();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-            app.UseHttpsRedirection();
+builder.Services.AddEndpointsApiExplorer();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+builder.Services.AddSwaggerGen();
 
+var app = builder.Build();
+// Configure the HTTP request pipeline.
 
-            app.MapControllers();
-            app.MapGrpcService<RoomAmenityGrpcService>();
-            app.Run();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+app.UseHttpsRedirection();
+app.UseAuthentication();
+
+app.UseAuthorization();
+app.MapControllers();
+
+app.Run();
