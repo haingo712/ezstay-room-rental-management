@@ -26,16 +26,15 @@ namespace RoomAmenityAPI.Controllers
         }
         [HttpGet]
         [EnableQuery]
-      //  [Authorize(Roles = "Staff")]
-        public IQueryable<RoomAmenityResponse> GetRoomAmenities( )
+        public IQueryable<RoomAmenityResponse> GetAll( )
         {
             return  _roomAmenityService.GetAll();
         }
-      
+        
         [Authorize(Roles = "Owner")]
-        [HttpGet("/odata/byRoomId/{roonId}")]
+        [HttpGet("/room-id/{roonId}")]
         [EnableQuery]
-        public IQueryable<RoomAmenityResponse> GetRoomAmenitiesByRoomIdOdata(Guid roonId)
+        public IQueryable<RoomAmenityResponse> GetRoomAmenitiesByRoomId(Guid roonId)
         {
             return  _roomAmenityService.GetAllByRoomId(roonId);
         }
@@ -43,43 +42,40 @@ namespace RoomAmenityAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<RoomAmenityResponse>> GetById(Guid id)
         {
-            var roomAmenity = await _roomAmenityService.GetByIdAsync(id);
+            var roomAmenity = await _roomAmenityService.GetById(id);
             return Ok(roomAmenity);
         }
-        // [Authorize(Roles = "Owner")]
-        [HttpGet("byRoomId/{roomId}")]
-        public async Task<ActionResult<RoomAmenityResponse>> GetRoomAmenitiesByRoomId(Guid roomId)
-        {
-            var roomAmenity = await _roomAmenityService.GetRoomAmenitiesByRoomIdAsync(roomId);
-            return Ok(roomAmenity);
-        }
-        
-        [HttpPost("{roomId}/amenity")]
+        // // [Authorize(Roles = "Owner")]
+        // [HttpGet("byRoomId/{roomId}")]
+        // public async Task<ActionResult<RoomAmenityResponse>> GetRoomAmenitiesByRoomId(Guid roomId)
+        // {
+        //     var roomAmenity = await _roomAmenityService.GetRoomAmenitiesByRoomIdAsync(roomId);
+        //     return Ok(roomAmenity);
+        // }
+        [HttpPut("{roomId}/amenities")]
         [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> Post(Guid roomId, List<CreateRoomAmenity> roomAmenity)
+        public async Task<IActionResult> SetRoomAmenities(Guid roomId, List<CreateRoomAmenity> roomAmenity)
         {
-            var createdRoomAmenity = await _roomAmenityService.AddAsync( roomId,roomAmenity);
+            var createdRoomAmenity = await _roomAmenityService.UpdateRoomAmenities( roomId,roomAmenity);
             if (!createdRoomAmenity.IsSuccess ) 
             {
                 return BadRequest(new { message = createdRoomAmenity.Message });
             }
-            return Ok(createdRoomAmenity);
-            // return CreatedAtAction("GetRoomAmenity", new { roomId = roomId }, createdRoomAmenity.Data);
+           // return Ok(createdRoomAmenity);
+             return CreatedAtAction("GetById", new { roomId = roomId }, createdRoomAmenity.Data);
         }
-        
         // amenity api dungf dder check khi delete
         [HttpGet("check-by-amenity/{amenityId}")]
-        public async Task<ActionResult<bool>> CheckAmenityUsage(Guid amenityId)
+        public async Task<ActionResult<bool>> CheckAmenity(Guid amenityId)
         {
             var isUsed = await _roomAmenityService.CheckAmenity(amenityId);
             return Ok(isUsed);
         }
-        // dung khi xoas room 
-        [HttpDelete("byRoomId/{roomId}")]
-        public async Task<IActionResult> DeleteAmenityByRoomId(Guid roomId)
-        {
-            var result = await _roomAmenityService.DeleteAmenityByRoomId(roomId);
-            return Ok(result);
-        }
+        // [HttpDelete("room-id/{roomId}")]
+        // public async Task<IActionResult> DeleteAmenityByRoomId(Guid roomId)
+        // {
+        //     var result = await _roomAmenityService.DeleteAmenityByRoomId(roomId);
+        //     return Ok(result);
+        // }
     }
 }

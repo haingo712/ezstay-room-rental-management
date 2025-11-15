@@ -17,20 +17,22 @@ public class RoomAmenityRepository:IRoomAmenityRepository
     
 
     public IQueryable<RoomAmenity> GetAll()=> _roomAmenities.AsQueryable();
+    public IQueryable<RoomAmenity> GetAllByRoomId(Guid roomId)
+    => _roomAmenities.AsQueryable().Where(a => a.RoomId == roomId);
 
-    public async Task<RoomAmenity?> GetById(Guid id)
+    public async Task<RoomAmenity> GetById(Guid id)
     {
         return await _roomAmenities.Find(r => r.Id == id).FirstOrDefaultAsync();
     }
-    public async Task<IEnumerable<RoomAmenity?>> GetRoomAmenitiesByRoomId(Guid roomId)
+    public async Task Add(IEnumerable<RoomAmenity> roomAmenities)
     {
-        return await _roomAmenities.Find(r => r.RoomId == roomId).ToListAsync();
+        await _roomAmenities.InsertManyAsync(roomAmenities);
     }
 
-    public async Task Add(RoomAmenity roomAmenity)
-    {
-        await _roomAmenities.InsertOneAsync(roomAmenity);
-    }
+    // public async Task Add(RoomAmenity roomAmenity)
+    // {
+    //     await _roomAmenities.InsertOneAsync(roomAmenity);
+    // }
 
     public Task<bool> AmenityIdExistsInRoom(Guid roomId, Guid amenityId)
     {
@@ -40,18 +42,14 @@ public class RoomAmenityRepository:IRoomAmenityRepository
 
     public async Task<bool> CheckAmenity(Guid amenityId)
     =>await _roomAmenities.Find(r => r.AmenityId == amenityId).AnyAsync();
+    // public async Task DeleteRange(IEnumerable<Guid> roomAmenityIds)
+    // {
+    //     if (!roomAmenityIds.Any()) return;
+    //     await _roomAmenities.DeleteManyAsync(r => roomAmenityIds.Contains(r.Id));
+    // }
 
-    public async  Task<bool> AmenityIdExistsInRoomAsync(Guid roomId, Guid amenityId)
-    =>    await _roomAmenities
-        .Find(r => r.RoomId == roomId && r.AmenityId == amenityId).AnyAsync();
-  
-    public async  Task Update(RoomAmenity roomAmenity)
-    {
-        await _roomAmenities.ReplaceOneAsync(r => r.Id == roomAmenity.Id, roomAmenity);
-    }
-    
-    public async Task Delete(RoomAmenity roomAmenity)
+    public async Task Delete(IEnumerable<Guid> roomAmenityId)
     { 
-        await _roomAmenities.DeleteOneAsync(r => r.Id == roomAmenity.Id);
+        await _roomAmenities.DeleteManyAsync(r => roomAmenityId.Contains(r.Id));
     }
 }
