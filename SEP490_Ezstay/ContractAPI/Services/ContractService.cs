@@ -79,36 +79,34 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
             {
                 var profile = _mapper.Map<IdentityProfile>(p);
                 profile.IsSigner = index == 0;
+                profile.ContractId = contract.Id;
                 return profile;
             }).ToList();
    
         var ownerProfile = await _accountService.GetProfileByUserId(ownerId);
         if (ownerProfile == null) 
             return ApiResponse<ContractResponse>.Fail("Không tìm thấy thông tin chủ trọ.");
-        
-      //  var ownerIdentity = _mapper.Map<IdentityProfile>(ownerProfile);
-    var ownerIdentity = new IdentityProfile
-    {
-        UserId = ownerProfile.UserId,
-        Avatar = ownerProfile.Avatar,
-        FullName = ownerProfile.FullName,
-        Phone = ownerProfile.Phone,
-        Email = ownerProfile.Email,
-        Gender = ownerProfile.Gender.ToString(),
-        Address = ownerProfile.DetailAddress,
-        IsSigner = true,
-        DateOfBirth = ownerProfile.DateOfBirth.Value,
-        // ProvinceId = ownerProfile.ProvinceId,
-       ProvinceName = ownerProfile.ProvinceName,
-       // WardId = ownerProfile.WardId,
-       WardName = ownerProfile.WardName, 
-       FrontImageUrl = ownerProfile.FrontImageUrl,
-       BackImageUrl =  ownerProfile.BackImageUrl,
-       TemporaryResidence = ownerProfile.TemporaryResidence,
-       CitizenIdNumber = ownerProfile.CitizenIdNumber,
-       CitizenIdIssuedDate= ownerProfile.CitizenIdIssuedDate.Value,
-       CitizenIdIssuedPlace = ownerProfile.CitizenIdIssuedPlace
-    };
+        var ownerIdentity = new IdentityProfile
+        {
+            UserId = ownerProfile.UserId,
+            ContractId = contract.Id,
+            Avatar = ownerProfile.Avatar,
+            FullName = ownerProfile.FullName,
+            Phone = ownerProfile.Phone,
+            Email = ownerProfile.Email,
+            Gender = ownerProfile.Gender.ToString(),
+            Address = ownerProfile.DetailAddress,
+            IsSigner = true,
+            DateOfBirth = ownerProfile.DateOfBirth.Value,
+            ProvinceName = ownerProfile.ProvinceName,
+            WardName = ownerProfile.WardName, 
+            FrontImageUrl = ownerProfile.FrontImageUrl,
+            BackImageUrl =  ownerProfile.BackImageUrl,
+            TemporaryResidence = ownerProfile.TemporaryResidence,
+            CitizenIdNumber = ownerProfile.CitizenIdNumber,
+            CitizenIdIssuedDate= ownerProfile.CitizenIdIssuedDate.Value,
+            CitizenIdIssuedPlace = ownerProfile.CitizenIdIssuedPlace
+        };
         ownerIdentity.IsSigner = true; 
         members.Add(ownerIdentity);
         contract.ProfilesInContract = members;
