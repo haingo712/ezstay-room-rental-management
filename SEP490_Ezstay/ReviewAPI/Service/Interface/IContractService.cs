@@ -3,7 +3,7 @@ using Shared.DTOs.Contracts.Responses;
 
 namespace ReviewAPI.Service.Interface;
 
-public interface IContractClientService
+public interface IContractService
 {
   //  Task<bool> CheckTenantHasContract(Guid tenantId,Guid roomId);
     Task<ContractResponse?> GetContractId(Guid contractId);

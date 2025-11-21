@@ -6,43 +6,43 @@ namespace ChatAPI.Repository;
 
 public class ChatMessageRepository:IChatMessageRepository
 {
-    private readonly IMongoCollection<ChatMessage> _chatMessage;
+    private readonly IMongoCollection<ChatMessage> _chatMessages;
     
     public ChatMessageRepository(IMongoDatabase database)
     {
-        _chatMessage = database.GetCollection<ChatMessage>("ChatMessages");
+        _chatMessages = database.GetCollection<ChatMessage>("ChatMessages");
     }
     public async Task<IEnumerable<ChatMessage>> GetByChatRoomId(Guid chatRoomId)
     {
-        return await _chatMessage.Find(m => m.ChatRoomId == chatRoomId)
+        return await _chatMessages.Find(m => m.ChatRoomId == chatRoomId)
             .SortBy(m => m.SentAt)
             .ToListAsync();
     }
 
-    public async Task<ChatMessage?> GetLastMessage(Guid roomId)
-    {
-        return await _chatMessage.Find(m => m.ChatRoomId == roomId)
-            .SortByDescending(m => m.SentAt)
-            .FirstOrDefaultAsync();
-    }
+    // public async Task<ChatMessage?> GetLastMessage(Guid roomId)
+    // {
+    //     return await _chatMessage.Find(m => m.ChatRoomId == roomId)
+    //         .SortByDescending(m => m.SentAt)
+    //         .FirstOrDefaultAsync();
+    // }
 
     public async Task<ChatMessage> GetById(Guid id)
-    => await _chatMessage.Find(m => m.Id == id).FirstOrDefaultAsync();
+    => await _chatMessages.Find(m => m.Id == id).FirstOrDefaultAsync();
     
 
     public async Task Add(ChatMessage chatMessage)
     {
-        await _chatMessage.InsertOneAsync(chatMessage);
+        await _chatMessages.InsertOneAsync(chatMessage);
     }
-    public async  Task Update(ChatMessage chatMessage)
-    {
-        await _chatMessage.ReplaceOneAsync(r => r.Id == chatMessage.Id, chatMessage);
-    }
+    // public async  Task Update(ChatMessage chatMessage)
+    // {
+    //     await _chatMessage.ReplaceOneAsync(r => r.Id == chatMessage.Id, chatMessage);
+    // }
 
    
     public async Task Delete(ChatMessage chatMessage)
     { 
-        await _chatMessage.DeleteOneAsync(r => r.Id == chatMessage.Id);
+        await _chatMessages.DeleteOneAsync(r => r.Id == chatMessage.Id);
     }
 
     public async Task MarkAsRead(Guid roomId, Guid receiverId)
@@ -53,6 +53,6 @@ public class ChatMessageRepository:IChatMessageRepository
             Builders<ChatMessage>.Filter.Eq(m => m.IsRead, false)
         );
         var update = Builders<ChatMessage>.Update.Set(m => m.IsRead, true);
-        await _chatMessage.UpdateManyAsync(filter, update);
+        await _chatMessages.UpdateManyAsync(filter, update);
     }
 }

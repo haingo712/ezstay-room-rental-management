@@ -16,17 +16,17 @@ public class ReviewService : IReviewService
 {
     private readonly IMapper _mapper;
     private readonly IReviewRepository _reviewRepository;
-    private readonly IContractClientService _contractClientService;
-    private readonly IPostClientService _postClientService;
-    private readonly IImageClientService _imageClient;
+    private readonly IContractService _contractService;
+    private readonly IRentalPostService _rentalPostService;
+    private readonly IImageService _image;
 
-    public ReviewService(IMapper mapper, IReviewRepository reviewRepository, IContractClientService contractClientService, IPostClientService postClientService, IImageClientService imageClient)
+    public ReviewService(IMapper mapper, IReviewRepository reviewRepository, IContractService contractService, IRentalPostService rentalPostService, IImageService image)
     {
         _mapper = mapper;
         _reviewRepository = reviewRepository;
-        _contractClientService = contractClientService;
-        _postClientService = postClientService;
-        _imageClient = imageClient;
+        _contractService = contractService;
+        _rentalPostService = rentalPostService;
+        _image = image;
     }
 
     public IQueryable<ReviewResponse> GetAll()
@@ -76,7 +76,7 @@ public class ReviewService : IReviewService
     // }
     public async Task<ApiResponse<ReviewResponse>> Add(Guid userId, Guid contractId, CreateReviewDto request)
     {
-        var contract = await _contractClientService.GetContractId(contractId);
+        var contract = await _contractService.GetContractId(contractId);
         if (contract == null)
             return ApiResponse<ReviewResponse>.Fail("Không tìm thấy hợp đồng.");
         var existingReview = await _reviewRepository.ReviewExistsByContractId(contractId);
@@ -91,13 +91,13 @@ public class ReviewService : IReviewService
         review.RoomId = contract.RoomId;
         review.IsHidden = false;
         review.CreatedAt = DateTime.UtcNow;
-        review.ImageUrl = _imageClient.UploadMultipleImage(request.ImageUrl).Result;
+        review.ImageUrl = _image.UploadMultipleImage(request.ImageUrl).Result;
         await _reviewRepository.Add(review);
         var dto = _mapper.Map<ReviewResponse>(review);
         return ApiResponse<ReviewResponse>.Success(dto, "Thêm review thành công");
     }
 
-    public async Task<ApiResponse<bool>> UpdateAsync(Guid id, Guid userId, UpdateReviewDto request)
+    public async Task<ApiResponse<bool>> Update(Guid id, Guid userId, UpdateReviewDto request)
     {
         var review = await _reviewRepository.GetById(id);
         if (review == null)
@@ -108,7 +108,7 @@ public class ReviewService : IReviewService
             return ApiResponse<bool>.Fail("K dc qua" + review.ReviewDeadline + " ngay");
         _mapper.Map(request, review);
         review.UpdatedAt = DateTime.UtcNow;
-        review.ImageUrl = _imageClient.UploadMultipleImage(request.ImageUrl).Result;
+        review.ImageUrl = _image.UploadMultipleImage(request.ImageUrl).Result;
         await _reviewRepository.Update(review);
 
         return ApiResponse<bool>.Success(true, "Cập nhật review thành công");
@@ -125,7 +125,7 @@ public class ReviewService : IReviewService
     }
 
 
-    public async Task DeleteAsync(Guid id)
+    public async Task Delete(Guid id)
     {
         var entity = await _reviewRepository.GetById(id);
         if (entity == null)
