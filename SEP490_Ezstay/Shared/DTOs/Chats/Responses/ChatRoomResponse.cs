@@ -9,6 +9,6 @@ public class ChatRoomResponse
     public Guid Id { get; set; } 
     public Guid OwnerId { get; set; } 
     public Guid UserId { get; set; } 
-    public AccountResponse User { get; set; }
-    public AccountResponse Owner { get; set; }
+    public ChatUserInfoResponse User { get; set; }
+    public ChatUserInfoResponse Owner { get; set; }
 }

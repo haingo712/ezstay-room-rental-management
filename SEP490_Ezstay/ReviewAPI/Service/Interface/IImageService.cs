@@ -1,6 +1,6 @@
 namespace ReviewAPI.Service.Interface;
 
-public interface IImageClientService
+public interface IImageService
 {
     Task<List<string>> UploadMultipleImage(IFormFileCollection files);
 }

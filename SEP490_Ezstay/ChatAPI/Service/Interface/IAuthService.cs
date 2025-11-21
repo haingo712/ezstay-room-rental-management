@@ -1,9 +1,10 @@
 using Shared.DTOs.Auths.Responses;
+using Shared.DTOs.Chats.Responses;
 
 namespace ChatAPI.Service.Interface;
 
 public interface IAuthService
 { 
-    Task<AccountResponse?> GetById(Guid accountId);
+    Task<ChatUserInfoResponse> GetById(Guid accountId);
     
 }   

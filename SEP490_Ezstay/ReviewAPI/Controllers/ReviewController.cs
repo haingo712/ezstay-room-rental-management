@@ -47,7 +47,7 @@ public class ReviewController(IReviewService _reviewService, ITokenService _toke
         var userId = _tokenService.GetUserIdFromClaims(User);
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var result = await _reviewService.UpdateAsync(id, userId, request);
+        var result = await _reviewService.Update(id, userId, request);
         if (!result.IsSuccess) return BadRequest(result);
 
         return Ok(result);

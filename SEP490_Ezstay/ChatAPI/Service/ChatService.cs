@@ -40,8 +40,9 @@ public class ChatService(
         await _chatMessageRepository.Delete(room);
         return ApiResponse<bool>.Success(true, "Delete Successfully");
     }
-    public async Task<ApiResponse<List<ChatMessageResponse>>> GetByChatRoomId(Guid chatRoomId)
+    public async Task<ApiResponse<List<ChatMessageResponse>>> GetByChatRoomId(Guid chatRoomId, Guid receiverId)
     {
+        await _chatMessageRepository.MarkAsRead(chatRoomId, receiverId);
         var messages = await _chatMessageRepository.GetByChatRoomId(chatRoomId);
         return ApiResponse<List<ChatMessageResponse>>.Success( _mapper.Map<List<ChatMessageResponse>>(messages), "ok");
     }
@@ -94,9 +95,8 @@ public class ChatService(
         {
             chatMessage.Image = new List<string>();
         }
-        
         await _chatMessageRepository.Add(chatMessage);
-        //   await _chatRoomRepository.UpdateLastMessageAt(chatRoomId, message.SentAt);
+        await _chatRoomRepository.UpdateLastMessageAt(chatRoomId, chatMessage.SentAt);
         return ApiResponse<ChatMessageResponse>.Success(_mapper.Map<ChatMessageResponse>(chatMessage),
             "Send Message Successfully");
     }
