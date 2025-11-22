@@ -17,7 +17,9 @@ namespace AccountAPI.Service.Interfaces
         Task<bool> UpdateEmailAsync(string currentEmail, string newEmail, string otp);
         Task<UserResponseDTO> GetPhone(string phone);
         Task<UserResponseDTO> GetCitizenIdNumber(string citizenIdNumber);
-        
+        Task<bool> CheckProfileAsync(Guid id);
+
+
 
     }
 

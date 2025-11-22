@@ -11,13 +11,13 @@ namespace AccountAPI.Controllers
 {
     [Route("api/User")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class ProfileController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IUserClaimHelper _userClaimHelper;
         private readonly IAuthApiClient _authApiClient;
 
-        public AccountController(IUserService userService, IUserClaimHelper userClaimHelper, IAuthApiClient authApiClient)
+        public ProfileController(IUserService userService, IUserClaimHelper userClaimHelper, IAuthApiClient authApiClient)
         {
             _userService = userService;
             _userClaimHelper = userClaimHelper;
@@ -149,5 +149,17 @@ namespace AccountAPI.Controllers
                 ? Ok(ApiResponse<string>.Ok(null, message))
                 : BadRequest(ApiResponse<string>.Fail(message));
         }
+
+        [HttpGet("check-profile")]
+        public async Task<IActionResult> CheckProfile(Guid id)
+        {
+            bool isValid = await _userService.CheckProfileAsync(id);
+
+            return Ok(new
+            {
+                IsValid = isValid
+            });
+        }
+
     }
 }

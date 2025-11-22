@@ -48,42 +48,51 @@ namespace AccountAPI.Service
 
         public async Task<bool> CreateProfileAsync(Guid id, UserDTO userDto)
         {
+            // Lấy thông tin user từ Auth API
             var existingPhone = await _authApiClient.GetByIdAsync(id);
-            if (existingPhone != null)
+            if (existingPhone == null)
             {
-                   var existingUser = await _userRepository.GetByUserIdAsync(id);
-                if (existingUser != null)
-                {
-                    return false; // User profile already exists
-                }
+                Console.WriteLine($"User {id} không tồn tại trong Auth API");
+                return false; // Hoặc ném exception tùy logic
             }
+
+            // Kiểm tra xem profile đã tồn tại trong DB local chưa
+            var existingUser = await _userRepository.GetByUserIdAsync(id);
+            if (existingUser != null)
+            {
+                Console.WriteLine($"Profile của user {id} đã tồn tại");
+                return false;
+            }
+
+            // Map từ DTO sang entity
             var user = _mapper.Map<User>(userDto);
             user.Id = id;
             user.FullName = existingPhone.FullName;
             user.Phone = existingPhone.Phone;
             user.Email = existingPhone.Email;
+
+            // Upload ảnh nếu có
             if (userDto.Avatar != null)
-            {
-                var avatarUrl = await _imageService.UploadImageAsync(userDto.Avatar);
-                user.Avatar = avatarUrl;
-            }
+                user.Avatar = await _imageService.UploadImageAsync(userDto.Avatar);
 
             if (userDto.FrontImageUrl != null)
-            {
-                var frontUrl = await _imageService.UploadImageAsync(userDto.FrontImageUrl);
-                user.FrontImageUrl = frontUrl;
-            }
-            if (userDto.BackImageUrl != null)
-            {
-                var backUrl = await _imageService.UploadImageAsync(userDto.BackImageUrl);
-                user.BackImageUrl = backUrl;
-            }
+                user.FrontImageUrl = await _imageService.UploadImageAsync(userDto.FrontImageUrl);
 
-            user.ProvinceName = await GetProvinceNameAsync(user.ProvinceId) ?? "";
-            user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
-          await _userRepository.CreateUserAsync(user);
+            if (userDto.BackImageUrl != null)
+                user.BackImageUrl = await _imageService.UploadImageAsync(userDto.BackImageUrl);
+
+            // Lấy tên tỉnh và xã nếu có
+            if (!string.IsNullOrEmpty(user.ProvinceId))
+                user.ProvinceName = await GetProvinceNameAsync(user.ProvinceId) ?? "";
+
+            if (!string.IsNullOrEmpty(user.WardId) && !string.IsNullOrEmpty(user.ProvinceId))
+                user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
+
+            // Lưu profile mới vào DB
+            await _userRepository.CreateUserAsync(user);
             return true;
         }
+
 
         public async Task<UserResponseDTO?> GetProfileAsync(Guid userId)
         {
@@ -206,6 +215,25 @@ namespace AccountAPI.Service
             var result = await _userRepository.GetCitizenIdNumber(citizenIdNumber);
             return _mapper.Map<UserResponseDTO>(result);
            
+        }
+
+        public async Task<bool> CheckProfileAsync(Guid id)
+        {
+            var user = await _userRepository.GetByUserIdAsync(id);
+            if (user == null) return false;
+
+            bool isValid =
+                !string.IsNullOrWhiteSpace(user.FullName) &&
+                !string.IsNullOrWhiteSpace(user.Phone) &&
+                !string.IsNullOrWhiteSpace(user.Avatar) &&
+                user.DateOfBirth != default &&
+                !string.IsNullOrWhiteSpace(user.CitizenIdNumber) &&
+                user.CitizenIdIssuedDate != default &&
+                !string.IsNullOrWhiteSpace(user.CitizenIdIssuedPlace) &&
+                !string.IsNullOrWhiteSpace(user.FrontImageUrl) &&
+                !string.IsNullOrWhiteSpace(user.BackImageUrl);
+
+            return isValid;
         }
     }
 }
