@@ -9,7 +9,7 @@ namespace AuthApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ApiExplorerSettings(IgnoreApi = true)]
+
     public class OwnerRequestController : ControllerBase
     {
         private readonly IOwnerRequestService _service;

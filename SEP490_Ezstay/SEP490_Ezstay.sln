@@ -42,8 +42,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoogleMapAPI", "GoogleMapAP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentAPI", "PaymentAPI\PaymentAPI.csproj", "{57AC7EE4-6001-4996-904C-32E3F8C54CD4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagerAPI", "UserManagerAPI\UserManagerAPI.csproj", "{D67B53F6-BFF1-4BF2-9D89-0275148D3173}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationAPI", "NotificationAPI\NotificationAPI.csproj", "{4507CEDC-2655-4DB9-8299-EAAFA1DD5125}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FavoritePostAPI", "FavoritePostAPI\FavoritePostAPI.csproj", "{8F902F76-5BFA-47B0-9B8D-2CCFAE3388AB}"
@@ -62,7 +60,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UtilityBillAPI", "UtilityBi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceAPI", "ServiceAPI\ServiceAPI.csproj", "{663CD693-34F9-4AC1-97AF-996AB2FD62E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SupportAPI", "SupportAPI\SupportAPI.csproj", "{DF682A95-E95D-4484-80AA-D3CB9614515C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SupportAPI", "SupportAPI\SupportAPI.csproj", "{DF682A95-E95D-4484-80AA-D3CB9614515C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -138,10 +136,6 @@ Global
 		{57AC7EE4-6001-4996-904C-32E3F8C54CD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57AC7EE4-6001-4996-904C-32E3F8C54CD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57AC7EE4-6001-4996-904C-32E3F8C54CD4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D67B53F6-BFF1-4BF2-9D89-0275148D3173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D67B53F6-BFF1-4BF2-9D89-0275148D3173}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D67B53F6-BFF1-4BF2-9D89-0275148D3173}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D67B53F6-BFF1-4BF2-9D89-0275148D3173}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4507CEDC-2655-4DB9-8299-EAAFA1DD5125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4507CEDC-2655-4DB9-8299-EAAFA1DD5125}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4507CEDC-2655-4DB9-8299-EAAFA1DD5125}.Release|Any CPU.ActiveCfg = Release|Any CPU

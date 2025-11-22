@@ -14,8 +14,6 @@ namespace AccountAPI.Service
         {
             _http = http;
             _http = factory.CreateClient("Gateway");
-
-
         }
     
         public async Task<bool> ConfirmOtpAsync(string email, string otp)
@@ -28,6 +26,7 @@ namespace AccountAPI.Service
 
             return response.IsSuccessStatusCode;
         }
+
         public async Task<bool> UpdateEmailAsync(string oldEmail, string newEmail)
         {
             var response = await _http.PutAsJsonAsync("/api/Auth/update-email", new

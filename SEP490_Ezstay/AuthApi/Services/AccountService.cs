@@ -23,7 +23,8 @@ namespace AuthApi.Services
             _repo = repo;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
-      
+        
+       
         }
 
         private RoleEnum GetCurrentUserRole()
@@ -46,7 +47,7 @@ namespace AuthApi.Services
 
             var currentRole = GetCurrentUserRole();
 
-      
+
             return _mapper.Map<AccountResponse>(acc);
         }
 
@@ -111,7 +112,7 @@ namespace AuthApi.Services
             {
                 (RoleEnum.Admin, RoleEnum.Staff) => true,
                 (RoleEnum.Staff, RoleEnum.Owner) => true,
-               
+
                 (RoleEnum.Staff, RoleEnum.User) => true,
                 _ => false
             };
@@ -120,7 +121,7 @@ namespace AuthApi.Services
                 throw new UnauthorizedAccessException("Bạn không có quyền tạo tài khoản với vai trò này.");
 
             var existing = await _repo.GetByEmailAsync(request.Email);
-                if (existing != null)
+            if (existing != null)
                 throw new InvalidOperationException("Email đã tồn tại.");
 
             var account = _mapper.Map<Account>(request);
@@ -134,16 +135,16 @@ namespace AuthApi.Services
         }
 
 
-    public async Task<bool> UpdateFullNameAsync(Guid id, string fullName)
-    {
-    var acc = await _repo.GetByIdAsync(id);
-    if (acc == null) return false;
+        public async Task<bool> UpdateFullNameAsync(Guid id, string fullName)
+        {
+            var acc = await _repo.GetByIdAsync(id);
+            if (acc == null) return false;
 
-    acc.FullName = fullName; // ✅ chỉ cập nhật 1 field
+            acc.FullName = fullName; // ✅ chỉ cập nhật 1 field
 
-    var updated = await _repo.UpdateAsync(acc);
-    return updated != null;
-    }
+            var updated = await _repo.UpdateAsync(acc);
+            return updated != null;
+        }
 
 
 

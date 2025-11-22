@@ -2,6 +2,7 @@
 using AuthApi.DTO.Response;
 using AuthApi.Services;
 using AuthApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Enums;
 using System.Security.Claims;
@@ -10,7 +11,6 @@ namespace AuthApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ApiExplorerSettings(IgnoreApi = true)]
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService _service;
@@ -21,6 +21,7 @@ namespace AuthApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetAll()
         {
             var accounts = await _service.GetAllAsync();
@@ -48,7 +49,11 @@ namespace AuthApi.Controllers
             return Ok(acc);
         }
 
+      
+
+
         [HttpPost]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Create([FromBody] AccountRequest request)
         {
             var created = await _service.CreateAsync(request);
@@ -56,6 +61,7 @@ namespace AuthApi.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Update(Guid id, [FromBody] AccountRequest request)
         {
             var updated = await _service.UpdateAsync(id, request);
@@ -71,6 +77,7 @@ namespace AuthApi.Controllers
         }
 
         [HttpPatch("{id}/ban")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Ban(Guid id)
         {
             await _service.BanAsync(id);
@@ -78,6 +85,7 @@ namespace AuthApi.Controllers
         }
 
         [HttpPatch("{id}/unban")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Unban(Guid id)
         {
             await _service.UnbanAsync(id);
@@ -96,6 +104,7 @@ namespace AuthApi.Controllers
 
 
         [HttpPut("change-password")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest dto)
         {
             // Không lấy từ Claim nữa, dùng dto.Email luôn
