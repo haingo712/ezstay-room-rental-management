@@ -16,14 +16,14 @@ public class ReviewReplyService: IReviewReplyService
     private readonly IMapper _mapper;
     private readonly IReviewReplyRepository _reviewReplyRepository;
    
-    private readonly IImageClientService _imageClient;
+    private readonly IImageService _image;
     private readonly IReviewService _reviewService;
 
-    public ReviewReplyService(IMapper mapper, IReviewReplyRepository reviewReplyRepository, IImageClientService imageClient, IReviewService reviewService)
+    public ReviewReplyService(IMapper mapper, IReviewReplyRepository reviewReplyRepository, IImageService image, IReviewService reviewService)
     {
         _mapper = mapper;
         _reviewReplyRepository = reviewReplyRepository;
-        _imageClient = imageClient;
+        _image = image;
         _reviewService = reviewService;
     }
 
@@ -44,7 +44,7 @@ public class ReviewReplyService: IReviewReplyService
         reviewReply.CreatedAt = DateTime.UtcNow;
         reviewReply.ReviewId = reviewId;
         reviewReply.OwnerId = ownerId;
-        _imageClient.UploadMultipleImage(request.Image);
+        _image.UploadMultipleImage(request.Image);
         await _reviewReplyRepository.Add(reviewReply);
        
         var dto = _mapper.Map<ReviewReplyResponse>(reviewReply);
@@ -66,7 +66,7 @@ public class ReviewReplyService: IReviewReplyService
         reviewReply.UpdatedAt = DateTime.UtcNow;
        
         _reviewReplyRepository.Update(reviewReply);
-        _imageClient.UploadMultipleImage(request.Image);
+        _image.UploadMultipleImage(request.Image);
         return ApiResponse<bool>.Success(true, "Update ReviewReply Successfully");
     }
 

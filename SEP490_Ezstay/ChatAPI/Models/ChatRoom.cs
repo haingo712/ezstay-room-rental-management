@@ -15,4 +15,5 @@ public class ChatRoom
 
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid UserId { get; set; } 
+    public DateTime LastSentAt { get; set; }
 }

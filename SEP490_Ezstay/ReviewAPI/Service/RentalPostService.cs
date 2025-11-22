@@ -5,11 +5,11 @@ using Shared.DTOs;
 
 namespace ReviewAPI.Service;
 
-public class PostClientService : IPostClientService
+public class RentalPostService : IRentalPostService
 {
     private readonly HttpClient _httpClient;
 
-    public PostClientService(HttpClient httpClient)
+    public RentalPostService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }

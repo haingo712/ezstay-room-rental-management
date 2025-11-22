@@ -30,7 +30,7 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IReviewReplyService, ReviewReplyService>();
 builder.Services.AddScoped<IReviewReplyRepository, ReviewReplyRepository>();
-builder.Services.AddHttpClient<IImageClientService, ImageClientService >(client =>
+builder.Services.AddHttpClient<IImageService, ImageService >(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]); 
 });
@@ -46,11 +46,11 @@ builder.Services.AddHttpClient<IImageClientService, ImageClientService >(client 
 //     client.BaseAddress = new Uri(serviceUrls["RoomAmenityApi"]);
 // });
 
-builder.Services.AddHttpClient<IContractClientService, ContractClientService>(client =>
+builder.Services.AddHttpClient<IContractService, ContractService>(client =>
 { 
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ContractApi"]);
 });
-builder.Services.AddHttpClient<IPostClientService, PostClientService>(client =>
+builder.Services.AddHttpClient<IRentalPostService, RentalPostService>(client =>
 { 
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RentalPostApi"]);
 });

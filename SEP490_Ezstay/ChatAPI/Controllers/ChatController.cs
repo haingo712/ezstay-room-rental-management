@@ -18,11 +18,15 @@ public class ChatController : ControllerBase
         _chatService = chatService;
         _tokenService = tokenService;
     }
+
     [Authorize(Roles = "User, Owner")]
     [HttpGet("messages/{chatRoomId}")]
     public async Task<IActionResult> GetMessagesByChatRoomId(Guid chatRoomId)
-        => Ok(await _chatService.GetByChatRoomId(chatRoomId));
-    
+    {
+        var receiverId= _tokenService.GetUserIdFromClaims(User);
+       return Ok(await _chatService.GetByChatRoomId(chatRoomId, receiverId));
+    }
+
     [Authorize(Roles = "Owner, User")]
     [HttpGet]
     public async Task<IActionResult> GetAllChatRoom()

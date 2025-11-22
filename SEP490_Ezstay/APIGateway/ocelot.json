@@ -165,11 +165,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Amenity/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7111
+          "Host": "amenityapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Amenity/{everything}",
@@ -623,6 +623,6 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:7000"
+    "BaseUrl": "http://localhost:7001"
   }
 }

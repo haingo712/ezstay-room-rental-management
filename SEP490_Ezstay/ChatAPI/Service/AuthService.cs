@@ -1,6 +1,7 @@
 using ChatAPI.Service.Interface;
 using Shared.DTOs;
 using Shared.DTOs.Auths.Responses;
+using Shared.DTOs.Chats.Responses;
 
 namespace ChatAPI.Service;
 
@@ -13,7 +14,7 @@ public class AuthService:IAuthService
         _httpClient = httpClient;
     }
     
-    public async Task<AccountResponse?> GetById(Guid accountId)
+    public async Task<ChatUserInfoResponse> GetById(Guid accountId)
     {
         var response = await _httpClient.GetAsync($"api/Accounts/{accountId}");
 
@@ -21,7 +22,7 @@ public class AuthService:IAuthService
         // {
         //     return null;
         // }
-        var apiResponse = await response.Content.ReadFromJsonAsync<AccountResponse>();
+        var apiResponse = await response.Content.ReadFromJsonAsync<ChatUserInfoResponse>();
         return apiResponse;
     }
 }
