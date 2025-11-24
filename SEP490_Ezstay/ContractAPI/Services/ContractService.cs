@@ -1,7 +1,6 @@
 using System.Text.Json;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using ContractAPI.APIs.Interfaces;
 using ContractAPI.DTO.Requests;
 using ContractAPI.DTO.Response;
 using ContractAPI.Model;
@@ -15,12 +14,25 @@ using IdentityProfileResponse = Shared.DTOs.Contracts.Responses.IdentityProfileR
 
 namespace ContractAPI.Services;
 
-public class ContractService(IMapper _mapper,IContractRepository _contractRepository,IRoomClientService _roomClient,
-    IImageClientService _imageClient,
-    IAccountService _accountService,
-    IUtilityReadingService utilityReadingService
-) : IContractService
+public class ContractService : IContractService
 {
+    
+    private readonly IMapper _mapper;
+    private readonly IContractRepository _contractRepository;
+    private readonly IRoomService _roomService;
+    private readonly IImageService _imageService;
+    private readonly IAccountService _accountService;
+    private readonly IUtilityReadingService _utilityReadingService;
+
+    public ContractService(IMapper mapper, IContractRepository contractRepository, IRoomService roomService, IImageService imageService, IAccountService accountService, IUtilityReadingService utilityReadingService)
+    {
+        _mapper = mapper;
+        _contractRepository = contractRepository;
+        _roomService = roomService;
+        _imageService = imageService;
+        _accountService = accountService;
+        _utilityReadingService = utilityReadingService;
+    }
     // public IQueryable<ContractResponse> GetAllByTenantId(Guid tenantId)
     //     => _contractRepository.GetAllQueryable()
     //                           .Where(x => x.SignerProfile.TenantId == tenantId).OrderByDescending(d => d.CreatedAt)
@@ -28,7 +40,6 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
     public IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId)
         => _contractRepository.GetAllByOwnerId(ownerId).OrderByDescending(d => d.CreatedAt)
                               .ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
-    
 
     public async Task<ContractResponse?> GetByIdAsync(Guid id)
     {
@@ -39,9 +50,8 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
             response.IdentityProfiles = contract.ProfilesInContract
                 .Select(p => _mapper.Map<IdentityProfileResponse>(p))
                 .ToList();
-            Console.WriteLine("cccc "+  utilityReadingService.GetLastestReading(contract.RoomId, UtilityType.Electric));
-            response.ElectricityReading = await utilityReadingService.GetLastestReading(contract.RoomId, UtilityType.Electric);
-            response.WaterReading = await utilityReadingService.GetLastestReading(contract.RoomId, UtilityType.Water);
+            response.ElectricityReading = await _utilityReadingService.GetLastestReading(contract.RoomId, UtilityType.Electric);
+            response.WaterReading = await _utilityReadingService.GetLastestReading(contract.RoomId, UtilityType.Water);
             return response;
     }
   //  => _mapper.Map<ContractResponse>(await _contractRepository.GetByIdAsync(id));
@@ -56,7 +66,7 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
         if (request.CheckoutDate < request.CheckinDate.AddMonths(1))
             return ApiResponse<ContractResponse>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
         
-        var room = await _roomClient.GetRoomByIdAsync(request.RoomId);
+        var room = await _roomService.GetRoomByIdAsync(request.RoomId);
         if (room == null)
             return ApiResponse<ContractResponse>.Fail("Không tìm thấy phòng");
         if (room.RoomStatus == RoomStatus.Occupied)
@@ -64,7 +74,6 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
         
         var contract = _mapper.Map<Contract>(request);
         
-        // contract.OwnerId = ownerId;
         contract.CreatedAt = DateTime.UtcNow;
         
         contract.ServiceInfors = request.ServiceInfors
@@ -88,7 +97,7 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
             return ApiResponse<ContractResponse>.Fail("Không tìm thấy thông tin chủ trọ.");
         var ownerIdentity = new IdentityProfile
         {
-            UserId = ownerProfile.UserId,
+            UserId = ownerProfile.Id,
             ContractId = contract.Id,
             Avatar = ownerProfile.Avatar,
             FullName = ownerProfile.FullName,
@@ -97,22 +106,22 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
             Gender = ownerProfile.Gender.ToString(),
             Address = ownerProfile.DetailAddress,
             IsSigner = true,
-            DateOfBirth = ownerProfile.DateOfBirth.Value,
+            DateOfBirth = ownerProfile.DateOfBirth,
             ProvinceName = ownerProfile.ProvinceName,
             WardName = ownerProfile.WardName, 
             FrontImageUrl = ownerProfile.FrontImageUrl,
             BackImageUrl =  ownerProfile.BackImageUrl,
             TemporaryResidence = ownerProfile.TemporaryResidence,
             CitizenIdNumber = ownerProfile.CitizenIdNumber,
-            CitizenIdIssuedDate= ownerProfile.CitizenIdIssuedDate.Value,
+            CitizenIdIssuedDate= ownerProfile.CitizenIdIssuedDate,
             CitizenIdIssuedPlace = ownerProfile.CitizenIdIssuedPlace
         };
         ownerIdentity.IsSigner = true; 
         members.Add(ownerIdentity);
         contract.ProfilesInContract = members;
         var saveContract =await _contractRepository.AddAsync(contract);
-        var createUtility = await utilityReadingService.Add(contract.RoomId,  UtilityType.Water, request.WaterReading);
-        var createUtiliyw = await utilityReadingService.Add(contract.RoomId,  UtilityType.Electric, request.ElectricityReading);
+        var createUtility = await _utilityReadingService.Add(contract.RoomId,  UtilityType.Water, request.WaterReading);
+        var createUtiliyw = await _utilityReadingService.Add(contract.RoomId,  UtilityType.Electric, request.ElectricityReading);
         var result = _mapper.Map<ContractResponse>(saveContract);
         result.WaterReading = createUtility.Data;
         result.ElectricityReading = createUtiliyw.Data;
@@ -130,7 +139,7 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
         contract.ContractStatus = ContractStatus.Cancelled;
         contract.UpdatedAt = DateTime.UtcNow;
         contract.Reason = reason;
-        await _roomClient.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Available);
+        await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Available);
         await _contractRepository.UpdateAsync(contract);
         var dto = _mapper.Map<ContractResponse>(contract);
         return ApiResponse<ContractResponse>.Success(dto, "Huỷ hợp đồng thành công");
@@ -161,10 +170,9 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
                 }).ToList();
 
             contract.ProfilesInContract = members;
-            // contract.SignerProfile = members.First(p => p.IsSigner);
         }
-            await utilityReadingService.Update(contract.RoomId, UtilityType.Electric, request.ElectricityReading);
-            await utilityReadingService.Update(contract.RoomId, UtilityType.Water, request.WaterReading);
+            await _utilityReadingService.Update(contract.RoomId, UtilityType.Electric, request.ElectricityReading);
+            await _utilityReadingService.Update(contract.RoomId, UtilityType.Water, request.WaterReading);
 
         if (contract.ContractStatus == ContractStatus.Active)
             return ApiResponse<bool>.Fail("K the cập nhật vì contract đã kí tên r");
@@ -215,12 +223,12 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
         if (contract == null)
             return ApiResponse<List<string>>.Fail("Không tìm thấy hợp đồng");
         
-        var uploadedUrls = await _imageClient.UploadMultipleImage(images);
+        var uploadedUrls = await _imageService.UploadMultipleImage(images);
         contract.ContractImage = uploadedUrls;
         contract.ContractUploadedAt = DateTime.UtcNow;
         contract.ContractStatus = ContractStatus.Active;
         await _contractRepository.UpdateAsync(contract);
-        await _roomClient.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
+        await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
         return ApiResponse<List<string>>.Success(uploadedUrls, "Upload ảnh scan hợp đồng thành công");
     }
 
@@ -253,7 +261,7 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
         {
             contract.ContractStatus = ContractStatus.Active;
             contract.UpdatedAt = DateTime.UtcNow;
-            await _roomClient.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
+            await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
         }
         await _contractRepository.UpdateAsync(contract);
         var result = _mapper.Map<ContractResponse>(contract);

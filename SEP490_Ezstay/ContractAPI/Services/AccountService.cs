@@ -6,8 +6,15 @@ using Shared.DTOs.Contracts.Responses;
 
 namespace ContractAPI.Services;
 
-public class AccountService(IHttpContextAccessor _httpContextAccessor,HttpClient _httpClient):IAccountService
+public class AccountService:IAccountService
 {
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly HttpClient _httpClient;
+
+    public AccountService(IHttpContextAccessor httpContextAccessor, HttpClient httpClient) {
+        _httpContextAccessor = httpContextAccessor;
+        _httpClient = httpClient;
+    }
 
 
     private void AttachBearerTokenIfExists()
@@ -20,7 +27,7 @@ public class AccountService(IHttpContextAccessor _httpContextAccessor,HttpClient
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token.Replace("Bearer ", ""));
     } 
-    public async Task<AccountResponse> GetProfileByUserId(Guid userId)
+    public async Task<ProfileResponse> GetProfileByUserId(Guid userId)
     {
       //  AttachBearerTokenIfExists();
       // var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
@@ -40,7 +47,7 @@ public class AccountService(IHttpContextAccessor _httpContextAccessor,HttpClient
             if (!response.IsSuccessStatusCode) return null;
 
             var content = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<AccountResponse>(content);
+            return JsonConvert.DeserializeObject<ProfileResponse>(content);
     }
 
 }

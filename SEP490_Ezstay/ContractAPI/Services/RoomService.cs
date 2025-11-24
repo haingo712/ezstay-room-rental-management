@@ -7,11 +7,11 @@ using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 namespace ContractAPI.Services;
 
-public class RoomClientService : IRoomClientService
+public class RoomService : IRoomService
 {
     private readonly HttpClient _httpClient;
 
-    public RoomClientService(HttpClient httpClient)
+    public RoomService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }

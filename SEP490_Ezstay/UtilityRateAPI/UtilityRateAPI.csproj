@@ -28,9 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-
-        <Protobuf Include="..\UtilityRate.GrpcContracts\Protos\utilityrate.proto"
-                  GrpcServices="Server" />
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>

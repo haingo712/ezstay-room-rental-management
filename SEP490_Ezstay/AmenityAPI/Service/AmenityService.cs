@@ -9,12 +9,18 @@ using Shared.DTOs.Amenities.Responses;
 using Shared.DTOs;
 
 namespace AmenityAPI.Service; 
-public class AmenityService(
-    IMapper _mapper,
-    IAmenityRepository _amenityRepository,
-    IImageService _imageClient,
-    IRoomAmenityService _roomAmenityService
-    ): IAmenityService {
+public class AmenityService : IAmenityService{
+    private readonly IMapper _mapper;
+    private readonly IAmenityRepository _amenityRepository;
+    private readonly IImageService _imageClient;
+    private readonly IRoomAmenityService _roomAmenityService;
+
+    public AmenityService(IMapper mapper, IAmenityRepository amenityRepository, IImageService imageClient, IRoomAmenityService roomAmenityService) {
+        _mapper = mapper;
+        _amenityRepository = amenityRepository;
+        _imageClient = imageClient;
+        _roomAmenityService = roomAmenityService;
+    }
       public IQueryable<AmenityResponse> GetAll()
       {
           var amenity = _amenityRepository.GetAll();

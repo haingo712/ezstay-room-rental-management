@@ -1,6 +1,5 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using RoomAPI.APIs.Interfaces;
 using RoomAPI.DTO.Request;
 using Shared.Enums;
 using RoomAPI.Model;
@@ -12,15 +11,32 @@ using Shared.DTOs.Rooms.Responses;
 
 namespace RoomAPI.Service;
 
-public class RoomService(
-    IRoomRepository _roomRepository,
-    IRoomAmenityClientService _roomAmenityClient,
-    IAmenityClientService _amenityClient,
-    IImageService _imageService,
-    IRentalPostService _rentalPostService,
-    IContractService _contractService,
-    IMapper _mapper
-) : IRoomService{
+public class RoomService: IRoomService{
+    private readonly IRoomRepository _roomRepository;
+    private readonly IRoomAmenityService _roomAmenity;
+    private readonly IAmenityService _amenity;
+    private readonly IImageService _imageService;
+    private readonly IRentalPostService _rentalPostService;
+    private readonly IContractService _contractService;
+    private readonly IMapper _mapper;
+
+    public RoomService(
+        IRoomRepository roomRepository,
+        IRoomAmenityService roomAmenity,
+        IAmenityService amenity,
+        IImageService imageService,
+        IRentalPostService rentalPostService,
+        IContractService contractService,
+        IMapper mapper)
+    {
+        _roomRepository = roomRepository;
+        _roomAmenity = roomAmenity;
+        _amenity = amenity;
+        _imageService = imageService;
+        _rentalPostService = rentalPostService;
+        _contractService = contractService;
+        _mapper = mapper;
+    }
     public IQueryable<RoomResponse> GetAllStatusActiveByHouseId(Guid houseId)
     {
         var rooms = _roomRepository. GetAllStatusActiveByHouseId(houseId, RoomStatus.Available);
@@ -86,7 +102,7 @@ public class RoomService(
         if (checkContract)
             return  ApiResponse<bool>.Fail("Can not delete room because it has contracts.");
         
-        await _roomAmenityClient.DeleteAmenityByRoomId(room.Id);
+       // await _roomAmenity.DeleteAmenityByRoomId(room.Id);
         await _roomRepository.Delete(room);
         
         return ApiResponse<bool>.Success(true, "Delete Successfully");
