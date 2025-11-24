@@ -15,7 +15,9 @@ namespace RentalPostsAPI.Service.Interface
         Task<RentalpostDTO?> GetByIdAsync(Guid id);
         Task<RentalpostDTO?> UpdateAsync(Guid id, UpdateRentalPostDTO dto);
         Task<bool> DeleteAsync(Guid id, Guid deletedBy);
-
+        Task<IEnumerable<RentalpostDTO>> GetPendingPostsAsync();
+        Task<bool> ApprovePostAsync(Guid postId, Guid staffId);
+        Task<bool> RejectPostAsync(Guid postId, Guid staffId);
         Task<Guid?> GetPostIdByRoomIdAsync(Guid roomId);
         // Task<IEnumerable<RentalpostDTO>> GetByRoomIdAsync(Guid roomId);
     }
