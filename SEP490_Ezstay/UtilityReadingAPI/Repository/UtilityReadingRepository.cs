@@ -16,23 +16,28 @@ public class UtilityReadingRepository:IUtilityReadingRepository
         _utilityReadings=database.GetCollection<UtilityReading>("UtilityReadings");
     }
 
-    public IQueryable<UtilityReading> GetAllAsQueryable()=> _utilityReadings.AsQueryable();
-    public async Task<UtilityReading?> GetLatestReading(Guid roomId, UtilityType type)
+    public IQueryable<UtilityReading> GetAll()=> _utilityReadings.AsQueryable();
+    public IQueryable<UtilityReading> GetAllByContractId(Guid contractId)
+    {
+        return  _utilityReadings.AsQueryable().Where(x => x.ContractId == contractId);
+    }
+
+    public async Task<UtilityReading?> GetLatestReading(Guid contractId, UtilityType type)
     {
      return  await _utilityReadings
          .AsQueryable()
-         .Where(r => r.RoomId == roomId && r.Type == type)
+         .Where(r => r.ContractId == contractId && r.Type == type)
          .OrderByDescending(r => r.ReadingDate)
          .FirstOrDefaultAsync();
     }
 
-    public async Task<bool> ExistsUtilityReadingInMonthAsync(Guid roomId, UtilityType type, DateTime readingDate)
+    public async Task<bool> ExistsUtilityReadingInMonthAsync(Guid contractId, UtilityType type, DateTime readingDate)
     {
         var startOfMonth = new DateTime(readingDate.Year, readingDate.Month, 1);
         var endOfMonth = startOfMonth.AddMonths(1).AddTicks(-1); 
 //var endOfMonth = new DateTime(readingDate.Year, readingDate.Month, DateTime.DaysInMonth(readingDate.Year, readingDate.Month), 23, 59, 59, 999);
         var filter = Builders<UtilityReading>.Filter.And(
-            Builders<UtilityReading>.Filter.Eq(r => r.RoomId, roomId),
+            Builders<UtilityReading>.Filter.Eq(r => r.ContractId, contractId),
             Builders<UtilityReading>.Filter.Eq(r => r.Type, type),
             Builders<UtilityReading>.Filter.Gte(r => r.ReadingDate, startOfMonth),
             Builders<UtilityReading>.Filter.Lte(r => r.ReadingDate, endOfMonth)

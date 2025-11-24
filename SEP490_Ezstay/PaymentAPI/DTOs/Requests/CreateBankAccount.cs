@@ -5,7 +5,7 @@ namespace PaymentAPI.DTOs.Requests;
 public class CreateBankAccount
 {
     [Required]
-    public string BankName { get; set; }
+    public Guid BankGatewayId { get; set; }
     [Required]
     public string AccountNumber { get; set; }
    

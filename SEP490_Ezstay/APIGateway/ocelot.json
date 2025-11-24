@@ -1,13 +1,12 @@
 {
   "Routes": [
-    
     {
       "DownstreamPathTemplate": "/api/Mail/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7125
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Mail/{everything}",
@@ -24,11 +23,11 @@
     },
     {
       "DownstreamPathTemplate": "/odata/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7006
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/odata/{everything}",
@@ -42,11 +41,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Chat/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7140
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Chat/{everything}",
@@ -63,11 +62,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/BankGateWay/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7212
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/BankGateWay/{everything}",
@@ -84,11 +83,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/BankAccount/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7212
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/BankAccount/{everything}",
@@ -106,11 +105,11 @@
    
     {
       "DownstreamPathTemplate": "/api/Payment/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7212
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Payment/{everything}",
@@ -123,11 +122,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Contract/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7153
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Contract/{everything}",
@@ -144,11 +143,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/User/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7211
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/User/{everything}",
@@ -185,32 +184,12 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/RentalRequest/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7171
-        }
-      ],
-      "UpstreamPathTemplate": "/api/RentalRequest/{everything}",
-      "UpstreamHttpMethod": [
-        "POST",
-        "GET",
-        "PUT",
-        "DELETE"
-      ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      }
-    },
-    {
       "DownstreamPathTemplate": "/api/Auth/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7009
+          "Host": "authapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Auth/{everything}",
@@ -223,11 +202,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Accounts/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7009
+          "Host": "accountapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Accounts/{everything}",
@@ -240,11 +219,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/OwnerRequest/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7009
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/OwnerRequest/{everything}",
@@ -257,11 +236,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/signalR",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7123
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/signalR",
@@ -272,11 +251,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/RoomAmenity/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7152
+          "Host": "roomamenityapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/RoomAmenity/{everything}",
@@ -293,11 +272,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Rooms/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7086
+          "Host": "roomapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Rooms/{everything}",
@@ -314,11 +293,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/BoardingHouses/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7186
+          "Host": "boardinghouseapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/BoardingHouses/{everything}",
@@ -335,11 +314,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/RentalPosts/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7145
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/RentalPosts/{everything}",
@@ -360,7 +339,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7160
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/UtilityRate/{everything}",
@@ -381,7 +360,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7006
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/UtilityReading/{everything}",
@@ -402,7 +381,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7008
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/UtilityBills/{everything}",
@@ -419,11 +398,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Image/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7080
+          "Host": "imageapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Image/{everything}",
@@ -472,7 +451,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7037
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Review/{everything}",
@@ -493,7 +472,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7037
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/ReviewReply/{everything}",
@@ -514,7 +493,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7074
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/ReviewReport/{everything}",
@@ -530,34 +509,12 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/TestAccount/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7139
-        }
-      ],
-      "UpstreamPathTemplate": "/api/TestAccount/{everything}",
-      "UpstreamHttpMethod": [
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE",
-        "PATCH"
-      ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
-    },
-    {
       "DownstreamPathTemplate": "/api/Notification/{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7278
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Notification/{everything}",
@@ -579,7 +536,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7206
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Service/{everything}",
@@ -589,8 +546,5 @@
         "AllowedScopes": []
       }
     }
-  ],
-  "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:7001"
-  }
+  ]
 }

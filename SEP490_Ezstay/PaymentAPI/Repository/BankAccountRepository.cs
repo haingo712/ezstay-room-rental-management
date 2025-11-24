@@ -7,23 +7,32 @@ namespace PaymentAPI.Repository;
 
 public class BankAccountRepository:IBankAccountRepository
 {
-    private readonly IMongoCollection<BankAccount> _collection;
+    private readonly IMongoCollection<BankAccount> _bankAccounts;
     
     public BankAccountRepository(IMongoDatabase database)
     {
-        _collection= database.GetCollection<BankAccount>("BankAccounts");
+        _bankAccounts= database.GetCollection<BankAccount>("BankAccounts");
     }
 
-    public IQueryable<BankAccount> GetAllAsQueryable(Guid userId)=> _collection.AsQueryable().Where(x => x.UserId == userId);
+    public IQueryable<BankAccount> GetAll(Guid userId)=> _bankAccounts.AsQueryable().Where(x => x.UserId == userId);
     
     public IQueryable<BankAccount> GetDefaultByUserId(Guid userId)
     {
-        return  _collection.AsQueryable().Where(a => a.UserId == userId && a.IsActive);
+        return  _bankAccounts.AsQueryable().Where(a => a.UserId == userId && a.IsActive);
     }
-    
+
+    public async Task<bool> CheckExistsBankAccount(Guid userId, Guid bankGatewayId, string accountNumber)
+    {
+       return  await _bankAccounts.Find(a =>
+               a.UserId == userId &&
+               a.BankGatewayId == bankGatewayId &&
+               a.AccountNumber == accountNumber)
+           .AnyAsync();
+    }
+
     public async Task<BankAccount?> GetById(Guid id)
     {
-      return await _collection.Find(a => a.Id == id).FirstOrDefaultAsync();
+      return await _bankAccounts.Find(a => a.Id == id).FirstOrDefaultAsync();
     }
    
 
@@ -47,14 +56,14 @@ public class BankAccountRepository:IBankAccountRepository
 
     public async Task Add(BankAccount bankAccount)
     {
-        await _collection.InsertOneAsync(bankAccount);
+        await _bankAccounts.InsertOneAsync(bankAccount);
     }
     
     public async Task Update(BankAccount bankAccount)
     {
-        await _collection.ReplaceOneAsync(a => a.Id == bankAccount.Id, bankAccount);
+        await _bankAccounts.ReplaceOneAsync(a => a.Id == bankAccount.Id, bankAccount);
     }
-    public async Task Delete(BankAccount bankAccount)=> await   _collection.DeleteOneAsync(a => a.Id == bankAccount.Id);
+    public async Task Delete(BankAccount bankAccount)=> await   _bankAccounts.DeleteOneAsync(a => a.Id == bankAccount.Id);
     
     
 

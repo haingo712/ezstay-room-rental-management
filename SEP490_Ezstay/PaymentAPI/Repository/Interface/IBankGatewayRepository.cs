@@ -5,10 +5,12 @@ namespace PaymentAPI.Repository.Interface;
 public interface IBankGatewayRepository
 {
     Task<BankGateway> GetById(Guid id);
-    Task AddMany(IEnumerable<BankGateway> bankGateway);
-    Task Update(BankGateway bankGateway);
-  //  Task<List<BankGateway>> GetAll();
-    Task ClearAll();
     IQueryable<BankGateway> GetAll();
-  
+    Task Update(BankGateway bankGateway);
+    Task AddMany(IEnumerable<BankGateway> bankGateway);
+    IQueryable<BankGateway> GetAllActiveBankGateway();
+
+
+
+
 }

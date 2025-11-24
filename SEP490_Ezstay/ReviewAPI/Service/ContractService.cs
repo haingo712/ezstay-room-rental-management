@@ -20,7 +20,7 @@ public class ContractService: IContractService
     //     var result = await response.Content.ReadAsStringAsync();
     //     return bool.Parse(result);
     // }
-    public async Task<ContractResponse?> GetContractId(Guid contractId)
+    public async Task<ContractResponse> GetContractId(Guid contractId)
     {
         var response = await _httpClient.GetAsync($"/api/Contract/{contractId}");
         if (!response.IsSuccessStatusCode) return null;

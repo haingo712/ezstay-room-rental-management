@@ -1,6 +1,5 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using ReviewAPI.APIs.Interfaces;
 using ReviewAPI.DTO.Requests.ReviewReply;
 using ReviewAPI.DTO.Response;
 using ReviewAPI.DTO.Response.ReviewReply;
@@ -27,7 +26,7 @@ public class ReviewReplyService: IReviewReplyService
         _reviewService = reviewService;
     }
 
-    public IQueryable<ReviewReplyResponse> GetAllQueryable()
+    public IQueryable<ReviewReplyResponse> GetAll()
     => _reviewReplyRepository.GetAll().ProjectTo<ReviewReplyResponse>(_mapper.ConfigurationProvider);
 
     public async Task<ReviewReplyResponse?> GetByIdAsync(Guid id)
@@ -37,9 +36,9 @@ public class ReviewReplyService: IReviewReplyService
 
     public async Task<ApiResponse<ReviewReplyResponse>> Add(Guid reviewId, Guid ownerId, CreateReviewReplyRequest request)
     {
-        var review = await _reviewService.GetById(reviewId);
-        if (review == null)
-            return ApiResponse<ReviewReplyResponse>.Fail("Không tìm thấy.");
+        // var review = await _reviewService.GetById(reviewId);
+        // if (review == null)
+        //     return ApiResponse<ReviewReplyResponse>.Fail("Không tìm thấy.");
         var reviewReply = _mapper.Map<ReviewReply>(request);
         reviewReply.CreatedAt = DateTime.UtcNow;
         reviewReply.ReviewId = reviewId;
@@ -48,7 +47,7 @@ public class ReviewReplyService: IReviewReplyService
         await _reviewReplyRepository.Add(reviewReply);
        
         var dto = _mapper.Map<ReviewReplyResponse>(reviewReply);
-        return ApiResponse<ReviewReplyResponse>.Success(dto, "Add ReviewReply Successfully");
+        return ApiResponse<ReviewReplyResponse>.Success(dto, "Reply Successfully");
     }
 
     public async Task<ReviewReplyResponse> GetReplyByReviewIdAsync(Guid reviewId)
@@ -67,14 +66,14 @@ public class ReviewReplyService: IReviewReplyService
        
         _reviewReplyRepository.Update(reviewReply);
         _image.UploadMultipleImage(request.Image);
-        return ApiResponse<bool>.Success(true, "Update ReviewReply Successfully");
+        return ApiResponse<bool>.Success(true, "Update Successfully");
     }
 
     public async Task Delete(Guid id)
     {
-        var entity = await _reviewReplyRepository.GetById(id);
-        if (entity == null)
-            throw new KeyNotFoundException("ReviewId not found");
+        // var entity = await _reviewReplyRepository.GetById(id);
+        // if (entity == null)
+        //     throw new KeyNotFoundException("ReviewId not found");
         // var userId = GetUserIdFromToken();
         // if (entity.UserId != userId)
         //     throw new UnauthorizedAccessException("Bạn không có quyền xóa review này");

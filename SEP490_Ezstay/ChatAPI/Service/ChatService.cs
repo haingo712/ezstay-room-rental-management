@@ -10,17 +10,24 @@ namespace ChatAPI.Service;
 
 
 
-public class ChatService(
-    IChatRoomRepository _chatRoomRepository,
-    IAuthService _authService,
-    IChatMessageRepository _chatMessageRepository,
-    IMapper _mapper,
-    IImageService _imageService
-    ): IChatService
+public class ChatService: IChatService
 {
-    public async Task<ApiResponse<ChatRoomResponse>> Add(Guid ownerId, Guid userId)
+    private readonly IChatRepository _chatRepository;
+    private readonly IAuthService _authService;
+    private readonly  IImageService _imageService;
+    private readonly IMapper _mapper;
+
+    public ChatService(IChatRepository chatRepository, IAuthService authService, IImageService imageService, IMapper mapper)
     {
-        var existing = await _chatRoomRepository.GetByOwnerAndUsers(ownerId, userId);
+        _chatRepository = chatRepository;
+        _authService = authService;
+        _imageService = imageService;
+        _mapper = mapper;
+    }
+
+    public async Task<ApiResponse<ChatRoomResponse>> CreateChatRoom(Guid ownerId, Guid userId)
+    {
+        var existing = await _chatRepository.GetByOwnerAndUsers(ownerId, userId);
         if (existing != null)
             return ApiResponse<ChatRoomResponse>.Success(_mapper.Map<ChatRoomResponse>(existing), "");
         var chatRoom = new ChatRoom
@@ -28,27 +35,27 @@ public class ChatService(
             OwnerId = ownerId,
             UserId = userId,
         };
-        var result= await _chatRoomRepository.Add(chatRoom);
+        var result= await _chatRepository.CreateChatRoom(chatRoom);
         return ApiResponse<ChatRoomResponse>.Success(   _mapper.Map<ChatRoomResponse>(result),"ok");
     }
     
     public async Task<ApiResponse<bool>> Delete(Guid chatMessageId)
     {
-        var room = await _chatMessageRepository.GetById(chatMessageId);
+        var room = await _chatRepository.GetById(chatMessageId);
         if (room==null) 
             throw new KeyNotFoundException("Not found");
-        await _chatMessageRepository.Delete(room);
+        await _chatRepository.Delete(room);
         return ApiResponse<bool>.Success(true, "Delete Successfully");
     }
     public async Task<ApiResponse<List<ChatMessageResponse>>> GetByChatRoomId(Guid chatRoomId, Guid receiverId)
     {
-        await _chatMessageRepository.MarkAsRead(chatRoomId, receiverId);
-        var messages = await _chatMessageRepository.GetByChatRoomId(chatRoomId);
+        await _chatRepository.MarkAsRead(chatRoomId, receiverId);
+        var messages = await _chatRepository.GetByChatRoomId(chatRoomId);
         return ApiResponse<List<ChatMessageResponse>>.Success( _mapper.Map<List<ChatMessageResponse>>(messages), "ok");
     }
     public async Task<ApiResponse<List<ChatRoomResponse>>> GetAllChatRoom(Guid accountId)
     {
-      var chatRooms = await _chatRoomRepository.GetAllChatRoom(accountId);
+      var chatRooms = await _chatRepository.GetAllChatRoom(accountId);
       var tasks = chatRooms.Select(async room =>
       {
           var response = _mapper.Map<ChatRoomResponse>(room);
@@ -78,9 +85,9 @@ public class ChatService(
 
     public async Task<ApiResponse<ChatMessageResponse>> SendMessage(Guid chatRoomId, Guid senderId, CreateChatMessage request)
     {
-        var chatMessage1 = await _chatMessageRepository.GetByChatRoomId(chatRoomId);
-        if (chatMessage1 == null)
-            throw new KeyNotFoundException("ChatRoom not found");
+        // var chatMessage1 = await _chatRepository.GetByChatRoomId(chatRoomId);
+        // if (chatMessage1 == null)
+        //     throw new KeyNotFoundException("ChatRoom not found");
         var chatMessage = _mapper.Map<ChatMessage>(request);
         chatMessage.ChatRoomId = chatRoomId;
         chatMessage.SentAt = DateTime.UtcNow;
@@ -95,8 +102,8 @@ public class ChatService(
         {
             chatMessage.Image = new List<string>();
         }
-        await _chatMessageRepository.Add(chatMessage);
-        await _chatRoomRepository.UpdateLastMessageAt(chatRoomId, chatMessage.SentAt);
+        await _chatRepository.AddMessage(chatMessage);
+        await _chatRepository.UpdateLastMessage(chatRoomId, chatMessage.SentAt);
         return ApiResponse<ChatMessageResponse>.Success(_mapper.Map<ChatMessageResponse>(chatMessage),
             "Send Message Successfully");
     }

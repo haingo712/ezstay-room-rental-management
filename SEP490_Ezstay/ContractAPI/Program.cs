@@ -39,7 +39,7 @@ builder.Services.AddHttpClient<IAccountService, AccountService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:AccountApi"]);
 });
-builder.Services.AddHttpClient<IUtilityReadingClientService, UtilityReadingClientService>(client =>
+builder.Services.AddHttpClient<IUtilityReadingService, UtilityReadingService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:UtilityReadingApi"]);
 });

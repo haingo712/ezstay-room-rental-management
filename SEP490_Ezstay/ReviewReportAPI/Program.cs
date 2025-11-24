@@ -6,8 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
-using ReviewAPI.Service;
-using ReviewAPI.Service.Interface;
 using ReviewReportAPI.DTO.Response;
 using ReviewReportAPI.Profiles;
 using ReviewReportAPI.Repository;
@@ -21,14 +19,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 var mongoClient = new MongoClient(builder.Configuration["ConnectionStrings:ConnectionString"]);
 builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["ConnectionStrings:DatabaseName"]));
-builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IReviewReportRepository, ReviewReportRepository>();
 builder.Services.AddScoped<IReviewReportService, ReviewReportService>();
-builder.Services.AddHttpClient<IReviewClientService, ReviewClientService>(client =>
+builder.Services.AddHttpClient<IReviewService, ReviewService>(client =>
 { 
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ReviewApi"]);
 });
-builder.Services.AddHttpClient<IImageClientService, ImageClientService>(client =>
+builder.Services.AddHttpClient<IImageService, ImageService>(client =>
 { 
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ImageApi"]);
 });

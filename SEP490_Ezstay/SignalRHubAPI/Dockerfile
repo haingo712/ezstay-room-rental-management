@@ -1,5 +1,4 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
@@ -11,11 +10,11 @@ COPY ["SignalRHubAPI/SignalRHubAPI.csproj", "SignalRHubAPI/"]
 RUN dotnet restore "SignalRHubAPI/SignalRHubAPI.csproj"
 COPY . .
 WORKDIR "/src/SignalRHubAPI"
-RUN dotnet build "./SignalRHubAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "SignalRHubAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./SignalRHubAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "SignalRHubAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

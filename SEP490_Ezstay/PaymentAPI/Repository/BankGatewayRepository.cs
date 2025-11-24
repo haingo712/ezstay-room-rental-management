@@ -5,39 +5,34 @@ using PaymentAPI.Repository.Interface;
 namespace PaymentAPI.Repository;
 
 public class BankGatewayRepository : IBankGatewayRepository
-    {
-    private readonly IMongoCollection<BankGateway> _collection;
+{
+    private readonly IMongoCollection<BankGateway> _bankGateways;
 
     public BankGatewayRepository(IMongoDatabase database)
     {
-        _collection = database.GetCollection<BankGateway>("BankGateways");
+        _bankGateways = database.GetCollection<BankGateway>("BankGateways");
     }
     public async Task<BankGateway> GetById(Guid id)
     {
-        return await _collection.Find(a => a.Id == id).FirstOrDefaultAsync();
+        return await _bankGateways.Find(a => a.Id == id).FirstOrDefaultAsync();
     }
 
     public async Task AddMany(IEnumerable<BankGateway> gateways)
     {
-        await _collection.InsertManyAsync(gateways);
+        await _bankGateways.InsertManyAsync(gateways);
     }
     public async Task Update(BankGateway bankGateway)
     {
-        await _collection.ReplaceOneAsync(a => a.Id == bankGateway.Id, bankGateway);
+        await _bankGateways.ReplaceOneAsync(a => a.Id == bankGateway.Id, bankGateway);
     }
-
-    // public async Task<List<BankGateway>> GetAll()
-    // {
-    //     return await _collection.Find(_ => true).ToListAsync();
-    // }
-    public IQueryable<BankGateway> GetAll()
+    public IQueryable<BankGateway> GetAllActiveBankGateway()
     {
-        return _collection.AsQueryable();
+        return _bankGateways.AsQueryable()
+            .Where(x => x.IsActive);
     }
     
-    public async Task ClearAll()
+    public IQueryable<BankGateway> GetAll()
     {
-        await _collection.DeleteManyAsync(_ => true);
+        return _bankGateways.AsQueryable();
     }
-
 }

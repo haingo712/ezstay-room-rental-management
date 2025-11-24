@@ -16,7 +16,7 @@ namespace RoomAPI.Model
         public Guid HouseId { get; set; }
         public List<string> ImageUrl { get; set;}
         public string RoomName { get; set;} 
-        public decimal? Area { get; set; }
+        public decimal Area { get; set; }
         public decimal Price { get; set; }
         public RoomStatus RoomStatus { get; set; }
         public DateTime CreatedAt { get; set; }
