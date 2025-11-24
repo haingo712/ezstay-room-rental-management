@@ -6,32 +6,32 @@ namespace ReviewReportAPI.Repository;
 
 public class ReviewReportRepository : IReviewReportRepository
 {
-    private readonly IMongoCollection<ReviewReport> _collection;
+    private readonly IMongoCollection<ReviewReport> _reviewReport;
 
     public ReviewReportRepository(IMongoDatabase database)
     {
-        _collection = database.GetCollection<ReviewReport>("ReviewReports");
+        _reviewReport = database.GetCollection<ReviewReport>("ReviewReports");
     }
 
     public async Task Add(ReviewReport report)
     {
-        await _collection.InsertOneAsync(report);
+        await _reviewReport.InsertOneAsync(report);
     }
 
     public async Task<ReviewReport> GetById(Guid id)
     {
-        return await _collection.Find(r => r.Id == id).FirstOrDefaultAsync();
+        return await _reviewReport.Find(r => r.Id == id).FirstOrDefaultAsync();
     }
 
-    public IQueryable<ReviewReport> GetAll() => _collection.AsQueryable();
+    public IQueryable<ReviewReport> GetAll() => _reviewReport.AsQueryable();
     
 
     public async Task Update(ReviewReport report)
     {
-        await _collection.ReplaceOneAsync(r => r.Id == report.Id, report);
+        await _reviewReport.ReplaceOneAsync(r => r.Id == report.Id, report);
     }
-    public async Task Delete(ReviewReport report)
-    {
-        await _collection.DeleteOneAsync(r => r.Id == report.Id);
-    }
+    // public async Task Delete(ReviewReport report)
+    // {
+    //     await _collection.DeleteOneAsync(r => r.Id == report.Id);
+    // }
 }

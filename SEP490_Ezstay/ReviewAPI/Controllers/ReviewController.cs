@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using ReviewAPI.DTO.Requests;
 using ReviewAPI.DTO.Response;
+using ReviewAPI.Repository.Interface;
 using ReviewAPI.Service;
 using ReviewAPI.Service.Interface;
 using Shared.DTOs;
@@ -12,14 +13,30 @@ namespace ReviewAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ReviewController(IReviewService _reviewService, ITokenService _tokenService) : ControllerBase
+public class ReviewController : ControllerBase
 {
+    private readonly IReviewService _reviewService;
+    private readonly ITokenService _tokenService;
+
+    public ReviewController(IReviewService reviewService, ITokenService tokenService)
+    {
+        _reviewService = reviewService;
+        _tokenService = tokenService;
+    }
+    // [HttpGet]
+    // [EnableQuery]
+    // public IQueryable<ReviewResponse> GetAll()
+    // {
+    //     return _reviewService.GetAll();
+    //     
+    // }
     
     [HttpGet]
     [EnableQuery]
-    public IQueryable<ReviewResponse> GetAll()
+    public IQueryable<ReviewResponse> GetAllByOwnerId()
     {
-        return _reviewService.GetAll();
+        var ownerId = _tokenService.GetUserIdFromClaims(User);
+        return _reviewService.GetAllByOwnerId(ownerId);
     }
 
     [HttpGet("{id}")]
@@ -31,7 +48,7 @@ public class ReviewController(IReviewService _reviewService, ITokenService _toke
     
     [Authorize(Roles = "User")]
     [HttpPost("{contractId}")]
-    public async Task<IActionResult> Create(Guid contractId, [FromForm] CreateReviewDto request)
+    public async Task<IActionResult> Create(Guid contractId, [FromForm] CreateReviewRequest request)
     {
         var userId = _tokenService.GetUserIdFromClaims(User);
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -42,7 +59,7 @@ public class ReviewController(IReviewService _reviewService, ITokenService _toke
 
     [Authorize(Roles = "User")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromForm] UpdateReviewDto request)
+    public async Task<IActionResult> Update(Guid id, [FromForm] UpdateReviewRequest request)
     {
         var userId = _tokenService.GetUserIdFromClaims(User);
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -52,7 +69,8 @@ public class ReviewController(IReviewService _reviewService, ITokenService _toke
 
         return Ok(result);
     }
-    //  [Authorize(Roles = "Staff")]
+    
+    [Authorize(Roles = "Staff")]
     [HttpPut("{id}/hide/{hide}")]
     public async Task<IActionResult> HideReview(Guid id, bool hide)
     {
@@ -62,14 +80,6 @@ public class ReviewController(IReviewService _reviewService, ITokenService _toke
 
         return Ok(result);
     }
-
-    // [Authorize(Roles = "Staff")]
-    // [HttpDelete("{id}")]
-    // public async Task<IActionResult> Delete(Guid id)
-    // {
-    //     await _reviewService.DeleteAsync(id);
-    //     return NoContent();
-    // }
    
     [HttpGet("{contractId}/check-exists")]
     public async Task<IActionResult> ReviewExistsByContractId(Guid contractId)

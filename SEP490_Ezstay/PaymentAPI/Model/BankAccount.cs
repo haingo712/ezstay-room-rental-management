@@ -11,8 +11,9 @@ public class BankAccount
     
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid UserId { get; set; } 
+    [BsonGuidRepresentation(GuidRepresentation.Standard)]
     
-    public string BankName { get; set; }
+    public Guid BankGatewayId { get; set; }
     public string AccountNumber { get; set; }
     public decimal Amount { get; set; }
     public string Description { get; set; }

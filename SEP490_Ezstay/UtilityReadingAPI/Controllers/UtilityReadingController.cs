@@ -5,7 +5,6 @@ using Shared.DTOs.UtilityReadings.Responses;
 using Shared.Enums;
 using UtilityReadingAPI.DTO.Request;
 using UtilityReadingAPI.Service.Interface;
-
 namespace UtilityReadingAPI.Controllers;
 
 [Route("api/[controller]")]
@@ -18,21 +17,30 @@ public class UtilityReadingController : ControllerBase
     {
         _utilityReadingService = utilityReadingService;
     }
-
-    [HttpGet("/odata/{roomId}")]
+    
+    [HttpGet("{contractId}")]
+    [Authorize(Roles = "Owner")]
     [EnableQuery]
-    public IQueryable<UtilityReadingResponse> GetUtilityReadingByRoomId(Guid roomId, UtilityType utilityType)
+    public IQueryable<UtilityReadingResponse> GetUtilityReadingByRoomId(Guid contractId, UtilityType utilityType)
     {
 
-        return _utilityReadingService.GetAllByOwnerId(roomId, utilityType);
+        return _utilityReadingService.GetAllByOwnerId(contractId, utilityType);
     }
     
-    [HttpGet("latest/{roomId}/{utilityType}")]
-    public async Task<IActionResult> GetLatestUtilityReadingByRoomAndType(Guid roomId, UtilityType utilityType)
+    [HttpGet("all/{contractId}")]
+    [Authorize(Roles = "Owner")]
+    [EnableQuery]
+    public IQueryable<UtilityReadingResponse> GetAllUtilityReadingByContractId(Guid contractId)
+    {
+
+        return _utilityReadingService.GetAllByContractId(contractId);
+    }
+    [HttpGet("latest/{contractId}/{utilityType}")]
+    public async Task<IActionResult> GetLatestUtilityReadingByRoomAndType(Guid contractId, UtilityType utilityType)
     {        
         try
         {
-            var result =await _utilityReadingService.GetLastestReading(roomId, utilityType);
+            var result =await _utilityReadingService.GetLastestReading(contractId, utilityType);
             return Ok(result);
         }
         catch (KeyNotFoundException e)
@@ -40,14 +48,14 @@ public class UtilityReadingController : ControllerBase
             return NotFound(new { message = e.Message });
         }
     }
-
-    // GET: api/Amenity/5
     [HttpGet("{id}")]
+    [Authorize(Roles = "Owner, User")]
+    
     public async Task<ActionResult<UtilityReadingResponse>> GetById(Guid id)
     {
         try
         {
-            var result = await _utilityReadingService.GetByIdAsync(id);
+            var result = await _utilityReadingService.GetById(id);
             return Ok(result);
         }
         catch (KeyNotFoundException e)
@@ -55,54 +63,14 @@ public class UtilityReadingController : ControllerBase
             return NotFound(new { message = e.Message });
         }
     }
-
-
-    // [HttpPost("{roomId}")]
-    // [Authorize(Roles = "Owner")]
-    // public async Task<ActionResult<UtilityReadingResponse>> PostUtilityReading(Guid roomId, CreateUtilityReading request)
-    // {
-    //     try
-    //     {
-    //         var create = await _utilityReadingService.AddAsync(roomId, request);
-    //         if (!create.IsSuccess)
-    //         {
-    //             return BadRequest(new { message = create.Message });
-    //         }
-    //         return CreatedAtAction("GetById", new { id = create.Data.Id }, create);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return Conflict(new { message = e.Message });
-    //     }
-    // }
-  
-   
-    [HttpPost("{roomId}/utilitytype/{utilityType}/contract")]
-    public async Task<ActionResult<UtilityReadingResponse>> AddUtilityReadindContract(Guid roomId,UtilityType utilityType , CreateUtilityReadingContract request)
-    {
-        try
-        {
-            var result = await _utilityReadingService.AddUtilityReadingContract(roomId, utilityType, request);
-            if (!result.IsSuccess)
-            {
-                return BadRequest(new { message = result.Message });
-            }
-
-            return Ok(result);
-        }
-        catch (Exception e)
-        {
-            return Conflict(new { message = e.Message });
-        }
-    }
-
-    [HttpPost("{roomId}/utilitytype/{utilityType}")]
+    
+    [HttpPost("{contractId}/utilitytype/{utilityType}")]
     [Authorize(Roles = "Owner")]
-    public async Task<ActionResult<UtilityReadingResponse>> Post(Guid roomId, UtilityType utilityType, CreateUtilityReadingContract request)
+    public async Task<ActionResult<UtilityReadingResponse>> Post(Guid contractId, UtilityType utilityType, CreateUtilityReadingContract request)
     {
         try
         {
-            var create = await _utilityReadingService.AddAsync(roomId, utilityType, request);
+            var create = await _utilityReadingService.Add(contractId, utilityType, request);
             if (!create.IsSuccess)
             {
                 return BadRequest(new { message = create.Message });
@@ -114,15 +82,14 @@ public class UtilityReadingController : ControllerBase
             return Conflict(new { message = e.Message });
         }
     }
-
-    // PUT: api/Amenity/5
+    
     [HttpPut("{id}")]
     [Authorize(Roles = "Owner")]
     public async Task<IActionResult> Put(Guid id, UpdateUtilityReading request)
     {
         try
         {
-            var update = await _utilityReadingService.UpdateAsync(id, request);
+            var update = await _utilityReadingService.Update(id, request);
             if (!update.IsSuccess)
             {
                 return BadRequest(new { message = update.Message });
@@ -134,28 +101,6 @@ public class UtilityReadingController : ControllerBase
             return NotFound(new { message = e.Message });
         }
     }
-
-   
-    [HttpPut("{roomId}/utilitytype/{utilityType}/contract")]
-    // [Authorize(Roles = "Owner")]
-    public async Task<IActionResult> PutContract(Guid roomId, UtilityType utilityType, UpdateUtilityReading request)
-    {
-        try
-        {
-            var update = await _utilityReadingService.UpdateContract(roomId,utilityType , request);
-            if (!update.IsSuccess)
-            {
-                return BadRequest(new { message = update.Message });
-            }
-            return Ok(update);
-        }
-        catch (KeyNotFoundException e)
-        {
-            return NotFound(new { message = e.Message });
-        }
-    }
-
-    // DELETE: api/Amenity/5
     [Authorize(Roles = "Owner")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
@@ -170,5 +115,43 @@ public class UtilityReadingController : ControllerBase
             return NotFound(new { message = e.Message });
         }
     }
+    [HttpPost("{contractId}/utilitytype/{utilityType}/contract")]
+    public async Task<ActionResult<UtilityReadingResponse>> AddUtilityReadingContract(Guid contractId,UtilityType utilityType , CreateUtilityReadingContract request)
+    {
+        try
+        {
+            var result = await _utilityReadingService.AddUtilityReadingContract(contractId, utilityType, request);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(new { message = result.Message });
+            }
+    
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return Conflict(new { message = e.Message });
+        }
+    }
+    [HttpPut("{contractId}/utilitytype/{utilityType}/contract")]
+    // [Authorize(Roles = "Owner")]
+    public async Task<IActionResult> PutContract(Guid contractId, UtilityType utilityType, UpdateUtilityReading request)
+    {
+        try
+        {
+            var update = await _utilityReadingService.UpdateUtilityReadingContract(contractId,utilityType , request);
+            if (!update.IsSuccess)
+            {
+                return BadRequest(new { message = update.Message });
+            }
+            return Ok(update);
+        }
+        catch (KeyNotFoundException e)
+        {
+            return NotFound(new { message = e.Message });
+        }
+    }
+    
+  
 
 }

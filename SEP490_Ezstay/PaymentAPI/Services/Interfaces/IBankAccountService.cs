@@ -18,7 +18,7 @@ public interface IBankAccountService
   Task<ApiResponse<bool>> UpdateBankAccount(Guid id,UpdateBankAccount request);
   Task<ApiResponse<bool>> DeleteBankAccount(Guid id);
 
-  Task<JsonElement?> GetTransactionsAsync();
+  //Task<JsonElement?> GetTransactionsAsync();
   
  // Task<List<BankAccountResponse>> GetBankAccountsWithAmount(Guid ownerId, Guid billId, decimal amount, string? description = null);
 

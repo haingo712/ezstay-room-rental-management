@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
-using ReviewAPI.Service;
-using ReviewAPI.Service.Interface;
 using ReviewReportAPI.DTO.Requests;
 using ReviewReportAPI.DTO.Response;
 using ReviewReportAPI.Service.Interface;
@@ -11,15 +9,9 @@ namespace ReviewReportAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ReviewReportController : ControllerBase
+public class ReviewReportController(  IReviewReportService _reviewReportService
+) : ControllerBase
 {
-    private readonly IReviewReportService _reviewReportService;
-    private readonly ITokenService _tokenService;
-    public ReviewReportController(IReviewReportService reviewReportService, ITokenService tokenService)
-    {
-        _reviewReportService = reviewReportService;
-        _tokenService = tokenService;
-    }
     [HttpGet]
     [EnableQuery]
     [Authorize(Roles = "Staff")]

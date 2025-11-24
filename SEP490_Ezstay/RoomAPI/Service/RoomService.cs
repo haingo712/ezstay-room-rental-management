@@ -51,7 +51,7 @@ public class RoomService(
         room.CreatedAt = DateTime.UtcNow;
         await _roomRepository.Add(room);
         var result = _mapper.Map<RoomResponse>(room);
-        return ApiResponse<RoomResponse>.Success(result, "Add Room Successfully");
+        return ApiResponse<RoomResponse>.Success(result, "Created Successfully");
     }
 
     public async Task<ApiResponse<bool>>  Update(Guid id, UpdateRoom request)
@@ -71,7 +71,7 @@ public class RoomService(
          room.UpdatedAt = DateTime.UtcNow;
          room.ImageUrl= _imageService.UploadMultipleImage(request.ImageUrl).Result;
          await _roomRepository.Update(room);
-         return  ApiResponse<bool>.Success(true, "Update Room Successfully");
+         return  ApiResponse<bool>.Success(true, "Updated Successfully");
     }
     public async Task<ApiResponse<bool>> Delete(Guid id)
     {
@@ -89,7 +89,7 @@ public class RoomService(
         await _roomAmenityClient.DeleteAmenityByRoomId(room.Id);
         await _roomRepository.Delete(room);
         
-        return ApiResponse<bool>.Success(true, "Delete Room Successfully");
+        return ApiResponse<bool>.Success(true, "Delete Successfully");
     }
     public async Task<RoomWithAmenitiesResponse> GetRoomWithAmenitiesAsync(Guid id)
     {

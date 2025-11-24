@@ -8,9 +8,28 @@
       - "7001:8080"  
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+#      ASPNETCORE_URLS: http://+:8080
     depends_on:
       - amenityapi
-
+      - accountapi
+      - authapi
+      - boardinghouseapi
+      - chatapi
+      - contractapi
+      - imageapi
+      - mailapi
+      - notificationapi
+      - paymentapi
+      - rentalpostsapi
+      - reviewapi
+      - reviewreportapi
+      - roomamenityapi
+      - roomapi
+      - serviceapi
+      - signalrhubapi
+      - utilitybillapi
+      - utilityreadingapi
+    
   amenityapi:
     build:
       context: .
@@ -21,23 +40,184 @@
     environment:
       ASPNETCORE_ENVIRONMENT: Development
 
-#  productapi:
-#    build:
-#      context: .
-#      dockerfile: ProductAPI/Dockerfile
-#    container_name: productapi
-#    ports:
-#      - "5002:8080"
-#    environment:
-#      ASPNETCORE_ENVIRONMENT: Development
+  accountapi:
+    build:
+      context: .
+      dockerfile: AccountAPI/Dockerfile
+    container_name: accountapi
+    ports:
+      - "7211:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development  
 
-#  bookingapi:
-#    build:
-#      context: .
-#      dockerfile: BookingAPI/Dockerfile
-#    container_name: bookingapi
-#    ports:
-#      - "5003:8080"
-#    environment:
-#      ASPNETCORE_ENVIRONMENT: Development
 
+  authapi:
+    build:
+      context: .
+      dockerfile: AuthApi/Dockerfile
+    container_name: authapi
+    ports:
+      - "7009:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+#      ASPNETCORE_URLS: http://+:8080
+
+  boardinghouseapi:
+    build:
+      context: .
+      dockerfile: BoardingHouseAPI/Dockerfile
+    container_name: boardinghouseapi
+    ports:
+      - "7186:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production  
+
+  chatapi:
+    build:
+      context: .
+      dockerfile: ChatAPI/Dockerfile
+    container_name: chatapi
+    ports:
+      - "7140:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+
+  contractapi:
+    build:
+      context: .
+      dockerfile: ContractAPI/Dockerfile
+    container_name: contractapi
+    ports:
+      - "7153:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+
+  imageapi:
+    build:
+      context: .
+      dockerfile: ImageAPI/Dockerfile
+    container_name: imageapi
+    ports:
+      - "7080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production  
+
+  mailapi:
+    build:
+      context: .
+      dockerfile: MailApi/Dockerfile
+    container_name: mailapi
+    ports:
+      - "7125:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production  
+
+  notificationapi:
+    build:
+      context: .
+      dockerfile: NotificationAPI/Dockerfile
+    container_name: notificationapi
+    ports:
+      - "7278:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production  
+
+  paymentapi:
+    build:
+      context: .
+      dockerfile: PaymentAPI/Dockerfile
+    container_name: paymentapi
+    ports:
+      - "7212:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production  
+
+  rentalpostsapi:
+    build:
+      context: .
+      dockerfile: RentalPostsAPI/Dockerfile
+    container_name: rentalpostsapi
+    ports:
+      - "7145:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production  
+
+  reviewapi:
+    build:
+      context: .
+      dockerfile: ReviewAPI/Dockerfile
+    container_name: reviewapi
+    ports:
+      - "7037:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production  
+
+  reviewreportapi:
+    build:
+      context: .
+      dockerfile: ReviewReportAPI/Dockerfile
+    container_name: reviewreportapi
+    ports:
+      - "7074:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production  
+
+  roomamenityapi:
+    build:
+      context: .
+      dockerfile: RoomAmenityAPI/Dockerfile
+    container_name: roomamenityapi
+    ports:
+      - "7152:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production  
+
+  roomapi:
+    build:
+      context: .
+      dockerfile: RoomAPI/Dockerfile
+    container_name: roomapi
+    ports:
+      - "7086:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production  
+
+  serviceapi:
+    build:
+      context: .
+      dockerfile: ServiceAPI/Dockerfile
+    container_name: serviceapi
+    ports:
+      - "7206:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production  
+
+  signalrhubapi:
+    build:
+      context: .
+      dockerfile: SignalRHubAPI/Dockerfile
+    container_name: signalrhubapi
+    ports:
+      - "7123:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production  
+
+  utilitybillapi:
+    build:
+      context: .
+      dockerfile: UtilityBillAPI/Dockerfile
+    container_name: utilitybillapi
+    ports:
+      - "7008:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production  
+
+  utilityreadingapi:
+    build:
+      context: .
+      dockerfile: UtilityReadingAPI/Dockerfile
+    container_name: utilityreadingapi
+    ports:
+      - "7006:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production  

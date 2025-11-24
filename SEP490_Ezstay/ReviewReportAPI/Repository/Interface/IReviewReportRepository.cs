@@ -9,5 +9,5 @@ public interface IReviewReportRepository
     IQueryable<ReviewReport> GetAll();
    
     Task Update(ReviewReport report);
-    Task Delete(ReviewReport report);
+    // Task Delete(ReviewReport report);
 }

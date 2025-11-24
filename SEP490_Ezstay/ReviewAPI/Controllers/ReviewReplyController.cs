@@ -54,7 +54,7 @@ public class ReviewReplyController: ControllerBase
     [Authorize(Roles = "Owner,User")]
     public IQueryable<ReviewReplyResponse> GetReviewReplies()
     {
-        return _reviewReplyService.GetAllQueryable();
+        return _reviewReplyService.GetAll();
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)

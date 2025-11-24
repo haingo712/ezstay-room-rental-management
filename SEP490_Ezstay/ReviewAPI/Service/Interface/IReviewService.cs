@@ -7,12 +7,12 @@ namespace ReviewAPI.Service.Interface;
 
 public interface IReviewService
 {
-    IQueryable<ReviewResponse> GetAll();
+   // IQueryable<ReviewResponse> GetAll();
+   IQueryable<ReviewResponse> GetAllByOwnerId(Guid ownerId);
     Task<bool> ReviewExistsByContractId(Guid contractId);
     Task<ReviewResponse> GetById(Guid id);
-    Task<ApiResponse<ReviewResponse>> Add(Guid userId, Guid contractId, CreateReviewDto request);
-    Task<ApiResponse<bool>> Update(Guid id, Guid userId, UpdateReviewDto request);
+    Task<ApiResponse<ReviewResponse>> Add(Guid userId, Guid contractId, CreateReviewRequest request);
+    Task<ApiResponse<bool>> Update(Guid id, Guid userId, UpdateReviewRequest request);
     Task<ApiResponse<bool>> HideReview(Guid id, bool hidden);
- //   Task DeleteAsync(Guid id);
     Task<List<ReviewResponse>> GetByRoomIdsAsync(List<Guid> roomIds);
 }

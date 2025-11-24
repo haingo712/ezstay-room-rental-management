@@ -40,7 +40,7 @@ public class ChatController : ControllerBase
     public async Task<IActionResult> CreateChatRoom(Guid ownerId)
     {
         var userId= _tokenService.GetUserIdFromClaims(User);
-        return Ok(await _chatService.Add(ownerId, userId));
+        return Ok(await _chatService.CreateChatRoom(ownerId, userId));
     }
     
     [HttpPost("message/{chatRoomId}")]

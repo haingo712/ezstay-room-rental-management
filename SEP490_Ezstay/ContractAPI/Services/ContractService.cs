@@ -18,7 +18,7 @@ namespace ContractAPI.Services;
 public class ContractService(IMapper _mapper,IContractRepository _contractRepository,IRoomClientService _roomClient,
     IImageClientService _imageClient,
     IAccountService _accountService,
-    IUtilityReadingClientService _utilityReadingClientService
+    IUtilityReadingService utilityReadingService
 ) : IContractService
 {
     // public IQueryable<ContractResponse> GetAllByTenantId(Guid tenantId)
@@ -39,9 +39,9 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
             response.IdentityProfiles = contract.ProfilesInContract
                 .Select(p => _mapper.Map<IdentityProfileResponse>(p))
                 .ToList();
-            Console.WriteLine("cccc "+  _utilityReadingClientService.GetLastestReading(contract.RoomId, UtilityType.Electric));
-            response.ElectricityReading = await _utilityReadingClientService.GetLastestReading(contract.RoomId, UtilityType.Electric);
-            response.WaterReading = await _utilityReadingClientService.GetLastestReading(contract.RoomId, UtilityType.Water);
+            Console.WriteLine("cccc "+  utilityReadingService.GetLastestReading(contract.RoomId, UtilityType.Electric));
+            response.ElectricityReading = await utilityReadingService.GetLastestReading(contract.RoomId, UtilityType.Electric);
+            response.WaterReading = await utilityReadingService.GetLastestReading(contract.RoomId, UtilityType.Water);
             return response;
     }
   //  => _mapper.Map<ContractResponse>(await _contractRepository.GetByIdAsync(id));
@@ -111,8 +111,8 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
         members.Add(ownerIdentity);
         contract.ProfilesInContract = members;
         var saveContract =await _contractRepository.AddAsync(contract);
-        var createUtility = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Water, request.WaterReading);
-        var createUtiliyw = await _utilityReadingClientService.Add(contract.RoomId,  UtilityType.Electric, request.ElectricityReading);
+        var createUtility = await utilityReadingService.Add(contract.RoomId,  UtilityType.Water, request.WaterReading);
+        var createUtiliyw = await utilityReadingService.Add(contract.RoomId,  UtilityType.Electric, request.ElectricityReading);
         var result = _mapper.Map<ContractResponse>(saveContract);
         result.WaterReading = createUtility.Data;
         result.ElectricityReading = createUtiliyw.Data;
@@ -163,8 +163,8 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
             contract.ProfilesInContract = members;
             // contract.SignerProfile = members.First(p => p.IsSigner);
         }
-            await _utilityReadingClientService.Update(contract.RoomId, UtilityType.Electric, request.ElectricityReading);
-            await _utilityReadingClientService.Update(contract.RoomId, UtilityType.Water, request.WaterReading);
+            await utilityReadingService.Update(contract.RoomId, UtilityType.Electric, request.ElectricityReading);
+            await utilityReadingService.Update(contract.RoomId, UtilityType.Water, request.WaterReading);
 
         if (contract.ContractStatus == ContractStatus.Active)
             return ApiResponse<bool>.Fail("K the cập nhật vì contract đã kí tên r");

@@ -59,7 +59,7 @@ namespace RoomAPI.Controllers
         //     }
         // }
         
-        [HttpGet("ByHouseId/{houseId}")]
+        [HttpGet("house-id/{houseId}")]
         [EnableQuery]        
         public IQueryable<RoomResponse> GetRoomsByHouseId(Guid houseId)
         {
@@ -104,7 +104,7 @@ namespace RoomAPI.Controllers
         }
     }
         
-    [HttpPost("House/{houseId}")]
+    [HttpPost("house/{houseId}")]
     [Authorize(Roles = "Owner")]
     public async Task<IActionResult> Post(Guid houseId,[FromForm] CreateRoom request)
     {

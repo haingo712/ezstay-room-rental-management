@@ -6,8 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
-using ReviewAPI.APIs;
-using ReviewAPI.APIs.Interfaces;
 using ReviewAPI.DTO.Response.ReviewReply;
 using ReviewAPI.Profiles;
 using ReviewAPI.Repository;

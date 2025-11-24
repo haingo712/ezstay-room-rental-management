@@ -7,7 +7,7 @@ namespace ReviewAPI.Service.Interface;
 
 public interface IReviewReplyService
 {
-    IQueryable<ReviewReplyResponse> GetAllQueryable();
+    IQueryable<ReviewReplyResponse> GetAll();
     Task<ReviewReplyResponse?> GetByIdAsync(Guid id);
     Task<ApiResponse<ReviewReplyResponse>> Add(Guid reviewId, Guid ownerId, CreateReviewReplyRequest request);
     Task<ReviewReplyResponse> GetReplyByReviewIdAsync(Guid reviewId);

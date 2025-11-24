@@ -12,14 +12,14 @@ namespace ReviewReportAPI.Service;
 public class ReviewReportService : IReviewReportService
 {
     private readonly IReviewReportRepository _reportRepository;
-    private readonly IReviewClientService _reviewClientService;
-    private readonly IImageClientService _imageClientService;
+    private readonly IReviewService _reviewService;
+    private readonly IImageService _imageService;
     private readonly IMapper _mapper;
-    public ReviewReportService(IReviewReportRepository reportRepository, IReviewClientService reviewClientService, IMapper mapper, IImageClientService imageClientService)
+    public ReviewReportService(IReviewReportRepository reportRepository, IReviewService reviewService, IMapper mapper, IImageService imageService)
     {
         _reportRepository = reportRepository;
-        _reviewClientService = reviewClientService;
-        _imageClientService = imageClientService;
+        _reviewService = reviewService;
+        _imageService = imageService;
         _mapper = mapper;
     }
     public  IQueryable<ReviewReportResponse> GetAll()
@@ -40,7 +40,7 @@ public class ReviewReportService : IReviewReportService
         reviewReport.CreatedAt = DateTime.UtcNow;
         reviewReport.ReviewId = reviewId;
         reviewReport.Status = ReportStatus.Pending;
-        reviewReport.Images =  await _imageClientService.UploadMultipleImage(request.Images);
+        reviewReport.Images =  await _imageService.UploadMultipleImage(request.Images);
         await _reportRepository.Add(reviewReport);
         var result = _mapper.Map<ReviewReportResponse>(reviewReport);
         return ApiResponse<ReviewReportResponse>.Success(result, "Create Review Report Successfully");
@@ -56,25 +56,10 @@ public class ReviewReportService : IReviewReportService
         reviewReport.CreatedAt = DateTime.UtcNow;
         reviewReport.Status = ReportStatus.Pending;
         await _reportRepository.Update(reviewReport);
-        await _imageClientService.UploadMultipleImage(request.Images);
+        await _imageService.UploadMultipleImage(request.Images);
         var dto = _mapper.Map<ReviewReportResponse>(reviewReport);
         return ApiResponse<bool>.Success(true, "Update Review Report Successfully");
     }
-    // public async Task<ApiResponse<ReviewReportResponse>> Update(Guid id, UpdateReviewReportRequest request)
-    // {
-    //     var reviewReport = await _reportRepository.GetById(id);
-    //      if (reviewReport == null)
-    //          return ApiResponse<ReviewReportResponse>.Fail("Không tìm thấy review.");
-    //      if (reviewReport.Status != ReportStatus.Pending)
-    //          return ApiResponse<ReviewReportResponse>.Fail("Không dc cập nhật vì đơn này đã dc duyệt .");
-    //     _mapper.Map(request, reviewReport);
-    //     reviewReport.CreatedAt = DateTime.UtcNow;
-    //     reviewReport.Status = ReportStatus.Pending;
-    //     await _reportRepository.Update(reviewReport);
-    //     await _imageClientService.UploadMultipleImage(request.Images);
-    //     var dto = _mapper.Map<ReviewReportResponse>(reviewReport);
-    //     return ApiResponse<ReviewReportResponse>.Success(dto, "Update Review Report Successfully");
-    // }
     public async Task<ApiResponse<bool>> SetStatus(Guid id, UpdateReportStatusRequest request)
     {
         var report = await _reportRepository.GetById(id);
@@ -93,7 +78,7 @@ public class ReviewReportService : IReviewReportService
         //     await _reviewClientService.HideReview(report.ReviewId, false);
         //     //   Console.WriteLine("cccc"+ await _reviewClientService.HideReview(report.ReviewId, false));
         // }
-        await _reviewClientService.HideReview(report.ReviewId, request.Status == ReportStatus.Approved);
+        await _reviewService.HideReview(report.ReviewId, request.Status == ReportStatus.Approved);
         return ApiResponse<bool>.Success(true, "Set Status Successfully");
     }
 }

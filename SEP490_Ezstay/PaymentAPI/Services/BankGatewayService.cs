@@ -11,20 +11,20 @@ namespace PaymentAPI.Services;
 
 public class BankGatewayService: IBankGatewayService
 {
-    private readonly HttpClient _http;
+    private readonly HttpClient _httpClient;
     private readonly IBankGatewayRepository _bankGatewayRepository;
     private readonly IMapper _mapper;
 
-    public BankGatewayService(HttpClient http, IBankGatewayRepository repo, IMapper mapper)
+    public BankGatewayService(HttpClient httpClient, IBankGatewayRepository bankGatewayRepository, IMapper mapper)
     {
-        _http = http;
-        _bankGatewayRepository = repo;
+        _httpClient = httpClient;
+        _bankGatewayRepository = bankGatewayRepository;
         _mapper = mapper;
     }
-    
+
     public async Task<List<BankGatewayResponse>> SyncFromVietQR()
     {
-        var response = await _http.GetStringAsync("https://api.vietqr.io/v2/banks");
+        var response = await _httpClient.GetStringAsync("https://api.vietqr.io/v2/banks");
         var json = JsonSerializer.Deserialize<JsonElement>(response);
         var list = json.GetProperty("data").EnumerateArray().Select(b => new BankGateway
         {
@@ -32,7 +32,6 @@ public class BankGatewayService: IBankGatewayService
              FullName = b.GetProperty("name").GetString(),
              BankName = b.GetProperty("shortName").GetString(),
             Logo = b.GetProperty("logo").GetString(),
-            CreatedAt = DateTime.UtcNow,
             IsActive =true
         }).ToList();
 
@@ -44,10 +43,16 @@ public class BankGatewayService: IBankGatewayService
             await _bankGatewayRepository.AddMany(newBanks);
         return  _mapper.Map<List<BankGatewayResponse>>(list);
     }
-    public IQueryable<BankGatewayResponse>  GetAllBankGateways()
+    public IQueryable<BankGatewayResponse>  GetAllBankGateway()
     {
         var bank = _bankGatewayRepository.GetAll();
         return bank.ProjectTo<BankGatewayResponse>(_mapper.ConfigurationProvider);
+    }
+    public IQueryable<BankGatewayResponse> GetAllActiveBankGateway()
+    {
+        return _bankGatewayRepository.GetAll()
+            .Where(x => x.IsActive)
+            .ProjectTo<BankGatewayResponse>(_mapper.ConfigurationProvider);
     }
 
     public async Task<ApiResponse<bool>> HiddenBankGateway(Guid id, bool isActive)
@@ -59,11 +64,6 @@ public class BankGatewayService: IBankGatewayService
         bankGateway.IsActive = isActive;
         bankGateway.UpdatedAt = DateTime.UtcNow;
        await _bankGatewayRepository.Update(bankGateway);
-      return ApiResponse<bool>.Success(true , "Hiddent bank gateway");
-      
+      return ApiResponse<bool>.Success(true , "Update bank gateway successfully ");
     }
-    // public async Task<List<BankGatewayResponse>> GetAllBankGateways()
-    // {
-    //    return await _bankGatewayRepository.GetAll();
-    // }
 }

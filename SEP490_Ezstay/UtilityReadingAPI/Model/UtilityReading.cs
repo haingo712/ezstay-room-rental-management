@@ -10,7 +10,7 @@ public class UtilityReading
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
     public Guid Id { get; set; } = Guid.NewGuid();
     [BsonGuidRepresentation(GuidRepresentation.Standard)]
-    public Guid RoomId { get; set; }
+    public Guid ContractId { get; set; }
     
     public UtilityType Type { get; set; }
     

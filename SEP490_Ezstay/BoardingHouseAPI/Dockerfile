@@ -1,5 +1,4 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
@@ -11,11 +10,11 @@ COPY ["BoardingHouseAPI/BoardingHouseAPI.csproj", "BoardingHouseAPI/"]
 RUN dotnet restore "BoardingHouseAPI/BoardingHouseAPI.csproj"
 COPY . .
 WORKDIR "/src/BoardingHouseAPI"
-RUN dotnet build "./BoardingHouseAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "BoardingHouseAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./BoardingHouseAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "BoardingHouseAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

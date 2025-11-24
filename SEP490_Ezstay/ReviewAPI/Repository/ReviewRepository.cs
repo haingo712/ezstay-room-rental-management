@@ -12,16 +12,13 @@ public class ReviewRepository : IReviewRepository
     {
         _reviews = database.GetCollection<Review>("Reviews");
     }
-
-    public IQueryable<Review> GetAll() => _reviews.AsQueryable();
+    //public IQueryable<Review> GetAll() => _reviews.AsQueryable();
+    public IQueryable<Review> GetAllByOwnerId(Guid ownerId) => _reviews.AsQueryable()
+        .Where(r => r.OwnerId == ownerId);
     public Task<bool> ReviewExistsByContractId(Guid contractId)
     {
         return _reviews.Find(r => r.ContractId == contractId).AnyAsync();
     }
-
-    // public async Task<Review?> GetByContractId(Guid contractId)
-    //     => await _reviews.Find(x => x.ContractId == contractId).FirstOrDefaultAsync();
-    //
     public async Task<Review?> GetById(Guid id)
     {
         return await _reviews.Find(r => r.Id == id).FirstOrDefaultAsync();
@@ -36,14 +33,8 @@ public class ReviewRepository : IReviewRepository
     {
         await _reviews.InsertOneAsync(review);
     }
-
     public async Task Update(Review review)
     {
         await _reviews.ReplaceOneAsync(r => r.Id == review.Id, review);
-    }
-
-    public async Task Delete(Review review)
-    {
-        await _reviews.DeleteOneAsync(r => r.Id == review.Id);
     }
 }
