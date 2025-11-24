@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using RentalPostsAPI.Data;
+using RentalPostsAPI.Enum;
 using RentalPostsAPI.Models;
 using RentalPostsAPI.Repository.Interface;
 
@@ -32,6 +33,10 @@ namespace RentalPostsAPI.Repository
         public async Task<IEnumerable<RentalPosts>> GetAllAsync()
         {
             return await _collection.Find(x => x.IsActive).ToListAsync();
+        }
+        public async Task<IEnumerable<RentalPosts>> GetPendingAsync()
+        {
+            return await _collection.Find(p => p.IsApproved == PostStatus.Pending && p.IsActive).ToListAsync();
         }
 
         public async Task<IEnumerable<RentalPosts>> GetAllByOwnerIdAsync(Guid ownerId)

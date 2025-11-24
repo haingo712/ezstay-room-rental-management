@@ -35,8 +35,19 @@ namespace FavoritePostAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveFavorite(Guid id)
         {
-            var success = await _service.RemoveFavoriteAsync(User, id);
-            return success ? NoContent() : NotFound();
+            try
+            {
+                var success = await _service.RemoveFavoriteAsync(User, id);
+                return success ? NoContent() : NotFound(new { message = "Không tìm thấy mục yêu thích." });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
     }
 }

@@ -54,7 +54,13 @@ public class FavoritePostService : IFavoritePostService
         var accountId = _tokenService.GetUserIdFromClaims(user);
 
         var favorite = await _repository.GetByIdAsync(favoriteId);
-        if (favorite == null || favorite.AccountId != accountId)
+        
+        // Nếu không tìm thấy, return false
+        if (favorite == null)
+            return false;
+            
+        // Nếu không phải chủ sở hữu, throw exception
+        if (favorite.AccountId != accountId)
             throw new UnauthorizedAccessException("Không có quyền xóa mục yêu thích này.");
 
         return await _repository.DeleteAsyn(favoriteId);

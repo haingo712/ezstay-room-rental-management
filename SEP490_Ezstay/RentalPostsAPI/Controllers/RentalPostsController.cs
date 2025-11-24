@@ -1,4 +1,5 @@
 ﻿
+using EasyNetQ;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
@@ -16,11 +17,13 @@ namespace RentalPostsAPI.Controllers
     {
         private readonly IRentalPostService _service;
         private readonly ITokenService _tokenService;
+        private readonly IBus _bus;
 
-        public RentalPostsController(IRentalPostService service, ITokenService tokenService)
+        public RentalPostsController(IRentalPostService service, ITokenService tokenService, IBus bus)
         {
             _service = service;
             _tokenService = tokenService;
+            _bus = bus;
         }
 
         [HttpGet]
@@ -35,9 +38,15 @@ namespace RentalPostsAPI.Controllers
         public async Task<IActionResult> Create([FromForm] CreateRentalPostDTO dto)
         {
 
- 
-            var result = await _service.CreateAsync (dto, User);
 
+            var result = await _service.CreateAsync(dto, User);
+            var notification = new
+            {
+                EventType = "RentalPostChanged",
+                Data = new { UpdatedFields = dto }
+            };
+            var jsonMessage = System.Text.Json.JsonSerializer.Serialize(notification);
+            //await _bus.PubSub.PublishAsync(jsonMessage);
             return Ok(result);
         }
 
@@ -48,10 +57,10 @@ namespace RentalPostsAPI.Controllers
             return Ok(result);
         }
         [HttpGet("owner")]
-        [Authorize(Roles = "Owner")] 
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> GetAllForOwner()
         {
-           
+
             var result = await _service.GetAllForOwnerAsync(User);
             return Ok(result);
         }
@@ -63,7 +72,7 @@ namespace RentalPostsAPI.Controllers
                 return NotFound(ApiResponse<string>.Fail("Không tìm thấy bài viết"));
             return Ok(ApiResponse<RentalpostDTO>.Success(result));
         }
-    
+
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner")]
@@ -92,5 +101,29 @@ namespace RentalPostsAPI.Controllers
             return Ok(postId);
         }
 
+        [HttpGet("pending")]
+        public async Task<IActionResult> GetPendingPosts()
+        {
+            var pendingPosts = await _service.GetPendingPostsAsync();
+            return Ok(pendingPosts);
+        }
+
+        [HttpPut("{id}/approve")]
+        public async Task<IActionResult> Approve(Guid id)
+        {
+            var staffId = _tokenService.GetUserIdFromClaims(User);
+            var success = await _service.ApprovePostAsync(id, staffId);
+            if (!success) return NotFound("Không tìm thấy bài đăng hoặc đã duyệt rồi.");
+            return Ok("Bài viết đã được duyệt thành công.");
+        }
+
+        [HttpPut("{id}/reject")]
+        public async Task<IActionResult> Reject(Guid id)
+        {
+            var staffId = _tokenService.GetUserIdFromClaims(User);
+            var success = await _service.RejectPostAsync(id, staffId);
+            if (!success) return NotFound("Không tìm thấy bài đăng hoặc đã duyệt rồi.");
+            return Ok("Bài viết đã bị từ chối.");
+        }
     }
 }

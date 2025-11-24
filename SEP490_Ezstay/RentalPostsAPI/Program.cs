@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text;
+using EasyNetQ;
 
 namespace RentalPostsAPI
 {
@@ -119,6 +120,9 @@ namespace RentalPostsAPI
                 });
             });
 
+            builder.Services.AddSingleton(RabbitHutch.CreateBus(
+                builder.Configuration["RabbitMQ:ConnectionString"]
+            ));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
