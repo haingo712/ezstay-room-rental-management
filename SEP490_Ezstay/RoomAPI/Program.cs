@@ -6,13 +6,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
-using RoomAPI.APIs;
-using RoomAPI.APIs.Interfaces;
-using RoomAPI.DTO.Request;
 using RoomAPI.Repository;
 using RoomAPI.Repository.Interface;
 using RoomAPI.Service;
 using RoomAPI.Service.Interface;
+using Shared.DTOs.RoomAmenities.Responses;
 using Shared.DTOs.Rooms.Responses;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +22,10 @@ builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["Co
 //builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
-builder.Services.AddScoped<IRoomAmenityAPI, RoomAmenityAPI>();
+builder.Services.AddScoped<IRoomAmenityService, RoomAmenityService>();
+builder.Services.AddScoped<IRoomAmenityRepository, RoomAmenityRepository>();
+builder.Services.AddScoped<IRoomAmenityService, RoomAmenityService>();
+
 
 builder.Services.AddHttpClient<IImageService, ImageService>(client =>
 {
@@ -33,12 +34,12 @@ builder.Services.AddHttpClient<IImageService, ImageService>(client =>
 
 var serviceUrls = builder.Configuration.GetSection("ServiceUrls");
 
-builder.Services.AddHttpClient<IAmenityClientService, AmenityClientService>(client =>
+builder.Services.AddHttpClient<IAmenityService, AmenityService>(client =>
 {
     client.BaseAddress = new Uri(serviceUrls["AmenityApi"]);
 });
 
-builder.Services.AddHttpClient<IRoomAmenityClientService, RoomAmenityClientService>(client =>
+builder.Services.AddHttpClient<IRoomAmenityService, RoomAmenityService>(client =>
 {
     client.BaseAddress = new Uri(serviceUrls["RoomAmenityApi"]);
 });
@@ -55,6 +56,7 @@ builder.Services.AddHttpClient<IRentalPostService, RentalPostService>(client =>
 
 var odatabuilder = new ODataConventionModelBuilder();
 odatabuilder.EntitySet<RoomResponse>("Rooms");
+odatabuilder.EntitySet<RoomAmenityResponse>("RoomAmenities");
 var odata = odatabuilder.GetEdmModel();
 builder.Services.AddControllers().AddOData(options =>
     options.AddRouteComponents("odata", odata)

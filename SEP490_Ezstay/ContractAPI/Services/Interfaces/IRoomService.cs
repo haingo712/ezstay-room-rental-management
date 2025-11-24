@@ -4,7 +4,7 @@ using Shared.Enums;
 
 namespace ContractAPI.Services.Interfaces;
 
-public interface IRoomClientService
+public interface IRoomService
 {
     Task<RoomResponse?> GetRoomByIdAsync(Guid roomId);
     Task<bool> UpdateRoomStatusAsync(Guid roomId, RoomStatus status);

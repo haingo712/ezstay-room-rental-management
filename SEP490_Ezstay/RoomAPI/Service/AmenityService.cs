@@ -3,11 +3,11 @@ using Shared.DTOs.Amenities.Responses;
 
 namespace RoomAPI.Service;
 
-public class AmenityClientService : IAmenityClientService
+public class AmenityService : IAmenityService
 {
     private readonly HttpClient _httpClient;
 
-    public AmenityClientService(HttpClient httpClient)
+    public AmenityService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }

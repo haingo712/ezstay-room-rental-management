@@ -31,8 +31,9 @@ namespace RoomAmenityAPI.Controllers
             return  _roomAmenityService.GetAll();
         }
         
+        
         [Authorize(Roles = "Owner")]
-        [HttpGet("/room-id/{roonId}")]
+        [HttpGet("room/{roonId}")]
         [EnableQuery]
         public IQueryable<RoomAmenityResponse> GetRoomAmenitiesByRoomId(Guid roonId)
         {
@@ -45,7 +46,7 @@ namespace RoomAmenityAPI.Controllers
             var roomAmenity = await _roomAmenityService.GetById(id);
             return Ok(roomAmenity);
         }
-        // // [Authorize(Roles = "Owner")]
+        // [Authorize(Roles = "Owner")]
         // [HttpGet("byRoomId/{roomId}")]
         // public async Task<ActionResult<RoomAmenityResponse>> GetRoomAmenitiesByRoomId(Guid roomId)
         // {
@@ -61,7 +62,6 @@ namespace RoomAmenityAPI.Controllers
             {
                 return BadRequest(new { message = createdRoomAmenity.Message });
             }
-           // return Ok(createdRoomAmenity);
              return CreatedAtAction("GetById", new { roomId = roomId }, createdRoomAmenity.Data);
         }
         // amenity api dungf dder check khi delete

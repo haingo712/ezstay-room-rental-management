@@ -4,7 +4,7 @@ using Shared.DTOs.Amenities.Responses;
 
 namespace RoomAPI.Service.Interface;
 
-public interface IAmenityClientService
+public interface IAmenityService
 {
     Task<AmenityResponse?> GetAmenityById(Guid amenityId);
 

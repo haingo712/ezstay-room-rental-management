@@ -43,12 +43,6 @@ builder.Services.AddControllers().AddOData(options =>
         .Select());
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); 
 
-
-// builder.Services.AddHttpClient<ITenantClientService, TenantClientService>(client =>
-// {
-//     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:TenantAPI"]);
-// });
-
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -11,19 +11,11 @@ public class TokenService : ITokenService {
 
         return Guid.Parse(claim);
     }
-
-    public string? GetFullNameFromClaims(ClaimsPrincipal user)
-    {
-        return user.FindFirst("fullName")?.Value;
-    }
+    
     public string? GetRoleFromClaims(ClaimsPrincipal user)
     {
         return user.FindFirst(ClaimTypes.Role)?.Value;
     }
-
-    public string? GetPhoneFromClaims(ClaimsPrincipal user)
-    {
-        return user.FindFirst("phone")?.Value;
-    }
+    
         
 }

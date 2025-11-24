@@ -1,13 +1,13 @@
-using RoomAmenityAPI.Service.Interface;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using RoomAmenityAPI.DTO.Request;
-using RoomAmenityAPI.Model;
-using RoomAmenityAPI.Repository.Interface;
+using RoomAPI.DTO.Request;
+using RoomAPI.Model;
+using RoomAPI.Repository.Interface;
+using RoomAPI.Service.Interface;
 using Shared.DTOs;
 using Shared.DTOs.RoomAmenities.Responses;
 
-namespace RoomAmenityAPI.Service;
+namespace RoomAPI.Service;
 
 public class RoomAmenityService: IRoomAmenityService
 {
@@ -25,20 +25,13 @@ public class RoomAmenityService: IRoomAmenityService
         var book = _roomAmenityRepository.GetAll();
         return book.ProjectTo<RoomAmenityResponse>(_mapper.ConfigurationProvider);
     }
-
+    
     public IQueryable<RoomAmenityResponse> GetAllByRoomId(Guid roonId)
     {
         var book =   _roomAmenityRepository.GetAllByRoomId(roonId);
         return book.ProjectTo<RoomAmenityResponse>(_mapper.ConfigurationProvider);
     }
-   
-    // public async Task<List<RoomAmenityResponse>> GetRoomAmenitiesByRoomId(Guid roomId)
-    // {
-    //     var roomAmenity = await _roomAmenityRepository.GetRoomAmenitiesByRoomId(roomId);
-    //     if (roomAmenity == null)
-    //         throw new KeyNotFoundException("Room Amentity not found");
-    //     return   _mapper.Map<List<RoomAmenityResponse>>(roomAmenity);
-    // }
+    
     public async Task<RoomAmenityResponse> GetById(Guid id)
     {
         var roomAmenity = await _roomAmenityRepository.GetById(id);
@@ -64,7 +57,7 @@ public class RoomAmenityService: IRoomAmenityService
         var existing =  _roomAmenityRepository.GetAllByRoomId(roomId);
         var toAdd = request
             .Where(r => !existing.Any(e => e.AmenityId == r.AmenityId))
-            .Select(x=> new RoomAmenity {
+            .Select(x=> new RoomAmenity() {
                 RoomId = roomId,
                 AmenityId = x.AmenityId,
             }).ToList();

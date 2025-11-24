@@ -16,8 +16,16 @@ namespace ContractAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
    
-    public class ContractController(IContractService _contractService, ITokenService _tokenService) : ControllerBase
+    public class ContractController: ControllerBase
     {
+        private readonly IContractService _contractService;
+        private readonly ITokenService _tokenService;
+
+        public ContractController(IContractService contractService, ITokenService tokenService)
+       {
+            _contractService = contractService;
+            _tokenService = tokenService;
+        }
       //  [Authorize(Roles = "User")]
         // [HttpGet("HasContract/{tenantId}/roomId/{roomId}")]
         // public async Task<IActionResult> HasContract(Guid tenantId, Guid roomId)
