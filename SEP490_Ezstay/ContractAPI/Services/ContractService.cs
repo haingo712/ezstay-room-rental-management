@@ -88,7 +88,7 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
             return ApiResponse<ContractResponse>.Fail("Không tìm thấy thông tin chủ trọ.");
         var ownerIdentity = new IdentityProfile
         {
-            UserId = ownerProfile.UserId,
+            UserId = ownerProfile.Id,
             ContractId = contract.Id,
             Avatar = ownerProfile.Avatar,
             FullName = ownerProfile.FullName,
@@ -97,7 +97,7 @@ public class ContractService(IMapper _mapper,IContractRepository _contractReposi
             Gender = ownerProfile.Gender.ToString(),
             Address = ownerProfile.DetailAddress,
             IsSigner = true,
-            DateOfBirth = ownerProfile.DateOfBirth.Value,
+            DateOfBirth = ownerProfile.DateOfBirth,
             ProvinceName = ownerProfile.ProvinceName,
             WardName = ownerProfile.WardName, 
             FrontImageUrl = ownerProfile.FrontImageUrl,
