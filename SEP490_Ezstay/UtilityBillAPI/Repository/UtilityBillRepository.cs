@@ -73,7 +73,7 @@ namespace UtilityBillAPI.Repository
 
             if (reason != null)
             {
-                update = update.Set(b => b.Note, reason);
+                update = update.Set(b => b.Reason, reason);
             }
 
             await _utilityBills.UpdateOneAsync(b => b.Id == billId, update);

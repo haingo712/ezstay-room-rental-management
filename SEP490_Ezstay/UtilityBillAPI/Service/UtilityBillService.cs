@@ -4,25 +4,27 @@ using UtilityBillAPI.DTO;
 using UtilityBillAPI.Models;
 using UtilityBillAPI.Repository.Interface;
 using UtilityBillAPI.Service.Interface;
-using Shared.DTOs; 
-using Shared.Enums; 
+using Shared.DTOs;
+using Shared.DTOs.UtilityReadings.Responses;
+using Shared.Enums;
+using MongoDB.Driver;
 
 namespace UtilityBillAPI.Service
 {
     public class UtilityBillService : IUtilityBillService
     {
-        private readonly IUtilityBillRepository _utilityBillRepo;        
-        private readonly IUtilityReadingClientService _utilityReadingClientService;
-        private readonly IContractClientService _contractClientService;
-        private readonly IMapper _mapper;        
+        private readonly IUtilityBillRepository _utilityBillRepo;
+        private readonly IUtilityReadingService _utilityReadingService;
+        private readonly IContractService _contractService;
+        private readonly IMapper _mapper;
 
-        public UtilityBillService(IUtilityBillRepository utilityBillRepo, IMapper mapper, 
-            IContractClientService contractClientService, IUtilityReadingClientService utilityReadingClientService)
+        public UtilityBillService(IUtilityBillRepository utilityBillRepo, IMapper mapper,
+            IContractService contractService, IUtilityReadingService utilityReadingService)
         {
             _utilityBillRepo = utilityBillRepo;
             _mapper = mapper;
-            _contractClientService = contractClientService;            
-            _utilityReadingClientService = utilityReadingClientService;
+            _contractService = contractService;
+            _utilityReadingService = utilityReadingService;
         }
 
         public IQueryable<UtilityBillDTO> GetAll()
@@ -33,16 +35,16 @@ namespace UtilityBillAPI.Service
 
         public IQueryable<UtilityBillDTO> GetAllByOwnerId(Guid ownerId)
         {
-            var bills = _utilityBillRepo.GetAllByOwner(ownerId).OrderByDescending(b => b.PeriodEnd); 
+            var bills = _utilityBillRepo.GetAllByOwner(ownerId).OrderByDescending(b => b.CreatedAt);
 
             return bills.ProjectTo<UtilityBillDTO>(_mapper.ConfigurationProvider);
         }
 
         public IQueryable<UtilityBillDTO> GetAllByTenantId(Guid tenantId)
         {
-            var bills = _utilityBillRepo.GetAllByTenant(tenantId).Where(b => b.Status != UtilityBillStatus.Cancelled);          
+            var bills = _utilityBillRepo.GetAllByTenant(tenantId).Where(b => b.Status != UtilityBillStatus.Cancelled);
             return bills.ProjectTo<UtilityBillDTO>(_mapper.ConfigurationProvider);
-        }       
+        }
 
         public async Task<UtilityBillDTO?> GetByIdAsync(Guid id)
         {
@@ -50,7 +52,7 @@ namespace UtilityBillAPI.Service
             return bill == null ? throw new KeyNotFoundException("Bill not found!") : _mapper.Map<UtilityBillDTO>(bill);
         }
 
-        public async Task<ApiResponse<UtilityBillDTO>> GenerateUtilityBillAsync(Guid contractId, Guid ownerId)
+        public async Task<ApiResponse<UtilityBillDTO>> GenerateMonthlyBillAsync(Guid contractId, Guid ownerId)
         {
             // Check if spam bill
             //var recentBill = _utilityBillRepo.GetAll()
@@ -60,64 +62,80 @@ namespace UtilityBillAPI.Service
 
             //if (recentBill != null)
             //{
-            //    return ApiResponse<UtilityBillDTO>.Fail("Vui lòng chờ ít phút trước khi tạo hoá đơn mới.");
-            //}
+            //    return ApiResponse<UtilityBillDTO>.Fail("Please wait a few minutes before creating a new bill.");
+            //}          
 
-            DateTime start, end;
-            var lastBill = _utilityBillRepo.GetAllByContract(contractId)
-                   .Where(b => b.Status != UtilityBillStatus.Cancelled)
-                   .OrderByDescending(b => b.PeriodEnd)
-                   .FirstOrDefault();
-            if (lastBill == null)
-            {
-                var now = DateTime.UtcNow;
-                start = new DateTime(now.Year, now.Month, 1);
-                end = start.AddMonths(1).AddDays(-1);
-            }
-            else
-            {
-                start = lastBill.PeriodEnd.AddDays(1);
-                end = start.AddMonths(1).AddDays(-1);
-            }
-
-            var contract = await _contractClientService.GetContractAsync(contractId);
+            var contract = await _contractService.GetContractAsync(contractId);
 
             if (contract.ContractStatus != ContractStatus.Active)
             {
                 string message = contract.ContractStatus switch
                 {
-                    ContractStatus.Pending => "Hợp đồng chưa được duyệt. Không thể tạo hoá đơn.",
-                    ContractStatus.Cancelled => "Hợp đồng đã bị huỷ. Không thể tạo hoá đơn.",
-                    ContractStatus.Expired => "Hợp đồng đã hết hạn. Không thể tạo hoá đơn.",
-                    ContractStatus.Evicted => "Hợp đồng đã bị chấm dứt. Không thể tạo hoá đơn.",
-                    _ => "Hợp đồng không hợp lệ để tạo hoá đơn."
+                    ContractStatus.Pending => "Contract is pending approval. Cannot generate a bill.",
+                    ContractStatus.Cancelled => "Contract is cancelled. Cannot generate a bill.",
+                    ContractStatus.Expired => "Contract is expired. Cannot generate a bill.",
+                    ContractStatus.Evicted => "Contract has been terminated. Cannot generate a bill.",
+                    _ => "Contract is not valid for bill generation."
                 };
 
                 return ApiResponse<UtilityBillDTO>.Fail(message);
             }
-            
-            var readings = await _utilityReadingClientService.GetUtilityReadingsAsync(contract.RoomId, start, end);
 
-            var electric = readings.FirstOrDefault(r => r.Type == UtilityType.Electric);
-            var water = readings.FirstOrDefault(r => r.Type == UtilityType.Water);
+            var readings = await _utilityReadingService.GetUtilityReadingsAsync(contract.Id);         
 
-            if (electric == null || water == null)
-            {                
-                if (electric == null && water == null)
-                    return ApiResponse<UtilityBillDTO>.Fail("Cả điện và nước chưa được cập nhật trong kỳ này.");
-                if (electric == null)
-                    return ApiResponse<UtilityBillDTO>.Fail("Thiếu chỉ số điện trong kỳ này.");
-                return ApiResponse<UtilityBillDTO>.Fail("Thiếu chỉ số nước trong kỳ này.");
-            }            
+            // Get the latest reading
+            var latest = readings.MaxBy(r => r.ReadingDate);
 
-            var details = readings.Select(r => new UtilityBillDetailDTO
+            if (latest == null)
+                return ApiResponse<UtilityBillDTO>.Fail("No readings found.");
+
+            // Extract billing period
+            int billingMonth = latest.ReadingDate.Month;
+            int billingYear = latest.ReadingDate.Year;
+
+            // Filter readings by billing period
+            var readingsForMonth = readings
+                .Where(r => r.ReadingDate.Year == billingYear &&
+                            r.ReadingDate.Month == billingMonth)
+                .ToList();
+
+            if (readingsForMonth.Count == 0)
+                return ApiResponse<UtilityBillDTO>.Fail("No readings found for the target billing month.");
+
+
+            var details = new List<UtilityBillDetailDTO>();
+            foreach (var r in readings)
             {
-                UtilityReadingId = r.Id,
-                Type = r.Type.ToString(),
-                UnitPrice = r.Price,
-                Consumption = r.Consumption,
-                Total = r.Total
-            }).ToList();
+                details.Add(new UtilityBillDetailDTO
+                {
+                    UtilityReadingId = r.Id,
+                    Type = r.Type.ToString(),
+                    Total = r.Total,
+                    UtilityReading = new UtilityReadingResponse
+                    {
+                        Id = r.Id,
+                        ContractId = r.ContractId,
+                        Type = r.Type,
+                        PreviousIndex = r.PreviousIndex,
+                        CurrentIndex = r.CurrentIndex,
+                        Consumption = r.Consumption,
+                        ReadingDate = r.ReadingDate,
+                        Price = r.Price,
+                        Total = r.Total
+                    }
+                });
+            }
+
+            foreach (var s in contract.ServiceInfors)
+            {
+                details.Add(new UtilityBillDetailDTO
+                {
+                    ServiceName = s.ServiceName,
+                    ServicePrice = s.Price,
+                    Type = "Service",
+                    Total = s.Price
+                });
+            }
 
             var totalAmount = contract.RoomPrice + details.Sum(r => r.Total);
 
@@ -130,28 +148,77 @@ namespace UtilityBillAPI.Service
                 ContractId = contract.Id,
                 RoomPrice = contract.RoomPrice,
                 TotalAmount = totalAmount,
-                CreatedAt = DateTime.UtcNow,
-                PeriodStart = start,
-                PeriodEnd = end,
+                CreatedAt = DateTime.UtcNow,              
                 Status = UtilityBillStatus.Unpaid,
-                Note = null,
+                BillType = UtilityBillType.Monthly,
+                BillingMonth = billingMonth,
+                BillingYear = billingYear,
+                Note = $"Monthly bill for {billingMonth}/{billingYear}",
                 Details = details
             };
 
             await _utilityBillRepo.CreateAsync(_mapper.Map<UtilityBill>(bill));
-            return ApiResponse<UtilityBillDTO>.Success(bill, "Tạo hoá đơn thành công");          
-        } 
+            return ApiResponse<UtilityBillDTO>.Success(bill, "Monthly bill created successfully.");
+        }
+
+        public async Task<ApiResponse<UtilityBillDTO>> GenerateDepositBillAsync(Guid contractId, Guid ownerId)
+        {
+            var contract = await _contractService.GetContractAsync(contractId);
+            if (contract.ContractStatus != ContractStatus.Active)
+            {
+                string message = contract.ContractStatus switch
+                {
+                    ContractStatus.Pending => "Contract is pending approval. Cannot generate a bill.",
+                    ContractStatus.Cancelled => "Contract is cancelled. Cannot generate a bill.",
+                    ContractStatus.Expired => "Contract is expired. Cannot generate a bill.",
+                    ContractStatus.Evicted => "Contract has been terminated. Cannot generate a bill.",
+                    _ => "Contract is not valid for bill generation."
+                };
+
+                return ApiResponse<UtilityBillDTO>.Fail(message);
+            }
+
+            var bill = new UtilityBillDTO
+            {
+                Id = Guid.NewGuid(),
+                TenantId = contract.IdentityProfiles.FirstOrDefault(p => p.IsSigner)?.UserId ?? Guid.Empty,
+                OwnerId = ownerId,
+                RoomId = contract.RoomId,
+                ContractId = contract.Id,
+                RoomPrice = 0,                
+                TotalAmount = contract.DepositAmount,
+                CreatedAt = DateTime.UtcNow,               
+                Status = UtilityBillStatus.Unpaid,
+                BillType = UtilityBillType.Deposit,
+                Note = "Deposit payment",
+                Details = new List<UtilityBillDetailDTO>
+                {
+                    new UtilityBillDetailDTO
+                    {
+                        Type = "Deposit",
+                        Total = contract.DepositAmount,
+                        ServiceName = "Deposit Fee",
+                        ServicePrice = contract.DepositAmount
+                    }
+                }
+            };
+
+            await _utilityBillRepo.CreateAsync(_mapper.Map<UtilityBill>(bill));
+
+            return ApiResponse<UtilityBillDTO>.Success(bill, "Deposit bill created successfully.");
+        }
+
 
         public async Task<ApiResponse<bool>> MarkAsPaidAsync(Guid billId)
         {
             var bill = await _utilityBillRepo.GetByIdAsync(billId);
             if (bill.Status == UtilityBillStatus.Cancelled)
             {
-                return ApiResponse<bool>.Fail("Không thể thanh toán hoá đơn đã huỷ");
+                return ApiResponse<bool>.Fail("Unable to pay canceled invoice.");
             }
 
             await _utilityBillRepo.MarkAsPaidAsync(billId);
-            return ApiResponse<bool>.Success(true, "Đã thanh toán hoá đơn thành công");
+            return ApiResponse<bool>.Success(true, "Bill paid successfully!");
         }
 
         public async Task<ApiResponse<bool>> CancelAsync(Guid billId, string? reason)
@@ -159,12 +226,12 @@ namespace UtilityBillAPI.Service
             var bill = await _utilityBillRepo.GetByIdAsync(billId);
             if (bill.Status == UtilityBillStatus.Paid)
             {
-                return ApiResponse<bool>.Fail("Không thể huỷ hoá đơn đã thanh toán");
+                return ApiResponse<bool>.Fail("Cannot cancel paid invoice.");
             }
 
             await _utilityBillRepo.CancelAsync(billId, reason);
-            return ApiResponse<bool>.Success(true, "Đã huỷ hoá đơn thành công");
-        }        
+            return ApiResponse<bool>.Success(true, "Bill canceled successfully!");
+        }
 
     }
 

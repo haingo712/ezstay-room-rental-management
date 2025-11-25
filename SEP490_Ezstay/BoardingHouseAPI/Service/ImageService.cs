@@ -5,10 +5,10 @@ using BoardingHouseAPI.Service.Interface;
 
 namespace BoardingHouseAPI.Service
 {
-    public class ImageClientService : IImageClientService
+    public class ImageService : IImageService
     {       
         private readonly HttpClient _httpClient;
-        public ImageClientService(HttpClient httpClient)
+        public ImageService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

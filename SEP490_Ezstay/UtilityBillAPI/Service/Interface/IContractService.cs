@@ -2,7 +2,7 @@
 
 namespace UtilityBillAPI.Service.Interface
 {
-    public interface IContractClientService
+    public interface IContractService
     {
         Task<ContractResponse?> GetContractAsync(Guid contractId);
     }

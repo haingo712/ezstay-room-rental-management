@@ -2,7 +2,7 @@
 
 namespace BoardingHouseAPI.Service.Interface
 {
-    public interface IRoomClientService
+    public interface IRoomService
     {
         Task<List<RoomResponse>> GetRoomsByHouseIdAsync(Guid houseId);
     }

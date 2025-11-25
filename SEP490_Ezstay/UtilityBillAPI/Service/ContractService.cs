@@ -4,10 +4,10 @@ using System.Net.Http.Headers;
 
 namespace UtilityBillAPI.Service
 {
-    public class ContractClientService : IContractClientService
+    public class ContractService : IContractService
     {
         private readonly HttpClient _httpClient;
-        public ContractClientService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
+        public ContractService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
 
