@@ -69,13 +69,18 @@ public class BankAccountService:IBankAccountService
     }
     public async Task<ApiResponse<BankAccountResponse>> AddBankAccount(Guid userId, CreateBankAccount request)
     {
-        var existed = _bankAccountRepository.CheckExistsBankAccount(userId, request.BankGatewayId, request.AccountNumber);
-        if (existed != null)
+        bool existed =await _bankAccountRepository.CheckExistsBankAccount(userId, request.BankGatewayId, request.AccountNumber);
+        if (existed)
         {
             return ApiResponse<BankAccountResponse>.Fail("Bank account already exists");
         }
         var encodedDes = Uri.EscapeDataString(request.Description ?? "");
         var bankGateway = await _bankGatewayRepository.GetById(request.BankGatewayId);
+        Console.WriteLine(bankGateway + " hjjjj");
+        if (bankGateway == null) 
+        {
+            return ApiResponse<BankAccountResponse>.Fail("Bank Gateway not found"); // Trả lỗi rõ ràng
+        }
          var bankAccount = _mapper.Map<BankAccount>(request);
         bankAccount.ImageQR = $"https://qr.sepay.vn/img?acc={request.AccountNumber}&bank={bankGateway.BankName}&des={encodedDes}";
         bankAccount.UserId = userId;

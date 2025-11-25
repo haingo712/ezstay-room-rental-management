@@ -31,7 +31,7 @@ namespace AccountAPI.Controllers
         public async Task<IActionResult> CreateProfile([FromForm] UserDTO userDto)
         {
             var userId = _userClaimHelper.GetUserId(User);
-
+                Console.WriteLine("xx "+userId);
             // Truyền thêm User (ClaimsPrincipal) vào service
             var success = await _userService.CreateProfileAsync(userId, userDto);
 

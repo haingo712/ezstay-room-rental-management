@@ -1,6 +1,27 @@
 {
   "Routes": [
     {
+      "DownstreamPathTemplate": "/api/FavoritePosts/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "favoritepostapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/FavoritePosts/{everything}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
       "DownstreamPathTemplate": "/api/Mail/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -43,49 +64,6 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/BankGateWay/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "paymentapi",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/api/BankGateWay/{everything}",
-      "UpstreamHttpMethod": [
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE"
-      ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
-    },
-    {
-      "DownstreamPathTemplate": "/api/BankAccount/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "paymentapi",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/api/BankAccount/{everything}",
-      "UpstreamHttpMethod": [
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE"
-      ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
-    },
-   
-    {
       "DownstreamPathTemplate": "/api/Payment/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -100,8 +78,35 @@
         "POST",
         "PUT",
         "DELETE"
-      ]
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
     },
+    {
+      "DownstreamPathTemplate": "/api/Bank/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "paymentapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Bank/{everything}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+   
+    
     {
       "DownstreamPathTemplate": "/api/Contract/{everything}",
       "DownstreamScheme": "http",
@@ -187,7 +192,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "accountapi",
+          "Host": "authapi",
           "Port": 8080
         }
       ],
@@ -204,7 +209,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "authapi",
           "Port": 8080
         }
       ],
@@ -546,7 +551,6 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:7000"
+    "BaseUrl": "http://apigateway:8080"
   }
-
 }

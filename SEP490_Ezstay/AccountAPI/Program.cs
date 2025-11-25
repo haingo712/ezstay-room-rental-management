@@ -37,7 +37,7 @@ builder.Services.AddHttpClient("Gateway", (serviceProvider, client) =>
 
 builder.Services.AddHttpClient("ImageAPI", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7080"); // API của ImageAPI
+    client.BaseAddress = new Uri("http://imageapi:8080"); // API của ImageAPI
 });
 
 
@@ -45,7 +45,7 @@ builder.Services.AddHttpClient("ImageAPI", client =>
 
 builder.Services.AddHttpClient<UserService>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7000"); // API Gateway URL
+    client.BaseAddress = new Uri("http://apigateway:8080"); // API Gateway URL
 });
 
 builder.Services.AddScoped<IUserService, UserService>();

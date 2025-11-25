@@ -6,6 +6,7 @@
     container_name: apigateway
     ports:
       - "7001:8080"  
+      - "7001:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
 #      ASPNETCORE_URLS: http://+:8080
@@ -30,6 +31,16 @@
       - utilityreadingapi
       - profileapi
     
+  favoritepostapi:
+    build:
+      context: .
+      dockerfile: FavoritePostAPI/Dockerfile
+    container_name: favoritepostapi
+    ports:
+      - "7296:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    
   amenityapi:
     build:
       context: .
@@ -49,10 +60,7 @@
       - "7211:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      
-  
  
-  
   
   authapi:
     build:

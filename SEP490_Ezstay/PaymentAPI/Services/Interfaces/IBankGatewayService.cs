@@ -7,7 +7,8 @@ namespace PaymentAPI.Services.Interfaces;
 
 public interface IBankGatewayService
 {
-    Task<List<BankGatewayResponse>> SyncFromVietQR();
+    Task<BankGatewayResponse> GetById(Guid id);
+//    Task<List<BankGatewayResponse>> SyncFromVietQR();
     IQueryable<BankGatewayResponse> GetAllBankGateway();
     IQueryable<BankGatewayResponse> GetAllActiveBankGateway();
 

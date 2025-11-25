@@ -36,7 +36,11 @@ namespace PaymentAPI.Controllers
         {
             return Ok(await _bankGatewayService.HiddenBankGateway(id, isActive));
         }
-      
+        [HttpPut("getbyid/{id}")]
+        public async Task<IActionResult> getid(Guid id)
+        {
+            return Ok(await _bankGatewayService.GetById(id));
+        }
         [HttpGet("gateway")]
         [EnableQuery]
         public IQueryable<BankGatewayResponse> GetAllBankGateway()
@@ -52,7 +56,7 @@ namespace PaymentAPI.Controllers
             var userId = _tokenService.GetUserIdFromClaims(User);
             var result = await _bankAccountService.AddBankAccount(userId, request);
             if (!result.IsSuccess)
-                return BadRequest();
+                return BadRequest(result.Message);
 
             return Ok(result);
         }
