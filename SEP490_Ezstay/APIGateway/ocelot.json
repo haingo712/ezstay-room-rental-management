@@ -108,7 +108,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "paymentapi",
           "Port": 8080
         }
       ],
