@@ -108,6 +108,24 @@ services:
     - "/Users/Kì 9/MlN/kk/SEP490_Ezstay/ContractAPI:/app:rw"
     - "/Users/Kì 9/MlN/kk/SEP490_Ezstay:/src:rw"
     working_dir: "/app"
+  favoritepostapi:
+    build:
+      context: "/Users/Kì 9/MlN/kk/SEP490_Ezstay"
+      dockerfile: "FavoritePostAPI/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/FavoritePostAPI.dll"
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "favoritepostapi:dev"
+    ports: []
+    volumes:
+    - "/Users/quochien/.nuget/packages:/root/.nuget/packages"
+    - "/Users/Kì 9/MlN/kk/SEP490_Ezstay/FavoritePostAPI:/app:rw"
+    - "/Users/Kì 9/MlN/kk/SEP490_Ezstay:/src:rw"
+    working_dir: "/app"
   imageapi:
     build:
       context: "/Users/Kì 9/MlN/kk/SEP490_Ezstay"
@@ -212,7 +230,7 @@ services:
     image: "rentalpostsapi:dev"
     ports: []
     volumes:
-    - "/Users/quochien/.nuget/packages:/home/app/.nuget/packages"
+    - "/Users/quochien/.nuget/packages:/root/.nuget/packages"
     - "/Users/Kì 9/MlN/kk/SEP490_Ezstay/RentalPostsAPI:/app:rw"
     - "/Users/Kì 9/MlN/kk/SEP490_Ezstay:/src:rw"
     working_dir: "/app"
@@ -248,7 +266,7 @@ services:
     image: "reviewreportapi:dev"
     ports: []
     volumes:
-    - "/Users/quochien/.nuget/packages:/home/app/.nuget/packages"
+    - "/Users/quochien/.nuget/packages:/root/.nuget/packages"
     - "/Users/Kì 9/MlN/kk/SEP490_Ezstay/ReviewReportAPI:/app:rw"
     - "/Users/Kì 9/MlN/kk/SEP490_Ezstay:/src:rw"
     working_dir: "/app"

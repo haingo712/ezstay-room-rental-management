@@ -98,6 +98,14 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(7211); // chỉ HTTP
+    // options.ListenAnyIP(7212, listenOptions => listenOptions.UseHttps()); // bỏ hoặc comment nếu không muốn HTTPS
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -110,7 +118,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 

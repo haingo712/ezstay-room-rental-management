@@ -26,17 +26,16 @@ builder.Services.Configure<SePayConfig>(builder.Configuration.GetSection("SePay"
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddScoped<IBankAccountService, BankAccountService>();
-builder.Services.AddHttpClient<IBankAccountService, BankAccountService>();
 builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();
 
 builder.Services.AddScoped<IBankGatewayRepository, BankGatewayRepository>();
 builder.Services.AddScoped<IBankGatewayService, BankGatewayService>();
+builder.Services.AddHttpClient<IBankGatewayService, BankGatewayService>();
 
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddHttpClient<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 
-// SePay Service
 builder.Services.AddHttpClient<ISePayService, SePayService>();
 builder.Services.AddScoped<ISePayService, SePayService>();
 
@@ -45,16 +44,6 @@ builder.Services.AddHttpClient<IUtilityBillService, UtilityBillService>((service
 {
     var configuration = serviceProvider.GetRequiredService<IConfiguration>();
     var utilityBillApiUrl = configuration["ServiceUrls:UtilityBillAPI"];
-    
-    if (!string.IsNullOrEmpty(utilityBillApiUrl))
-    {
-        client.BaseAddress = new Uri(utilityBillApiUrl);
-        Console.WriteLine($"✅ UtilityBillService HttpClient configured with base address: {utilityBillApiUrl}");
-    }
-    else
-    {
-        Console.WriteLine("⚠️ WARNING: UtilityBillAPI URL not configured!");
-    }
 })
 .ConfigurePrimaryHttpMessageHandler(() =>
 {
@@ -147,6 +136,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
+
 // Add CORS for frontend (Next.js)
 builder.Services.AddCors(options =>
 {
@@ -158,6 +148,7 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -173,7 +164,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 // Enable CORS
 app.UseCors("AllowFrontend");
