@@ -3,10 +3,10 @@ using BoardingHouseAPI.DTO.Response;
 
 namespace BoardingHouseAPI.Service
 {
-    public class SentimentAnalysisClientService : ISentimentAnalysisClientService
+    public class SentimentAnalysisService : ISentimentAnalysisService
     {
         private readonly HttpClient _httpClient;
-        public SentimentAnalysisClientService(HttpClient httpClient)
+        public SentimentAnalysisService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

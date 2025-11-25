@@ -2,10 +2,10 @@
 
 namespace UtilityBillAPI.Service.Interface
 {
-    public interface IUtilityReadingClientService
+    public interface IUtilityReadingService
     {
        Task<UtilityReadingResponse?> GetElectricityReadingAsync(Guid roomId);
        Task<UtilityReadingResponse?> GetWaterReadingAsync(Guid roomId);        
-       Task<List<UtilityReadingResponse>?> GetUtilityReadingsAsync(Guid roomId, DateTime startDate, DateTime endDate);
+       Task<List<UtilityReadingResponse>?> GetUtilityReadingsAsync(Guid contractId);
     }
 }

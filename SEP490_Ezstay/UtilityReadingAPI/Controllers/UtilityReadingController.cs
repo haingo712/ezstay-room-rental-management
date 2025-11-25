@@ -36,7 +36,7 @@ public class UtilityReadingController : ControllerBase
         return _utilityReadingService.GetAllByContractId(contractId);
     }
     [HttpGet("latest/{contractId}/{utilityType}")]
-    public async Task<IActionResult> GetLatestUtilityReadingByRoomAndType(Guid contractId, UtilityType utilityType)
+    public async Task<IActionResult> GetLatestUtilityReadingByContractAndType(Guid contractId, UtilityType utilityType)
     {        
         try
         {

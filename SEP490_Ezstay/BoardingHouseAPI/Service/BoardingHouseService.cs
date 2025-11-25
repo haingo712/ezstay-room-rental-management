@@ -7,7 +7,6 @@ using BoardingHouseAPI.Enum;
 using BoardingHouseAPI.Models;
 using BoardingHouseAPI.Repository.Interface;
 using BoardingHouseAPI.Service.Interface;
-using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 
 namespace BoardingHouseAPI.Service
 {
@@ -15,23 +14,23 @@ namespace BoardingHouseAPI.Service
     {
         private readonly IBoardingHouseRepository _boardingHouseRepo;
         private readonly IMapper _mapper;
-        private readonly IImageClientService _imageClient;
-        private readonly IRoomClientService _roomClient;
-        private readonly IReviewClientService _reviewClient;
-        private readonly ISentimentAnalysisClientService _sentimentAnalysisClient;
+        private readonly IImageService _imageService;
+        private readonly IRoomService _roomService;
+        private readonly IReviewService _reviewService;
+        private readonly ISentimentAnalysisService _sentimentAnalysisService;
         private readonly HttpClient _http;
 
         public BoardingHouseService(IBoardingHouseRepository boardingHouseRepo, IMapper mapper,
-            IImageClientService imageClient, IRoomClientService roomClient,
-            IReviewClientService reviewClientService, ISentimentAnalysisClientService sentimentAnalysisClientService, 
+            IImageService imageService, IRoomService roomClient,
+            IReviewService reviewService, ISentimentAnalysisService sentimentAnalysisService, 
             IHttpClientFactory factory)
         {
             _boardingHouseRepo = boardingHouseRepo;
             _mapper = mapper;
-            _imageClient = imageClient;
-            _roomClient = roomClient;
-            _reviewClient = reviewClientService;
-            _sentimentAnalysisClient = sentimentAnalysisClientService;
+            _imageService = imageService;
+            _roomService = roomClient;
+            _reviewService = reviewService;
+            _sentimentAnalysisService = sentimentAnalysisService;
             _http = factory.CreateClient("Gateway");
         }
 
@@ -83,20 +82,20 @@ namespace BoardingHouseAPI.Service
             // check trùng địa chỉ
             var locationExist = await _boardingHouseRepo.LocationExists(houseLocation.FullAddress);
             if (locationExist)
-                return ApiResponse<BoardingHouseDTO>.Fail("Địa chỉ này đã tồn tại.");
+                return ApiResponse<BoardingHouseDTO>.Fail("This address already exists.");
 
             //var exist = await _boardingHouseRepo.LocationExistsWithHouseName(createDto.HouseName, houseLocation.FullAddress);
             //if (exist)
             //    return ApiResponse<BoardingHouseDTO>.Fail("Nhà trọ với tên và địa chỉ này đã tồn tại.");
             var house = _mapper.Map<BoardingHouse>(createDto);
             house.OwnerId = ownerId;
-            house.ImageUrls = await _imageClient.UploadMultipleImagesAsync(createDto.Files!);
+            house.ImageUrls = await _imageService.UploadMultipleImagesAsync(createDto.Files!);
 
             house.Location = houseLocation;
 
             await _boardingHouseRepo.AddAsync(house);
             return ApiResponse<BoardingHouseDTO>.Success(
-                _mapper.Map<BoardingHouseDTO>(house), "Thêm nhà trọ thành công");
+                _mapper.Map<BoardingHouseDTO>(house), "Created boarding house successfully!");
         }
 
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateBoardingHouseDTO updateDto)
@@ -118,29 +117,29 @@ namespace BoardingHouseAPI.Service
                 // check trùng địa chỉ (nếu địa chỉ thay đổi)
                 var existLocation = await _boardingHouseRepo.LocationExists(exist.Location.FullAddress);
                 if (existLocation && exist.Location.FullAddress != oldAddress)
-                    return ApiResponse<bool>.Fail("Địa chỉ này đã tồn tại.");
+                    return ApiResponse<bool>.Fail("This address already exists.");
 
                 // Check trùng địa chỉ + tên
                 //var existAddress = await _boardingHouseRepo.LocationExistsWithHouseName(updateDto.HouseName, exist.Location.FullAddress);
                 //if (existAddress && (exist.HouseName != updateDto.HouseName || exist.Location.FullAddress != oldAddress))
                 //    return ApiResponse<bool>.Fail("Nhà trọ với tên và địa chỉ này đã tồn tại.");
             }
-            exist.ImageUrls = await _imageClient.UploadMultipleImagesAsync(updateDto.Files!);
+            exist.ImageUrls = await _imageService.UploadMultipleImagesAsync(updateDto.Files!);
             await _boardingHouseRepo.UpdateAsync(exist);
-            return ApiResponse<bool>.Success(true, "Cập nhật trọ thành công");
+            return ApiResponse<bool>.Success(true, "Updated boarding house successfully!");
         }
 
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var house = await _boardingHouseRepo.GetByIdAsync(id);
             if (house == null) throw new KeyNotFoundException("HouseId not found!");
-            var rooms = await _roomClient.GetRoomsByHouseIdAsync(id);
+            var rooms = await _roomService.GetRoomsByHouseIdAsync(id);
             if (rooms != null && rooms.Count > 0)
-                return ApiResponse<bool>.Fail("Không thể xoá nhà trọ khi còn tồn tại phòng!");
+                return ApiResponse<bool>.Fail("Cannot delete a boarding house while rooms still exist!");
 
 
             await _boardingHouseRepo.DeleteAsync(house);
-            return ApiResponse<bool>.Success(true, "Xoá trọ thành công");
+            return ApiResponse<bool>.Success(true, "Deleted boarding house successfully!");
         }
 
         public async Task<List<BoardingHouseRankResponse>> GetRankedBoardingHousesAsync(RankType type, string order, int limit)
@@ -150,11 +149,11 @@ namespace BoardingHouseAPI.Service
 
             foreach (var house in allHouses)
             {
-                var rooms = await _roomClient.GetRoomsByHouseIdAsync(house.Id);
+                var rooms = await _roomService.GetRoomsByHouseIdAsync(house.Id);
                 if (rooms == null || !rooms.Any())
                     continue;
 
-                var reviews = await _reviewClient.GetReviewsByRoomsAsync(rooms);
+                var reviews = await _reviewService.GetReviewsByRoomsAsync(rooms);
                 if (reviews == null || !reviews.Any())
                     continue;
 
@@ -166,7 +165,7 @@ namespace BoardingHouseAPI.Service
                 }
                 else if (type == RankType.Sentiment)
                 {
-                    var sentiments = await _sentimentAnalysisClient.SentimentAnalysisAsync(reviews);
+                    var sentiments = await _sentimentAnalysisService.SentimentAnalysisAsync(reviews);
                     score = sentiments.Average(s => s.Label switch
                     {
                         "positive" => 1.0,
@@ -198,10 +197,10 @@ namespace BoardingHouseAPI.Service
 
         public async Task<ApiResponse<SentimentSummaryResponse>> GetSentimentSummaryAsync(Guid boardingHouseId)
         {
-            var rooms = await _roomClient.GetRoomsByHouseIdAsync(boardingHouseId);
+            var rooms = await _roomService.GetRoomsByHouseIdAsync(boardingHouseId);
             if (rooms == null || !rooms.Any())
-                return ApiResponse<SentimentSummaryResponse>.Fail("Không có phòng nào trong nhà trọ này.");
-            var reviews = await _reviewClient.GetReviewsByRoomsAsync(rooms);
+                return ApiResponse<SentimentSummaryResponse>.Fail("There are no rooms available in this boarding house.");
+            var reviews = await _reviewService.GetReviewsByRoomsAsync(rooms);
             if (reviews == null || !reviews.Any())
             {
                 return ApiResponse<SentimentSummaryResponse>.Success(new SentimentSummaryResponse
@@ -212,10 +211,10 @@ namespace BoardingHouseAPI.Service
                         NeutralCount = 0,
                         NegativeCount = 0,
                         Details = new List<SentimentResponse>()
-                    }, "Không có đánh giá nào cho nhà trọ này.");
+                    }, "There are no reviews for this boarding house.");
             }
 
-            var sentiments = await _sentimentAnalysisClient.SentimentAnalysisAsync(reviews);
+            var sentiments = await _sentimentAnalysisService.SentimentAnalysisAsync(reviews);
             var summary = new SentimentSummaryResponse
             {
                 BoardingHouseId = boardingHouseId,
@@ -226,7 +225,7 @@ namespace BoardingHouseAPI.Service
                 Details = sentiments
             };
 
-            return ApiResponse<SentimentSummaryResponse>.Success(summary, "Thống kê sentiment thành công.");
+            return ApiResponse<SentimentSummaryResponse>.Success(summary, "Sentiment statistics success.");
 
 
         }
@@ -234,12 +233,12 @@ namespace BoardingHouseAPI.Service
         public async Task<ApiResponse<RatingSummaryResponse>> GetRatingSummaryAsync(Guid boardingHouseId)
         {
             // 1️⃣ Lấy danh sách phòng trong nhà trọ
-            var rooms = await _roomClient.GetRoomsByHouseIdAsync(boardingHouseId);
+            var rooms = await _roomService.GetRoomsByHouseIdAsync(boardingHouseId);
             if (rooms == null || !rooms.Any())
-                return ApiResponse<RatingSummaryResponse>.Fail("Không có phòng nào trong nhà trọ này.");
+                return ApiResponse<RatingSummaryResponse>.Fail("There are no rooms available in this boarding house.");
 
             // 2️⃣ Lấy tất cả review theo phòng
-            var reviews = await _reviewClient.GetReviewsByRoomsAsync(rooms);
+            var reviews = await _reviewService.GetReviewsByRoomsAsync(rooms);
             if (reviews == null || !reviews.Any())
             {
                 return ApiResponse<RatingSummaryResponse>.Success(new RatingSummaryResponse
@@ -253,7 +252,7 @@ namespace BoardingHouseAPI.Service
                     FourStarCount = 0,
                     FiveStarCount = 0,
                     Details = new List<ReviewResponse>()
-                }, "Không có đánh giá nào cho nhà trọ này.");
+                }, "There are no reviews for this boarding house.");
             }
             
             var totalReviews = reviews.Count;
@@ -272,7 +271,7 @@ namespace BoardingHouseAPI.Service
                 Details = reviews
             };
 
-            return ApiResponse<RatingSummaryResponse>.Success(summary, "Thống kê rating thành công.");
+            return ApiResponse<RatingSummaryResponse>.Success(summary, "Rating statistics successful.");
         }
 
     }

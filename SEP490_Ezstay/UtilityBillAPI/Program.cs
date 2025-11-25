@@ -35,11 +35,11 @@ namespace UtilityBillAPI
             builder.Services.AddHttpContextAccessor();            
 
             var serviceUrls = builder.Configuration.GetSection("ServiceUrls");           
-            builder.Services.AddHttpClient<IUtilityReadingClientService, UtilityReadingClientService>(client =>
+            builder.Services.AddHttpClient<IUtilityReadingService, UtilityReadingService>(client =>
             {
                 client.BaseAddress = new Uri(serviceUrls["UtilityReadingAPI"]!);
             });
-            builder.Services.AddHttpClient<IContractClientService, ContractClientService>(client =>
+            builder.Services.AddHttpClient<IContractService, ContractService>(client =>
             {
                 client.BaseAddress = new Uri(serviceUrls["ContractAPI"]!);
             });

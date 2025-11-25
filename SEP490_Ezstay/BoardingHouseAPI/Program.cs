@@ -37,19 +37,19 @@ namespace BoardingHouseAPI
             {
                 client.BaseAddress = new Uri(serviceUrls["Gateway"]!);
             });
-            builder.Services.AddHttpClient<IImageClientService, ImageClientService>(client =>
+            builder.Services.AddHttpClient<IImageService, ImageService>(client =>
             {
                 client.BaseAddress = new Uri(serviceUrls["ImageAPI"]!);
             });                      
-            builder.Services.AddHttpClient<IReviewClientService, ReviewClientService>(client =>
+            builder.Services.AddHttpClient<IReviewService, ReviewService>(client =>
             {
                 client.BaseAddress = new Uri(serviceUrls["ReviewAPI"]!);
             });
-            builder.Services.AddHttpClient<ISentimentAnalysisClientService, SentimentAnalysisClientService>(client =>
+            builder.Services.AddHttpClient<ISentimentAnalysisService, SentimentAnalysisService>(client =>
             {
                 client.BaseAddress = new Uri(serviceUrls["SentimentAnalysisAPI"]!);
             });
-            builder.Services.AddHttpClient<IRoomClientService, RoomClientService>(client =>
+            builder.Services.AddHttpClient<IRoomService, RoomService>(client =>
             {
                 client.BaseAddress = new Uri(serviceUrls["RoomAPI"]!);
             });          

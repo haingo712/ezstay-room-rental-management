@@ -4,10 +4,10 @@ using BoardingHouseAPI.Service.Interface;
 
 namespace BoardingHouseAPI.Service
 {
-    public class ReviewClientService : IReviewClientService
+    public class ReviewService : IReviewService
     {
         private readonly HttpClient _httpClient;
-        public ReviewClientService(HttpClient httpClient)
+        public ReviewService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
