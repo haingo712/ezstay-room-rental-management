@@ -1,23 +1,5 @@
 # This is a generated file. Not intended for manual editing.
 services:
-  accountapi:
-    build:
-      context: "/Users/Kì 9/MlN/kk/SEP490_Ezstay"
-      dockerfile: "AccountAPI/Dockerfile"
-      target: "base"
-    command: []
-    entrypoint:
-    - "dotnet"
-    - "/app/bin/Debug/net8.0/AccountAPI.dll"
-    environment:
-      DOTNET_USE_POLLING_FILE_WATCHER: "true"
-    image: "accountapi:dev"
-    ports: []
-    volumes:
-    - "/Users/quochien/.nuget/packages:/root/.nuget/packages"
-    - "/Users/Kì 9/MlN/kk/SEP490_Ezstay/AccountAPI:/app:rw"
-    - "/Users/Kì 9/MlN/kk/SEP490_Ezstay:/src:rw"
-    working_dir: "/app"
   amenityapi:
     build:
       context: "/Users/Kì 9/MlN/kk/SEP490_Ezstay"
@@ -196,6 +178,24 @@ services:
     volumes:
     - "/Users/quochien/.nuget/packages:/root/.nuget/packages"
     - "/Users/Kì 9/MlN/kk/SEP490_Ezstay/PaymentAPI:/app:rw"
+    - "/Users/Kì 9/MlN/kk/SEP490_Ezstay:/src:rw"
+    working_dir: "/app"
+  profileapi:
+    build:
+      context: "/Users/Kì 9/MlN/kk/SEP490_Ezstay"
+      dockerfile: "AccountAPI/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/AccountAPI.dll"
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "accountapi:dev"
+    ports: []
+    volumes:
+    - "/Users/quochien/.nuget/packages:/root/.nuget/packages"
+    - "/Users/Kì 9/MlN/kk/SEP490_Ezstay/AccountAPI:/app:rw"
     - "/Users/Kì 9/MlN/kk/SEP490_Ezstay:/src:rw"
     working_dir: "/app"
   rentalpostsapi:

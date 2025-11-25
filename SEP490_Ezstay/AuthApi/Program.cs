@@ -35,7 +35,7 @@
 
     builder.Services.AddHttpClient("MailApi", client =>
     {
-        client.BaseAddress = new Uri("http://localhost:5004");
+        client.BaseAddress = new Uri("http://mailapi:8080");
     });
 
 

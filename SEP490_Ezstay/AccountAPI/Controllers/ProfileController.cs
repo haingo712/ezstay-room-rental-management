@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AccountAPI.Controllers
 {
-    [Route("api/User")]
+    [Route("api/Profile")]
     [ApiController]
     public class ProfileController : ControllerBase
     {

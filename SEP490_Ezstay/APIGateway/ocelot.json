@@ -5,7 +5,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "mailapi",
           "Port": 8080
         }
       ],
@@ -22,29 +22,11 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/odata/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/odata/{everything}",
-      "UpstreamHttpMethod": [
-        "GET"
-      ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
-    },
-    {
       "DownstreamPathTemplate": "/api/Chat/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "chatapi",
           "Port": 8080
         }
       ],
@@ -65,7 +47,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "paymentapi",
           "Port": 8080
         }
       ],
@@ -86,7 +68,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "paymentapi",
           "Port": 8080
         }
       ],
@@ -125,7 +107,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "contractapi",
           "Port": 8080
         }
       ],
@@ -142,15 +124,15 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/User/{everything}",
+      "DownstreamPathTemplate": "/api/Profile/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "profileapi",
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/User/{everything}",
+      "UpstreamPathTemplate": "/api/Profile/{everything}",
       "UpstreamHttpMethod": [
         "GET",
         "POST",
@@ -239,7 +221,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "signalrhubapi",
           "Port": 8080
         }
       ],
@@ -317,7 +299,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "rentalpostsapi",
           "Port": 8080
         }
       ],
@@ -335,7 +317,7 @@
     },
     {
       "DownstreamPathTemplate": "/api/UtilityRate/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -356,10 +338,10 @@
     },
     {
       "DownstreamPathTemplate": "/api/UtilityReading/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "utilityreadingapi",
           "Port": 8080
         }
       ],
@@ -377,10 +359,10 @@
     },
     {
       "DownstreamPathTemplate": "/api/UtilityBills/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "utilitybillapi",
           "Port": 8080
         }
       ],
@@ -447,10 +429,10 @@
     },
     {
       "DownstreamPathTemplate": "/api/Review/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "reviewapi",
           "Port": 8080
         }
       ],
@@ -468,10 +450,10 @@
     },
     {
       "DownstreamPathTemplate": "/api/ReviewReply/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "reviewapi",
           "Port": 8080
         }
       ],
@@ -489,10 +471,10 @@
     },
     {
       "DownstreamPathTemplate": "/api/ReviewReport/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "reviewreportapi",
           "Port": 8080
         }
       ],
@@ -510,10 +492,10 @@
     },
     {
       "DownstreamPathTemplate": "/api/Notification/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "notificationapi",
           "Port": 8080
         }
       ],
@@ -532,10 +514,10 @@
     },
     {
       "DownstreamPathTemplate": "/api/Service/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "serviceapi",
           "Port": 8080
         }
       ],
@@ -548,11 +530,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Support/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7127
+          "Port": 8088
         }
       ],
       "UpstreamPathTemplate": "/api/Support/{everything}",
@@ -561,22 +543,10 @@
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
       }
-    },
-    {
-      "DownstreamPathTemplate": "/api/OwnerRequest/{everything}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7009
-        }
-      ],
-      "UpstreamPathTemplate": "/api/OwnerRequest/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
     }
-  ]
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:7000"
+  }
+
 }

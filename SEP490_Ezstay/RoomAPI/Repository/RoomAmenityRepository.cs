@@ -18,7 +18,7 @@ public class RoomAmenityRepository:IRoomAmenityRepository
 
     public IQueryable<RoomAmenity> GetAll()=> _roomAmenities.AsQueryable();
     public IQueryable<RoomAmenity> GetAllByRoomId(Guid roomId)
-    => _roomAmenities.AsQueryable().Where(a => a.RoomId == roomId);
+        => _roomAmenities.AsQueryable().Where(a => a.RoomId == roomId);
 
     public async Task<RoomAmenity> GetById(Guid id)
     {
@@ -41,7 +41,7 @@ public class RoomAmenityRepository:IRoomAmenityRepository
     }
 
     public async Task<bool> CheckAmenity(Guid amenityId)
-    =>await _roomAmenities.Find(r => r.AmenityId == amenityId).AnyAsync();
+        =>await _roomAmenities.Find(r => r.AmenityId == amenityId).AnyAsync();
     // public async Task DeleteRange(IEnumerable<Guid> roomAmenityIds)
     // {
     //     if (!roomAmenityIds.Any()) return;

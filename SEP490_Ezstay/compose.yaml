@@ -11,7 +11,6 @@
 #      ASPNETCORE_URLS: http://+:8080
     depends_on:
       - amenityapi
-      - accountapi
       - authapi
       - boardinghouseapi
       - chatapi
@@ -29,6 +28,7 @@
       - signalrhubapi
       - utilitybillapi
       - utilityreadingapi
+      - profileapi
     
   amenityapi:
     build:
@@ -39,18 +39,21 @@
       - "7111:8080"  
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-
-  accountapi:
+      
+  profileapi:
     build:
       context: .
       dockerfile: AccountAPI/Dockerfile
-    container_name: accountapi
+    container_name: profileapi
     ports:
       - "7211:8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Development  
-
-
+      ASPNETCORE_ENVIRONMENT: Development
+      
+  
+ 
+  
+  
   authapi:
     build:
       context: .
@@ -100,7 +103,7 @@
     ports:
       - "7080:8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Production  
+      ASPNETCORE_ENVIRONMENT: Development  
 
   mailapi:
     build:
@@ -140,7 +143,7 @@
     ports:
       - "7145:8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Production  
+      ASPNETCORE_ENVIRONMENT: Development  
 
   reviewapi:
     build:
@@ -221,3 +224,4 @@
       - "7006:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Production  
+
