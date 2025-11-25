@@ -24,8 +24,6 @@ builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IRoomAmenityService, RoomAmenityService>();
 builder.Services.AddScoped<IRoomAmenityRepository, RoomAmenityRepository>();
-builder.Services.AddScoped<IRoomAmenityService, RoomAmenityService>();
-
 
 builder.Services.AddHttpClient<IImageService, ImageService>(client =>
 {
@@ -39,10 +37,10 @@ builder.Services.AddHttpClient<IAmenityService, AmenityService>(client =>
     client.BaseAddress = new Uri(serviceUrls["AmenityApi"]);
 });
 
-builder.Services.AddHttpClient<IRoomAmenityService, RoomAmenityService>(client =>
-{
-    client.BaseAddress = new Uri(serviceUrls["RoomAmenityApi"]);
-});
+// builder.Services.AddHttpClient<IRoomAmenityService, RoomAmenityService>(client =>
+// {
+//     client.BaseAddress = new Uri(serviceUrls["RoomAmenityApi"]);
+// });
 builder.Services.AddHttpClient<IContractService, ContractService>(client =>
 {
     client.BaseAddress = new Uri(serviceUrls["ContractApi"]);
@@ -66,7 +64,8 @@ builder.Services.AddControllers().AddOData(options =>
         .OrderBy()
         .Expand()
         .Select());
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); 
+builder.Services.AddAutoMapper(typeof(Program));
+// builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
