@@ -72,18 +72,35 @@ namespace UtilityBillAPI.Controllers
         }
 
         // POST: api/UtilityBills/generate/{contractId}
-        [HttpPost("generate/{contractId}")]
+        /*[HttpPost("generate/{contractId}")]
         [Authorize(Roles = "Owner")]
         public async Task<ActionResult<UtilityBillDTO>> GenerateBillForContract(Guid contractId)
         {
             var ownerId = _tokenService.GetUserIdFromClaims(User);
-            var response = await _utilityBillService.GenerateUtilityBillAsync(contractId, ownerId);
+            var response = await _utilityBillService.GenerateMonthlyBillAsync(contractId, ownerId);
             if (!response.IsSuccess)
             {
                 return BadRequest(new { message = response.Message });
             }
             return CreatedAtAction(nameof(GetUtilityBill), new { id = response.Data.Id }, response);
+        }*/
+
+        // POST: api/UtilityBills/monthly/{contractId}
+        [HttpPost("monthly/{contractId}")]
+        public async Task<IActionResult> CreateMonthly(Guid contractId)
+        {
+            var ownerId = _tokenService.GetUserIdFromClaims(User);
+            return Ok(await _utilityBillService.GenerateMonthlyBillAsync(contractId, ownerId));
         }
+
+        // POST: api/UtilityBills/deposit/{contractId}
+        [HttpPost("deposit/{contractId}")]
+        public async Task<IActionResult> CreateDeposit(Guid contractId)
+        {
+            var ownerId = _tokenService.GetUserIdFromClaims(User);
+            return Ok(await _utilityBillService.GenerateDepositBillAsync(contractId, ownerId));
+        }
+
 
         // PUT: api/UtilityBills/{id}/pay
         [HttpPut("{billId}/pay")]
