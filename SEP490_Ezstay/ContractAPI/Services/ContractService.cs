@@ -38,8 +38,20 @@ public class ContractService : IContractService
     //                           .Where(x => x.SignerProfile.TenantId == tenantId).OrderByDescending(d => d.CreatedAt)
     //                           .ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
     public IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId)
-        => _contractRepository.GetAllByOwnerId(ownerId).OrderByDescending(d => d.CreatedAt)
-                              .ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
+    {
+        var contracts = _contractRepository.GetAllByOwnerId(ownerId);
+        foreach (var contract in contracts)
+        {
+            if (contract.CheckoutDate < DateTime.UtcNow.Date &&
+                contract.ContractStatus == ContractStatus.Active)
+            {
+                contract.ContractStatus = ContractStatus.Expired;
+                contract.UpdatedAt = DateTime.UtcNow;
+                _contractRepository.UpdateAsync(contract);
+            }
+        }
+      return  contracts.OrderByDescending(x=> x.CreatedAt).ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
+    }
 
     public async Task<ContractResponse?> GetByIdAsync(Guid id)
     {

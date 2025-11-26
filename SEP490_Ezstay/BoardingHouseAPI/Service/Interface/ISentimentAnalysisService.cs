@@ -2,7 +2,7 @@
 
 namespace BoardingHouseAPI.Service.Interface
 {
-    public interface ISentimentAnalysisClientService
+    public interface ISentimentAnalysisService
     {
         // Sentiment analysis for the given list of reviews
         Task<List<SentimentResponse>> SentimentAnalysisAsync(List<ReviewResponse> reviews);

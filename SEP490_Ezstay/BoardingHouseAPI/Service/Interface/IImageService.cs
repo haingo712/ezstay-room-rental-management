@@ -1,6 +1,6 @@
 ﻿namespace BoardingHouseAPI.Service.Interface
 {
-    public interface IImageClientService
+    public interface IImageService
     {
         Task<string> UploadImageAsync(IFormFile file);
         // upload multiple images
