@@ -9,7 +9,5 @@
     <ItemGroup>
       <Folder Include="DTOs\ReviewReport\Response\" />
     </ItemGroup>
-    
-  
 
 </Project>
