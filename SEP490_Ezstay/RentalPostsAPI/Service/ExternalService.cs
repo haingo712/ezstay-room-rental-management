@@ -59,7 +59,7 @@ namespace RentalPostsAPI.Service
         }
         public Task<List<RoomDto>> GetRoomsByBoardingHouseIdAsync(Guid houseId)
         {
-            var url = $"{_settings.RoomApiBaseUrl}api/Rooms/ByHouseId/{houseId}";
+            var url = $"{_settings.RoomApiBaseUrl}api/Rooms/house/{houseId}";
             return GetFromApiAsync<List<RoomDto>>(url);
         }
 

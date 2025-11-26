@@ -1,3 +1,4 @@
+using Shared.DTOs.RoomAmenities.Responses;
 using Shared.Enums;
 
 namespace Shared.DTOs.Rooms.Responses;
@@ -14,4 +15,5 @@ public class RoomResponse
     public RoomStatus RoomStatus { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public List<RoomAmenityResponse> RoomAmenities { get; set; }
 }
