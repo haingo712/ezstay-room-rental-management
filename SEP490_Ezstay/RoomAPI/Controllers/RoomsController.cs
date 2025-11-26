@@ -59,13 +59,13 @@ namespace RoomAPI.Controllers
         //     }
         // }
         
-        [HttpGet("house-id/{houseId}")]
+        [HttpGet("house/{houseId}")]
         [EnableQuery]        
         public IQueryable<RoomResponse> GetRoomsByHouseId(Guid houseId)
         {
             return _roomService.GetAllByHouseId(houseId);
         }
-        [HttpGet("ByHouseId/{houseId}/Status")]
+        [HttpGet("house/{houseId}/status")]
         [EnableQuery]           
         public IQueryable<RoomResponse> GetRoomsStatusByHouseId(Guid houseId)
         {

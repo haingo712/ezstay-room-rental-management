@@ -62,13 +62,13 @@ public class RoomAmenityService: IRoomAmenityService
                 AmenityId = x.AmenityId,
             }).ToList();
         if (toAdd.Any())
-            await _roomAmenityRepository.Add(toAdd); 
+            await _roomAmenityRepository.AddAmenity(toAdd); 
         var toRemoveIds = existing
             .Where(x => existing.Any(e => e.AmenityId == x.AmenityId))
             .Select(x => x.Id)
             .ToList();
         if (toRemoveIds.Any())
-            await _roomAmenityRepository.Delete(toRemoveIds);
+            await _roomAmenityRepository.DeleteAmenity(toRemoveIds);
         
         var response = existing
             .Where(x => !toRemoveIds.Contains(x.Id))

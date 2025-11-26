@@ -66,9 +66,11 @@ public class RoomService: IRoomService{
         room.RoomStatus= RoomStatus.Available;
         room.CreatedAt = DateTime.UtcNow;
         Console.WriteLine(room.Id + "ddd");
-      //  await _roomAmenity.UpdateRoomAmenities(room.Id, request.Amenities);
+        await _roomAmenity.UpdateRoomAmenities(room.Id, request.Amenities);
+        
         await _roomRepository.Add(room);
         var result = _mapper.Map<RoomResponse>(room);
+        // result.RoomAmenities.
         return ApiResponse<RoomResponse>.Success(result, "Created Successfully");
     }
 

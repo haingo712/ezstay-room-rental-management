@@ -13,7 +13,7 @@ namespace BoardingHouseAPI.Service
 
         public async Task<List<RoomResponse>?> GetRoomsByHouseIdAsync(Guid houseId)
         {
-            var response = await _httpClient.GetAsync($"api/Rooms/ByHouseId/{houseId}");
+            var response = await _httpClient.GetAsync($"api/Rooms/house/{houseId}");
             if (response.IsSuccessStatusCode)
             {
                 var rooms = await response.Content.ReadFromJsonAsync<List<RoomResponse>>();
