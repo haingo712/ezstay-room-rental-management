@@ -32,12 +32,12 @@ namespace PaymentAPI.Controllers
         // }
         [HttpPut("gateway/{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> HideBankGateway(Guid id,  bool isActive)
+        public async Task<IActionResult> HideBankGateway(Guid id,[FromQuery] bool isActive)
         {
             return Ok(await _bankGatewayService.HiddenBankGateway(id, isActive));
         }
-        [HttpPut("getbyid/{id}")]
-        public async Task<IActionResult> getid(Guid id)
+        [HttpGet("gateway/{id}")]
+        public async Task<IActionResult> GetGatewayById(Guid id)
         {
             return Ok(await _bankGatewayService.GetById(id));
         }
@@ -47,8 +47,6 @@ namespace PaymentAPI.Controllers
         {
             return  _bankGatewayService.GetAllBankGateway();
         }
-        
-        
         [HttpPost("bank-account")]
         [Authorize(Roles = "Admin, Owner")]
         public async Task<IActionResult> Add([FromBody] CreateBankAccount request)
