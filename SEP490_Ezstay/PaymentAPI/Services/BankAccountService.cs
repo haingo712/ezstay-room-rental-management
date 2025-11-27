@@ -76,10 +76,9 @@ public class BankAccountService:IBankAccountService
         }
         var encodedDes = Uri.EscapeDataString(request.Description ?? "");
         var bankGateway = await _bankGatewayRepository.GetById(request.BankGatewayId);
-        Console.WriteLine(bankGateway + " hjjjj");
         if (bankGateway == null) 
         {
-            return ApiResponse<BankAccountResponse>.Fail("Bank Gateway not found"); // Trả lỗi rõ ràng
+            return ApiResponse<BankAccountResponse>.Fail("Bank Gateway not found");
         }
          var bankAccount = _mapper.Map<BankAccount>(request);
         bankAccount.ImageQR = $"https://qr.sepay.vn/img?acc={request.AccountNumber}&bank={bankGateway.BankName}&des={encodedDes}";
