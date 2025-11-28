@@ -21,7 +21,7 @@ public interface IUtilityReadingService
     
     IQueryable<UtilityReadingResponse> GetAllByOwnerId(Guid contractId,  UtilityType type);
    
-    Task<UtilityReadingResponse> GetLastestReading(Guid contractId, UtilityType type);
+    Task<UtilityReadingResponse> GetLastestReading(Guid contractId, UtilityType type, int month, int year);
   
    
     

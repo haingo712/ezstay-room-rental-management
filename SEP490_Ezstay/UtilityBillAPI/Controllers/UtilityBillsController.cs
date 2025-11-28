@@ -87,6 +87,7 @@ namespace UtilityBillAPI.Controllers
 
         // POST: api/UtilityBills/monthly/{contractId}
         [HttpPost("monthly/{contractId}")]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> CreateMonthly(Guid contractId)
         {
             var ownerId = _tokenService.GetUserIdFromClaims(User);
@@ -95,6 +96,7 @@ namespace UtilityBillAPI.Controllers
 
         // POST: api/UtilityBills/deposit/{contractId}
         [HttpPost("deposit/{contractId}")]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> CreateDeposit(Guid contractId)
         {
             var ownerId = _tokenService.GetUserIdFromClaims(User);

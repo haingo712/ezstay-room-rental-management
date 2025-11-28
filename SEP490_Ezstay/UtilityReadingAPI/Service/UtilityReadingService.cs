@@ -43,11 +43,11 @@ public class UtilityReadingService: IUtilityReadingService
         return _mapper.Map<UtilityReadingResponse>(utilityReading);
     }
     
-    public async Task<UtilityReadingResponse> GetLastestReading(Guid contractId, UtilityType type)
+    public async Task<UtilityReadingResponse> GetLastestReading(Guid contractId, UtilityType type, int month, int year)
     {
-        var utilityReading =await _utilityReadingRepository.GetLatestReading(contractId, type);
+        var utilityReading =await _utilityReadingRepository.GetLatestReading(contractId, type, month, year);
         if (utilityReading == null)
-            throw new KeyNotFoundException("No utility reading found for the specified room and type.");
+            throw new KeyNotFoundException("No utility reading found for the specified month/year.");
         return _mapper.Map<UtilityReadingResponse>(utilityReading);
     }
     public async Task<ApiResponse<UtilityReadingResponse>> Add(Guid contractId, UtilityType type, CreateUtilityReadingContract  request)

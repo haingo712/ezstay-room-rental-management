@@ -22,11 +22,11 @@ public class UtilityReadingRepository:IUtilityReadingRepository
         return  _utilityReadings.AsQueryable().Where(x => x.ContractId == contractId);
     }
 
-    public async Task<UtilityReading?> GetLatestReading(Guid contractId, UtilityType type)
+    public async Task<UtilityReading?> GetLatestReading(Guid contractId, UtilityType type, int month, int year)
     {
      return  await _utilityReadings
          .AsQueryable()
-         .Where(r => r.ContractId == contractId && r.Type == type)
+         .Where(r => r.ContractId == contractId && r.Type == type && r.ReadingDate.Month == month && r.ReadingDate.Year == year)
          .OrderByDescending(r => r.ReadingDate)
          .FirstOrDefaultAsync();
     }
