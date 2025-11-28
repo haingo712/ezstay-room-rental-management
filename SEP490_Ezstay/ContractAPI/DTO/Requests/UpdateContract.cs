@@ -15,7 +15,7 @@ public class UpdateContract
     [Required]
     public DateTime CheckoutDate { get; set; }
     [Required]
-    [Range(0, double.MaxValue, ErrorMessage = "Tiền cọc phải >= 0")]
+    [Range(0, double.MaxValue, ErrorMessage = "The deposit must be greater than or equal to 0.")]
     public decimal DepositAmount { get; set; }
     
     [StringLength(500, ErrorMessage = "Notes cannot exceed 500 characters.")]
@@ -27,5 +27,5 @@ public class UpdateContract
     [Required]
     public UpdateUtilityReading WaterReading { get; set; }
 
-    public List<UpdateService> ServiceInfors { get; set; }
+    public List<UpdateService>? ServiceInfors { get; set; }
 }
