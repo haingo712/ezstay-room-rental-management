@@ -5,7 +5,7 @@ namespace RoomAPI.DTO.Request;
 
 public class UpdateRoom
 {
-     [Required]
+    [Required]
     public string RoomName { get; set; } 
     [Required]
     [Range(0.01, double.MaxValue, ErrorMessage = "Area must be greater than zero.")]
@@ -15,7 +15,9 @@ public class UpdateRoom
     public decimal Price { get; set; }
     [Required]
     public RoomStatus RoomStatus { get; set; }
+    
     [Required]
-    public IFormFileCollection ImageUrl { get; set;}
+    public List<string> ImageUrls { get; set; }
+    
     public List<Guid>? AmenityIds { get; set; }
 }

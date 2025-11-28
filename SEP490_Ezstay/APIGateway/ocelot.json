@@ -384,7 +384,7 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/Image/{everything}",
+      "DownstreamPathTemplate": "/api/Images/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -392,7 +392,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/Image/{everything}",
+      "UpstreamPathTemplate": "/api/Images/{everything}",
       "UpstreamHttpMethod": [
         "GET",
         "POST",

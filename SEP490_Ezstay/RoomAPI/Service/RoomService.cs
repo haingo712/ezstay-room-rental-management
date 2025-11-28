@@ -111,7 +111,6 @@ public class RoomService: IRoomService{
         
         if (request.AmenityIds != null && request.AmenityIds.Any())
         {
-            Console.WriteLine("ssss" + request.AmenityIds);
             await _roomAmenityService.UpdateRoomAmenities(room.Id, request.AmenityIds);
         }
         var result = _mapper.Map<RoomResponse>(room);
@@ -120,24 +119,23 @@ public class RoomService: IRoomService{
 
     public async Task<ApiResponse<bool>>  Update(Guid id, UpdateRoom request)
     {
-        var room =await _roomRepository.GetById(id);
+        var room = await _roomRepository.GetById(id);
         if (room == null)
             throw new KeyNotFoundException("Room not found");
-      
         var existRoomName = await _roomRepository.RoomNameExistsInHouse(room.HouseId, request.RoomName);
-        if (existRoomName &&  request.RoomName != room.RoomName)
+        if (existRoomName && request.RoomName != room.RoomName)
             return ApiResponse<bool>.Fail("Room name already exists in house");   
         if (request.RoomStatus == RoomStatus.Occupied)
             return ApiResponse<bool>.Fail("K dc set trang thai nay");  
-         _mapper.Map(request, room);
-         room.UpdatedAt = DateTime.UtcNow;
-         room.ImageUrl= _imageService.UploadMultipleImage(request.ImageUrl).Result;
-         await _roomRepository.Update(room);
-         if (request.AmenityIds != null && request.AmenityIds.Any())
-         {
-             await _roomAmenityService.UpdateRoomAmenities(room.Id, request.AmenityIds);
-         }
-         return  ApiResponse<bool>.Success(true, "Updated Successfully");
+        _mapper.Map(request, room);
+        room.UpdatedAt = DateTime.UtcNow;
+        room.ImageUrl = request.ImageUrls;
+        await _roomRepository.Update(room);
+        if (request.AmenityIds != null && request.AmenityIds.Any())
+        {
+            await _roomAmenityService.UpdateRoomAmenities(room.Id, request.AmenityIds);
+        }
+        return ApiResponse<bool>.Success(true, "Updated Successfully");
     }
     public async Task<ApiResponse<bool>> Delete(Guid id)
     {
