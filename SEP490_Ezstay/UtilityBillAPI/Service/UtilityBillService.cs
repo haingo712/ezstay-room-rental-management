@@ -16,15 +16,18 @@ namespace UtilityBillAPI.Service
         private readonly IUtilityBillRepository _utilityBillRepo;
         private readonly IUtilityReadingService _utilityReadingService;
         private readonly IContractService _contractService;
+        private readonly IRoomInfoService _roomInfoService;
         private readonly IMapper _mapper;
 
         public UtilityBillService(IUtilityBillRepository utilityBillRepo, IMapper mapper,
-            IContractService contractService, IUtilityReadingService utilityReadingService)
+            IContractService contractService, IUtilityReadingService utilityReadingService, 
+            IRoomInfoService roomInforService)
         {
             _utilityBillRepo = utilityBillRepo;
             _mapper = mapper;
             _contractService = contractService;
             _utilityReadingService = utilityReadingService;
+            _roomInfoService = roomInforService; 
         }
 
         public IQueryable<UtilityBillDTO> GetAll()
@@ -66,6 +69,8 @@ namespace UtilityBillAPI.Service
             //}          
 
             var contract = await _contractService.GetContractAsync(contractId);
+            if (contract == null)
+                return ApiResponse<UtilityBillDTO>.Fail("Contract not found.");
 
             if (contract.ContractStatus != ContractStatus.Active)
             {
@@ -81,78 +86,64 @@ namespace UtilityBillAPI.Service
                 return ApiResponse<UtilityBillDTO>.Fail(message);
             }
 
-            var readings = await _utilityReadingService.GetUtilityReadingsAsync(contract.Id);         
+            DateTime today = DateTime.UtcNow;
+            int billingMonth = today.Month;
+            int billingYear = today.Year;
+            var electric = await _utilityReadingService.GetElectricityReadingAsync(contract.Id, billingMonth, billingYear);
+            var water = await _utilityReadingService.GetWaterReadingAsync(contract.Id, billingMonth, billingYear);
 
-            // Get the latest reading
-            var latest = readings.MaxBy(r => r.ReadingDate);
+            if (electric == null && water == null)
+                return ApiResponse<UtilityBillDTO>.Fail($"Missing both electricity and water readings for {billingMonth}/{billingYear}.");
 
-            if (latest == null)
-                return ApiResponse<UtilityBillDTO>.Fail("No readings found.");
+            if (electric == null)
+                return ApiResponse<UtilityBillDTO>.Fail($"Missing electricity reading for {billingMonth}/{billingYear}.");
 
-            // Extract billing period
-            int billingMonth = latest.ReadingDate.Month;
-            int billingYear = latest.ReadingDate.Year;
+            if (water == null)
+                return ApiResponse<UtilityBillDTO>.Fail($"Missing water reading for {billingMonth}/{billingYear}.");
 
-            // Filter readings by billing period
-            var readingsForMonth = readings
-                .Where(r => r.ReadingDate.Year == billingYear &&
-                            r.ReadingDate.Month == billingMonth)
-                .ToList();
+            var readings = new[] { electric, water };
 
-            if (readingsForMonth.Count == 0)
-                return ApiResponse<UtilityBillDTO>.Fail("No readings found for the target billing month.");
+            var details = readings
+               .Select(r => new UtilityBillDetailDTO
+               {
+                   Type = r.Type.ToString(),
+                   UnitPrice = r.Price,
+                   PreviousIndex = r.PreviousIndex,
+                   CurrentIndex = r.CurrentIndex,
+                   Consumption = r.Consumption,
+                   Total = r.Total
+               }).ToList();
 
-
-            var details = new List<UtilityBillDetailDTO>();
-            foreach (var r in readings)
+            if (contract.ServiceInfors != null)
             {
-                details.Add(new UtilityBillDetailDTO
-                {
-                    UtilityReadingId = r.Id,
-                    Type = r.Type.ToString(),
-                    Total = r.Total,
-                    UtilityReading = new UtilityReadingResponse
+                details.AddRange(
+                    contract.ServiceInfors.Select(s => new UtilityBillDetailDTO
                     {
-                        Id = r.Id,
-                        ContractId = r.ContractId,
-                        Type = r.Type,
-                        PreviousIndex = r.PreviousIndex,
-                        CurrentIndex = r.CurrentIndex,
-                        Consumption = r.Consumption,
-                        ReadingDate = r.ReadingDate,
-                        Price = r.Price,
-                        Total = r.Total
-                    }
-                });
+                        Type = "Service",
+                        ServiceName = s.ServiceName,
+                        ServicePrice = s.Price,
+                        Total = s.Price
+                    })
+                );
             }
 
-            foreach (var s in contract.ServiceInfors)
-            {
-                details.Add(new UtilityBillDetailDTO
-                {
-                    ServiceName = s.ServiceName,
-                    ServicePrice = s.Price,
-                    Type = "Service",
-                    Total = s.Price
-                });
-            }
+            var roomInfo = await _roomInfoService.GetRoomInfoAsync(contract.RoomId);
 
             var totalAmount = contract.RoomPrice + details.Sum(r => r.Total);
 
             var bill = new UtilityBillDTO
             {
                 Id = Guid.NewGuid(),
-                TenantId = contract.IdentityProfiles.FirstOrDefault(s => s.IsSigner == true)?.UserId ?? Guid.Empty,
-                OwnerId = ownerId,
-                RoomId = contract.RoomId,
+                TenantId = contract.IdentityProfiles.FirstOrDefault(s => s.IsSigner == true && s.UserId != ownerId)?.UserId ?? Guid.Empty,
+                OwnerId = ownerId,                
                 ContractId = contract.Id,
+                RoomName = roomInfo.RoomName,
+                HouseName = roomInfo.HouseName,
                 RoomPrice = contract.RoomPrice,
                 TotalAmount = totalAmount,
-                CreatedAt = DateTime.UtcNow,              
+                CreatedAt = DateTime.UtcNow,
                 Status = UtilityBillStatus.Unpaid,
-                BillType = UtilityBillType.Monthly,
-                BillingMonth = billingMonth,
-                BillingYear = billingYear,
+                BillType = UtilityBillType.Monthly,              
                 Note = $"Monthly bill for {billingMonth}/{billingYear}",
                 Details = details
             };
@@ -164,6 +155,8 @@ namespace UtilityBillAPI.Service
         public async Task<ApiResponse<UtilityBillDTO>> GenerateDepositBillAsync(Guid contractId, Guid ownerId)
         {
             var contract = await _contractService.GetContractAsync(contractId);
+            if (contract == null)
+                return ApiResponse<UtilityBillDTO>.Fail("Contract not found.");
             if (contract.ContractStatus != ContractStatus.Active)
             {
                 string message = contract.ContractStatus switch
@@ -178,16 +171,28 @@ namespace UtilityBillAPI.Service
                 return ApiResponse<UtilityBillDTO>.Fail(message);
             }
 
+            var existingDepositBill = _utilityBillRepo.GetAll()
+                .FirstOrDefault(b => b.ContractId == contractId
+                && b.BillType == UtilityBillType.Deposit
+                && b.Status != UtilityBillStatus.Cancelled);
+
+            if (existingDepositBill != null)
+            {
+                return ApiResponse<UtilityBillDTO>.Fail("A deposit bill for this contract already exists and cannot be created again.");
+            }
+
+            var roomInfo = await _roomInfoService.GetRoomInfoAsync(contract.RoomId);
+
             var bill = new UtilityBillDTO
             {
                 Id = Guid.NewGuid(),
-                TenantId = contract.IdentityProfiles.FirstOrDefault(p => p.IsSigner)?.UserId ?? Guid.Empty,
-                OwnerId = ownerId,
-                RoomId = contract.RoomId,
+                TenantId = contract.IdentityProfiles.FirstOrDefault(s => s.IsSigner && s.UserId != ownerId)?.UserId ?? Guid.Empty,
+                OwnerId = ownerId,                
                 ContractId = contract.Id,
-                RoomPrice = 0,                
+                RoomName = roomInfo.RoomName,
+                HouseName = roomInfo.HouseName,                
                 TotalAmount = contract.DepositAmount,
-                CreatedAt = DateTime.UtcNow,               
+                CreatedAt = DateTime.UtcNow,
                 Status = UtilityBillStatus.Unpaid,
                 BillType = UtilityBillType.Deposit,
                 Note = "Deposit payment",

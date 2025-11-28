@@ -11,7 +11,7 @@ public interface IUtilityReadingRepository
     
     IQueryable<UtilityReading> GetAll();
     IQueryable<UtilityReading> GetAllByContractId(Guid contractId);
-    Task<UtilityReading?> GetLatestReading(Guid contractId, UtilityType type);
+    Task<UtilityReading?> GetLatestReading(Guid contractId, UtilityType type, int month, int year);
     
     Task<UtilityReading?> GetByIdAsync(Guid id);
     Task AddAsync(UtilityReading utilityReading);

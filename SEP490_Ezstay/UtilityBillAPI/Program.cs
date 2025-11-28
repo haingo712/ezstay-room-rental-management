@@ -32,7 +32,7 @@ namespace UtilityBillAPI
             builder.Services.AddScoped<IUtilityBillService, UtilityBillService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
 
-            builder.Services.AddHttpContextAccessor();            
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             var serviceUrls = builder.Configuration.GetSection("ServiceUrls");           
             builder.Services.AddHttpClient<IUtilityReadingService, UtilityReadingService>(client =>
@@ -43,6 +43,15 @@ namespace UtilityBillAPI
             {
                 client.BaseAddress = new Uri(serviceUrls["ContractAPI"]!);
             });
+            builder.Services.AddHttpClient("RoomAPI", client =>
+            {
+                client.BaseAddress = new Uri(serviceUrls["RoomAPI"]!);
+            });
+            builder.Services.AddHttpClient("BoardingHouseAPI", client =>
+            {
+                client.BaseAddress = new Uri(serviceUrls["BoardingHouseAPI"]!);
+            });
+            builder.Services.AddScoped<IRoomInfoService, RoomInfoService>();
 
             //builder.Services.AddHostedService<BillHostedService>();
 

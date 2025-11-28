@@ -13,9 +13,9 @@ namespace UtilityBillAPI.Service
             _httpClient = httpClient;
         }
 
-        private async Task<UtilityReadingResponse?> GetLatestReadingAsync(Guid contractId, UtilityType type)
+        private async Task<UtilityReadingResponse?> GetLatestReadingAsync(Guid contractId, UtilityType type, int month, int year)
         {
-            var requestUrl = $"api/UtilityReading/latest/{contractId}/{type}";
+            var requestUrl = $"api/UtilityReading/latest/{contractId}/{type}/month/{month}/year/{year}";
             var response = await _httpClient.GetAsync(requestUrl);
 
             return response.IsSuccessStatusCode
@@ -23,24 +23,12 @@ namespace UtilityBillAPI.Service
                 : null;
         }
 
-        public Task<UtilityReadingResponse?> GetElectricityReadingAsync(Guid contractId) =>
-            GetLatestReadingAsync(contractId, UtilityType.Electric);
+        public Task<UtilityReadingResponse?> GetElectricityReadingAsync(Guid contractId, int month, int year) =>
+            GetLatestReadingAsync(contractId, UtilityType.Electric, month, year);
 
-        public Task<UtilityReadingResponse?> GetWaterReadingAsync(Guid contractId) =>
-            GetLatestReadingAsync(contractId, UtilityType.Water);
-
-        public async Task<List<UtilityReadingResponse>> GetUtilityReadingsAsync(Guid contractId)
-        {
-            var electricity = await GetElectricityReadingAsync(contractId);
-            var water = await GetWaterReadingAsync(contractId);
-
-            var list = new List<UtilityReadingResponse>();
-
-            if (electricity != null) list.Add(electricity);
-            if (water != null) list.Add(water);
-
-            return list;
-        }
+        public Task<UtilityReadingResponse?> GetWaterReadingAsync(Guid contractId, int month, int year) =>
+            GetLatestReadingAsync(contractId, UtilityType.Water, month, year);
+       
     }
 
 }
