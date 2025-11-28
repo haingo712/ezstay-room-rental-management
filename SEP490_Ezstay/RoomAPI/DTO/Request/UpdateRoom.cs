@@ -17,4 +17,5 @@ public class UpdateRoom
     public RoomStatus RoomStatus { get; set; }
     [Required]
     public IFormFileCollection ImageUrl { get; set;}
+    public List<Guid>? AmenityIds { get; set; }
 }
