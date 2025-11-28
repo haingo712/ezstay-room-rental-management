@@ -29,8 +29,6 @@ public class UtilityReadingService : IUtilityReadingService
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token.Replace("Bearer ", ""));
     }
-
-    
     public async Task<ApiResponse<UtilityReadingResponse>> Add(Guid contractId, UtilityType utilityType, CreateUtilityReadingContract request)
     {
         // var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();

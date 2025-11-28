@@ -34,7 +34,7 @@ public class AccountService:IAccountService
       // if (!string.IsNullOrEmpty(token))
       //     _httpClient.DefaultRequestHeaders.Authorization = 
       //         new AuthenticationHeaderValue("Bearer", token.Replace("Bearer ", ""));
-            var response = await _httpClient.GetAsync($"api/User/profile/{userId}");
+            var response = await _httpClient.GetAsync($"api/Profile/profile/{userId}");
             // if (!response.IsSuccessStatusCode)
             // {
             //     // Log hoặc throw tùy mục đích
