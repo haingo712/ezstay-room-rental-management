@@ -93,10 +93,12 @@ public class ContractService : IContractService
             .Select((p, index) =>
             {
                 var serviceInfor = _mapper.Map<ServiceInfor>(p);
+                serviceInfor.ContractId = contract.Id;
                 return serviceInfor;
             }).ToList();
         
       
+        
         var ownerProfile = await _accountService.GetProfileByUserId(ownerId);
      
         if (ownerProfile == null) 
@@ -198,7 +200,30 @@ public class ContractService : IContractService
         await _utilityReadingService.Update(contract.RoomId, UtilityType.Water, request.WaterReading);
         contract.UpdatedAt = DateTime.UtcNow;
         _mapper.Map(request, contract);
+        
+        // Update services - ensure list is initialized
+        if (contract.ServiceInfors == null)
+        {
+            contract.ServiceInfors = new List<ServiceInfor>();
+        }
+        else
+        {
+            contract.ServiceInfors.Clear();
+        }
+        
+        if (request.ServiceInfors != null && request.ServiceInfors.Any())
+        {
+            foreach (var item in request.ServiceInfors)
+            {
+                var newService = _mapper.Map<ServiceInfor>(item);
+                newService.ContractId = contract.Id;
+                contract.ServiceInfors.Add(newService);
+            }
+        }
+
+        
         await _contractRepository.Update(contract);
+
         return ApiResponse<bool>.Success(true, "Contract updated successfully.");
     }
     public async Task<ApiResponse<ContractResponse>> ExtendContract(Guid contractId, ExtendContractDto request)
