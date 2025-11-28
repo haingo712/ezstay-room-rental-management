@@ -104,7 +104,7 @@ services:
     image: "contractapi:dev"
     ports: []
     volumes:
-    - "/Users/quochien/.nuget/packages:/home/app/.nuget/packages"
+    - "/Users/quochien/.nuget/packages:/root/.nuget/packages"
     - "/Users/Kì 9/DoAN/BE/SEP490_Ezstay/ContractAPI:/app:rw"
     - "/Users/Kì 9/DoAN/BE/SEP490_Ezstay:/src:rw"
     working_dir: "/app"

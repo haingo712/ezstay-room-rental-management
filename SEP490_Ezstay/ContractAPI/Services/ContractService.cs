@@ -47,7 +47,7 @@ public class ContractService : IContractService
             {
                 contract.ContractStatus = ContractStatus.Expired;
                 contract.UpdatedAt = DateTime.UtcNow;
-                _contractRepository.UpdateAsync(contract);
+                _contractRepository.Update(contract);
             }
         }
       return  contracts.OrderByDescending(x=> x.CreatedAt).ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
@@ -55,7 +55,7 @@ public class ContractService : IContractService
 
     public async Task<ContractResponse?> GetByIdAsync(Guid id)
     {
-        var contract = await _contractRepository.GetByIdAsync(id);
+        var contract = await _contractRepository.GetById(id);
         if (contract == null) return null;
         
         var response = _mapper.Map<ContractResponse>(contract);
@@ -87,7 +87,6 @@ public class ContractService : IContractService
         var contract = _mapper.Map<Contract>(request);
         
         contract.CreatedAt = DateTime.UtcNow;
-        
         contract.ServiceInfors = request.ServiceInfors
             .Select((p, index) =>
             {
@@ -105,6 +104,8 @@ public class ContractService : IContractService
             }).ToList();
    
         var ownerProfile = await _accountService.GetProfileByUserId(ownerId);
+        Console.WriteLine("xxxx "+ ownerProfile);
+        Console.WriteLine("xxxx "+ ownerProfile.Id);
         if (ownerProfile == null) 
             return ApiResponse<ContractResponse>.Fail("Không tìm thấy thông tin chủ trọ.");
         var ownerIdentity = new IdentityProfile
@@ -131,7 +132,7 @@ public class ContractService : IContractService
         ownerIdentity.IsSigner = true; 
         members.Add(ownerIdentity);
         contract.ProfilesInContract = members;
-        var saveContract =await _contractRepository.AddAsync(contract);
+        var saveContract =await _contractRepository.Add(contract);
         var createUtility = await _utilityReadingService.Add(contract.RoomId,  UtilityType.Water, request.WaterReading);
         var createUtiliyw = await _utilityReadingService.Add(contract.RoomId,  UtilityType.Electric, request.ElectricityReading);
         var result = _mapper.Map<ContractResponse>(saveContract);
@@ -141,7 +142,7 @@ public class ContractService : IContractService
     }
     public async Task<ApiResponse<ContractResponse>> CancelContract(Guid contractId, string reason)
     {
-        var contract = await _contractRepository.GetByIdAsync(contractId);
+        var contract = await _contractRepository.GetById(contractId);
         if (contract == null)
             return ApiResponse<ContractResponse>.Fail("Không tìm thấy hợp đồng thuê");
 
@@ -152,14 +153,14 @@ public class ContractService : IContractService
         contract.UpdatedAt = DateTime.UtcNow;
         contract.Reason = reason;
         await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Available);
-        await _contractRepository.UpdateAsync(contract);
+        await _contractRepository.Update(contract);
         var dto = _mapper.Map<ContractResponse>(contract);
         return ApiResponse<ContractResponse>.Success(dto, "Huỷ hợp đồng thành công");
     }
 
     public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateContract request)
     {
-        var contract = await _contractRepository.GetByIdAsync(id);
+        var contract = await _contractRepository.GetById(id);
         if (contract == null)
             throw new KeyNotFoundException("Contract Id not found");
        
@@ -185,17 +186,16 @@ public class ContractService : IContractService
         }
             await _utilityReadingService.Update(contract.RoomId, UtilityType.Electric, request.ElectricityReading);
             await _utilityReadingService.Update(contract.RoomId, UtilityType.Water, request.WaterReading);
-
         if (contract.ContractStatus == ContractStatus.Active)
             return ApiResponse<bool>.Fail("K the cập nhật vì contract đã kí tên r");
         contract.UpdatedAt = DateTime.UtcNow;
         _mapper.Map(request, contract);
-        await _contractRepository.UpdateAsync(contract);
+        await _contractRepository.Update(contract);
         return ApiResponse<bool>.Success(true, "Cập nhật hợp đồng thành công.");
     }
     public async Task<ApiResponse<ContractResponse>> ExtendContract(Guid contractId, ExtendContractDto request)
     {
-        var contract = await _contractRepository.GetByIdAsync(contractId);
+        var contract = await _contractRepository.GetById(contractId);
         if (contract == null)
             return ApiResponse<ContractResponse>.Fail("Không tìm thấy hợp đồng thuê");
         
@@ -213,7 +213,7 @@ public class ContractService : IContractService
 
         contract.UpdatedAt = DateTime.UtcNow;
         contract.CheckoutDate = request.CheckoutDate;
-        await _contractRepository.UpdateAsync(contract);
+        await _contractRepository.Update(contract);
         
         var result = _mapper.Map<ContractResponse>(contract);
         return ApiResponse<ContractResponse>.Success(result, "Gia hạn hợp đồng thành công");
@@ -221,17 +221,17 @@ public class ContractService : IContractService
 
     public async Task<ApiResponse<bool>> Delete(Guid id)
     {
-        var contract = await _contractRepository.GetByIdAsync(id);
+        var contract = await _contractRepository.GetById(id);
         if (contract == null) 
             throw new KeyNotFoundException("Không tìm thấy hợp đồng");
         if (contract.ContractStatus == ContractStatus.Active)
             return ApiResponse<bool>.Fail("Contract k thể xoá vì hợp đồng đã kí");
-        await _contractRepository.DeleteAsync(contract);
+        await _contractRepository.Delete(contract);
         return ApiResponse<bool>.Success(true, "Xoá hợp đồng thành công");
     }
     public async Task<ApiResponse<List<string>>> UploadContractImages(Guid contractId, IFormFileCollection images)
     {
-        var contract = await _contractRepository.GetByIdAsync(contractId);
+        var contract = await _contractRepository.GetById(contractId);
         if (contract == null)
             return ApiResponse<List<string>>.Fail("Không tìm thấy hợp đồng");
         
@@ -239,7 +239,7 @@ public class ContractService : IContractService
         contract.ContractImage = uploadedUrls;
         contract.ContractUploadedAt = DateTime.UtcNow;
         contract.ContractStatus = ContractStatus.Active;
-        await _contractRepository.UpdateAsync(contract);
+        await _contractRepository.Update(contract);
         await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
         return ApiResponse<List<string>>.Success(uploadedUrls, "Upload ảnh scan hợp đồng thành công");
     }
@@ -251,7 +251,7 @@ public class ContractService : IContractService
     }
     public async Task<ApiResponse<ContractResponse>> SignContract(Guid contractId, string ownerSignature, string role)
     {
-        var contract = await _contractRepository.GetByIdAsync(contractId);
+        var contract = await _contractRepository.GetById(contractId);
         if (contract.ContractStatus == ContractStatus.Active)
             return ApiResponse<ContractResponse>.Fail("Hợp đồng đã được ký");
 
@@ -275,7 +275,7 @@ public class ContractService : IContractService
             contract.UpdatedAt = DateTime.UtcNow;
             await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
         }
-        await _contractRepository.UpdateAsync(contract);
+        await _contractRepository.Update(contract);
         var result = _mapper.Map<ContractResponse>(contract);
         return ApiResponse<ContractResponse>.Success(result, 
             contract.ContractStatus == ContractStatus.Active 

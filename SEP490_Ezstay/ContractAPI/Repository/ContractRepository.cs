@@ -21,22 +21,22 @@ namespace ContractAPI.Repository
         // public async Task<IEnumerable<Contract>> GetAllByTenantId(Guid tenantId)
         //     => await _contracts.Find(t => t.SignerProfile.TenantId == tenantId).ToListAsync();
         //
-        public async Task<Contract?> GetByIdAsync(Guid id)
+        public async Task<Contract?> GetById(Guid id)
             => await _contracts.Find(t => t.Id == id).FirstOrDefaultAsync();
 
-        public async Task<Contract> AddAsync(Contract contract)
+        public async Task<Contract> Add(Contract contract)
         {
             await _contracts.InsertOneAsync(contract);
             return contract;
         }
         
-        public async Task UpdateAsync(Contract contract)
+        public async Task Update(Contract contract)
             => await _contracts.ReplaceOneAsync(t => t.Id == contract.Id, contract);
         
-        public async Task DeleteAsync(Contract contract)
+        public async Task Delete(Contract contract)
             => await _contracts.DeleteOneAsync(r => r.Id == contract.Id);
         
-        public async Task<bool> ContractRoomIsActiveAsync(Guid roomId)
+        public async Task<bool> ContractRoomIsActive(Guid roomId)
         {
             var filter = Builders<Contract>.Filter.Eq(t => t.RoomId, roomId) &
                           Builders<Contract>.Filter.Eq(t => t.ContractStatus, ContractStatus.Active);
