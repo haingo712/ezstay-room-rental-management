@@ -65,6 +65,8 @@ public class ContractService : IContractService
             response.ElectricityReading = await _utilityReadingService.GetLastestReading(contract.RoomId, UtilityType.Electric);
             response.WaterReading = await _utilityReadingService.GetLastestReading(contract.RoomId, UtilityType.Water);
             return response;
+            
+            
     }
   //  => _mapper.Map<ContractResponse>(await _contractRepository.GetByIdAsync(id));
     
@@ -120,7 +122,9 @@ public class ContractService : IContractService
             TemporaryResidence = ownerProfile.TemporaryResidence,
             CitizenIdNumber = ownerProfile.CitizenIdNumber,
             CitizenIdIssuedDate= ownerProfile.CitizenIdIssuedDate,
-            CitizenIdIssuedPlace = ownerProfile.CitizenIdIssuedPlace
+            CitizenIdIssuedPlace = ownerProfile.CitizenIdIssuedPlace,
+            ProvinceId = ownerProfile.ProvinceId,
+            WardId = ownerProfile.WardId
         };
         
         ownerIdentity.IsSigner = true; 
