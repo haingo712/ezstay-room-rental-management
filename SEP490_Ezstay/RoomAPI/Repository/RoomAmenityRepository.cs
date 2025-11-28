@@ -19,6 +19,10 @@ public class RoomAmenityRepository:IRoomAmenityRepository
     public IQueryable<RoomAmenity> GetAll()=> _roomAmenities.AsQueryable();
     public IQueryable<RoomAmenity> GetAllByRoomId(Guid roomId)
         => _roomAmenities.AsQueryable().Where(a => a.RoomId == roomId);
+    
+    // Use MongoDB Find directly to avoid IQueryable LINQ translation issues
+    public async Task<List<RoomAmenity>> GetListByRoomIdAsync(Guid roomId)
+        => await _roomAmenities.Find(a => a.RoomId == roomId).ToListAsync();
 
     public async Task<RoomAmenity> GetById(Guid id)
     {

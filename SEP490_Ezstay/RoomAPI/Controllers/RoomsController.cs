@@ -88,7 +88,7 @@ namespace RoomAPI.Controllers
         }
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> Put(Guid id,[FromForm] UpdateRoom request) {
+        public async Task<IActionResult> Put(Guid id,[FromBody] UpdateRoom request) {
         try
         {
           var result =  await _roomService.Update(id, request);

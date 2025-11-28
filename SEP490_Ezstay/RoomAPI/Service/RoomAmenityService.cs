@@ -52,29 +52,41 @@ public class RoomAmenityService: IRoomAmenityService
     //     }
     //     return true;
     // }
-    public async  Task<ApiResponse<List<RoomAmenityResponse>>> UpdateRoomAmenities(Guid roomId, List<CreateRoomAmenity> request)
+    public async  Task<ApiResponse<List<RoomAmenityResponse>>> UpdateRoomAmenities(Guid roomId, List<Guid>? amenityIds)
     {
-        var existing =  _roomAmenityRepository.GetAllByRoomId(roomId);
-        var toAdd = request
-            .Where(r => !existing.Any(e => e.AmenityId == r.AmenityId))
-            .Select(x=> new RoomAmenity() {
+        if (amenityIds == null)
+            amenityIds = new List<Guid>();
+        Console.WriteLine(" ddđ1111 "+ amenityIds);
+        var existing = await _roomAmenityRepository.GetListByRoomIdAsync(roomId);
+        var existingAmenityIds = existing.Select(e => e.AmenityId).ToList();
+        var toAdd = amenityIds
+            .Where(id => !existingAmenityIds.Contains(id))
+            .Select(id=> new RoomAmenity() {
+                Id = Guid.NewGuid(),
                 RoomId = roomId,
-                AmenityId = x.AmenityId,
+                AmenityId = id
             }).ToList();
+        
         if (toAdd.Any())
-            await _roomAmenityRepository.AddAmenity(toAdd); 
+        {
+            await _roomAmenityRepository.AddAmenity(toAdd);
+        } 
+        
         var toRemoveIds = existing
-            .Where(x => existing.Any(e => e.AmenityId == x.AmenityId))
-            .Select(x => x.Id)
+            .Where(e => !amenityIds.Contains(e.AmenityId))
+            .Select(e => e.Id)
             .ToList();
+
+            
         if (toRemoveIds.Any())
             await _roomAmenityRepository.DeleteAmenity(toRemoveIds);
         
-        var response = existing
+        // Return updated list
+        var updatedList = existing
             .Where(x => !toRemoveIds.Contains(x.Id))
             .Concat(toAdd)
             .ToList();
-        return ApiResponse<List<RoomAmenityResponse>>.Success(  _mapper.Map<List<RoomAmenityResponse>>(response), "Thêm tiện ích vào trọ thành công");
+        return ApiResponse<List<RoomAmenityResponse>>.Success(_mapper.Map<List<RoomAmenityResponse>>(updatedList), "Success");
     }
     
 }

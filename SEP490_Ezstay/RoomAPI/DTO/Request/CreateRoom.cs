@@ -15,6 +15,5 @@ public class CreateRoom
     [Required]
     public IFormFileCollection ImageUrl { get; set;}
     
-    public List<CreateRoomAmenity>? Amenities { get; set; }
-    
+    public List<Guid>? AmenityIds { get; set; }
 }
