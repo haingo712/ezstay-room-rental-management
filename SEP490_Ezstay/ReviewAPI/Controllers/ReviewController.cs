@@ -51,9 +51,14 @@ public class ReviewController : ControllerBase
     public async Task<IActionResult> Create(Guid contractId, [FromForm] CreateReviewRequest request)
     {
         var userId = _tokenService.GetUserIdFromClaims(User);
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+       
         var result = await _reviewService.Add(userId, contractId, request);
+        if (!result.IsSuccess)
+        {
+            return BadRequest(new { message = result.Message });
+        }
         return Ok(result);
     }
 

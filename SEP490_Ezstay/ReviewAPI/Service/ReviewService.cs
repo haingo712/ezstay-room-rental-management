@@ -52,16 +52,16 @@ public class ReviewService : IReviewService
     public async Task<ApiResponse<ReviewResponse>> Add(Guid userId, Guid contractId, CreateReviewRequest request)
     {
         var contract = await _contractService.GetContractId(contractId);
-        // if (contract == null)
-        //     return ApiResponse<ReviewResponse>.Fail("Không tìm thấy hợp đồng.");
+        if (contract == null)
+            return ApiResponse<ReviewResponse>.Fail("Không tìm thấy hợp đồng.");
         var existingReview = await _reviewRepository.ReviewExistsByContractId(contractId);
         if (existingReview)
             return ApiResponse<ReviewResponse>.Fail("Contract Already has review.");
         if (contract.CheckoutDate.AddMonths(1) < DateTime.UtcNow)
             return ApiResponse<ReviewResponse>.Fail("It has been over"+contract.CheckoutDate.AddMonths(1) +" month since the contract expired and cannot be reviewed.");
         var review = _mapper.Map<Review>(request);
-        
-        review.OwnerId = contract.IdentityProfiles.First().UserId;
+        Console.WriteLine("Adding review " +contract.IdentityProfiles[1].UserId);
+        review.OwnerId = contract.IdentityProfiles[1].UserId;
         review.ReviewDeadline = contract.CheckoutDate.AddMonths(1);
         review.UserId = userId;
         review.ContractId = contractId;
