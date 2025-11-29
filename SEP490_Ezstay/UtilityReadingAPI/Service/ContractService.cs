@@ -2,7 +2,7 @@ using UtilityReadingAPI.Service.Interface;
 
 namespace UtilityReadingAPI.Service;
 
-public class TenantClientService: ITenantClientService
+public class ContractService: IContractService
 {
     
 }

@@ -18,8 +18,8 @@ public class UtilityReadingController : ControllerBase
         _utilityReadingService = utilityReadingService;
     }
     
-    [HttpGet("{contractId}")]
-    [Authorize(Roles = "Owner")]
+    [HttpGet("{contractId}/utilitytype/{utilityType}")]
+    [Authorize(Roles = "Owner, User")]
     [EnableQuery]
     public IQueryable<UtilityReadingResponse> GetUtilityReadingByRoomId(Guid contractId, UtilityType utilityType)
     {
@@ -28,7 +28,7 @@ public class UtilityReadingController : ControllerBase
     }
     
     [HttpGet("all/{contractId}")]
-    [Authorize(Roles = "Owner")]
+    [Authorize(Roles = "Owner, User")]
     [EnableQuery]
     public IQueryable<UtilityReadingResponse> GetAllUtilityReadingByContractId(Guid contractId)
     {

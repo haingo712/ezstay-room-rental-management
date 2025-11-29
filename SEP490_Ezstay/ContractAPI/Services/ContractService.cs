@@ -96,9 +96,6 @@ public class ContractService : IContractService
                 serviceInfor.ContractId = contract.Id;
                 return serviceInfor;
             }).ToList();
-        
-      
-        
         var ownerProfile = await _accountService.GetProfileByUserId(ownerId);
      
         if (ownerProfile == null) 
@@ -141,8 +138,9 @@ public class ContractService : IContractService
         }
         contract.ProfilesInContract = members;
         var saveContract =await _contractRepository.Add(contract);
-        var createUtility = await _utilityReadingService.Add(contract.RoomId,  UtilityType.Water, request.WaterReading);
-        var createUtiliyw = await _utilityReadingService.Add(contract.RoomId,  UtilityType.Electric, request.ElectricityReading);
+        var createUtility = await _utilityReadingService.Add(contract.Id, UtilityType.Water, request.WaterReading);
+        var createUtiliyw = await _utilityReadingService.Add(contract.Id, UtilityType.Electric, request.ElectricityReading);
+     
         var result = _mapper.Map<ContractResponse>(saveContract);
         result.WaterReading = createUtility.Data;
         result.ElectricityReading = createUtiliyw.Data;
@@ -196,8 +194,8 @@ public class ContractService : IContractService
             }
             contract.ProfilesInContract = members;
       //  }
-        await _utilityReadingService.Update(contract.RoomId, UtilityType.Electric, request.ElectricityReading);
-        await _utilityReadingService.Update(contract.RoomId, UtilityType.Water, request.WaterReading);
+        await _utilityReadingService.Update(contract.Id, UtilityType.Electric, request.ElectricityReading);
+        await _utilityReadingService.Update(contract.Id, UtilityType.Water, request.WaterReading);
         contract.UpdatedAt = DateTime.UtcNow;
         _mapper.Map(request, contract);
         
@@ -260,6 +258,7 @@ public class ContractService : IContractService
         if (contract.ContractStatus == ContractStatus.Active)
             return ApiResponse<bool>.Fail("The contract has already been signed, so it cannot be deleted.");
         await _contractRepository.Delete(contract);
+        
         return ApiResponse<bool>.Success(true, "Delete contract successfully.");
     }
     public async Task<ApiResponse<List<string>>> UploadContractImages(Guid contractId, IFormFileCollection images)
