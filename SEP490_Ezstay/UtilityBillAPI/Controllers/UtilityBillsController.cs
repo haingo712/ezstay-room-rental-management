@@ -70,20 +70,7 @@ namespace UtilityBillAPI.Controllers
                 return NotFound();
             }
         }
-
-        // POST: api/UtilityBills/generate/{contractId}
-        /*[HttpPost("generate/{contractId}")]
-        [Authorize(Roles = "Owner")]
-        public async Task<ActionResult<UtilityBillDTO>> GenerateBillForContract(Guid contractId)
-        {
-            var ownerId = _tokenService.GetUserIdFromClaims(User);
-            var response = await _utilityBillService.GenerateMonthlyBillAsync(contractId, ownerId);
-            if (!response.IsSuccess)
-            {
-                return BadRequest(new { message = response.Message });
-            }
-            return CreatedAtAction(nameof(GetUtilityBill), new { id = response.Data.Id }, response);
-        }*/
+        
 
         // POST: api/UtilityBills/monthly/{contractId}
         [HttpPost("monthly/{contractId}")]

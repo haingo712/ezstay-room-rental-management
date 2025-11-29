@@ -62,8 +62,9 @@ public class ContractService : IContractService
             response.IdentityProfiles = contract.ProfilesInContract
                 .Select(p => _mapper.Map<IdentityProfileResponse>(p))
                 .ToList();
-            response.ElectricityReading = await _utilityReadingService.GetLastestReading(contract.RoomId, UtilityType.Electric);
-            response.WaterReading = await _utilityReadingService.GetLastestReading(contract.RoomId, UtilityType.Water);
+            response.ElectricityReading = await _utilityReadingService.GetFirstReading(contract.Id, UtilityType.Electric);
+            response.WaterReading = await _utilityReadingService.GetFirstReading(contract.Id, UtilityType.Water);
+
             return response;
             
             

@@ -50,6 +50,13 @@ public class UtilityReadingService: IUtilityReadingService
             throw new KeyNotFoundException("No utility reading found for the specified month/year.");
         return _mapper.Map<UtilityReadingResponse>(utilityReading);
     }
+
+    public async Task<UtilityReadingResponse> GetFirstReading(Guid contractId, UtilityType type)
+    {
+        var reading = await _utilityReadingRepository.GetFirstReading(contractId, type);
+        return  _mapper.Map<UtilityReadingResponse>(reading);
+    }
+
     public async Task<ApiResponse<UtilityReadingResponse>> Add(Guid contractId, UtilityType type, CreateUtilityReadingContract  request)
     {
         
