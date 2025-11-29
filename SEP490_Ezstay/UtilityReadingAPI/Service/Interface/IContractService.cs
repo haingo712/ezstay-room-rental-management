@@ -1,6 +1,6 @@
 namespace UtilityReadingAPI.Service.Interface;
 
-public interface ITenantClientService
+public interface IContractService
 {
     
 }
