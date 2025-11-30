@@ -7,6 +7,7 @@ using BoardingHouseAPI.Enum;
 using BoardingHouseAPI.Models;
 using BoardingHouseAPI.Repository.Interface;
 using BoardingHouseAPI.Service.Interface;
+using MongoDB.Driver;
 
 namespace BoardingHouseAPI.Service
 {
@@ -18,11 +19,14 @@ namespace BoardingHouseAPI.Service
         private readonly IRoomService _roomService;
         private readonly IReviewService _reviewService;
         private readonly ISentimentAnalysisService _sentimentAnalysisService;
+        private readonly IContractService _contractService;
+        private readonly IRentalPostService _rentalPostService;
         private readonly HttpClient _http;
 
         public BoardingHouseService(IBoardingHouseRepository boardingHouseRepo, IMapper mapper,
             IImageService imageService, IRoomService roomClient,
             IReviewService reviewService, ISentimentAnalysisService sentimentAnalysisService, 
+            IContractService contractService, IRentalPostService rentalPostService,
             IHttpClientFactory factory)
         {
             _boardingHouseRepo = boardingHouseRepo;
@@ -31,6 +35,8 @@ namespace BoardingHouseAPI.Service
             _roomService = roomClient;
             _reviewService = reviewService;
             _sentimentAnalysisService = sentimentAnalysisService;
+            _contractService = contractService;
+            _rentalPostService = rentalPostService;
             _http = factory.CreateClient("Gateway");
         }
 
@@ -124,7 +130,7 @@ namespace BoardingHouseAPI.Service
                 //if (existAddress && (exist.HouseName != updateDto.HouseName || exist.Location.FullAddress != oldAddress))
                 //    return ApiResponse<bool>.Fail("Nhà trọ với tên và địa chỉ này đã tồn tại.");
             }
-            exist.ImageUrls = await _imageService.UploadMultipleImagesAsync(updateDto.Files!);
+            exist.ImageUrls = updateDto.ImageUrls;
             await _boardingHouseRepo.UpdateAsync(exist);
             return ApiResponse<bool>.Success(true, "Updated boarding house successfully!");
         }
@@ -133,13 +139,45 @@ namespace BoardingHouseAPI.Service
         {
             var house = await _boardingHouseRepo.GetByIdAsync(id);
             if (house == null) throw new KeyNotFoundException("HouseId not found!");
+
+            // Check rooms before delete
+            var checkResult = await CheckRoomsForDeleteAsync(id);
+            if (checkResult.HasBlockedRooms)
+                return ApiResponse<bool>.Fail($"Cannot delete boarding house. {checkResult.Message}");
+
+            // Delete rooms
             var rooms = await _roomService.GetRoomsByHouseIdAsync(id);
             if (rooms != null && rooms.Count > 0)
-                return ApiResponse<bool>.Fail("Cannot delete a boarding house while rooms still exist!");
-
+            {
+                foreach (var room in rooms)
+                {
+                    await _roomService.DeleteRoomOnlyAsync(room.Id);
+                }
+            }
 
             await _boardingHouseRepo.DeleteAsync(house);
             return ApiResponse<bool>.Success(true, "Deleted boarding house successfully!");
+        }
+
+        private async Task<RoomCheckResult> CheckRoomsForDeleteAsync(Guid boardingHouseId)
+        {
+            var rooms = await _roomService.GetRoomsByHouseIdAsync(boardingHouseId);
+            if (rooms == null || rooms.Count == 0)
+                return new RoomCheckResult { HasBlockedRooms = false };
+
+            foreach (var room in rooms)
+            {
+                // Check contract
+                bool hasContract = await _contractService.ContractExistsByRoomId(room.Id);
+                if (hasContract)
+                    return new RoomCheckResult { HasBlockedRooms = true, Message = $"'{room.RoomName}' is in a contract!"};
+
+                // Check rental post
+                bool hasRentalPost = await _rentalPostService.RentalPostExistsByRoomId(room.Id);
+                if (hasRentalPost)
+                    return new RoomCheckResult { HasBlockedRooms = true, Message = $"'{room.RoomName}' appears in a rental post!"};
+            }
+            return new RoomCheckResult { HasBlockedRooms = false };
         }
 
         public async Task<List<BoardingHouseRankResponse>> GetRankedBoardingHousesAsync(RankType type, string order, int limit)

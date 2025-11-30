@@ -21,7 +21,11 @@ namespace BoardingHouseAPI.Service
             }
             return null;
         }
-
+        public async Task<bool> DeleteRoomOnlyAsync(Guid roomId)
+        {
+            var response = await _httpClient.DeleteAsync($"api/Rooms/{roomId}");
+            return response.IsSuccessStatusCode;
+        }
 
     }
 }
