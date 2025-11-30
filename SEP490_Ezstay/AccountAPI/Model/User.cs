@@ -24,7 +24,7 @@ namespace AccountAPI.Data
 
         public string FrontImageUrl { get; set; }
         public string BackImageUrl { get; set; }
-        public string TemporaryResidence { get; set; }
+        public string? TemporaryResidence { get; set; }
         public string CitizenIdNumber { get; set; }
         public DateTime CitizenIdIssuedDate { get; set; }
         public string CitizenIdIssuedPlace { get; set; }

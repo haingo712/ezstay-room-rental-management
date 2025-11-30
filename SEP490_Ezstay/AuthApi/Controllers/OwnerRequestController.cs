@@ -26,7 +26,7 @@ namespace AuthApi.Controllers
         {
             var accountIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!Guid.TryParse(accountIdClaim, out var accountId))
-                return BadRequest(new { message = "Không tìm thấy thông tin tài khoản trong token." });
+                return BadRequest(new { message = "Account information not found in token." });
 
             var dto = new SubmitOwnerRequestDto
             {
@@ -36,7 +36,7 @@ namespace AuthApi.Controllers
             var resultDto = await _service.SubmitRequestAsync(dto, accountId);
 
             if (resultDto == null)
-                return BadRequest(new { message = "Gửi đơn thất bại" });
+                return BadRequest(new { message = "Application failed" });
 
             return Ok(resultDto);
         }
@@ -50,13 +50,13 @@ namespace AuthApi.Controllers
         {
             var staffIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(staffIdClaim))
-                return Unauthorized(new { message = "Không xác định được staff." });
+                return Unauthorized(new { message = "Staff not identified." });
 
             var staffId = Guid.Parse(staffIdClaim);
 
             var result = await _service.ApproveRequestAsync(requestId, staffId);
             if (result == null)
-                return BadRequest(new { message = "Duyệt đơn thất bại hoặc đơn không hợp lệ." });
+                return BadRequest(new { message = "Application review failed or invalid." });
 
             return Ok(result);
         }
@@ -67,13 +67,13 @@ namespace AuthApi.Controllers
         {
             var staffIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(staffIdClaim))
-                return Unauthorized(new { message = "Không xác định được staff." });
+                return Unauthorized(new { message = "Staff not identified." });
 
             var staffId = Guid.Parse(staffIdClaim);
 
             var result = await _service.RejectRequestAsync(requestId, staffId, dto.RejectionReason);
             if (result == null)
-                return BadRequest(new { message = "Từ chối đơn thất bại hoặc đơn không hợp lệ." });
+                return BadRequest(new { message = "Reject failed or invalid applications." });
 
             return Ok(result);
         }

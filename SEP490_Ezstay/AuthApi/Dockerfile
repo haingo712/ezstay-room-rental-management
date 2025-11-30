@@ -8,15 +8,22 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["AuthApi/AuthApi.csproj", "AuthApi/"]
 COPY ["Shared/Shared.csproj", "Shared/"]
-RUN dotnet restore "AuthApi/AuthApi.csproj"
+
+# 🔴 Sửa lỗi 1: Bỏ dấu nháy kép
+RUN dotnet restore AuthApi/AuthApi.csproj 
+
 COPY . .
 WORKDIR "/src/AuthApi"
-RUN dotnet build "AuthApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# 🔴 Sửa lỗi 2: Bỏ dấu nháy kép
+RUN dotnet build AuthApi.csproj -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "AuthApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+# 🔴 Sửa lỗi 3: Bỏ dấu nháy kép
+RUN dotnet publish AuthApi.csproj -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+	
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .

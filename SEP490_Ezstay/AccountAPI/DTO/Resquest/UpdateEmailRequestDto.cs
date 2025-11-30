@@ -2,7 +2,7 @@
 {
     public class UpdateEmailRequestDto
     {
-        public string NewEmail { get; set; }
-        public string Otp { get; set; }
+        public string? NewEmail { get; set; }
+        public string? Otp { get; set; }
     }
 }

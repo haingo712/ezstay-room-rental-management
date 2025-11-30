@@ -98,8 +98,8 @@ namespace AuthApi.Controllers
         {
             var result = await _service.UpdateFullNameAsync(id, fullName);
             return result
-                ? Ok("Cập nhật tên thành công")
-                : NotFound("Không tìm thấy tài khoản");
+                ? Ok("Name update successful")
+                : NotFound("Account not found");
         }
 
 
@@ -110,7 +110,7 @@ namespace AuthApi.Controllers
             // Không lấy từ Claim nữa, dùng dto.Email luôn
             var response = await _service.ChangePasswordAsync(dto);
 
-            return response == "Đổi mật khẩu thành công."
+            return response == "Password changed successfully."
                 ? Ok(new { message = response })
                 : BadRequest(new { message = response });
         }
