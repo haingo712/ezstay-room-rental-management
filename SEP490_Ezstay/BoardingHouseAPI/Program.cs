@@ -52,7 +52,15 @@ namespace BoardingHouseAPI
             builder.Services.AddHttpClient<IRoomService, RoomService>(client =>
             {
                 client.BaseAddress = new Uri(serviceUrls["RoomAPI"]!);
-            });          
+            });
+            builder.Services.AddHttpClient<IContractService, ContractService>(client =>
+            {
+                client.BaseAddress = new Uri(serviceUrls["ContractAPI"]!);
+            });
+            builder.Services.AddHttpClient<IRentalPostService, RentalPostService>(client =>
+            {
+                client.BaseAddress = new Uri(serviceUrls["RentalPostAPI"]!);
+            });
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IBoardingHouseRepository, BoardingHouseRepository>();            
