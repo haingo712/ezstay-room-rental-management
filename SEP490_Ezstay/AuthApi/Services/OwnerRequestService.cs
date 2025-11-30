@@ -22,6 +22,8 @@ namespace AuthApi.Services
         private readonly string _NotifyApiUrl;
         private readonly string _UserApiUrl;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IImageService _imageServvice;
+
 
 
         public OwnerRequestService(
@@ -29,7 +31,8 @@ namespace AuthApi.Services
      IOwnerRequestRepository ownerRequestRepo,
      IMapper mapper,
      IHttpClientFactory httpFactory,
-     IConfiguration config)
+     IConfiguration config,
+     IImageService imageService)
         {
             _accountRepo = accountRepo;
             _ownerRequestRepo = ownerRequestRepo;
@@ -40,6 +43,8 @@ namespace AuthApi.Services
 
             _NotifyApiUrl = config["ApiSettings:NotifyApiUrl"]
                 ?? throw new Exception("NotifyApiUrl not configured");
+            _imageServvice = imageService;
+
 
         }
 
@@ -55,7 +60,7 @@ namespace AuthApi.Services
 
                 if (!checkResp.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("❌ Không gọi được UserAPI check-profile");
+                   
                     return null;
                 }
 
@@ -63,7 +68,7 @@ namespace AuthApi.Services
 
                 if (checkData == null || checkData.IsValid == false)
                 {
-                    Console.WriteLine("❌ Profile chưa đầy đủ → không cho submit.");
+                   
                     return null;
                 }
 
@@ -74,6 +79,14 @@ namespace AuthApi.Services
                 entity.SubmittedAt = DateTime.UtcNow;
                 entity.Status = RequestStatusEnum.Pending;
 
+                if (dto.Imageasset != null)
+                {
+                    // Upload IFormFile và nhận về URL/tên file (string)
+                    string imageUrl = await _imageServvice.UploadImageAsync(dto.Imageasset);
+                    // Gán URL/tên file (string) vào Entity
+                    entity.Imageasset = imageUrl;
+                }
+
                 await _ownerRequestRepo.CreateAsync(entity);
 
                 var resultDto = _mapper.Map<OwnerRequestResponseDto>(entity);
@@ -81,8 +94,8 @@ namespace AuthApi.Services
                 //// 3) GỬI NOTIFICATION
                 var notifyPayload = new
                 {
-                    Title = "Yêu cầu đăng ký chủ trọ mới",
-                    Message = $"User {accountId} vừa gửi đơn đăng ký chủ trọ.",
+                    Title = "Request for new landlord registration",
+                    Message = $"User {accountId} just sent the application to the landlord.",
                     NotificationType = "OwnerRegister",
                     RequestId = entity.Id
                 };
@@ -134,8 +147,8 @@ namespace AuthApi.Services
             // -----------------------------------
             var notifyPayload = new
             {
-                Title = "Yêu cầu đã được phê duyệt",
-                Message = $"Đơn đăng ký chủ trọ của user {request.AccountId} đã được phê duyệt.",
+                Title = "Request approved",
+                Message = $"User {request.AccountId}'s landlord application has been approved.",
                 NotificationType = "OwnerApprove",
                 RequestId = request.Id,
                 StaffId = staffId
@@ -153,7 +166,7 @@ namespace AuthApi.Services
                 if (!notifyResponse.IsSuccessStatusCode)
                 {
                     var body = await notifyResponse.Content.ReadAsStringAsync();
-                    Console.WriteLine($"❌ Notification approve failed: {notifyResponse.StatusCode} - {body}");
+                  
                 }
             }
             catch (Exception ex)
@@ -188,8 +201,8 @@ namespace AuthApi.Services
             // ---------------------------------------------------
             var notifyPayload = new
             {
-                Title = "Yêu cầu bị từ chối",
-                Message = $"Đơn đăng ký chủ trọ của user {request.AccountId} đã bị từ chối. Lý do: {rejectionReason}",
+                Title = "Request denied",
+                Message = $"The landlord registration application of user {request.AccountId} was rejected. Reason: {rejectionReason}",
                 NotificationType = "OwnerReject",
                 RequestId = request.Id,
                 StaffId = staffId

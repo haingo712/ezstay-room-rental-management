@@ -58,12 +58,12 @@ namespace AccountAPI.Service
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<ResponseMessage>();
-                return result?.Message ?? "Đổi mật khẩu thành công.";
+                return result?.Message ?? "Password changed successfully.";
             }
             else
             {
                 var result = await response.Content.ReadFromJsonAsync<ResponseMessage>();
-                return result?.Message ?? "Đổi mật khẩu thất bại.";
+                return result?.Message ?? "Password change failed.";
             }
         }
 

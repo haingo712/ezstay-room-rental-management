@@ -1,7 +1,7 @@
-﻿using AccountAPI.DTO.Response;
-using AccountAPI.Service.Interfaces;
+﻿using AuthApi.DTO.Response;
+using AuthApi.Services.Interfaces;
 
-namespace AccountAPI.Service
+namespace AuthApi.Service
 {
     public class ImageService : IImageService
     {

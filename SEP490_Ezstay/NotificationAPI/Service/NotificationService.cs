@@ -68,7 +68,7 @@ using System.Data;
 
                     if (result.ModifiedCount > 0)
                     {
-                        Console.WriteLine($"[Scheduler] Đã gửi {result.ModifiedCount} thông báo hẹn giờ lúc {DateTime.Now}");
+                        Console.WriteLine($"[[Scheduler] Sent {result.ModifiedCount} timer notification at {DateTime.Now}");
                     }
 
                     await Task.Delay(TimeSpan.FromSeconds(30)); // ⏱ kiểm tra mỗi 30 giây
@@ -158,7 +158,7 @@ using System.Data;
             }
 
             if (!allUsers.Any())
-                throw new Exception("Không tìm thấy user nào thuộc các role được chọn");
+                throw new Exception("No users found for the selected roles");
 
             // Tạo notify lưu danh sách role
             var notify = new Notify
@@ -200,8 +200,8 @@ using System.Data;
         {
             var notify = new Notify
             {
-                Title = "Yêu cầu đăng ký chủ trọ mới",
-                Message = $"Người dùng có ID {userId} vừa gửi đơn đăng ký làm chủ trọ. Vui lòng kiểm tra.",
+                Title = "Request for new landlord registration",
+                Message = $"User with ID {userId} has just submitted an application to become a landlord. Please check.",
                 NotificationType = NotificationType.OwnerRegister,
                 TargetRoles = new List<RoleEnum> { RoleEnum.Staff }, // 👈 Gửi cho nhiều role nếu muốn
                 CreatedAt = DateTime.UtcNow
@@ -216,8 +216,8 @@ using System.Data;
             {
                 var notify = new Notify
                 {
-                    Title = "Yêu cầu đănng ký của bạn đã được duyệt",
-                    Message = "xin chúc mừng bạn tài khoản bạn đã được nâng cấp",
+                    Title = "Your registration request has been approved.",
+                    Message = "Congratulations your account has been upgraded",
                     NotificationType = NotificationType.OwnerRegister,
 
                     UserId = UserId, // không gán cho user cụ thể
@@ -231,8 +231,8 @@ using System.Data;
             {
                 var notify = new Notify
                 {
-                    Title = "Yêu cầu đănng ký của bạn đã bị từ chối",
-                    Message = "Xin lôi vì một số lý do nên tài khoản của bạn không được chấp nhận",
+                    Title = "Your registration request has been rejected.",
+                    Message = "Sorry for some reason your account was not approved",
                     NotificationType = NotificationType.OwnerRegister,
 
                     UserId = UserId, // không gán cho user cụ thể
@@ -246,7 +246,7 @@ using System.Data;
         public async Task CreateNotifyAsync(NotifyByRoleRequest dto, Guid userId)
         {
             if (dto.ScheduledTime.HasValue && dto.ScheduledTime.Value <= DateTime.UtcNow)
-                throw new Exception("Thời gian hẹn phải lớn hơn thời gian hiện tại.");
+                throw new Exception("Appointment time must be greater than current time.");
 
             var notify = new Notify
             {

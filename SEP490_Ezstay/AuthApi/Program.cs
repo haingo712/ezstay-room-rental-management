@@ -38,8 +38,13 @@
         client.BaseAddress = new Uri("http://mailapi:8080");
     });
 
+builder.Services.AddHttpClient("ImageAPI", client =>
+{
+    client.BaseAddress = new Uri("http://imageapi:8080"); // API của ImageAPI
+});
 
-    builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
     builder.Services.AddScoped<IAuthRepository, AuthRepository>();
