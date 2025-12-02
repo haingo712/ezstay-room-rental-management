@@ -8,6 +8,7 @@ using Shared.DTOs;
 using Shared.DTOs.UtilityReadings.Responses;
 using Shared.Enums;
 using MongoDB.Driver;
+using Microsoft.AspNetCore.Mvc;
 
 namespace UtilityBillAPI.Service
 {
@@ -88,7 +89,22 @@ namespace UtilityBillAPI.Service
 
             DateTime today = DateTime.UtcNow;
             int billingMonth = today.Month;
-            int billingYear = today.Year;
+            int billingYear = today.Year;       
+            
+            var existingMonthlyBill = _utilityBillRepo.GetAll()
+                .FirstOrDefault(b => b.ContractId == contractId
+                && b.BillType == UtilityBillType.Monthly
+                && b.CreatedAt.Month == billingMonth
+                && b.CreatedAt.Year == billingYear
+                && b.Status != UtilityBillStatus.Cancelled);
+            if (existingMonthlyBill != null)
+            {
+                return ApiResponse<UtilityBillDTO>.Fail(
+                   $"A bill for {billingMonth}/{billingYear} already exists (Bill ID: {existingMonthlyBill.Id}). " +
+                   $"If you want to generate a new bill, please cancel the existing bill first."
+                );
+            }
+
             var electric = await _utilityReadingService.GetElectricityReadingAsync(contract.Id, billingMonth, billingYear);
             var water = await _utilityReadingService.GetWaterReadingAsync(contract.Id, billingMonth, billingYear);
 
