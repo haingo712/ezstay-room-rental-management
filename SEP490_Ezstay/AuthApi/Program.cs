@@ -12,8 +12,6 @@
     using AuthApi.DTO.Request;
     using Microsoft.OpenApi.Models;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 
     // Add services to the container.
@@ -57,11 +55,11 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
     builder.Services.AddScoped<IOwnerRequestService, OwnerRequestService>();
     builder.Services.AddScoped<IOwnerRequestRepository, OwnerRequestRepository>();
-     builder.Services.AddScoped<IImageService, ImageService>();
+    builder.Services.AddScoped<IImageService, ImageService>();
 
 
 
-    builder.Services.AddHttpClient("Gateway", (serviceProvider, client) =>
+builder.Services.AddHttpClient("Gateway", (serviceProvider, client) =>
     {
         var config = serviceProvider.GetRequiredService<IConfiguration>();
         var baseUrl = config["ServiceUrls:Gateway"];  // đọc từ appsettings.json

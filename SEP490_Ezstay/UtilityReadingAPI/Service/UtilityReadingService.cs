@@ -43,15 +43,16 @@ public class UtilityReadingService: IUtilityReadingService
         return _mapper.Map<UtilityReadingResponse>(utilityReading);
     }
     
-    public async Task<UtilityReadingResponse> GetLastestReading(Guid contractId, UtilityType type)
+    public async Task<UtilityReadingResponse> GetLastestReading(Guid contractId, UtilityType type, int month, int year)
     {
-        var utilityReading =await _utilityReadingRepository.GetLatestReading(contractId, type);
+        var utilityReading =await _utilityReadingRepository.GetLatestReading(contractId, type, month, year);
         if (utilityReading == null)
-            throw new KeyNotFoundException("No utility reading found for the specified room and type.");
+            throw new KeyNotFoundException("No utility reading found for the specified month/year.");
         return _mapper.Map<UtilityReadingResponse>(utilityReading);
     }
     public async Task<ApiResponse<UtilityReadingResponse>> Add(Guid contractId, UtilityType type, CreateUtilityReadingContract  request)
     {
+        
         var lastReading = _utilityReadingRepository.GetAll()
             .Where(x => x.ContractId == contractId && x.Type == type)
             .OrderByDescending(x => x.ReadingDate)
@@ -66,11 +67,11 @@ public class UtilityReadingService: IUtilityReadingService
         // }else {
             if (request.CurrentIndex < lastReading?.CurrentIndex)
             {
-                return ApiResponse<UtilityReadingResponse>.Fail("Chỉ số mới không được nhỏ hơn chỉ số tháng trước.");
+                return ApiResponse<UtilityReadingResponse>.Fail("The new reading cannot be lower than the previous month's reading.");
             }
             utilityReading.PreviousIndex = lastReading.CurrentIndex;
             utilityReading.CurrentIndex = request.CurrentIndex;
-        utilityReading.Total = request.Price * utilityReading.Consumption;
+           utilityReading.Total = request.Price * utilityReading.Consumption;
         //}
         utilityReading.ContractId = contractId;
         await _utilityReadingRepository.AddAsync(utilityReading);
@@ -84,7 +85,7 @@ public class UtilityReadingService: IUtilityReadingService
             throw new KeyNotFoundException("Id not found");
         
         if (request.CurrentIndex < utilityReading.PreviousIndex)
-            return ApiResponse<bool>.Fail("Chỉ số mới không được nhỏ hơn chỉ số tháng trước.");
+            return ApiResponse<bool>.Fail("The new reading cannot be lower than the previous month's reading.");
         
         if (DateTime.UtcNow - utilityReading.ReadingDate > TimeSpan.FromHours(1))
             return ApiResponse<bool>.Fail("Đơn này đã quá 1 giờ, không thể cập nhật nữa.");
@@ -109,7 +110,6 @@ public class UtilityReadingService: IUtilityReadingService
     
     public async Task<ApiResponse<UtilityReadingResponse>> AddUtilityReadingContract(Guid contractId,UtilityType utilityType, CreateUtilityReadingContract  request)
     {
-      
         var utilityReading = _mapper.Map<UtilityReading>(request);
         utilityReading.ReadingDate = DateTime.UtcNow;
         utilityReading.ContractId = contractId;
@@ -121,11 +121,13 @@ public class UtilityReadingService: IUtilityReadingService
     public async Task<ApiResponse<bool>> UpdateUtilityReadingContract(Guid contractId,UtilityType utilityType, UpdateUtilityReading request)
     {
         var reading = _utilityReadingRepository.GetAll()
-        .Where(x => x.ContractId == contractId && x.Type == utilityType)
-        .OrderByDescending(x => x.ReadingDate)
-        .FirstOrDefault();
-        if (reading == null)
-            return ApiResponse<bool>.Fail("Không tìm thấy chỉ số điện cho phòng này.");
+                .FirstOrDefault(x => x.ContractId == contractId && x.Type == utilityType);
+        // .Where(x => x.ContractId == contractId && x.Type == utilityType)
+        //  .OrderByDescending(x => x.ReadingDate)
+        // .FirstOrDefault();
+        
+        // if (reading == null)
+        //     return ApiResponse<bool>.Fail("Không tìm thấy chỉ số điện cho phòng này.");
         _mapper.Map(request, reading);
         reading.UpdatedAt = DateTime.UtcNow;
         await _utilityReadingRepository.UpdateAsync(reading);

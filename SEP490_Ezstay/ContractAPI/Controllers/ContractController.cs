@@ -73,7 +73,7 @@ namespace ContractAPI.Controllers
            return _contractService.GetAllByOwnerId(tenantId);
        }
        
-       [Authorize(Roles = "Owner")]
+       [Authorize(Roles = "Owner, User")]
        [HttpGet("ByOwnerId")]
        [EnableQuery]
        public IQueryable<ContractResponse> GetContractsByOwnerId()

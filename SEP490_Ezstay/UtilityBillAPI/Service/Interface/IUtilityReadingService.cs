@@ -4,8 +4,7 @@ namespace UtilityBillAPI.Service.Interface
 {
     public interface IUtilityReadingService
     {
-       Task<UtilityReadingResponse?> GetElectricityReadingAsync(Guid roomId);
-       Task<UtilityReadingResponse?> GetWaterReadingAsync(Guid roomId);        
-       Task<List<UtilityReadingResponse>?> GetUtilityReadingsAsync(Guid contractId);
+       Task<UtilityReadingResponse?> GetElectricityReadingAsync(Guid contractId, int month, int year);
+       Task<UtilityReadingResponse?> GetWaterReadingAsync(Guid contractId, int month, int year);               
     }
 }

@@ -65,6 +65,8 @@ public class ContractService : IContractService
             response.ElectricityReading = await _utilityReadingService.GetLastestReading(contract.RoomId, UtilityType.Electric);
             response.WaterReading = await _utilityReadingService.GetLastestReading(contract.RoomId, UtilityType.Water);
             return response;
+            
+            
     }
   //  => _mapper.Map<ContractResponse>(await _contractRepository.GetByIdAsync(id));
     
@@ -73,7 +75,7 @@ public class ContractService : IContractService
     public async Task<ApiResponse<ContractResponse>> Add(Guid ownerId, CreateContract request)
     {
         if (request.CheckinDate < DateTime.UtcNow.Date)
-            return ApiResponse<ContractResponse>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
+            return ApiResponse<ContractResponse>.Fail("The check-in date must be today or a future date.");
         
         if (request.CheckoutDate < request.CheckinDate.AddMonths(1))
             return ApiResponse<ContractResponse>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
@@ -91,23 +93,15 @@ public class ContractService : IContractService
             .Select((p, index) =>
             {
                 var serviceInfor = _mapper.Map<ServiceInfor>(p);
+                serviceInfor.ContractId = contract.Id;
                 return serviceInfor;
             }).ToList();
-        
-        var members = request.ProfilesInContract
-            .Select((p, index) =>
-            {
-                var profile = _mapper.Map<IdentityProfile>(p);
-                profile.IsSigner = index == 0;
-                profile.ContractId = contract.Id;
-                return profile;
-            }).ToList();
-   
         var ownerProfile = await _accountService.GetProfileByUserId(ownerId);
-        Console.WriteLine("xxxx "+ ownerProfile);
-        Console.WriteLine("xxxx "+ ownerProfile.Id);
+     
         if (ownerProfile == null) 
             return ApiResponse<ContractResponse>.Fail("Không tìm thấy thông tin chủ trọ.");
+        
+        var members = new List<IdentityProfile>();
         var ownerIdentity = new IdentityProfile
         {
             UserId = ownerProfile.Id,
@@ -127,27 +121,39 @@ public class ContractService : IContractService
             TemporaryResidence = ownerProfile.TemporaryResidence,
             CitizenIdNumber = ownerProfile.CitizenIdNumber,
             CitizenIdIssuedDate= ownerProfile.CitizenIdIssuedDate,
-            CitizenIdIssuedPlace = ownerProfile.CitizenIdIssuedPlace
+            CitizenIdIssuedPlace = ownerProfile.CitizenIdIssuedPlace,
+            ProvinceId = ownerProfile.ProvinceId,
+            WardId = ownerProfile.WardId
         };
+        
         ownerIdentity.IsSigner = true; 
         members.Add(ownerIdentity);
+
+        foreach (var p in request.ProfilesInContract)
+        {
+            var profile = _mapper.Map<IdentityProfile>(p);
+            profile.ContractId = contract.Id;
+            profile.IsSigner = members.Count == 1;
+            members.Add(profile);
+        }
         contract.ProfilesInContract = members;
         var saveContract =await _contractRepository.Add(contract);
-        var createUtility = await _utilityReadingService.Add(contract.RoomId,  UtilityType.Water, request.WaterReading);
-        var createUtiliyw = await _utilityReadingService.Add(contract.RoomId,  UtilityType.Electric, request.ElectricityReading);
+        var createUtility = await _utilityReadingService.Add(contract.Id, UtilityType.Water, request.WaterReading);
+        var createUtiliyw = await _utilityReadingService.Add(contract.Id, UtilityType.Electric, request.ElectricityReading);
+     
         var result = _mapper.Map<ContractResponse>(saveContract);
         result.WaterReading = createUtility.Data;
         result.ElectricityReading = createUtiliyw.Data;
-        return ApiResponse<ContractResponse>.Success(result, "Thuê thành công.");
+        return ApiResponse<ContractResponse>.Success(result, "Create new contract.");
     }
     public async Task<ApiResponse<ContractResponse>> CancelContract(Guid contractId, string reason)
     {
         var contract = await _contractRepository.GetById(contractId);
         if (contract == null)
-            return ApiResponse<ContractResponse>.Fail("Không tìm thấy hợp đồng thuê");
+            return ApiResponse<ContractResponse>.Fail("Contract not found.");
 
         if (contract.ContractStatus != ContractStatus.Active)
-            return ApiResponse<ContractResponse>.Fail("Chỉ hợp đồng đang hoạt động mới có thể huỷ");
+            return ApiResponse<ContractResponse>.Fail("The contract has not been signed yet, so it cannot be cancelled.");
         
         contract.ContractStatus = ContractStatus.Cancelled;
         contract.UpdatedAt = DateTime.UtcNow;
@@ -155,43 +161,68 @@ public class ContractService : IContractService
         await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Available);
         await _contractRepository.Update(contract);
         var dto = _mapper.Map<ContractResponse>(contract);
-        return ApiResponse<ContractResponse>.Success(dto, "Huỷ hợp đồng thành công");
+        return ApiResponse<ContractResponse>.Success(dto, "Cancel contract successful.");
     }
 
     public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateContract request)
     {
         var contract = await _contractRepository.GetById(id);
         if (contract == null)
-            throw new KeyNotFoundException("Contract Id not found");
+            return ApiResponse<bool>.Fail("Contract not found");
        
-        // if (DateTime.UtcNow - contract.CreatedAt > TimeSpan.FromHours(1))
-        //     return ApiResponse<bool>.Fail("Đơn này đã quá 1 giờ, không thể cập nhật nữa.");
-        //
+        if (contract.ContractStatus == ContractStatus.Active )
+            return ApiResponse<bool>.Fail("The contract has already been signed, so you cannot update it anymore.");
+        
         if (contract.CheckinDate < DateTime.UtcNow.Date)
-            return ApiResponse<bool>.Fail("Ngày nhận phòng phải lớn hơn hoặc bằng ngày hiện tại");
+            return ApiResponse<bool>.Fail("The check-in date must be today or a future date.");
         
         if (request.CheckoutDate < contract.CheckinDate.AddMonths(1))
-            return ApiResponse<bool>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
-        if (request.ProfilesInContract != null && request.ProfilesInContract.Any())
-        {
-            var members = request.ProfilesInContract
-                .Select((p, index) =>
-                {
-                    var profile = _mapper.Map<IdentityProfile>(p);
-                    profile.IsSigner = index == 0;
-                    return profile;
-                }).ToList();
-
+            return ApiResponse<bool>.Fail("The checkout date must be at least 1 month after the check-in date.");
+        // if (request.ProfilesInContract != null && request.ProfilesInContract.Any())
+        // {
+            var members = new List<IdentityProfile>();
+            var ownerProfile = contract.ProfilesInContract.FirstOrDefault(p => p.IsSigner);
+            if (ownerProfile != null)
+                members.Add(ownerProfile);
+            
+            foreach (var p in request.ProfilesInContract)
+            {
+                var profile = _mapper.Map<IdentityProfile>(p);
+                profile.ContractId = contract.Id;
+                profile.IsSigner = members.Count == 1; 
+                members.Add(profile);
+            }
             contract.ProfilesInContract = members;
-        }
-            await _utilityReadingService.Update(contract.RoomId, UtilityType.Electric, request.ElectricityReading);
-            await _utilityReadingService.Update(contract.RoomId, UtilityType.Water, request.WaterReading);
-        if (contract.ContractStatus == ContractStatus.Active)
-            return ApiResponse<bool>.Fail("K the cập nhật vì contract đã kí tên r");
+      //  }
+        await _utilityReadingService.Update(contract.Id, UtilityType.Electric, request.ElectricityReading);
+        await _utilityReadingService.Update(contract.Id, UtilityType.Water, request.WaterReading);
         contract.UpdatedAt = DateTime.UtcNow;
         _mapper.Map(request, contract);
+        
+        // Update services - ensure list is initialized
+        if (contract.ServiceInfors == null)
+        {
+            contract.ServiceInfors = new List<ServiceInfor>();
+        }
+        else
+        {
+            contract.ServiceInfors.Clear();
+        }
+        
+        if (request.ServiceInfors != null && request.ServiceInfors.Any())
+        {
+            foreach (var item in request.ServiceInfors)
+            {
+                var newService = _mapper.Map<ServiceInfor>(item);
+                newService.ContractId = contract.Id;
+                contract.ServiceInfors.Add(newService);
+            }
+        }
+
+        
         await _contractRepository.Update(contract);
-        return ApiResponse<bool>.Success(true, "Cập nhật hợp đồng thành công.");
+
+        return ApiResponse<bool>.Success(true, "Contract updated successfully.");
     }
     public async Task<ApiResponse<ContractResponse>> ExtendContract(Guid contractId, ExtendContractDto request)
     {
@@ -223,18 +254,18 @@ public class ContractService : IContractService
     {
         var contract = await _contractRepository.GetById(id);
         if (contract == null) 
-            throw new KeyNotFoundException("Không tìm thấy hợp đồng");
+            throw new KeyNotFoundException("Contract not found");
         if (contract.ContractStatus == ContractStatus.Active)
-            return ApiResponse<bool>.Fail("Contract k thể xoá vì hợp đồng đã kí");
+            return ApiResponse<bool>.Fail("The contract has already been signed, so it cannot be deleted.");
         await _contractRepository.Delete(contract);
-        return ApiResponse<bool>.Success(true, "Xoá hợp đồng thành công");
+        
+        return ApiResponse<bool>.Success(true, "Delete contract successfully.");
     }
     public async Task<ApiResponse<List<string>>> UploadContractImages(Guid contractId, IFormFileCollection images)
     {
         var contract = await _contractRepository.GetById(contractId);
         if (contract == null)
-            return ApiResponse<List<string>>.Fail("Không tìm thấy hợp đồng");
-        
+            return ApiResponse<List<string>>.Fail("Contract not found");
         var uploadedUrls = await _imageService.UploadMultipleImage(images);
         contract.ContractImage = uploadedUrls;
         contract.ContractUploadedAt = DateTime.UtcNow;

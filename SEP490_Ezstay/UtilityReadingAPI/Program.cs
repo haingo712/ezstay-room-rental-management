@@ -35,7 +35,7 @@ builder.Services.AddControllers().AddOData(options =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); 
 
 
-builder.Services.AddHttpClient<ITenantClientService, TenantClientService>(client =>
+builder.Services.AddHttpClient<IContractService, ContractService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:TenantAPI"]);
 });

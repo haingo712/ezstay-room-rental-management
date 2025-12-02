@@ -15,16 +15,12 @@ namespace UtilityBillAPI.Models
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid TenantId { get; set; }
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid ContractId { get; set; }
-        [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid RoomId { get; set; }        
-        [BsonRepresentation(BsonType.Decimal128)]
-        public decimal? RoomPrice { get; set; }        
-        public List<UtilityBillDetail> Details { get; set; } = new();
-        [BsonRepresentation(BsonType.Decimal128)]
-        public decimal TotalAmount { get; set; }
-        public int BillingMonth { get; set; }
-        public int BillingYear { get; set; }
+        public Guid ContractId { get; set; }              
+        public string HouseName { get; set; } = null!;
+        public string RoomName { get; set; } = null!;
+        public decimal? RoomPrice { get; set; }
+        public List<UtilityBillDetail> Details { get; set; } = new();        
+        public decimal TotalAmount { get; set; }       
         [BsonRepresentation(BsonType.DateTime)]
         public DateTime CreatedAt { get; set; }
         [BsonRepresentation(BsonType.DateTime)]

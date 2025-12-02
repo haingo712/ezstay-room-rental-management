@@ -160,7 +160,7 @@
     ports:
       - "7037:8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Production  
+      ASPNETCORE_ENVIRONMENT: Development  
 
   reviewreportapi:
     build:
@@ -170,7 +170,7 @@
     ports:
       - "7074:8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Production  
+      ASPNETCORE_ENVIRONMENT: Development  
 
   roomamenityapi:
     build:
@@ -210,7 +210,7 @@
     ports:
       - "7123:8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Production  
+      ASPNETCORE_ENVIRONMENT: Development  
 
   utilitybillapi:
     build:
@@ -220,7 +220,7 @@
     ports:
       - "7008:8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Production  
+      ASPNETCORE_ENVIRONMENT: Development  
 
   utilityreadingapi:
     build:
