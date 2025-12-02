@@ -62,7 +62,7 @@ namespace UtilityBillAPI.Controllers
         {
             try
             {
-                var bill = await _utilityBillService.GetByIdAsync(id);
+                var bill = await _utilityBillService.GetByIdAsync(id);                
                 return Ok(bill);
             }
             catch (KeyNotFoundException)
@@ -91,7 +91,12 @@ namespace UtilityBillAPI.Controllers
         public async Task<IActionResult> CreateMonthly(Guid contractId)
         {
             var ownerId = _tokenService.GetUserIdFromClaims(User);
-            return Ok(await _utilityBillService.GenerateMonthlyBillAsync(contractId, ownerId));
+            var response = await _utilityBillService.GenerateMonthlyBillAsync(contractId, ownerId); 
+            if (!response.IsSuccess)
+            {
+                return BadRequest(new { message = response.Message });
+            }
+            return Ok(response);
         }
 
         // POST: api/UtilityBills/deposit/{contractId}
@@ -100,7 +105,12 @@ namespace UtilityBillAPI.Controllers
         public async Task<IActionResult> CreateDeposit(Guid contractId)
         {
             var ownerId = _tokenService.GetUserIdFromClaims(User);
-            return Ok(await _utilityBillService.GenerateDepositBillAsync(contractId, ownerId));
+            var response = await _utilityBillService.GenerateDepositBillAsync(contractId, ownerId); 
+            if (!response.IsSuccess)
+            {
+                return BadRequest(new { message = response.Message });
+            }
+            return Ok(response);
         }
 
 
