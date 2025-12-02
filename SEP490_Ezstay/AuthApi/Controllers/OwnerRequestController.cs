@@ -30,7 +30,8 @@ namespace AuthApi.Controllers
 
             var dto = new SubmitOwnerRequestDto
             {
-                Reason = clientDto.Reason
+                Reason = clientDto.Reason,
+                Imageasset = clientDto.Imageasset
             };
 
             var resultDto = await _service.SubmitRequestAsync(dto, accountId);
