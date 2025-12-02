@@ -11,6 +11,7 @@ using static System.Net.WebRequestMethods;
 using Twilio.Http;
 using static Google.Apis.Requests.BatchRequest;
 using AccountAPI.DTO.Response;
+using AuthApi.Services.Interfaces;
 
 namespace AuthApi.Services
 {

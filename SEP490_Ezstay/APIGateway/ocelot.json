@@ -222,6 +222,23 @@
       ]
     },
     {
+      "DownstreamPathTemplate": "/api/FaceLogin/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/FaceLogin/{everything}",
+      "UpstreamHttpMethod": [
+        "POST",
+        "GET",
+        "PUT",
+        "DELETE"
+      ]
+    },
+    {
       "DownstreamPathTemplate": "/api/signalR",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

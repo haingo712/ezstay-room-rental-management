@@ -1,4 +1,4 @@
-﻿namespace AuthApi.Service.Interfaces
+﻿namespace AuthApi.Services.Interfaces
 {
     public interface IImageService
     {
