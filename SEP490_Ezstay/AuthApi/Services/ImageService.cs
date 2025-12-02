@@ -1,7 +1,7 @@
 ﻿using AuthApi.DTO.Response;
 using AuthApi.Services.Interfaces;
 
-namespace AuthApi.Service
+namespace AuthApi.Services
 {
     public class ImageService : IImageService
     {

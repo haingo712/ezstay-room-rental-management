@@ -11,6 +11,6 @@ namespace UtilityBillAPI.Repository.Interface
         Task<UtilityBill?> GetByIdAsync(Guid id);               
         Task CreateAsync(UtilityBill bill);                   
         Task MarkAsPaidAsync(Guid billId);
-        Task CancelAsync(Guid billId, string? reason);                
+        Task CancelAsync(Guid billId, string? reason);          
     }
 }
