@@ -32,7 +32,7 @@ namespace RentalPostsAPI.Repository
 
         public async Task<IEnumerable<RentalPosts>> GetAllAsync()
         {
-            return await _collection.Find(x => x.IsActive).ToListAsync();
+            return await _collection.Find(x => x.IsActive && x.IsApproved == PostStatus.Approved).ToListAsync();
         }
         public async Task<IEnumerable<RentalPosts>> GetPendingAsync()
         {

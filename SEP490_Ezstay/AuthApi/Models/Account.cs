@@ -26,8 +26,27 @@ namespace AuthApi.Models
 
         public bool IsBanned { get; set; } = false;
 
-
-
+        [BsonIgnoreIfNull]
+        public List<FaceData>? FaceEmbeddings { get; set; }
     }
 
+    public class FaceData
+    {
+        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        public Guid Id { get; set; } = Guid.NewGuid();
+
+        [BsonElement("embedding")]
+        public double[] Embedding { get; set; } = Array.Empty<double>();
+
+        [BsonIgnoreIfNull]
+        public string? Label { get; set; }
+
+        [BsonIgnoreIfNull]
+        public string? ImageThumbnail { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        [BsonIgnoreIfNull]
+        public DateTime? UpdatedAt { get; set; }
+    }
 }

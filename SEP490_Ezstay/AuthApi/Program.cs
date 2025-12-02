@@ -56,6 +56,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     builder.Services.AddScoped<IOwnerRequestService, OwnerRequestService>();
     builder.Services.AddScoped<IOwnerRequestRepository, OwnerRequestRepository>();
     builder.Services.AddScoped<IImageService, ImageService>();
+    builder.Services.AddScoped<IFaceLoginService, FaceLoginService>();
 
 
 
