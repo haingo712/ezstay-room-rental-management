@@ -52,7 +52,6 @@ namespace AccountAPI.Service
             var existingPhone = await _authApiClient.GetByIdAsync(id);
             if (existingPhone == null)
             {
-                Console.WriteLine($"User {id} không tồn tại trong Auth API");
                 return false; // Hoặc ném exception tùy logic
             }
 
@@ -60,7 +59,6 @@ namespace AccountAPI.Service
             var existingUser = await _userRepository.GetByUserIdAsync(id);
             if (existingUser != null)
             {
-                Console.WriteLine($"Profile của user {id} đã tồn tại");
                 return false;
             }
 
@@ -138,38 +136,48 @@ namespace AccountAPI.Service
             _mapper.Map(userDto, user);
 
             // ✅ Nếu userDto có FullName thì lưu vào DB local
-            if (!string.IsNullOrEmpty(userDto.FullName))
-            {
-                user.FullName = userDto.FullName;
+            //if (!string.IsNullOrEmpty(userDto.FullName))
+            //{
+            //    user.FullName = userDto.FullName;
 
-                // ✅ Gọi Auth API để đồng bộ
-                await _authApiClient.UpdateFullNameAsync(userId, userDto.FullName);
-            }
+            //    // ✅ Gọi Auth API để đồng bộ
+            //    await _authApiClient.UpdateFullNameAsync(userId, userDto.FullName);
+            //}
            
-            if (userDto.Avatar != null)
-            {
-                var avatarUrl = await _imageService.UploadImageAsync(userDto.Avatar);
-                user.Avatar = avatarUrl; // ✅ gán đúng URL ảnh vào DB
-            }
+            //if (userDto.Avatar != null)
+            //{
+            //    var avatarUrl = await _imageService.UploadImageAsync(userDto.Avatar);
+            //    user.Avatar = avatarUrl; // ✅ gán đúng URL ảnh vào DB
+            //}
 
-            if (userDto.FrontImageUrl != null)
-            {
-                var frontUrl = await _imageService.UploadImageAsync(userDto.FrontImageUrl);
-                user.FrontImageUrl = frontUrl;
-            }
+            //if (userDto.FrontImageUrl != null)
+            //{
+            //    var frontUrl = await _imageService.UploadImageAsync(userDto.FrontImageUrl);
+            //    user.FrontImageUrl = frontUrl;
+            //}
 
-            if (userDto.BackImageUrl != null)
-            {
-                var backUrl = await _imageService.UploadImageAsync(userDto.BackImageUrl);
-                user.BackImageUrl = backUrl;
-            }
-
+            //if (userDto.BackImageUrl != null)
+            //{
+            //    var backUrl = await _imageService.UploadImageAsync(userDto.BackImageUrl);
+            //    user.BackImageUrl = backUrl;
+            //}
+            user.Avatar = userDto.Avatar ?? user.Avatar;
+            user.FrontImageUrl = userDto.FrontImageUrl ?? user.FrontImageUrl;
+            user.BackImageUrl = userDto.BackImageUrl ?? user.BackImageUrl;
             // ✅ Cập nhật tên tỉnh/xã nếu cần
             if (!string.IsNullOrEmpty(user.ProvinceId))
                 user.ProvinceName = await GetProvinceNameAsync(user.ProvinceId) ?? "";
 
             if (!string.IsNullOrEmpty(user.WardId) && !string.IsNullOrEmpty(user.ProvinceId))
                 user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
+            if (string.IsNullOrWhiteSpace(userDto.CitizenIdNumber)
+                || userDto.CitizenIdNumber.Length != 8
+                || !userDto.CitizenIdNumber.All(char.IsDigit))
+            {
+                return false;
+            }
+
+            user.CitizenIdNumber = userDto.CitizenIdNumber;
 
             await _userRepository.UpdateAsync(user);
             return true;

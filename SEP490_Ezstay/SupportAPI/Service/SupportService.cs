@@ -52,14 +52,14 @@ namespace SupportAPI.Service
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("EzStay Support", "qui4982@gmail.com"));
             message.To.Add(new MailboxAddress("", toEmail));
-            message.Subject = "Cập nhật trạng thái hỗ trợ";
+            message.Subject = "Support status update";
 
             message.Body = new TextPart("plain")
             {
-                Text = $"Xin chào,\n\nYêu cầu hỗ trợ '{subject}' đã được cập nhật thành trạng thái: {status}.\n\nTrân trọng,\nEzStay Team"
+                Text = $"Hello,\n\nThe support request '{subject}' has been updated to status: {status}.\n\nBest regards,\nEzStay Team"
             };
 
-            using var client = new MailKit.Net.Smtp.SmtpClient();
+            using var client = new MailKit.Net.Smtp.SmtpClient();   
 
             client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 

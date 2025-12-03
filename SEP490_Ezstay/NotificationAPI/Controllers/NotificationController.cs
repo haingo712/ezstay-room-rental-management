@@ -34,7 +34,7 @@ namespace NotificationAPI.Controllers
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdClaim))
-                throw new UnauthorizedAccessException("Token không hợp lệ hoặc thiếu userId.");
+                throw new UnauthorizedAccessException("Token is invalid or userId is missing.");
             return Guid.Parse(userIdClaim);
         }
 
@@ -118,7 +118,7 @@ namespace NotificationAPI.Controllers
         {
             var success = await _service.MarkAsReadAsync(id);
             await _hubContext.Clients.All.SendAsync("MarkAsRead", id);
-            return success ? Ok("Đã đánh dấu đã đọc") : NotFound();
+            return success ? Ok("Marked as read") : NotFound();
         }
 
         [HttpPut("UpdateByrole{id}")]
@@ -136,7 +136,7 @@ namespace NotificationAPI.Controllers
         {
             var userId = GetUserIdFromToken();
             if (userId == Guid.Empty)
-                return Unauthorized("Không tìm thấy userId trong token.");
+                return Unauthorized("UserId not found in token.");
 
             var result = await _service.GetAllByUserAsync(userId);
             return Ok(result);
@@ -147,10 +147,10 @@ namespace NotificationAPI.Controllers
         {
             var userId = GetUserIdFromToken();
             if (dto == null)
-                return BadRequest(new { message = "Thiếu thông tin AccountId." });
+                return BadRequest(new { message = "Missing AccountId information." });
 
             await _service.CreateNotifyForOwnerRegisterAsync(userId,dto);
-            return Ok(new { message = "Thông báo đã được tạo cho Staff." });
+            return Ok(new { message = "Notification has been created for Staff." });
         }
 
         [HttpPost("triger-aprove-Owner")]
@@ -158,10 +158,10 @@ namespace NotificationAPI.Controllers
         {
             var userId = GetUserIdFromToken();
             if (dto == null)
-                return BadRequest(new { message = "Thiếu thông tin AccountId." });
+                return BadRequest(new { message = "Missing AccountId information." });
 
             await _service.AproveNotifyForOwnerRegisterAsync(userId, dto);
-            return Ok(new { message = "Thông báo đã được tạo cho Owner." });
+            return Ok(new { message = "Notification has been created for Owner." });
         }
 
         [HttpPost("triger-reject-Owner")]
@@ -169,10 +169,10 @@ namespace NotificationAPI.Controllers
         {
             var userId = GetUserIdFromToken();
             if (dto == null)
-                return BadRequest(new { message = "Thiếu thông tin AccountId." });
+                return BadRequest(new { message = "Missing AccountId information." });
 
             await _service.RejectNotifyForOwnerRegisterAsync(userId, dto);
-            return Ok(new { message = "Thông báo đã được tạo cho User." });
+            return Ok(new { message = "Notification has been created for User." });
         }
 
         [HttpPost("schedule")]
@@ -180,11 +180,11 @@ namespace NotificationAPI.Controllers
         public async Task<IActionResult> ScheduleNotify([FromBody] NotifyByRoleRequest request)
         {
             if (request.ScheduledTime.HasValue && request.ScheduledTime.Value <= DateTime.UtcNow)
-                return BadRequest(new { message = "Thời gian hẹn phải lớn hơn hiện tại." });
+                return BadRequest(new { message = "Appointment time must be greater than current." });
 
             var userId = GetUserIdFromToken();
             await _service.CreateNotifyAsync(request, userId);
-            return Ok(new { message = "Đã tạo thông báo hẹn giờ thành công." });
+            return Ok(new { message = "Timer notification created successfully." });
         }
 
 
@@ -197,11 +197,11 @@ namespace NotificationAPI.Controllers
             // 🔍 Lấy role từ token
             var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
             if (string.IsNullOrEmpty(roleClaim))
-                return Unauthorized("Không tìm thấy role trong token.");
+                return Unauthorized("Role not found in token.");
 
             // Ép kiểu role string → enum RoleEnum
             if (!Enum.TryParse(roleClaim, true, out RoleEnum role))
-                return BadRequest($"Role không hợp lệ: {roleClaim}");
+                return BadRequest($"Invalid role: {roleClaim}");
 
             var result = await _service.GetAllForRoleOrUserAsync(userId, role);
             return Ok(result);

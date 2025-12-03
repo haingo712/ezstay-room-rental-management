@@ -11,6 +11,7 @@ using System.Security.Claims;
 using AuthApi.DTO.Response;
 using AuthApi.DTO.Request;
 using Shared.DTOs.Auths.Responses;
+using System.Text.RegularExpressions;
 
 
 namespace AuthApi.Services
@@ -51,6 +52,13 @@ namespace AuthApi.Services
             if (existingPhone != null)
                 return new RegisterResponseDto { Success = false, Message = "Phone already exists" };
 
+            if (dto.Password.Length > 8)
+                return new RegisterResponseDto { Success = false, Message = "Password must be at least 8 characters long." };
+            if (!Regex.IsMatch(dto.Password, @"[A-Z]"))
+                return new RegisterResponseDto { Success = false, Message = "Password must contain at least one uppercase letter." };
+            if (!Regex.IsMatch(dto.Password, @"[\W]"))
+                return new RegisterResponseDto { Success = false, Message = "Password must contain at least one special character." };
+         
             // Temporarily store user data and send OTP
             await _emailVerificationService.SendOtpAsync(dto);
 

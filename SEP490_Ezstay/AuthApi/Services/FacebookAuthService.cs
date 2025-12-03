@@ -28,7 +28,7 @@ namespace AuthApi.Services
             var response = await _http.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
-                throw new Exception("Facebook token không hợp lệ");
+                throw new Exception("Invalid Facebook token");
 
             var content = await response.Content.ReadAsStringAsync();
             var fbData = JsonSerializer.Deserialize<FacebookUserData>(content, new JsonSerializerOptions
@@ -37,7 +37,7 @@ namespace AuthApi.Services
             });
 
             if (fbData == null)
-                throw new Exception("Không thể lấy thông tin người dùng từ Facebook");
+                throw new Exception("Unable to get user information from Facebook");
 
             if (string.IsNullOrEmpty(fbData.Email))
                 fbData.Email = $"{fbData.Id}@facebook.com"; // fallback email

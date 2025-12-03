@@ -28,5 +28,6 @@ namespace AuthApi.Models
         public Guid? ReviewedByStaffId { get; set; }
 
         public DateTime? ReviewedAt { get; set; }
+        public string Imageasset { get; set; } = null!;
     }
 }

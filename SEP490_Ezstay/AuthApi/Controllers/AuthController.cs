@@ -171,7 +171,7 @@ namespace AuthApi.Controllers
 
                 return Ok(new
                 {
-                    message = "Đăng nhập thành công",
+                    message = "Login successful",
                     user = new
                     {
                         user.Id,
@@ -197,7 +197,7 @@ namespace AuthApi.Controllers
 
                 return Ok(new
                 {
-                    message = "Login thành công",
+                    message = "Login successful",
                     user = new
                     {
                         user.Id,

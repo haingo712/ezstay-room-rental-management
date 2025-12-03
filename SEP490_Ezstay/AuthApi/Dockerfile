@@ -8,15 +8,21 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["AuthApi/AuthApi.csproj", "AuthApi/"]
 COPY ["Shared/Shared.csproj", "Shared/"]
-RUN dotnet restore "AuthApi/AuthApi.csproj"
-COPY . .
+
+RUN dotnet restore AuthApi/AuthApi.csproj 
+
+# Only copy AuthApi and Shared to avoid conflict
+COPY ["AuthApi/", "AuthApi/"]
+COPY ["Shared/", "Shared/"]
 WORKDIR "/src/AuthApi"
-RUN dotnet build "AuthApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+RUN dotnet build AuthApi.csproj -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "AuthApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+RUN dotnet publish AuthApi.csproj -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+	
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .

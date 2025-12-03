@@ -90,7 +90,7 @@ namespace RentalPostsAPI.Service
     
         public async Task<IEnumerable<RentalpostDTO>> GetAllForUserAsync()
         {
-            var entities = (await _repo.GetPendingAsync()).ToList();
+            var entities = (await _repo.GetAllAsync()).ToList();
             return await MapRentalPostsAsync(entities);
         }
 

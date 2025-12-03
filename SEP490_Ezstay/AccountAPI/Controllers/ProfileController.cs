@@ -36,8 +36,8 @@ namespace AccountAPI.Controllers
             var success = await _userService.CreateProfileAsync(userId, userDto);
 
             return success
-                ? Ok("Tạo profile thành công.")
-                : BadRequest("Không tạo được profile.");
+                ? Ok("Profile created successfully.")
+                : BadRequest("Could not create profile.");
         }
         
 
@@ -49,11 +49,11 @@ namespace AccountAPI.Controllers
             var profile = await _userService.GetProfileAsync(userId);
 
             if (profile == null)
-                return NotFound("Không tìm thấy profile.");
+                return NotFound("Profile not found.");
             
             return Ok(profile);
         }
-        
+        // hien
         [HttpGet("profile/{userId}")]
         
         public async Task<IActionResult> GetProfile1(Guid userId)
@@ -61,7 +61,7 @@ namespace AccountAPI.Controllers
             var profile = await _userService.GetProfileAsync(userId);
         
             if (profile == null)
-                return NotFound("Không tìm thấy profile.");
+                return NotFound("Profile not found.");
             
             return Ok(profile);
         }
@@ -80,6 +80,8 @@ namespace AccountAPI.Controllers
             return Ok(profile);
         }
 
+
+        //bo
         [HttpPut("update-phone")]
         [Authorize(Roles = "User,Owner,Staff")]
         public async Task<IActionResult> UpdatePhone([FromBody] UpdatePhoneRequestDto dto)
@@ -106,18 +108,18 @@ namespace AccountAPI.Controllers
             var updated = await _userService.UpdateProfile(userId, dto);
 
             return updated
-                ? Ok(ApiResponse<string>.Ok(null, "Cập nhật thông tin thành công"))
-                : BadRequest(ApiResponse<string>.Fail("Cập nhật thất bại"));
+                ? Ok(ApiResponse<string>.Ok(null, "Information updated successfully"))
+                : BadRequest(ApiResponse<string>.Fail("Update failed"));
         }
 
-
+        //bo
         [HttpPut("update-email")]
         [Authorize(Roles = "User,Owner,Staff")]
         public async Task<IActionResult> UpdateEmail([FromBody] UpdateEmailRequestDto dto)
         {
             var currentEmail = _userClaimHelper.GetEmail(User);
             if (string.IsNullOrEmpty(currentEmail))
-                return Unauthorized(ApiResponse<string>.Fail("Không tìm thấy email người dùng"));
+                return Unauthorized(ApiResponse<string>.Fail("User email not found"));
 
             var result = await _userService.UpdateEmailAsync(currentEmail, dto.NewEmail, dto.Otp);
             return result
@@ -136,7 +138,7 @@ namespace AccountAPI.Controllers
             var account = await _authApiClient.GetByIdAsync(userId);
             if (account == null || string.IsNullOrEmpty(account.Email))
             {
-                return Unauthorized(ApiResponse<string>.Fail("Không tìm thấy thông tin tài khoản."));
+                return Unauthorized(ApiResponse<string>.Fail("Account information not found."));
             }
 
             // ✅ Gắn Email vào DTO để gửi qua AuthAPI
@@ -145,7 +147,7 @@ namespace AccountAPI.Controllers
             // ✅ Gọi API đổi mật khẩu
             var message = await _authApiClient.ChangePasswordAsync(dto);
 
-            return message == "Đổi mật khẩu thành công."
+            return message == "Password changed successfully."
                 ? Ok(ApiResponse<string>.Ok(null, message))
                 : BadRequest(ApiResponse<string>.Fail(message));
         }

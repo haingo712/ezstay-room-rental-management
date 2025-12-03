@@ -77,6 +77,6 @@ namespace UtilityBillAPI.Repository
             }
 
             await _utilityBills.UpdateOneAsync(b => b.Id == billId, update);
-        }     
+        }        
     }
 }
