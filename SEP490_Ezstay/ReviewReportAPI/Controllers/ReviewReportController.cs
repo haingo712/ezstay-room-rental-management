@@ -9,9 +9,15 @@ namespace ReviewReportAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ReviewReportController(  IReviewReportService _reviewReportService
-) : ControllerBase
+public class ReviewReportController: ControllerBase
 {
+    private readonly IReviewReportService _reviewReportService;
+
+    public ReviewReportController(IReviewReportService reviewReportService)
+    {
+        _reviewReportService = reviewReportService;
+    }
+
     [HttpGet]
     [EnableQuery]
     [Authorize(Roles = "Staff")]

@@ -11,13 +11,13 @@ namespace PaymentAPI.Services;
 
 public class BankGatewayService: IBankGatewayService
 {
-    private readonly HttpClient _httpClient;
+   
     private readonly IBankGatewayRepository _bankGatewayRepository;
     private readonly IMapper _mapper;
 
-    public BankGatewayService(HttpClient httpClient, IBankGatewayRepository bankGatewayRepository, IMapper mapper)
+    public BankGatewayService(IBankGatewayRepository bankGatewayRepository, IMapper mapper)
     {
-        _httpClient = httpClient;
+     
         _bankGatewayRepository = bankGatewayRepository;
         _mapper = mapper;
     }
@@ -56,9 +56,7 @@ public class BankGatewayService: IBankGatewayService
     }
     public IQueryable<BankGatewayResponse> GetAllActiveBankGateway()
     {
-        return _bankGatewayRepository.GetAll()
-            .Where(x => x.IsActive)
-            .ProjectTo<BankGatewayResponse>(_mapper.ConfigurationProvider);
+        return _bankGatewayRepository.GetAllActiveBankGateway().ProjectTo<BankGatewayResponse>(_mapper.ConfigurationProvider);
     }
 
     public async Task<ApiResponse<bool>> HiddenBankGateway(Guid id, bool isActive)

@@ -1,5 +1,4 @@
 using ReviewAPI.DTO.Response;
-using Shared.DTOs.Contracts.Responses;
 
 namespace ReviewAPI.Service.Interface;
 

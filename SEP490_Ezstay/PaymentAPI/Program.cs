@@ -36,23 +36,14 @@ builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddHttpClient<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 
-builder.Services.AddHttpClient<ISePayService, SePayService>();
-builder.Services.AddScoped<ISePayService, SePayService>();
+// builder.Services.AddHttpClient<ISePayService, SePayService>();
+// builder.Services.AddScoped<ISePayService, SePayService>();
 
 // Utility Bill Service (HTTP Client to UtilityBillAPI)
-builder.Services.AddHttpClient<IUtilityBillService, UtilityBillService>((serviceProvider, client) =>
+builder.Services.AddHttpClient<IUtilityBillService, UtilityBillService>(client =>
 {
-    var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-    var utilityBillApiUrl = configuration["ServiceUrls:UtilityBillAPI"];
-})
-.ConfigurePrimaryHttpMessageHandler(() =>
-{
-    // For development: ignore SSL certificate errors for localhost
-    var handler = new HttpClientHandler();
-    handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
-    return handler;
+    client.BaseAddress = new Uri(builder.Configuration["UtilityBillAPI"]); 
 });
-
 
 
 builder.Services.AddAutoMapper(typeof(BankAccountMappingProfile));

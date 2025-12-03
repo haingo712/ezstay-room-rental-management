@@ -30,6 +30,13 @@ public class UtilityReadingRepository:IUtilityReadingRepository
          .OrderByDescending(r => r.ReadingDate)
          .FirstOrDefaultAsync();
     }
+    public async Task<UtilityReading> GetFirstReading(Guid contractId, UtilityType type)
+    {
+        return await _utilityReadings.AsQueryable()
+            .Where(x => x.ContractId == contractId && x.Type == type)
+            .OrderBy(x => x.ReadingDate) 
+            .FirstOrDefaultAsync();
+    }
 
     public async Task<bool> ExistsUtilityReadingInMonthAsync(Guid contractId, UtilityType type, DateTime readingDate)
     {

@@ -62,7 +62,7 @@ namespace RentalPostsAPI
             
             builder.Services.AddHttpClient("Gateway", client =>
             {
-                client.BaseAddress = new Uri("https://localhost:7000");
+                client.BaseAddress = new Uri("http://localhost:7001");
             });
 
           

@@ -27,14 +27,30 @@ public class UtilityReadingController : ControllerBase
         return _utilityReadingService.GetAllByOwnerId(contractId, utilityType);
     }
     
-    [HttpGet("all/{contractId}")]
+    // [HttpGet("all/{contractId}")]
+    // [Authorize(Roles = "Owner, User")]
+    // [EnableQuery]
+    // public IQueryable<UtilityReadingResponse> GetAllUtilityReadingByContractId(Guid contractId)
+    // {
+    //
+    //     return _utilityReadingService.GetAllByContractId(contractId);
+    // }
+    [HttpGet("first/{contractId}/type/{utilityType}")]
     [Authorize(Roles = "Owner, User")]
-    [EnableQuery]
-    public IQueryable<UtilityReadingResponse> GetAllUtilityReadingByContractId(Guid contractId)
+    public async Task<IActionResult> GetFirstReading(Guid contractId, UtilityType utilityType)
     {
-
-        return _utilityReadingService.GetAllByContractId(contractId);
+        try
+        {
+            var result = await _utilityReadingService.GetFirstReading(contractId, utilityType);
+            return Ok(result);
+        }
+        catch (KeyNotFoundException e)
+        {
+            return NotFound(new { message = e.Message });
+        }
     }
+
+    
     [HttpGet("latest/{contractId}/{utilityType}/month/{month}/year/{year}")]
     public async Task<IActionResult> GetLatestUtilityReadingByContractAndType(Guid contractId, UtilityType utilityType, int month, int year)
     {        
@@ -66,7 +82,7 @@ public class UtilityReadingController : ControllerBase
     
     [HttpPost("{contractId}/utilitytype/{utilityType}")]
     [Authorize(Roles = "Owner")]
-    public async Task<ActionResult<UtilityReadingResponse>> Post(Guid contractId, UtilityType utilityType, CreateUtilityReadingContract request)
+    public async Task<ActionResult<UtilityReadingResponse>> Post(Guid contractId, UtilityType utilityType, CreateUtilityReading request)
     {
         try
         {
@@ -116,7 +132,7 @@ public class UtilityReadingController : ControllerBase
         }
     }
     [HttpPost("{contractId}/utilitytype/{utilityType}/contract")]
-    public async Task<ActionResult<UtilityReadingResponse>> AddUtilityReadingContract(Guid contractId,UtilityType utilityType , CreateUtilityReadingContract request)
+    public async Task<ActionResult<UtilityReadingResponse>> AddUtilityReadingContract(Guid contractId,UtilityType utilityType , CreateUtilityReading request)
     {
         try
         {

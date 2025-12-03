@@ -10,12 +10,12 @@ using Shared.Enums;
 namespace ContractAPI.Services.Interfaces;
 public interface IContractService
 {
-    // IQueryable<ContractResponse> GetAllByTenantId(Guid tenantId);
+    IQueryable<ContractResponse> GetAllByTenantId(Guid tenantId);
     IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId);
     Task<ContractResponse?> GetByIdAsync(Guid id);
     Task<ApiResponse<ContractResponse>> Add(Guid ownerId, CreateContract request);
     Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateContract request);
-    Task<ApiResponse<ContractResponse>> ExtendContract(Guid contractId, ExtendContractDto request);
+    Task<ApiResponse<ContractResponse>> ExtendContract(Guid contractId, ExtendContract request);
     Task<ApiResponse<ContractResponse>> CancelContract(Guid contractId, string reason);
     Task<ApiResponse<bool>> Delete(Guid id);
     Task<ApiResponse<List<string>>> UploadContractImages(Guid id, IFormFileCollection images);

@@ -18,9 +18,9 @@ namespace ContractAPI.Repository
         public IQueryable<Contract> GetAllByOwnerId(Guid ownerId)
             => _contracts.AsQueryable().Where(c => c.ProfilesInContract.Any(p => p.UserId == ownerId));
         
-        // public async Task<IEnumerable<Contract>> GetAllByTenantId(Guid tenantId)
-        //     => await _contracts.Find(t => t.SignerProfile.TenantId == tenantId).ToListAsync();
-        //
+        public IQueryable<Contract> GetAllByTenantId(Guid tenantId)
+            => _contracts.AsQueryable().Where(c => c.ProfilesInContract.Any(p => p.UserId == tenantId));
+        
         public async Task<Contract?> GetById(Guid id)
             => await _contracts.Find(t => t.Id == id).FirstOrDefaultAsync();
 

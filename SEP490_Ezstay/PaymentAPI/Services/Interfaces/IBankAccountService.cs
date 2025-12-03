@@ -7,6 +7,7 @@ namespace PaymentAPI.Services.Interfaces;
 
 public interface IBankAccountService
 {
+    
   Task<BankAccountResponse> GetById(Guid id);
   IQueryable<BankAccountResponse> GetAll(Guid userId);
   

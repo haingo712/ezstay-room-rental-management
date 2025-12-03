@@ -27,12 +27,19 @@ public class ChatController : ControllerBase
        return Ok(await _chatService.GetByChatRoomId(chatRoomId, receiverId));
     }
 
-    [Authorize(Roles = "Owner, User")]
-    [HttpGet]
+    [Authorize(Roles = "User")]
+    [HttpGet("chat-room/user")]
     public async Task<IActionResult> GetAllChatRoomByUser()
     {
-        var accountId= _tokenService.GetUserIdFromClaims(User);
-      return  Ok(await _chatService.GetAllChatRoom(accountId));
+        var userId= _tokenService.GetUserIdFromClaims(User);
+      return  Ok(await _chatService.GetAllChatRoomByUser(userId));
+    }
+    [Authorize(Roles = "Owner")]
+    [HttpGet("chat-room/owner")]
+    public async Task<IActionResult> GetAllChatRoomByOwner()
+    {
+        var ownerId= _tokenService.GetUserIdFromClaims(User);
+        return  Ok(await _chatService.GetAllChatRoomByOwner(ownerId));
     }
     
     [HttpPost("{ownerId}")]

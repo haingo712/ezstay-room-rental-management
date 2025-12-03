@@ -11,7 +11,7 @@ public class AmenityService : IAmenityService
     {
         _httpClient = httpClient;
     }
-    public async Task<AmenityResponse?> GetAmenityById(Guid amenityId)
+    public async Task<AmenityResponse> GetAmenityById(Guid amenityId)
     {
         return await _httpClient.GetFromJsonAsync<AmenityResponse>($"/api/Amenity/{amenityId}");
     }

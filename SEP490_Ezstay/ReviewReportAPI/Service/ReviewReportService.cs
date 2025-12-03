@@ -68,16 +68,6 @@ public class ReviewReportService : IReviewReportService
         _mapper.Map(request, report);
         report.ReviewedAt = DateTime.UtcNow;
         await _reportRepository.Update(report);
-        // if (request.Status == ReportStatus.Approved)
-        // {
-        //     await _reviewClientService.HideReview(report.ReviewId, true);
-        //     //  Console.WriteLine("cc"+ await _reviewClientService.HideReview(report.ReviewId, true));
-        // }
-        // else
-        // {
-        //     await _reviewClientService.HideReview(report.ReviewId, false);
-        //     //   Console.WriteLine("cccc"+ await _reviewClientService.HideReview(report.ReviewId, false));
-        // }
         await _reviewService.HideReview(report.ReviewId, request.Status == ReportStatus.Approved);
         return ApiResponse<bool>.Success(true, "Set Status Successfully");
     }

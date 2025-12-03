@@ -1,73 +1,51 @@
 using MongoDB.Driver;
 using PaymentAPI.Model;
 using PaymentAPI.Repository.Interface;
-using Shared.Enums;
 
 namespace PaymentAPI.Repository;
 
 public class PaymentRepository : IPaymentRepository
 {
-    private readonly IMongoCollection<Payment> _collection;
-    
+    private readonly IMongoCollection<Payment> _payment;
+
     public PaymentRepository(IMongoDatabase database)
     {
-        _collection = database.GetCollection<Payment>("Payments");
+        _payment = database.GetCollection<Payment>("Payments");
     }
 
-    
-
-  
-    public IQueryable<Payment> GetByOwner(Guid ownerId)
+    public async Task<Payment> GetByIdAsync(Guid id)
     {
-       return _collection.AsQueryable().Where(p => p.OwnerId == ownerId).OrderByDescending(o => o.CreatedDate);
+        return await _payment.Find(h => h.Id == id).FirstOrDefaultAsync();
     }
 
-    public IQueryable<Payment> GetByUserId(Guid userId)
-    {
-        return _collection.AsQueryable().Where(p => p.TenantId == userId).OrderByDescending(o => o.CreatedDate);
-    }
+    // public async Task<List<Payment>> GetByPaymentIdAsync(Guid paymentId)
+    // {
+    //     return await _payment.Find(h => h.PaymentId == paymentId)
+    //         .SortByDescending(h => h.CreatedAt)
+    //         .ToListAsync();
+    // }
 
-    public async Task<Payment?> GetById(Guid id)
-    {
-        return await _collection.Find(p => p.Id == id).FirstOrDefaultAsync();
+    // public async Task<List<PaymentHistory>> GetByBillIdAsync(Guid billId)
+    // {
+    //     return await _histories.Find(h => h.UtilityBillId == billId)
+    //         .SortByDescending(h => h.CreatedAt)
+    //         .ToListAsync();
+    // }
 
-    }
-
-    public async Task Add(Payment payment)
+    public async Task<Payment> GetBySePayTransactionIdAsync(string transactionId)
     {
-        await _collection.InsertOneAsync(payment);
-    }
-
-    public async Task Update(Payment payment)
-    {
-        await _collection.ReplaceOneAsync(p => p.Id == payment.Id, payment);
-    }
-
-    public async Task Delete(Guid id)
-    {
-        await _collection.DeleteOneAsync(p => p.Id == id);
-    }
-
-    public  IQueryable<Payment> GetByBillId(Guid billId)
-    {
-        return  _collection.AsQueryable().Where(p => p.UtilityBillId == billId)
-            .OrderByDescending(p => p.CreatedDate);
-    }
-
-    public async Task<Payment?> GetByTransactionId(string transactionId)
-    {
-        return await _collection
-            .Find(p => p.TransactionId == transactionId)
+        return await _payment.Find(h => h.TransactionId == transactionId)
             .FirstOrDefaultAsync();
     }
 
-    public async Task<List<Payment>> GetPendingOfflinePaymentsByOwner(Guid ownerId)
+    public async Task<Payment> CreateAsync(Payment history)
     {
-        return await _collection
-            .Find(p => p.OwnerId == ownerId
-                       && p.PaymentMethod == PaymentMethod.Offline
-                       && p.Status == PaymentStatus.Pending)
-            .SortByDescending(p => p.CreatedDate)
-            .ToListAsync();
+        await _payment.InsertOneAsync(history);
+        return history;
+    }
+
+    public async Task<bool> ExistsByTransactionIdAsync(string transactionId)
+    {
+        return await _payment.Find(h => h.TransactionId == transactionId).AnyAsync();
     }
 }

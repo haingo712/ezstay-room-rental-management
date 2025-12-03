@@ -15,7 +15,7 @@ public class MappingContract:Profile
         CreateMap<CreateContract, Contract>();
         CreateMap<UpdateContract, Contract>();
         CreateMap<Contract, ContractResponse>();
-        CreateMap<ExtendContractDto, Contract>();
+        CreateMap<ExtendContract, Contract>();
       
         CreateMap<CreateService, ServiceInfor>();
         CreateMap<UpdateService, ServiceInfor>(); // Add mapping for UpdateService

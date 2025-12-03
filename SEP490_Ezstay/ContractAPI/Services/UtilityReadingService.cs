@@ -72,9 +72,9 @@ public class UtilityReadingService : IUtilityReadingService
         return result!;
     }
 
-    public async Task<UtilityReadingResponse> GetLastestReading(Guid contractId, UtilityType utilityType)
+    public async Task<UtilityReadingResponse> GetFirstReading(Guid contractId, UtilityType utilityType)
     {
-        var response = await _httpClient.GetAsync($"api/UtilityReading/latest/{contractId}/{utilityType}");
+        var response = await _httpClient.GetAsync($"api/UtilityReading/first/{contractId}/type/{utilityType}");
         if (!response.IsSuccessStatusCode)
         {
             Console.WriteLine($"UtilityReading API call failed: {response.StatusCode}");
@@ -82,6 +82,6 @@ public class UtilityReadingService : IUtilityReadingService
         }
 
         var result =await response.Content.ReadFromJsonAsync<UtilityReadingResponse>();
-         return result;
+        return result;
     }
 }

@@ -65,12 +65,12 @@ namespace ContractAPI.Controllers
         }
    
        [Authorize(Roles = "User")]
-       [HttpGet("MyContract")]
+       [HttpGet("my-contract")]
        [EnableQuery]
        public IQueryable<ContractResponse> GetContractsByTenantId()
        {
            var tenantId = _tokenService.GetUserIdFromClaims(User);
-           return _contractService.GetAllByOwnerId(tenantId);
+           return _contractService.GetAllByTenantId(tenantId);
        }
        
        [Authorize(Roles = "Owner, User")]
@@ -100,7 +100,7 @@ namespace ContractAPI.Controllers
        
         [Authorize(Roles = "Owner")]
         [HttpPut("{id}/extendcontract")]
-        public async Task<IActionResult> ExtendContract(Guid id, [FromBody] ExtendContractDto dto)
+        public async Task<IActionResult> ExtendContract(Guid id, [FromBody] ExtendContract dto)
         {
             try
             {

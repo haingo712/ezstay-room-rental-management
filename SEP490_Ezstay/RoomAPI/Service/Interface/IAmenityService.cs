@@ -6,6 +6,6 @@ namespace RoomAPI.Service.Interface;
 
 public interface IAmenityService
 {
-    Task<AmenityResponse?> GetAmenityById(Guid amenityId);
+    Task<AmenityResponse> GetAmenityById(Guid amenityId);
 
 }

@@ -16,5 +16,9 @@ public interface IRoomService
     Task<ApiResponse<bool>> Update(Guid id,UpdateRoom request);
     Task<ApiResponse<bool>> Delete(Guid id);
     Task<ApiResponse<bool>> UpdateStatus(Guid roomId, RoomStatus roomStatus);
+    
+    // IQueryable<RoomAmenityResponse> GetAllByRoomId(Guid roonId);
+    Task<ApiResponse<List<RoomAmenityResponse>>> UpdateRoomAmenities(Guid roomId, List<Guid>? amenityIds);
+    Task<bool> CheckAmenity(Guid amenityId);
 
 }
