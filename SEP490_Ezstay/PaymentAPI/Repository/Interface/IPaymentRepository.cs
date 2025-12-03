@@ -4,14 +4,12 @@ namespace PaymentAPI.Repository.Interface;
 
 public interface IPaymentRepository
 {
-    IQueryable<Payment> GetByOwner(Guid ownerId);
-    IQueryable<Payment> GetByUserId(Guid userId);
-    Task<Payment?> GetById(Guid id);
-    Task Add(Payment payment);
-    Task Update(Payment payment);
-    Task Delete(Guid id);
-    IQueryable<Payment> GetByBillId(Guid billId);
-    Task<Payment?> GetByTransactionId(string transactionId);
-    Task<List<Payment>> GetPendingOfflinePaymentsByOwner(Guid ownerId);
+    Task<Payment>GetByIdAsync(Guid id);
+   // Task<List<Payment>> GetByPaymentIdAsync(Guid paymentId);
+  //  Task<List<Payment>> GetByBillIdAsync(Guid billId);
+    Task<Payment> GetBySePayTransactionIdAsync(string transactionId);
+    Task<Payment> CreateAsync(Payment payment);
+    Task<bool> ExistsByTransactionIdAsync(string transactionId);
+
   
 }

@@ -1,7 +1,6 @@
 using System.Net.Http.Headers;
 using ReviewAPI.DTO.Response;
 using ReviewAPI.Service.Interface;
-using Shared.DTOs.Contracts.Responses;
 
 namespace ReviewAPI.Service;
 

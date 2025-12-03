@@ -1,6 +1,5 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using ReviewAPI.Enum;
 
 namespace ReviewAPI.Model;
 

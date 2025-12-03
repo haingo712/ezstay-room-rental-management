@@ -69,7 +69,7 @@ public class ReviewController : ControllerBase
         var userId = _tokenService.GetUserIdFromClaims(User);
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var result = await _reviewService.Update(id, userId, request);
+        var result = await _reviewService.Update(id, request);
         if (!result.IsSuccess) return BadRequest(result);
 
         return Ok(result);

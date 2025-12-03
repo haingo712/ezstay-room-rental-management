@@ -33,10 +33,22 @@ public class ContractService : IContractService
         _accountService = accountService;
         _utilityReadingService = utilityReadingService;
     }
-    // public IQueryable<ContractResponse> GetAllByTenantId(Guid tenantId)
-    //     => _contractRepository.GetAllQueryable()
-    //                           .Where(x => x.SignerProfile.TenantId == tenantId).OrderByDescending(d => d.CreatedAt)
-    //                           .ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
+    public IQueryable<ContractResponse> GetAllByTenantId(Guid tenantId)
+    {
+        var contracts = _contractRepository.GetAllByTenantId(tenantId);
+        foreach (var contract in contracts)
+        {
+            if (contract.CheckoutDate < DateTime.UtcNow.Date &&
+                contract.ContractStatus == ContractStatus.Active)
+            {
+                contract.ContractStatus = ContractStatus.Expired;
+                contract.UpdatedAt = DateTime.UtcNow;
+                _contractRepository.Update(contract);
+            }
+        }
+        return contracts.OrderByDescending(x => x.CreatedAt).ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
+    }
+    
     public IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId)
     {
         var contracts = _contractRepository.GetAllByOwnerId(ownerId);
@@ -225,31 +237,73 @@ public class ContractService : IContractService
 
         return ApiResponse<bool>.Success(true, "Contract updated successfully.");
     }
-    public async Task<ApiResponse<ContractResponse>> ExtendContract(Guid contractId, ExtendContractDto request)
+    public async Task<ApiResponse<ContractResponse>> ExtendContract(Guid contractId, ExtendContract request)
     {
-        var contract = await _contractRepository.GetById(contractId);
-        if (contract == null)
+        var oldContract = await _contractRepository.GetById(contractId);
+        if (oldContract == null)
             return ApiResponse<ContractResponse>.Fail("Không tìm thấy hợp đồng thuê");
         
-        if (contract.ContractStatus != ContractStatus.Active)
+        if (oldContract.ContractStatus != ContractStatus.Active)
             return ApiResponse<ContractResponse>.Fail("Chỉ hợp đồng đang hoạt động mới được gia hạn");
 
-        if (request.CheckoutDate <= contract.CheckoutDate)
+        if (request.CheckoutDate <= oldContract.CheckoutDate)
             return ApiResponse<ContractResponse>.Fail("Ngày trả phòng mới phải lớn hơn ngày trả phòng hiện tại");
 
         if (request.CheckoutDate < DateTime.UtcNow.Date)
             return ApiResponse<ContractResponse>.Fail("Ngày trả phòng mới phải lớn hơn ngày hiện tại");
         
-        if (request.CheckoutDate < contract.CheckinDate.AddMonths(1))
+        if (request.CheckoutDate < oldContract.CheckinDate.AddMonths(1))
             return ApiResponse<ContractResponse>.Fail("Ngày trả phòng mới phải cách ngày nhận phòng ít nhất 1 tháng");
-
-        contract.UpdatedAt = DateTime.UtcNow;
-        contract.CheckoutDate = request.CheckoutDate;
-        await _contractRepository.Update(contract);
+    
+        var newContract = new Contract
+        {
+            RoomId = oldContract.RoomId,
+            CheckinDate = DateTime.UtcNow.Date,
+            CheckoutDate = request.CheckoutDate,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            ContractStatus = ContractStatus.Pending, 
+            Notes = request.Notes,
+            RoomPrice = oldContract.RoomPrice,
+            DepositAmount = oldContract.DepositAmount,
+        };
         
-        var result = _mapper.Map<ContractResponse>(contract);
-        return ApiResponse<ContractResponse>.Success(result, "Gia hạn hợp đồng thành công");
+        newContract.ServiceInfors = oldContract.ServiceInfors
+            .Select(s => new ServiceInfor
+            {
+                ContractId = newContract.Id,
+                ServiceName = s.ServiceName,
+                Price = s.Price
+            })
+            .ToList();
+        
+        newContract.ProfilesInContract = oldContract.ProfilesInContract
+            .Select(p => new IdentityProfile
+            {
+                UserId = p.UserId,
+                ContractId = newContract.Id,
+                FullName = p.FullName,
+                Phone = p.Phone,
+                Email = p.Email,
+                Gender = p.Gender,
+                IsSigner = p.IsSigner,
+                DateOfBirth = p.DateOfBirth,
+                CitizenIdNumber = p.CitizenIdNumber,
+                FrontImageUrl = p.FrontImageUrl,
+                BackImageUrl = p.BackImageUrl,
+                Address = p.Address,
+                ProvinceName = p.ProvinceName,
+                WardName = p.WardName
+            })
+            .ToList();
+        
+        var savedContract = await _contractRepository.Add(newContract);
+
+        var response = _mapper.Map<ContractResponse>(savedContract);
+
+        return ApiResponse<ContractResponse>.Success(response, "Gia hạn hợp đồng thành công");
     }
+  
 
     public async Task<ApiResponse<bool>> Delete(Guid id)
     {

@@ -60,8 +60,8 @@ public class ReviewService : IReviewService
         if (contract.CheckoutDate.AddMonths(1) < DateTime.UtcNow)
             return ApiResponse<ReviewResponse>.Fail("It has been over"+contract.CheckoutDate.AddMonths(1) +" month since the contract expired and cannot be reviewed.");
         var review = _mapper.Map<Review>(request);
-        Console.WriteLine("Adding review " +contract.IdentityProfiles[1].UserId);
-        review.OwnerId = contract.IdentityProfiles[1].UserId;
+      //  Console.WriteLine("Adding review " +contract.IdentityProfiles[1].UserId);
+        review.OwnerId = contract.IdentityProfiles[0].UserId;
         review.ReviewDeadline = contract.CheckoutDate.AddMonths(1);
         review.UserId = userId;
         review.ContractId = contractId;
@@ -74,7 +74,7 @@ public class ReviewService : IReviewService
         return ApiResponse<ReviewResponse>.Success(dto, "Created Successfully");
     }
 
-    public async Task<ApiResponse<bool>> Update(Guid id, Guid userId, UpdateReviewRequest request)
+    public async Task<ApiResponse<bool>> Update(Guid id,  UpdateReviewRequest request)
     {
         var review = await _reviewRepository.GetById(id);
         if (review == null)

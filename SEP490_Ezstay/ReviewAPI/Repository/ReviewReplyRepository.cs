@@ -14,11 +14,11 @@ public class ReviewReplyRepository : IReviewReplyRepository
     }
     public IQueryable<ReviewReply> GetAll() => _replies.AsQueryable();
 
-    public async Task<ReviewReply?> GetById(Guid id)
+    public async Task<ReviewReply> GetById(Guid id)
         => await _replies.Find(x => x.Id == id).FirstOrDefaultAsync();
 
    
-    public async Task<ReviewReply?> GetByReviewId(Guid reviewId)
+    public async Task<ReviewReply> GetByReviewId(Guid reviewId)
     {
         return await _replies.Find(r => r.ReviewId == reviewId).FirstOrDefaultAsync();
     }

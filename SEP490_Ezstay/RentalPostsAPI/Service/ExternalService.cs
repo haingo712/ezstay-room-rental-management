@@ -111,7 +111,7 @@ namespace RentalPostsAPI.Service
                 return new List<ReviewDto>();
 
             var query = string.Join("&", roomIds.Select(id => $"roomIds={id}"));
-            var response = await _httpClient.GetAsync($"https://localhost:7037/api/Review/by-room?{query}");
+            var response = await _httpClient.GetAsync($"http://reviewapi:8080/api/Review/by-room?{query}");
 
             if (!response.IsSuccessStatusCode)
                 return new List<ReviewDto>();

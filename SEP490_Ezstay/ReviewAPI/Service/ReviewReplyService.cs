@@ -14,16 +14,13 @@ public class ReviewReplyService: IReviewReplyService
 {
     private readonly IMapper _mapper;
     private readonly IReviewReplyRepository _reviewReplyRepository;
+    private readonly IImageService _imageService;
    
-    private readonly IImageService _image;
-    private readonly IReviewService _reviewService;
-
-    public ReviewReplyService(IMapper mapper, IReviewReplyRepository reviewReplyRepository, IImageService image, IReviewService reviewService)
+    public ReviewReplyService(IMapper mapper, IReviewReplyRepository reviewReplyRepository, IImageService image)
     {
         _mapper = mapper;
         _reviewReplyRepository = reviewReplyRepository;
-        _image = image;
-        _reviewService = reviewService;
+        _imageService = image;
     }
 
     public IQueryable<ReviewReplyResponse> GetAll()
@@ -43,7 +40,7 @@ public class ReviewReplyService: IReviewReplyService
         reviewReply.CreatedAt = DateTime.UtcNow;
         reviewReply.ReviewId = reviewId;
         reviewReply.OwnerId = ownerId;
-        _image.UploadMultipleImage(request.Image);
+        _imageService.UploadMultipleImage(request.Image);
         await _reviewReplyRepository.Add(reviewReply);
        
         var dto = _mapper.Map<ReviewReplyResponse>(reviewReply);
@@ -63,9 +60,8 @@ public class ReviewReplyService: IReviewReplyService
             throw new KeyNotFoundException("ReviewId not found");
         _mapper.Map(request, reviewReply);
         reviewReply.UpdatedAt = DateTime.UtcNow;
-       
-        _reviewReplyRepository.Update(reviewReply);
-        _image.UploadMultipleImage(request.Image);
+        await  _reviewReplyRepository.Update(reviewReply);
+        await _imageService.UploadMultipleImage(request.Image);
         return ApiResponse<bool>.Success(true, "Update Successfully");
     }
 

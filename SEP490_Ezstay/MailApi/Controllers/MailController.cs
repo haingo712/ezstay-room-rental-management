@@ -9,9 +9,18 @@ namespace MailApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MailController(IMailService _mailService, ITokenService _token) : ControllerBase
+    public class MailController : ControllerBase
     {
-        [HttpPost("send-verification")]
+    private readonly IMailService _mailService;
+    private readonly ITokenService _token;
+
+    public MailController(IMailService mailService, ITokenService token)
+    {
+        _mailService = mailService;
+        _token = token;
+    }
+
+    [HttpPost("send-verification")]
         public IActionResult SendVerification([FromBody] VerificationEmailRequest request)
         {
             var message = new MimeMessage();
@@ -36,12 +45,6 @@ namespace MailApi.Controllers
 
             return Ok(new { success = true, message = "OTP sent" });
         }
-        // [HttpPost("send-otp")]
-        // public async Task<IActionResult> SendOtp([FromBody] VerificationEmailContractRequest request)
-        // {
-        //     await _mailService.SendOtp(request.Email, request.ContractId);
-        //     return Ok(new { success = true, message = "OTP sent successfully" });
-        // }
         
         [HttpPost("send-otp/{contractId}")]
         public async Task<IActionResult> SendOtp(Guid contractId, [FromQuery] string email)
@@ -53,19 +56,6 @@ namespace MailApi.Controllers
             
             return Ok(new { success = true,   result.message, result.otpId });
         }
-
-        /// <summary>
-        /// Verify OTP using ContractId and OTP code
-        /// System will automatically determine if this is Owner or Tenant based on email
-        /// </summary>
-        // [HttpPost("verify-otp/{contractId}")]
-        // public async Task<IActionResult> VerifyOtp(Guid contractId, [FromBody] VerificationEmailContractRequest request)
-        // {
-        //     var signerId = _token.GetUserIdFromClaims(User);
-        //     var (success, message) = await _mailService.VerifyOtp(contractId, request.Otp, request.Email, signerId);
-        //     if (!success) return BadRequest(new { success, message });
-        //     return Ok(new { success, message });
-        // }
         
         [HttpPut("verify-otp/{id}")]
         public async Task<IActionResult> VerifyOtp(Guid id, [FromBody] VerificationEmailContractRequest request)

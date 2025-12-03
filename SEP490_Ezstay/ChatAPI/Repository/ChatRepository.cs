@@ -22,13 +22,25 @@ public class ChatRepository:IChatRepository
         await _chatRooms.InsertOneAsync(chatRoom);
         return chatRoom;
     }
-    
+
+    public async Task<IEnumerable<ChatRoom>> GetAllChatRoomByUser(Guid userId)
+    {
+        return await _chatRooms.Find(r =>   r.UserId == userId )
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<ChatRoom>> GetAllChatRoomByOwner(Guid ownerId)
+    {
+        return await _chatRooms.Find(r => r.OwnerId == ownerId)
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<ChatRoom>> GetAllChatRoom(Guid accountId)
     {
         return await _chatRooms.Find(r => r.OwnerId == accountId ||  r.UserId == accountId )
             .ToListAsync();
     }
-    public async Task<ChatRoom?> GetByOwnerAndUsers(Guid ownerId, Guid userId)
+    public async Task<ChatRoom> GetByOwnerAndUsers(Guid ownerId, Guid userId)
     {
         return await _chatRooms.Find(r =>
             r.OwnerId == ownerId &&

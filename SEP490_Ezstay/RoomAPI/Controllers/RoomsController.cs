@@ -44,20 +44,6 @@ namespace RoomAPI.Controllers
                 return NotFound(new { message = e.Message });
             }
         }
-
-        // [HttpGet("{id}/WithAmenities")]
-        // public async Task<ActionResult<RoomWithAmenitiesResponse>> GetRoomWithAmenities(Guid id)
-        // {
-        //     try
-        //     {
-        //         var result = await _roomService.GetRoomWithAmenitiesAsync(id);
-        //         return Ok(result);
-        //     }
-        //     catch (KeyNotFoundException e)
-        //     {
-        //         return NotFound(new { message = e.Message });
-        //     }
-        // }
         
         [HttpGet("house/{houseId}")]
         [EnableQuery]        
@@ -133,6 +119,13 @@ namespace RoomAPI.Controllers
         {
             return NotFound(new { message = e.Message });
         }
+    }
+    // amenity api dungf dder check khi delete
+    [HttpGet("check-by-amenity/{amenityId}")]
+    public async Task<ActionResult<bool>> CheckAmenity(Guid amenityId)
+    {
+        var isUsed = await _roomService.CheckAmenity(amenityId);
+        return Ok(isUsed);
     }
     }
 }

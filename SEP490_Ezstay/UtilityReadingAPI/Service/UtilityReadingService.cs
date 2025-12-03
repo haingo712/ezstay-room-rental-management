@@ -57,7 +57,7 @@ public class UtilityReadingService: IUtilityReadingService
         return  _mapper.Map<UtilityReadingResponse>(reading);
     }
 
-    public async Task<ApiResponse<UtilityReadingResponse>> Add(Guid contractId, UtilityType type, CreateUtilityReadingContract  request)
+    public async Task<ApiResponse<UtilityReadingResponse>> Add(Guid contractId, UtilityType type, CreateUtilityReading  request)
     {
         
         var lastReading = _utilityReadingRepository.GetAll()
@@ -115,7 +115,7 @@ public class UtilityReadingService: IUtilityReadingService
         await _utilityReadingRepository.DeleteAsync(utilityReading);
     }
     
-    public async Task<ApiResponse<UtilityReadingResponse>> AddUtilityReadingContract(Guid contractId,UtilityType utilityType, CreateUtilityReadingContract  request)
+    public async Task<ApiResponse<UtilityReadingResponse>> AddUtilityReadingContract(Guid contractId,UtilityType utilityType, CreateUtilityReading  request)
     {
         var utilityReading = _mapper.Map<UtilityReading>(request);
         utilityReading.ReadingDate = DateTime.UtcNow;

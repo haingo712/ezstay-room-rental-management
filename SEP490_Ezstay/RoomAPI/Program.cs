@@ -22,8 +22,8 @@ builder.Services.AddSingleton( mongoClient.GetDatabase(builder.Configuration["Co
 //builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
-builder.Services.AddScoped<IRoomAmenityService, RoomAmenityService>();
-builder.Services.AddScoped<IRoomAmenityRepository, RoomAmenityRepository>();
+// builder.Services.AddScoped<IRoomAmenityService, RoomAmenityService>();
+// builder.Services.AddScoped<IRoomAmenityRepository, RoomAmenityRepository>();
 
 builder.Services.AddHttpClient<IImageService, ImageService>(client =>
 {

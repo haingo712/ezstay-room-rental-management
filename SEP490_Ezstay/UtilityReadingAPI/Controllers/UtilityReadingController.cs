@@ -82,7 +82,7 @@ public class UtilityReadingController : ControllerBase
     
     [HttpPost("{contractId}/utilitytype/{utilityType}")]
     [Authorize(Roles = "Owner")]
-    public async Task<ActionResult<UtilityReadingResponse>> Post(Guid contractId, UtilityType utilityType, CreateUtilityReadingContract request)
+    public async Task<ActionResult<UtilityReadingResponse>> Post(Guid contractId, UtilityType utilityType, CreateUtilityReading request)
     {
         try
         {
@@ -132,7 +132,7 @@ public class UtilityReadingController : ControllerBase
         }
     }
     [HttpPost("{contractId}/utilitytype/{utilityType}/contract")]
-    public async Task<ActionResult<UtilityReadingResponse>> AddUtilityReadingContract(Guid contractId,UtilityType utilityType , CreateUtilityReadingContract request)
+    public async Task<ActionResult<UtilityReadingResponse>> AddUtilityReadingContract(Guid contractId,UtilityType utilityType , CreateUtilityReading request)
     {
         try
         {
