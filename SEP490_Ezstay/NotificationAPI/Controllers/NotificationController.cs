@@ -99,14 +99,11 @@ namespace NotificationAPI.Controllers
         [Authorize(Roles = "Admin,Staff,Owner")]
         public async Task<IActionResult> CreateByRole([FromBody] NotifyByRoleRequest request)
         {
-            var result = await _service.CreateByRoleAsync(request);
+            var userId = GetUserIdFromToken();
+            var result = await _service.CreateByRoleAsync(userId, request);
 
-            // Nếu có nhiều role
-            foreach (var role in request.TargetRoles)
-            {
-                await _hubContext.Clients.Group(role.ToString())
-                    .SendAsync("ReceiveRoleNotification", result);
-            }
+            await _hubContext.Clients.User(userId.ToString())
+                .SendAsync("ReceiveNotification", result);
 
             return Ok(result);
         }

@@ -22,7 +22,7 @@ namespace NotificationAPI.Service.Interfaces
         Task DeleteAsync(Guid id);
 
         // 🔹 Tạo thông báo cho 1 role
-        Task<NotificationResponseDto> CreateByRoleAsync(NotifyByRoleRequest request);
+        Task<NotificationResponseDto> CreateByRoleAsync(Guid userId,NotifyByRoleRequest request);
 
 
         // 🔹 Đánh dấu thông báo đã đọc
