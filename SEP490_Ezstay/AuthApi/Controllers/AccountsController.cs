@@ -69,14 +69,14 @@ namespace AuthApi.Controllers
             return Ok(updated);
         }
 
-        [HttpPatch("{email}/verify")]
+        [HttpPut("{email}/verify")]
         public async Task<IActionResult> Verify(string email)
         {
             await _service.VerifyAsync(email);
             return NoContent();
         }
 
-        [HttpPatch("{id}/ban")]
+        [HttpPut("{id}/ban")]
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Ban(Guid id)
         {

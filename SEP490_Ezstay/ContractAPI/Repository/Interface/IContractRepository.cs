@@ -12,4 +12,10 @@ public interface IContractRepository
     Task Update(Contract contract);
     Task Delete(Contract contract);
     Task<bool> ExistsByRoomId(Guid roomId);
+    
+    Task<RentalRequest> Add(RentalRequest request);
+    IQueryable<RentalRequest> GetAllRentalByOwnerId(Guid ownerId);
+    IQueryable<RentalRequest> GetAllRentalByUserId(Guid userId);
+    Task<RentalRequest> GetRentalRequestById(Guid id);
+    
 }

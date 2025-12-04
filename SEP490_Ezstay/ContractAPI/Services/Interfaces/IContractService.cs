@@ -21,4 +21,9 @@ public interface IContractService
     Task<ApiResponse<List<string>>> UploadContractImages(Guid id, IFormFileCollection images);
     Task<ApiResponse<bool>> ExistsByRoomId(Guid roomId);
     Task<ApiResponse<ContractResponse>> SignContract(Guid contractId, string ownerSignature, string role);
+
+    Task<ApiResponse<RentalRequestResponse>> Add(Guid ownerId,Guid userId, Guid roomId, CreateRentalRequest request);
+    IQueryable<RentalRequestResponse> GetAllRentalByUserId(Guid userId);
+    IQueryable<RentalRequestResponse> GetAllRentalByOwnerId(Guid ownerId);
+
 }
