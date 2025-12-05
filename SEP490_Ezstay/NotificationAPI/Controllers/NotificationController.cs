@@ -99,7 +99,8 @@ namespace NotificationAPI.Controllers
         [Authorize(Roles = "Admin,Staff,Owner")]
         public async Task<IActionResult> CreateByRole([FromBody] NotifyByRoleRequest request)
         {
-            var result = await _service.CreateByRoleAsync(request);
+            var userId = GetUserIdFromToken();
+            var result = await _service.CreateByRoleAsync(request, userId);
 
             // Nếu có nhiều role
             foreach (var role in request.TargetRoles)

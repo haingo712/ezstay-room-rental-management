@@ -84,7 +84,7 @@ namespace AuthApi.Controllers
             return NoContent();
         }
 
-        [HttpPatch("{id}/unban")]
+        [HttpPut("{id}/unban")]
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Unban(Guid id)
         {
