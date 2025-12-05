@@ -22,7 +22,7 @@ namespace AuthApi.Controllers
         // ✅ SubmitOwnerRequest không phân quyền, chỉ cần JWT hợp lệ
         [HttpPost("request-owner")]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> RequestBecomeOwner([FromBody] SubmitOwnerRequestClientDto clientDto)
+        public async Task<IActionResult> RequestBecomeOwner([FromForm] SubmitOwnerRequestClientDto clientDto)
         {
             var accountIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!Guid.TryParse(accountIdClaim, out var accountId))

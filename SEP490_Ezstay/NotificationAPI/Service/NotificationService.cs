@@ -144,30 +144,19 @@ using System.Data;
 
 
 
-        public async Task<NotificationResponseDto> CreateByRoleAsync(NotifyByRoleRequest request)
+        public async Task<NotificationResponseDto> CreateByRoleAsync(NotifyByRoleRequest reques,Guid userId)
         {
-            // Lấy tất cả user của các role trong danh sách
-            var allUsers = new List<AccountResponse>();
-
-            foreach (var role in request.TargetRoles)
-            {
-                var users = await _httpClient.GetFromJsonAsync<List<AccountResponse>>(
-                    $"api/accounts/role/{(int)role}");
-                if (users != null)
-                    allUsers.AddRange(users);
-            }
-
-            if (!allUsers.Any())
-                throw new Exception("No users found for the selected roles");
+            // Lấy tất cả user của các role trong danh sá
 
             // Tạo notify lưu danh sách role
             var notify = new Notify
             {
-                NotificationType = request.NotificationType,
-                Title = request.Title,
-                Message = request.Message,
+                UserId = userId,
+                NotificationType = reques.NotificationType,
+                Title = reques.Title,
+                Message = reques.Message,
                 CreatedAt = DateTime.UtcNow,
-                TargetRoles = request.TargetRoles
+                TargetRoles = reques.TargetRoles
             };
 
             await _repo.AddAsync(notify);
