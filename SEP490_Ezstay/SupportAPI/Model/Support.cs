@@ -11,7 +11,7 @@ namespace SupportAPI.Model
         public Guid id = Guid.NewGuid();
         public string Subject { get; set; }
         public string Description { get; set; }
-        public StatusEnums status { get; set; } = StatusEnums.Pedding;
+        public StatusEnums status { get; set; } = StatusEnums.Pending;
         public string Email { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

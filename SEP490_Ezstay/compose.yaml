@@ -29,7 +29,19 @@
       - utilitybillapi
       - utilityreadingapi
       - profileapi
-    
+      - supportapi
+  
+  supportapi:
+    build:
+      context: .
+      dockerfile: SupportAPI/Dockerfile
+    container_name: supportapi
+    ports:
+      - "7127:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+  
+  
   favoritepostapi:
     build:
       context: .

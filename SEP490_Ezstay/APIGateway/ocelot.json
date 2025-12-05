@@ -316,6 +316,22 @@
         "AllowedScopes": []
       }
     },
+
+    {
+      "DownstreamPathTemplate": "/api/RentalPosts",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "rentalpostsapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/RentalPosts",
+      "UpstreamHttpMethod": [
+        "GET"
+      ]
+    },
+    
     {
       "DownstreamPathTemplate": "/api/RentalPosts/{everything}",
       "DownstreamScheme": "http",
@@ -555,12 +571,24 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 8088
+          "Host": "supportapi",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/Support/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Support/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "supportapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Support/{everything}",
+      "UpstreamHttpMethod": ["GET", "PUT", "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []

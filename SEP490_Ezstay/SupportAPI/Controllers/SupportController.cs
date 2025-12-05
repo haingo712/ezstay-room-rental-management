@@ -27,6 +27,7 @@ namespace SupportAPI.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Create([FromBody] CreateSupportRequest request)
         {
             var result = await _service.CreateAsync(request);
