@@ -18,8 +18,11 @@ public class MappingContract:Profile
         CreateMap<ExtendContract, Contract>();
       
         CreateMap<CreateService, ServiceInfor>();
-        CreateMap<UpdateService, ServiceInfor>(); // Add mapping for UpdateService
+        CreateMap<UpdateService, ServiceInfor>(); 
         CreateMap<ServiceInfor, ServiceInforResponse>();
+        
+        CreateMap<CreateRentalRequest, RentalRequest>();
+        CreateMap<RentalRequest, RentalRequestResponse>();
     }
     
 }

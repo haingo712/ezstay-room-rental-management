@@ -46,18 +46,18 @@ builder.Services.AddHttpClient<IUtilityReadingService, UtilityReadingService>(cl
 
  builder.Services.AddAutoMapper(typeof(MappingContract).Assembly);
  builder.Services.AddAutoMapper(typeof(MappingIdentityProfile).Assembly);
-var odatabuilder = new ODataConventionModelBuilder();
-odatabuilder.EntitySet<ContractResponse>("Contract");
-odatabuilder.EntitySet<IdentityProfileResponse>("IdentityProfile");
-var odata = odatabuilder.GetEdmModel();
-builder.Services.AddControllers().AddOData(options =>
-    options.AddRouteComponents("odata", odata)
-        .SetMaxTop(100)
-        .Count()
-        .Filter()
-        .OrderBy()
-        .Expand()
-        .Select());
+//
+// var odatabuilder = new ODataConventionModelBuilder();
+// odatabuilder.EntitySet<ContractResponse>("Contract");
+// var odata = odatabuilder.GetEdmModel();
+// builder.Services.AddControllers().AddOData(options =>
+//     options.AddRouteComponents("odata", odata)
+//         .SetMaxTop(100)
+//         .Count()
+//         .Filter()
+//         .OrderBy()
+//         .Expand()
+//         .Select());
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
@@ -120,6 +120,13 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     // Cho phép nhận string -> enum và khi trả ra thì enum thành string
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+}) .AddOData(opt =>
+{
+    opt.Select().Filter().OrderBy().Expand().Count().SetMaxTop(100).SkipToken();
+    var edmBuilder = new ODataConventionModelBuilder();
+    edmBuilder.EntitySet<ContractResponse>("Contracts"); 
+    edmBuilder.EntitySet<RentalRequestResponse>("RentalRequests"); 
+    opt.AddRouteComponents("odata", edmBuilder.GetEdmModel());
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

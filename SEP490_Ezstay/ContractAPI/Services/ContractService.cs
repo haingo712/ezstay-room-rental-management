@@ -76,10 +76,7 @@ public class ContractService : IContractService
                 .ToList();
             response.ElectricityReading = await _utilityReadingService.GetFirstReading(contract.Id, UtilityType.Electric);
             response.WaterReading = await _utilityReadingService.GetFirstReading(contract.Id, UtilityType.Water);
-
             return response;
-            
-            
     }
   //  => _mapper.Map<ContractResponse>(await _contractRepository.GetByIdAsync(id));
     
@@ -367,5 +364,37 @@ public class ContractService : IContractService
             contract.ContractStatus == ContractStatus.Active 
                 ? "Hợp đồng đã được ký thành công bởi cả hai bên" 
                 : $"Chữ ký {role} đã được lưu");
+    }
+    
+    public async Task<ApiResponse<RentalRequestResponse>> Add(Guid ownerId, Guid userId, Guid roomId, CreateRentalRequest request)
+    {
+        if (request.CheckinDate < DateTime.UtcNow.Date)
+            return ApiResponse<RentalRequestResponse>.Fail("The check-in date must be today or a future date.");
+
+        // if (request.CheckoutDate <= request.CheckinDate)
+        //     return ApiResponse<RentalRequestResponse>.Fail("Checkout phải sau Checkin");
+        
+        if (request.CheckoutDate < request.CheckinDate.AddMonths(1))
+            return ApiResponse<RentalRequestResponse>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
+        var contract = _mapper.Map<RentalRequest>(request);
+            contract.UserId = userId;
+            contract.RoomId = roomId;
+            contract.ownerId = ownerId;
+            var result = await _contractRepository.Add(contract);
+            var response = _mapper.Map<RentalRequestResponse>(result);
+            
+        return ApiResponse<RentalRequestResponse>.Success(response, "Add Sucessfully.");
+    }
+
+    public IQueryable<RentalRequestResponse> GetAllRentalByUserId(Guid userId)
+    {
+        var rentalRequest = _contractRepository.GetAllRentalByUserId(userId);
+        return rentalRequest.OrderByDescending(x => x.CreatedAt).ProjectTo<RentalRequestResponse>(_mapper.ConfigurationProvider);
+    }
+
+    public IQueryable<RentalRequestResponse> GetAllRentalByOwnerId(Guid ownerId)
+    {
+        var rentalRequest = _contractRepository.GetAllRentalByOwnerId(ownerId);
+        return rentalRequest.OrderByDescending(x => x.CreatedAt).ProjectTo<RentalRequestResponse>(_mapper.ConfigurationProvider);
     }
 }
