@@ -209,19 +209,20 @@ namespace ContractAPI.Controllers
 
         [Authorize(Roles = "Owner")] 
         [HttpGet("rental-requests/owner")]
-        [EnableQuery]
-        public IQueryable<RentalRequestResponse> GetAllRentalRequestByOwner()
+        public async Task<IActionResult> GetAllRentalRequestByOwner()
         {
             var ownerId = _tokenService.GetUserIdFromClaims(User);
-            return _contractService.GetAllRentalByOwnerId(ownerId);
+            var result = await _contractService.GetAllRentalByOwnerIdWithUserInfoAsync(ownerId);
+            return Ok(result);
         }
+        
         [Authorize(Roles = "User")]
         [HttpGet("rental-requests/user")]
-        [EnableQuery]
-        public IQueryable<RentalRequestResponse> GetAllRentalRequestByUser()
+        public async Task<IActionResult> GetAllRentalRequestByUser()
         {
             var userId = _tokenService.GetUserIdFromClaims(User);
-            return _contractService.GetAllRentalByUserId(userId);
+            var result = await _contractService.GetAllRentalByUserIdWithOwnerInfoAsync(userId);
+            return Ok(result);
         }
     }
 }

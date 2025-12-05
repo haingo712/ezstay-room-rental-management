@@ -11,4 +11,6 @@ public class CreateRentalRequest
     [Required]
     [Range(1, int.MaxValue, ErrorMessage = "Number of occupants must be at least 1.")]
     public int NumberOfOccupants { get; set; }
+    [Required]
+    public List<string> CitizenIdNumber { get; set;}
 }

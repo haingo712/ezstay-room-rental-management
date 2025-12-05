@@ -26,6 +26,8 @@ namespace RentalPostsAPI.Controllers
             _bus = bus;
         }
 
+       
+        
         [HttpGet]
         [EnableQuery]
         [Route("/odata/RentalPosts")]

@@ -20,8 +20,8 @@ namespace ContractAPI.Repository
         public IQueryable<Contract> GetAllByOwnerId(Guid ownerId)
             => _contracts.AsQueryable().Where(c => c.ProfilesInContract.Any(p => p.UserId == ownerId));
         
-        public IQueryable<Contract> GetAllByTenantId(Guid tenantId)
-            => _contracts.AsQueryable().Where(c => c.ProfilesInContract.Any(p => p.UserId == tenantId));
+        public IQueryable<Contract> GetAllByTenantId(Guid userId)
+            => _contracts.AsQueryable().Where(c => c.ProfilesInContract.Any(p => p.UserId == userId));
         
         public async Task<Contract?> GetById(Guid id)
             => await _contracts.Find(t => t.Id == id).FirstOrDefaultAsync();
@@ -55,7 +55,7 @@ namespace ContractAPI.Repository
             return request;
         }
         public IQueryable<RentalRequest> GetAllRentalByOwnerId(Guid ownerId)
-            => _contractRequests.AsQueryable().Where(p => p.ownerId  == ownerId);
+            => _contractRequests.AsQueryable().Where(p => p.OwnerId  == ownerId);
         
         public IQueryable<RentalRequest> GetAllRentalByUserId(Guid userId)
             => _contractRequests.AsQueryable().Where(p => p.UserId  == userId);
