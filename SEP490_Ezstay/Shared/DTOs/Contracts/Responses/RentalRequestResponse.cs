@@ -10,5 +10,6 @@ public class RentalRequestResponse
     public DateTime CheckinDate { get; set; }
     public DateTime CheckoutDate { get; set; }
     public int NumberOfOccupants { get; set; }
+    public List<string> CitizenIdNumber { get; set; }
     public DateTime CreatedAt { get; set; } 
 }

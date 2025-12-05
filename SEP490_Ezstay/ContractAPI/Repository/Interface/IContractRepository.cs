@@ -6,7 +6,7 @@ public interface IContractRepository
 {
   //  Task<bool> HasContractAsync(Guid tenantId, Guid roomId);
     IQueryable<Contract> GetAllByOwnerId(Guid ownerId);
-    IQueryable<Contract> GetAllByTenantId(Guid tenantId);
+    IQueryable<Contract> GetAllByTenantId(Guid userId);
     Task<Contract?> GetById(Guid id);
     Task<Contract> Add(Contract contract);
     Task Update(Contract contract);
