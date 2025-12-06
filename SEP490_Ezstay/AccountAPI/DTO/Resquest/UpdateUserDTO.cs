@@ -1,5 +1,6 @@
 ﻿using AccountAPI.Enums;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace AccountAPI.DTO.Request
 {
@@ -19,6 +20,8 @@ namespace AccountAPI.DTO.Request
         public string? FrontImageUrl { get; set; }
         public string? BackImageUrl { get; set; }
         public string? TemporaryResidence { get; set; }
+        [Required(ErrorMessage = "CitizenIdNumber is required")]
+        [RegularExpression(@"^\d{12}$", ErrorMessage = "CitizenIdNumber must be exactly 12 digits and numeric only")]
         public string? CitizenIdNumber { get; set; }
         public DateTime? CitizenIdIssuedDate { get; set; }
         public string? CitizenIdIssuedPlace { get; set; }
