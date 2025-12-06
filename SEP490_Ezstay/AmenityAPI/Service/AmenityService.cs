@@ -64,7 +64,7 @@ public class AmenityService : IAmenityService{
         // }
         _mapper.Map(request, amenity);
          amenity.UpdatedAt = DateTime.UtcNow;
-         amenity.ImageUrl =_imageClient.UploadImage(request.ImageUrl).Result;
+         // amenity.ImageUrl = request.ImageUrl;
          await _amenityRepository.Update(amenity);
         // var result = _mapper.Map<AmenityResponse>(amenity);
         return ApiResponse<bool>.Success(true,"Update successfully");

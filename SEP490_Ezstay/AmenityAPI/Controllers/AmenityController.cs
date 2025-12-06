@@ -49,7 +49,7 @@ namespace AmenityAPI.Controllers
         
         [HttpPut("{id}")]
         [Authorize(Roles = "Staff")]
-        public async Task<IActionResult> Put(Guid id, [FromForm] UpdateAmenity request)
+        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateAmenity request)
         {
             try
             {

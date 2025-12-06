@@ -52,7 +52,7 @@ namespace AuthApi.Services
             if (existingPhone != null)
                 return new RegisterResponseDto { Success = false, Message = "Phone already exists" };
 
-            if (dto.Password.Length > 8)
+            if (dto.Password.Length < 8)
                 return new RegisterResponseDto { Success = false, Message = "Password must be at least 8 characters long." };
             if (!Regex.IsMatch(dto.Password, @"[A-Z]"))
                 return new RegisterResponseDto { Success = false, Message = "Password must contain at least one uppercase letter." };

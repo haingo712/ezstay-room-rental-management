@@ -105,8 +105,6 @@
         "AllowedScopes": []
       }
     },
-   
-    
     {
       "DownstreamPathTemplate": "/api/Contract/{everything}",
       "DownstreamScheme": "http",
@@ -320,7 +318,6 @@
         "AllowedScopes": []
       }
     },
-
     {
       "DownstreamPathTemplate": "/api/RentalPosts",
       "DownstreamScheme": "http",
@@ -335,7 +332,20 @@
         "GET"
       ]
     },
-    
+    {
+      "DownstreamPathTemplate": "/api/RentalPosts/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "rentalpostsapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/RentalPosts/{id}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ]
+    },
     {
       "DownstreamPathTemplate": "/api/RentalPosts/{everything}",
       "DownstreamScheme": "http",
@@ -564,7 +574,13 @@
         }
       ],
       "UpstreamPathTemplate": "/api/Service/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
@@ -580,7 +596,9 @@
         }
       ],
       "UpstreamPathTemplate": "/api/Support/{everything}",
-      "UpstreamHttpMethod": [ "POST" ]
+      "UpstreamHttpMethod": [
+        "POST"
+      ]
     },
     {
       "DownstreamPathTemplate": "/api/Support/{everything}",
@@ -592,7 +610,11 @@
         }
       ],
       "UpstreamPathTemplate": "/api/Support/{everything}",
-      "UpstreamHttpMethod": ["GET", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "PUT",
+        "DELETE"
+      ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []

@@ -8,5 +8,5 @@ public class UpdateAmenity
     [StringLength(100, ErrorMessage = "Amenity name cannot exceed 100 characters.")]
     public string AmenityName { get; set; } 
     [Required]
-     public IFormFile ImageUrl { get; set; }
+     public string ImageUrl { get; set; }
 }
