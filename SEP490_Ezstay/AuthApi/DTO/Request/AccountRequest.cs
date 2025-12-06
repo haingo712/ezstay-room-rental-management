@@ -1,6 +1,7 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
 using Shared.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace AuthApi.DTO.Request
 {

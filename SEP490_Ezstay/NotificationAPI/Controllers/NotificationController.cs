@@ -100,6 +100,10 @@ namespace NotificationAPI.Controllers
         public async Task<IActionResult> CreateByRole([FromBody] NotifyByRoleRequest request)
         {
             var userId = GetUserIdFromToken();
+            var result = await _service.CreateByRoleAsync(userId, request);
+
+            await _hubContext.Clients.User(userId.ToString())
+                .SendAsync("ReceiveNotification", result);
             var result = await _service.CreateByRoleAsync(request, userId);
 
             // Nếu có nhiều role

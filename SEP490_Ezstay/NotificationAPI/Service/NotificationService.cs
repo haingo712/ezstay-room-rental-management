@@ -144,6 +144,14 @@ using System.Data;
 
 
 
+        public async Task<NotificationResponseDto> CreateByRoleAsync(Guid userId, NotifyByRoleRequest request)
+        {
+            var entity = new Notify
+            {
+                UserId = userId,
+                NotificationType = request.NotificationType,
+                Title = request.Title,
+                Message = request.Message,
         public async Task<NotificationResponseDto> CreateByRoleAsync(NotifyByRoleRequest reques,Guid userId)
         {
             // Lấy tất cả user của các role trong danh sá
@@ -159,8 +167,8 @@ using System.Data;
                 TargetRoles = reques.TargetRoles
             };
 
-            await _repo.AddAsync(notify);
-            return _mapper.Map<NotificationResponseDto>(notify);
+            await _repo.AddAsync(entity);
+            return _mapper.Map<NotificationResponseDto>(entity);
         }
 
 
