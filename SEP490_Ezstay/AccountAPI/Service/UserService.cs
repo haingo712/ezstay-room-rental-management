@@ -86,6 +86,15 @@ namespace AccountAPI.Service
             if (!string.IsNullOrEmpty(user.WardId) && !string.IsNullOrEmpty(user.ProvinceId))
                 user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
 
+            // ✅ Only validate CitizenIdNumber if it's provided (not empty)
+            if (!string.IsNullOrWhiteSpace(userDto.CitizenIdNumber))
+            {
+                if (userDto.CitizenIdNumber.Length != 12 || !userDto.CitizenIdNumber.All(char.IsDigit))
+                {
+                    return false;
+                }
+            }
+
             // Lưu profile mới vào DB
             await _userRepository.CreateUserAsync(user);
             return true;
@@ -170,14 +179,16 @@ namespace AccountAPI.Service
 
             if (!string.IsNullOrEmpty(user.WardId) && !string.IsNullOrEmpty(user.ProvinceId))
                 user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
-            if (string.IsNullOrWhiteSpace(userDto.CitizenIdNumber)
-                || userDto.CitizenIdNumber.Length != 8
-                || !userDto.CitizenIdNumber.All(char.IsDigit))
+            
+            // ✅ Only validate CitizenIdNumber if it's provided (not empty)
+            if (!string.IsNullOrWhiteSpace(userDto.CitizenIdNumber))
             {
-                return false;
+                if (userDto.CitizenIdNumber.Length != 12 || !userDto.CitizenIdNumber.All(char.IsDigit))
+                {
+                    return false;
+                }
+                user.CitizenIdNumber = userDto.CitizenIdNumber;
             }
-
-            user.CitizenIdNumber = userDto.CitizenIdNumber;
 
             await _userRepository.UpdateAsync(user);
             return true;
