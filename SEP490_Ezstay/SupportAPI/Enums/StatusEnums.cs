@@ -2,6 +2,8 @@
 {
     public enum StatusEnums
     {
-        Pedding,InProgress,Resolved,Closed
+        Pending,
+        Accept,
+        Reject
     }
 }

@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json.Serialization;
 using EasyNetQ;
 
 namespace RentalPostsAPI
@@ -55,7 +56,11 @@ namespace RentalPostsAPI
                     edmBuilder.EntitySet<RentalpostDTO>("RentalPostsOdata");
                     edmBuilder.EntitySet<RentalpostDTO>("RentalPosts");
                     opt.AddRouteComponents("odata", edmBuilder.GetEdmModel());
+                }).AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
+
                 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

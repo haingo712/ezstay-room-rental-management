@@ -74,7 +74,7 @@ namespace ContractAPI.Controllers
        }
        
        [Authorize(Roles = "Owner, User")]
-       [HttpGet("ByOwnerId")]
+       [HttpGet("all/owner")]
        [EnableQuery]
        public IQueryable<ContractResponse> GetContractsByOwnerId()
        {
@@ -116,7 +116,7 @@ namespace ContractAPI.Controllers
             }
         }
         [Authorize(Roles = "Owner, User")]
-        [HttpPut("{id}/cancelcontract")]
+        [HttpPut("{id}/cancel")]
         public async Task<IActionResult> CancelContract(Guid id, [FromBody] string reason )
         {
             try
@@ -151,6 +151,7 @@ namespace ContractAPI.Controllers
         }
       
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Delete(Guid id)
         {
             try
@@ -191,6 +192,37 @@ namespace ContractAPI.Controllers
             {
                 return NotFound(new { message = e.Message });
             }
+        }
+        
+        [Authorize(Roles = "User")]
+        [HttpPost("{ownerId}/rental-request/{roomId}")]
+        public async Task<IActionResult> Post(Guid ownerId, Guid roomId, [FromBody] CreateRentalRequest request)
+        {
+            var userId = _tokenService.GetUserIdFromClaims(User);
+
+            var result = await _contractService.Add(ownerId,userId, roomId, request);
+
+            if (!result.IsSuccess)
+                return BadRequest(new { message = result.Message });
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "Owner")] 
+        [HttpGet("rental-requests/owner")]
+        public async Task<IActionResult> GetAllRentalRequestByOwner()
+        {
+            var ownerId = _tokenService.GetUserIdFromClaims(User);
+            var result = await _contractService.GetAllRentalByOwnerIdWithUserInfoAsync(ownerId);
+            return Ok(result);
+        }
+        
+        [Authorize(Roles = "User")]
+        [HttpGet("rental-requests/user")]
+        public async Task<IActionResult> GetAllRentalRequestByUser()
+        {
+            var userId = _tokenService.GetUserIdFromClaims(User);
+            var result = await _contractService.GetAllRentalByUserIdWithOwnerInfoAsync(userId);
+            return Ok(result);
         }
     }
 }

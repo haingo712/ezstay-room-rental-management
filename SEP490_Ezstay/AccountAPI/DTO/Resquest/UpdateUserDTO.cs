@@ -1,4 +1,5 @@
-﻿using AccountAPI.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using AccountAPI.Enums;
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,13 +7,23 @@ namespace AccountAPI.DTO.Request
 {
     public class UpdateUserDTO
     {
-        public GenderEnum? Gender { get; set; }
+        [Required(ErrorMessage = "Gender is required")]
+        public GenderEnum Gender { get; set; }
+        
         public string? Avatar { get; set; }
-        public string? Bio { get; set; }
-        public DateTime? DateOfBirth { get; set; }
+        
+        [Required(ErrorMessage = "Bio is required")]
+        [StringLength(500, ErrorMessage = "Bio cannot exceed 500 characters")]
+        public string Bio { get; set; }
+        
+        [Required(ErrorMessage = "Date of birth is required")]
+        public DateTime DateOfBirth { get; set; }
 
-        public string? DetailAddress { get; set; }
-        public string? ProvinceId { get; set; }     // Mã tỉnh
+        [Required(ErrorMessage = "Detail address is required")]
+        public string DetailAddress { get; set; }
+        
+        [Required(ErrorMessage = "Province is required")]
+        public string ProvinceId { get; set; }     // Mã tỉnh
 
         public string? WardId { get; set; }         // Mã xã/phường
                                                     //public string WardName { get; set; }       // Tên xã/phường

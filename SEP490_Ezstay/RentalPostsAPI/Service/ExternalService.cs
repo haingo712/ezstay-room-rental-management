@@ -1,9 +1,11 @@
 ﻿
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
 using RentalPostsAPI.DTO.Request;
 using RentalPostsAPI.Service.Interface;
+using Shared.DTOs.Rooms.Responses;
 
 namespace RentalPostsAPI.Service
 {
@@ -11,22 +13,23 @@ namespace RentalPostsAPI.Service
     {
         private readonly HttpClient _httpClient;
         private readonly ExternalServiceSettings _settings;
-        private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
+        private readonly JsonSerializerOptions _jsonOptions;
 
 
         public ExternalService(HttpClient httpClient, IOptions<ExternalServiceSettings> settings)
         {
             _httpClient = httpClient;
             _settings = settings.Value;
+            _jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
         }
 
         private async Task<T?> GetFromApiAsync<T>(string url)
         {
-            try
-            {
+            // try
+            // {
                 var response = await _httpClient.GetAsync(url);
                 if (!response.IsSuccessStatusCode) return default;
 
@@ -37,19 +40,19 @@ namespace RentalPostsAPI.Service
                 {
                     PropertyNameCaseInsensitive = true
                 });
-            }
-            catch (Exception ex)
-            {
-                // TODO: log lỗi ra file / console
-                Console.WriteLine($"[ExternalService] Error calling {url}: {ex.Message}");
-                return default;
-            }
+            // }
+            // catch (Exception ex)
+            // {
+            //     // TODO: log lỗi ra file / console
+            //     Console.WriteLine($"[ExternalService] Error calling {url}: {ex.Message}");
+            //     return default;
+            // }
         }
 
-        public Task<RoomDto?> GetRoomByIdAsync(Guid roomId)
+        public  Task<RoomDto> GetRoomByIdAsync(Guid roomId)
         {
             var url = $"{_settings.RoomApiBaseUrl}api/Rooms/{roomId}";
-            return GetFromApiAsync<RoomDto>(url);
+            return   GetFromApiAsync<RoomDto>(url);
         }
 
         public Task<BoardingHouseDTO?> GetBoardingHouseByIdAsync(Guid houseId)

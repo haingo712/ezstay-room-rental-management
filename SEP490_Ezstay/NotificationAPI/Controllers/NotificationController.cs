@@ -104,6 +104,14 @@ namespace NotificationAPI.Controllers
 
             await _hubContext.Clients.User(userId.ToString())
                 .SendAsync("ReceiveNotification", result);
+            var result = await _service.CreateByRoleAsync(request, userId);
+
+            // Nếu có nhiều role
+            foreach (var role in request.TargetRoles)
+            {
+                await _hubContext.Clients.Group(role.ToString())
+                    .SendAsync("ReceiveRoleNotification", result);
+            }
 
             return Ok(result);
         }

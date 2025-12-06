@@ -33,9 +33,9 @@ public class ContractService : IContractService
         _accountService = accountService;
         _utilityReadingService = utilityReadingService;
     }
-    public IQueryable<ContractResponse> GetAllByTenantId(Guid tenantId)
+    public IQueryable<ContractResponse> GetAllByTenantId(Guid userId)
     {
-        var contracts = _contractRepository.GetAllByTenantId(tenantId);
+        var contracts = _contractRepository.GetAllByTenantId(userId);
         foreach (var contract in contracts)
         {
             if (contract.CheckoutDate < DateTime.UtcNow.Date &&
@@ -76,10 +76,7 @@ public class ContractService : IContractService
                 .ToList();
             response.ElectricityReading = await _utilityReadingService.GetFirstReading(contract.Id, UtilityType.Electric);
             response.WaterReading = await _utilityReadingService.GetFirstReading(contract.Id, UtilityType.Water);
-
             return response;
-            
-            
     }
   //  => _mapper.Map<ContractResponse>(await _contractRepository.GetByIdAsync(id));
     
@@ -138,7 +135,6 @@ public class ContractService : IContractService
             ProvinceId = ownerProfile.ProvinceId,
             WardId = ownerProfile.WardId
         };
-        
         ownerIdentity.IsSigner = true; 
         members.Add(ownerIdentity);
 
@@ -367,5 +363,60 @@ public class ContractService : IContractService
             contract.ContractStatus == ContractStatus.Active 
                 ? "Hợp đồng đã được ký thành công bởi cả hai bên" 
                 : $"Chữ ký {role} đã được lưu");
+    }
+    
+    public async Task<ApiResponse<RentalRequestResponse>> Add(Guid ownerId, Guid userId, Guid roomId, CreateRentalRequest request)
+    {
+        if (request.CheckinDate < DateTime.UtcNow.Date)
+            return ApiResponse<RentalRequestResponse>.Fail("The check-in date must be today or a future date.");
+
+        // if (request.CheckoutDate <= request.CheckinDate)
+        //     return ApiResponse<RentalRequestResponse>.Fail("Checkout phải sau Checkin");
+        
+        if (request.CheckoutDate < request.CheckinDate.AddMonths(1))
+            return ApiResponse<RentalRequestResponse>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
+        var contract = _mapper.Map<RentalRequest>(request);
+            contract.UserId = userId;
+            contract.RoomId = roomId;
+            contract.OwnerId = ownerId;
+            var result = await _contractRepository.Add(contract);
+            var response = _mapper.Map<RentalRequestResponse>(result);
+            
+        return ApiResponse<RentalRequestResponse>.Success(response, "Add Sucessfully.");
+    }
+
+    public IQueryable<RentalRequestResponse> GetAllRentalByUserId(Guid userId)
+    {
+        var rentalRequest = _contractRepository.GetAllRentalByUserId(userId);
+        return rentalRequest.OrderByDescending(x => x.CreatedAt).ProjectTo<RentalRequestResponse>(_mapper.ConfigurationProvider);
+    }
+
+    public IQueryable<RentalRequestResponse> GetAllRentalByOwnerId(Guid ownerId)
+    {
+        var rentalRequest = _contractRepository.GetAllRentalByOwnerId(ownerId);
+        return rentalRequest.OrderByDescending(x => x.CreatedAt).ProjectTo<RentalRequestResponse>(_mapper.ConfigurationProvider);
+    }
+    
+    // Return list with all tenant info already in RentalRequest - no need to call Account API
+    public async Task<List<RentalRequestResponse>> GetAllRentalByOwnerIdWithUserInfoAsync(Guid ownerId)
+    {
+        var rentalRequests = _contractRepository.GetAllRentalByOwnerId(ownerId)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToList();
+        
+        // All tenant info is already stored in RentalRequest, just map it
+        var responses = rentalRequests.Select(r => _mapper.Map<RentalRequestResponse>(r)).ToList();
+        return responses;
+    }
+    
+    public async Task<List<RentalRequestResponse>> GetAllRentalByUserIdWithOwnerInfoAsync(Guid userId)
+    {
+        var rentalRequests = _contractRepository.GetAllRentalByUserId(userId)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToList();
+        
+        // All tenant info is already stored in RentalRequest, just map it
+        var responses = rentalRequests.Select(r => _mapper.Map<RentalRequestResponse>(r)).ToList();
+        return responses;
     }
 }

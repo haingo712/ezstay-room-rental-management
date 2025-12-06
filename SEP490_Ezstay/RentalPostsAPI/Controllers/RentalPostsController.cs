@@ -26,6 +26,8 @@ namespace RentalPostsAPI.Controllers
             _bus = bus;
         }
 
+       
+        
         [HttpGet]
         [EnableQuery]
         [Route("/odata/RentalPosts")]
@@ -72,8 +74,7 @@ namespace RentalPostsAPI.Controllers
                 return NotFound(ApiResponse<string>.Fail("Không tìm thấy bài viết"));
             return Ok(ApiResponse<RentalpostDTO>.Success(result));
         }
-
-
+        
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRentalPostDTO dto)

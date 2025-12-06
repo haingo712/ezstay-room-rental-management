@@ -10,7 +10,7 @@ using Shared.Enums;
 namespace ContractAPI.Services.Interfaces;
 public interface IContractService
 {
-    IQueryable<ContractResponse> GetAllByTenantId(Guid tenantId);
+    IQueryable<ContractResponse> GetAllByTenantId(Guid userId);
     IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId);
     Task<ContractResponse?> GetByIdAsync(Guid id);
     Task<ApiResponse<ContractResponse>> Add(Guid ownerId, CreateContract request);
@@ -21,4 +21,13 @@ public interface IContractService
     Task<ApiResponse<List<string>>> UploadContractImages(Guid id, IFormFileCollection images);
     Task<ApiResponse<bool>> ExistsByRoomId(Guid roomId);
     Task<ApiResponse<ContractResponse>> SignContract(Guid contractId, string ownerSignature, string role);
+
+    Task<ApiResponse<RentalRequestResponse>> Add(Guid ownerId,Guid userId, Guid roomId, CreateRentalRequest request);
+    IQueryable<RentalRequestResponse> GetAllRentalByUserId(Guid userId);
+    IQueryable<RentalRequestResponse> GetAllRentalByOwnerId(Guid ownerId);
+    
+    // Async versions with user/owner info populated
+    Task<List<RentalRequestResponse>> GetAllRentalByOwnerIdWithUserInfoAsync(Guid ownerId);
+    Task<List<RentalRequestResponse>> GetAllRentalByUserIdWithOwnerInfoAsync(Guid userId);
+
 }

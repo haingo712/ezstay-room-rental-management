@@ -23,6 +23,7 @@ namespace NotificationAPI.Service.Interfaces
 
         // 🔹 Tạo thông báo cho 1 role
         Task<NotificationResponseDto> CreateByRoleAsync(Guid userId,NotifyByRoleRequest request);
+        Task<NotificationResponseDto> CreateByRoleAsync(NotifyByRoleRequest request, Guid userId);
 
 
         // 🔹 Đánh dấu thông báo đã đọc

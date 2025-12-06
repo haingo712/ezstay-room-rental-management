@@ -152,8 +152,19 @@ using System.Data;
                 NotificationType = request.NotificationType,
                 Title = request.Title,
                 Message = request.Message,
+        public async Task<NotificationResponseDto> CreateByRoleAsync(NotifyByRoleRequest reques,Guid userId)
+        {
+            // Lấy tất cả user của các role trong danh sá
+
+            // Tạo notify lưu danh sách role
+            var notify = new Notify
+            {
+                UserId = userId,
+                NotificationType = reques.NotificationType,
+                Title = reques.Title,
+                Message = reques.Message,
                 CreatedAt = DateTime.UtcNow,
-                TargetRoles = request.TargetRoles
+                TargetRoles = reques.TargetRoles
             };
 
             await _repo.AddAsync(entity);
