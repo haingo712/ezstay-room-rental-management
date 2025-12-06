@@ -7,7 +7,9 @@ namespace BoardingHouseAPI.DTO.Request
         [Required]
         [StringLength(100, ErrorMessage = "House name cannot exceed 100 characters.")]
         public string HouseName { get; set; } = null!;
-        public IFormFileCollection? Files { get; set; }
+        [Required]
+        public IFormFileCollection Files { get; set; }
+       
         public string? Description { get; set; }
         [Required]
         public CreateHouseLocationDTO Location { get; set; } = null!;

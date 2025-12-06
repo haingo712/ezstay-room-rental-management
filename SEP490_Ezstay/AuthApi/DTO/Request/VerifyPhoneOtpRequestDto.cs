@@ -1,8 +1,13 @@
-﻿namespace AuthApi.DTO.Request
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AuthApi.DTO.Request
 {
     public class VerifyPhoneOtpRequestDto
     {
-        public string Phone { get; set; } = null!;
-        public string Otp { get; set; } = null!;
+        [Required]
+        [Phone]
+        public string Phone { get; set; }
+        [EmailAddress]
+        public string Otp { get; set; } 
     }
 }
