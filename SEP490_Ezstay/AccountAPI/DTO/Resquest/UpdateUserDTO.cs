@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AccountAPI.Enums;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace AccountAPI.DTO.Request
 {
@@ -24,30 +25,16 @@ namespace AccountAPI.DTO.Request
         [Required(ErrorMessage = "Province is required")]
         public string ProvinceId { get; set; }     // Mã tỉnh
 
-        [Required(ErrorMessage = "Ward is required")]
-        public string WardId { get; set; }         // Mã xã/phường
-                                                    
-        [Required(ErrorMessage = "Full name is required")]
-        public string FullName { get; set; }
-        
-        [Required(ErrorMessage = "Front image of citizen ID is required")]
-        public string FrontImageUrl { get; set; }
-        
-        [Required(ErrorMessage = "Back image of citizen ID is required")]
-        public string BackImageUrl { get; set; }
-        
-        [Required(ErrorMessage = "Temporary residence is required")]
-        public string TemporaryResidence { get; set; }
-        
-        [Required(ErrorMessage = "Citizen ID number is required")]
-        [StringLength(12, MinimumLength = 12, ErrorMessage = "Citizen ID must be exactly 12 digits")]
-        [RegularExpression(@"^\d{12}$", ErrorMessage = "Citizen ID must contain only digits")]
-        public string CitizenIdNumber { get; set; }
-        
-        [Required(ErrorMessage = "Citizen ID issued date is required")]
-        public DateTime CitizenIdIssuedDate { get; set; }
-        
-        [Required(ErrorMessage = "Citizen ID issued place is required")]
-        public string CitizenIdIssuedPlace { get; set; }
+        public string? WardId { get; set; }         // Mã xã/phường
+                                                    //public string WardName { get; set; }       // Tên xã/phường
+        public string? FullName { get; set; }
+        public string? FrontImageUrl { get; set; }
+        public string? BackImageUrl { get; set; }
+        public string? TemporaryResidence { get; set; }
+        [Required(ErrorMessage = "CitizenIdNumber is required")]
+        [RegularExpression(@"^\d{12}$", ErrorMessage = "CitizenIdNumber must be exactly 12 digits and numeric only")]
+        public string? CitizenIdNumber { get; set; }
+        public DateTime? CitizenIdIssuedDate { get; set; }
+        public string? CitizenIdIssuedPlace { get; set; }
     }
 }
