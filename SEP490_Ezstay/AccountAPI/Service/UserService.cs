@@ -87,13 +87,9 @@ namespace AccountAPI.Service
                 user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
 
             // ✅ Only validate CitizenIdNumber if it's provided (not empty)
-            if (!string.IsNullOrWhiteSpace(userDto.CitizenIdNumber))
-            {
-                if (userDto.CitizenIdNumber.Length != 12 || !userDto.CitizenIdNumber.All(char.IsDigit))
-                {
-                    return false;
-                }
-            }
+           
+            
+           
 
             // Lưu profile mới vào DB
             await _userRepository.CreateUserAsync(user);
