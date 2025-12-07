@@ -23,12 +23,13 @@ public class ReviewRepository : IReviewRepository
     {
         return await _reviews.Find(r => r.Id == id).FirstOrDefaultAsync();
     }
-    public async Task<List<Review>> GetByRoomIds(List<Guid> roomIds)
+
+    public IQueryable<Review> GetAllReviewByRoomId(Guid roomId)
     {
-        return await _reviews
-            .Find(r => roomIds.Contains(r.RoomId))
-            .ToListAsync();
+      return  _reviews.AsQueryable()
+            .Where(r => r.RoomId == roomId);
     }
+
     public async Task Add(Review review)
     {
         await _reviews.InsertOneAsync(review);

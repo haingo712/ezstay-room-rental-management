@@ -100,10 +100,13 @@ public class ReviewService : IReviewService
         await _reviewRepository.Update(review);
         return ApiResponse<bool>.Success(true, "Hide Successfully");
     }
-    
-    public async Task<List<ReviewResponse>> GetByRoomIdsAsync(List<Guid> roomIds)
+
+    public IQueryable<ReviewResponse> GetAllReviewByRoomId(Guid roomId)
     {
-        var reviews = await _reviewRepository.GetByRoomIds(roomIds);
-        return _mapper.Map<List<ReviewResponse>>(reviews);
+
+        var reviews = _reviewRepository.GetAllReviewByRoomId(roomId);
+            return reviews.ProjectTo<ReviewResponse>(_mapper.ConfigurationProvider);
+
     }
+    
 }
