@@ -12,6 +12,12 @@ namespace AccountAPI.DTO.Request
         
         [StringLength(500, ErrorMessage = "Bio cannot exceed 500 characters")]
         public string? Bio { get; set; }
+        [Phone]
+        [Required(ErrorMessage = "Phone number is required")]
+        public string Phone { get; set; }
+        [EmailAddress]
+        [Required(ErrorMessage = "Email is required")]
+        public string Email { get; set; }
         
         [Required(ErrorMessage = "Date of birth is required")]
         public DateTime DateOfBirth { get; set; }

@@ -12,7 +12,6 @@ namespace ContractAPI.Model
         public Guid ContractId { get; set; } 
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid UserId { get; set; } 
-        public string Avatar { get; set; }
         public string FullName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Phone { get; set; }
