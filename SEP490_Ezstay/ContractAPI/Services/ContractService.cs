@@ -116,7 +116,6 @@ public class ContractService : IContractService
         {
             UserId = ownerProfile.Id,
             ContractId = contract.Id,
-            Avatar = ownerProfile.Avatar,
             FullName = ownerProfile.FullName,
             Phone = ownerProfile.Phone,
             Email = ownerProfile.Email,

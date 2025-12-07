@@ -11,8 +11,8 @@ public class CreateIdentityProfile
     public string Gender { get; set; }
     [Required]
     public string FullName { get; set; }
-    [Required]
-    public string Avatar { get; set; }
+    // [Required]
+    // public string Avatar { get; set; }
     [Required]
     public DateTime DateOfBirth { get; set; }
     [Required]

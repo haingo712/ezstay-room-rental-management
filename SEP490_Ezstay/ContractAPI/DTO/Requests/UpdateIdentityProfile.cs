@@ -8,8 +8,8 @@ public class UpdateIdentityProfile
     public Guid UserId { get; set; } 
     [Required]
     public string Gender { get; set; }
-    [Required]
-    public string Avatar { get; set; } 
+    // [Required]
+    // public string Avatar { get; set; } 
     [Required]
     public string FullName { get; set; }
     [Required]

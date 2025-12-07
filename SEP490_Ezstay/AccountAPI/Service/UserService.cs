@@ -56,7 +56,9 @@ namespace AccountAPI.Service
             {
                 user.Avatar = await _imageService.UploadImageAsync(createUserDto.Avatar);
             }
-         
+            user.FullName = existingPhone.FullName;
+            user.Phone = existingPhone.Phone;
+            user.Email = existingPhone.Email;
             user.FrontImageUrl = await _imageService.UploadImageAsync(createUserDto.FrontImageUrl);
             
             user.BackImageUrl = await _imageService.UploadImageAsync(createUserDto.BackImageUrl);
@@ -110,8 +112,8 @@ namespace AccountAPI.Service
             if (user == null)
                 return false;
             _mapper.Map(userDto, user);
-            user.ProvinceName = await GetProvinceNameAsync(user.ProvinceId) ?? "";
-            user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
+            // user.ProvinceName = await GetProvinceNameAsync(user.ProvinceId) ?? "";
+            // user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
             await _userRepository.UpdateAsync(user);
             return true;
         }
