@@ -330,7 +330,9 @@ public class ContractService : IContractService
         var exists = await _contractRepository.ExistsByRoomId(roomId);
         return ApiResponse<bool>.Success(exists);
     }
-    public async Task<ApiResponse<ContractResponse>> SignContract(Guid contractId, string ownerSignature, string role)
+    
+   // SignContractOwner
+    public async Task<ApiResponse<ContractResponse>> SignContractUser(Guid contractId, string ownerSignature, Guid  userId)
     {
         var contract = await _contractRepository.GetById(contractId);
         if (contract.ContractStatus == ContractStatus.Active)
@@ -339,16 +341,14 @@ public class ContractService : IContractService
         if (contract.ContractStatus == ContractStatus.Cancelled)
             return ApiResponse<ContractResponse>.Fail("Hợp đồng đã bị hủy");
         
-        if (role.Equals("Owner"))
-        {
-            contract.OwnerSignature =ownerSignature.Trim('"');
-            contract.OwnerSignedAt = DateTime.UtcNow;
-        } 
-        if (role.Equals("User"))
-        {
+        // if (role.Equals("Owner"))
+        // {
+        //     contract.OwnerSignature =ownerSignature.Trim('"');
+        //     contract.OwnerSignedAt = DateTime.UtcNow;
+        // } 
+       
             contract.TenantSignature = ownerSignature.Trim('"');
             contract.TenantSignedAt = DateTime.UtcNow;
-        }
         
         if (!string.IsNullOrEmpty(contract.OwnerSignature) && !string.IsNullOrEmpty(contract.TenantSignature))
         {
@@ -361,8 +361,66 @@ public class ContractService : IContractService
         return ApiResponse<ContractResponse>.Success(result, 
             contract.ContractStatus == ContractStatus.Active 
                 ? "Hợp đồng đã được ký thành công bởi cả hai bên" 
-                : $"Chữ ký {role} đã được lưu");
+                : $"Chữ ký đã được lưu");
     }
+    public async Task<ApiResponse<ContractResponse>> SignContractOwner(Guid contractId, string ownerSignature, Guid  ownerId)
+    {
+        var contract = await _contractRepository.GetById(contractId);
+        if (contract.ContractStatus == ContractStatus.Active)
+            return ApiResponse<ContractResponse>.Fail("Hợp đồng đã được ký");
+
+        if (contract.ContractStatus == ContractStatus.Cancelled)
+            return ApiResponse<ContractResponse>.Fail("Hợp đồng đã bị hủy");
+        
+            contract.OwnerSignature =ownerSignature.Trim('"');
+            contract.OwnerSignedAt = DateTime.UtcNow;
+        
+        if (!string.IsNullOrEmpty(contract.OwnerSignature) && !string.IsNullOrEmpty(contract.TenantSignature))
+        {
+            contract.ContractStatus = ContractStatus.Active;
+            contract.UpdatedAt = DateTime.UtcNow;
+            await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
+        }
+        await _contractRepository.Update(contract);
+        var result = _mapper.Map<ContractResponse>(contract);
+        return ApiResponse<ContractResponse>.Success(result, 
+            contract.ContractStatus == ContractStatus.Active 
+                ? "Hợp đồng đã được ký thành công bởi cả hai bên" 
+                : $"Chữ ký đã được lưu");
+    }    
+    // public async Task<ApiResponse<ContractResponse>> SignContract(Guid contractId, string ownerSignature, string role)
+    // {
+    //     var contract = await _contractRepository.GetById(contractId);
+    //     if (contract.ContractStatus == ContractStatus.Active)
+    //         return ApiResponse<ContractResponse>.Fail("Hợp đồng đã được ký");
+    //
+    //     if (contract.ContractStatus == ContractStatus.Cancelled)
+    //         return ApiResponse<ContractResponse>.Fail("Hợp đồng đã bị hủy");
+    //     
+    //     if (role.Equals("Owner"))
+    //     {
+    //         contract.OwnerSignature =ownerSignature.Trim('"');
+    //         contract.OwnerSignedAt = DateTime.UtcNow;
+    //     } 
+    //     if (role.Equals("User"))
+    //     {
+    //         contract.TenantSignature = ownerSignature.Trim('"');
+    //         contract.TenantSignedAt = DateTime.UtcNow;
+    //     }
+    //     
+    //     if (!string.IsNullOrEmpty(contract.OwnerSignature) && !string.IsNullOrEmpty(contract.TenantSignature))
+    //     {
+    //         contract.ContractStatus = ContractStatus.Active;
+    //         contract.UpdatedAt = DateTime.UtcNow;
+    //         await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
+    //     }
+    //     await _contractRepository.Update(contract);
+    //     var result = _mapper.Map<ContractResponse>(contract);
+    //     return ApiResponse<ContractResponse>.Success(result, 
+    //         contract.ContractStatus == ContractStatus.Active 
+    //             ? "Hợp đồng đã được ký thành công bởi cả hai bên" 
+    //             : $"Chữ ký {role} đã được lưu");
+    // }
     
     public async Task<ApiResponse<RentalRequestResponse>> Add(Guid ownerId, Guid userId, Guid roomId, CreateRentalRequest request)
     {
