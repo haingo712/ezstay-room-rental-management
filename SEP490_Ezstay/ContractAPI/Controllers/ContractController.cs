@@ -174,6 +174,7 @@ namespace ContractAPI.Controllers
             return Ok(result);
         }
         
+        
         // hàm này dùng để 2 người kí 
         // [Authorize(Roles = "User")]
         // [HttpPut("{id}/sign-contract")]
