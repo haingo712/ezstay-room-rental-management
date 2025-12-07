@@ -1,5 +1,5 @@
 ﻿
-using AccountAPI.Data;
+using AccountAPI.Model;
 using AccountAPI.DTO.Reponse;
 using AccountAPI.DTO.Request;
 using AccountAPI.DTO.Resquest;
@@ -11,7 +11,7 @@ namespace AccountAPI.Mapping
     {
         public UserMappingProfile()
         {
-            CreateMap<UserDTO, User>();
+            CreateMap<CreateUserDTO, User>();
                  
             // Map User -> UserResponseDTO
             CreateMap<User, UserResponseDTO>();

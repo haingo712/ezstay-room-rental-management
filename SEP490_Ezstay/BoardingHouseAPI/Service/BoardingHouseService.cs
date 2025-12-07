@@ -95,7 +95,7 @@ namespace BoardingHouseAPI.Service
             //    return ApiResponse<BoardingHouseDTO>.Fail("Nhà trọ với tên và địa chỉ này đã tồn tại.");
             var house = _mapper.Map<BoardingHouse>(createDto);
             house.OwnerId = ownerId;
-            house.ImageUrls = await _imageService.UploadMultipleImagesAsync(createDto.Files!);
+            house.ImageUrls =  await _imageService.UploadMultipleImagesAsync(createDto.Files);
 
             house.Location = houseLocation;
 

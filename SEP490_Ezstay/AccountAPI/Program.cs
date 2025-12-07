@@ -27,6 +27,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 //});
 builder.Services.AddScoped<IAuthApiClient, AuthApiClient>();
 
+
 builder.Services.AddHttpClient("Gateway", (serviceProvider, client) =>
 {
     var config = serviceProvider.GetRequiredService<IConfiguration>();
@@ -47,6 +48,8 @@ builder.Services.AddHttpClient<UserService>(client =>
 {
     client.BaseAddress = new Uri("http://apigateway:8080"); // API Gateway URL
 });
+
+
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

@@ -28,12 +28,12 @@ namespace AccountAPI.Controllers
 
         [HttpPost("create-profile")]
         [Authorize(Roles = "User,Owner,Staff")]
-        public async Task<IActionResult> CreateProfile([FromForm] UserDTO userDto)
+        public async Task<IActionResult> CreateProfile([FromForm] CreateUserDTO createUserDto)
         {
             var userId = _userClaimHelper.GetUserId(User);
                 Console.WriteLine("xx "+userId);
             // Truyền thêm User (ClaimsPrincipal) vào service
-            var success = await _userService.CreateProfileAsync(userId, userDto);
+            var success = await _userService.CreateProfileAsync(userId, createUserDto);
 
             return success
                 ? Ok("Profile created successfully.")

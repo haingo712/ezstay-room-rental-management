@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace AccountAPI.Data
+namespace AccountAPI.Model
 {
     public class User
     {
@@ -10,8 +10,8 @@ namespace AccountAPI.Data
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid Id { get; set; }
         public GenderEnum Gender { get; set; } 
-        public string Avatar { get; set; }
-        public string Bio { get; set; }
+        public string? Avatar { get; set; }
+        public string? Bio { get; set; }
         public DateTime DateOfBirth { get; set; } 
         public string FullName { get; set; }
         public string Phone { get; set; }
