@@ -149,8 +149,7 @@ namespace RentalPostsAPI.Service
         public async Task<IEnumerable<RentalpostDTO>> GetPendingPostsAsync()
         {
             var entities = (await _repo.GetPendingAsync()).ToList();
-            // return await MapRentalPostsAsync(entities);
-            return _mapper.Map<IEnumerable<RentalpostDTO>>(entities);
+            return  _mapper.Map<IEnumerable<RentalpostDTO>>(entities);
         }
 
         public async Task<bool> ApprovePostAsync(Guid postId, Guid staffId)

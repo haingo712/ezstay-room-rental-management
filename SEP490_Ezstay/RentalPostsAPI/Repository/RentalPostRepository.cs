@@ -36,7 +36,7 @@ namespace RentalPostsAPI.Repository
         }
         public async Task<IEnumerable<RentalPosts>> GetPendingAsync()
         {
-            return await _collection.Find(p => p.IsApproved == PostStatus.Pending && p.IsActive).ToListAsync();
+            return await _collection.Find(p =>  p.IsActive).ToListAsync();
         }
 
         public async Task<IEnumerable<RentalPosts>> GetAllByOwnerIdAsync(Guid ownerId)

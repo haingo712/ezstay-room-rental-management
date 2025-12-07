@@ -7,7 +7,8 @@ namespace BoardingHouseAPI.DTO.Request
         [Required]
         [StringLength(100, ErrorMessage = "House name cannot exceed 100 characters.")]
         public string HouseName { get; set; } = null!;
-        public List<string>? ImageUrls { get; set; }
+        [Required]
+        public List<string> ImageUrls { get; set; }
         public string? Description { get; set; }
         public UpdateHouseLocationDTO Location { get; set; } = null!;
 

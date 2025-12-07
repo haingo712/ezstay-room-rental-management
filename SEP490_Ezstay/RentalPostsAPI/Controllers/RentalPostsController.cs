@@ -58,6 +58,16 @@ namespace RentalPostsAPI.Controllers
             var result = await _service.GetAllForUserAsync();
             return Ok(result);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var result = await _service.GetByIdAsync(id);
+            if (result == null)
+                return NotFound(ApiResponse<string>.Fail("Không tìm thấy bài đăng"));
+            return Ok(result);
+        }
+
         [HttpGet("owner")]
         [Authorize(Roles = "Owner")]
         public async Task<IActionResult> GetAllForOwner()
@@ -66,15 +76,7 @@ namespace RentalPostsAPI.Controllers
             var result = await _service.GetAllForOwnerAsync(User);
             return Ok(result);
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
-        {
-            var result = await _service.GetByIdAsync(id);
-            if (result == null)
-                return NotFound(ApiResponse<string>.Fail("Không tìm thấy bài viết"));
-            return Ok(ApiResponse<RentalpostDTO>.Success(result));
-        }
-        
+      
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRentalPostDTO dto)

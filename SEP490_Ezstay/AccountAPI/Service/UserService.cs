@@ -1,15 +1,10 @@
-﻿using AccountAPI.Data;
+﻿using AccountAPI.Model;
 using AccountAPI.DTO.Reponse;
 using AccountAPI.DTO.Request;
-using AccountAPI.DTO.Resquest;
 using AccountAPI.Repositories.Interfaces;
 using AccountAPI.Service.Interfaces;
-using APIGateway.Helper;
 using APIGateway.Helper.Interfaces;
 using AutoMapper;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 using System.Text.Json;
 
 namespace AccountAPI.Service
@@ -43,55 +38,33 @@ namespace AccountAPI.Service
             _userClaimHelper = userClaimHelper;
             _otpClient = otpClient;
             _http = factory.CreateClient("Gateway");
-        }
+        
+}
 
-
-        public async Task<bool> CreateProfileAsync(Guid id, UserDTO userDto)
+        public async Task<bool> CreateProfileAsync(Guid id, CreateUserDTO createUserDto)
         {
-            // Lấy thông tin user từ Auth API
             var existingPhone = await _authApiClient.GetByIdAsync(id);
-            if (existingPhone == null)
-            {
-                return false; // Hoặc ném exception tùy logic
-            }
-
-            // Kiểm tra xem profile đã tồn tại trong DB local chưa
+        
             var existingUser = await _userRepository.GetByUserIdAsync(id);
             if (existingUser != null)
             {
                 return false;
             }
-
-            // Map từ DTO sang entity
-            var user = _mapper.Map<User>(userDto);
+            var user = _mapper.Map<User>(createUserDto);
             user.Id = id;
-            user.FullName = existingPhone.FullName;
-            user.Phone = existingPhone.Phone;
-            user.Email = existingPhone.Email;
-
-            // Upload ảnh nếu có
-            if (userDto.Avatar != null)
-                user.Avatar = await _imageService.UploadImageAsync(userDto.Avatar);
-
-            if (userDto.FrontImageUrl != null)
-                user.FrontImageUrl = await _imageService.UploadImageAsync(userDto.FrontImageUrl);
-
-            if (userDto.BackImageUrl != null)
-                user.BackImageUrl = await _imageService.UploadImageAsync(userDto.BackImageUrl);
-
-            // Lấy tên tỉnh và xã nếu có
-            if (!string.IsNullOrEmpty(user.ProvinceId))
-                user.ProvinceName = await GetProvinceNameAsync(user.ProvinceId) ?? "";
-
-            if (!string.IsNullOrEmpty(user.WardId) && !string.IsNullOrEmpty(user.ProvinceId))
-                user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
-
-            // ✅ Only validate CitizenIdNumber if it's provided (not empty)
-           
+            if (createUserDto.Avatar != null)
+            {
+                user.Avatar = await _imageService.UploadImageAsync(createUserDto.Avatar);
+            }
+         
+            user.FrontImageUrl = await _imageService.UploadImageAsync(createUserDto.FrontImageUrl);
             
-           
+            user.BackImageUrl = await _imageService.UploadImageAsync(createUserDto.BackImageUrl);
 
-            // Lưu profile mới vào DB
+            user.ProvinceName = await GetProvinceNameAsync(user.ProvinceId) ?? "";
+            
+            user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
+            
             await _userRepository.CreateUserAsync(user);
             return true;
         }
@@ -136,56 +109,9 @@ namespace AccountAPI.Service
             var user = await _userRepository.GetByUserIdAsync(userId);
             if (user == null)
                 return false;
-
-            // ✅ Cập nhật thông tin mở rộng
             _mapper.Map(userDto, user);
-
-            // ✅ Nếu userDto có FullName thì lưu vào DB local
-            //if (!string.IsNullOrEmpty(userDto.FullName))
-            //{
-            //    user.FullName = userDto.FullName;
-
-            //    // ✅ Gọi Auth API để đồng bộ
-            //    await _authApiClient.UpdateFullNameAsync(userId, userDto.FullName);
-            //}
-           
-            //if (userDto.Avatar != null)
-            //{
-            //    var avatarUrl = await _imageService.UploadImageAsync(userDto.Avatar);
-            //    user.Avatar = avatarUrl; // ✅ gán đúng URL ảnh vào DB
-            //}
-
-            //if (userDto.FrontImageUrl != null)
-            //{
-            //    var frontUrl = await _imageService.UploadImageAsync(userDto.FrontImageUrl);
-            //    user.FrontImageUrl = frontUrl;
-            //}
-
-            //if (userDto.BackImageUrl != null)
-            //{
-            //    var backUrl = await _imageService.UploadImageAsync(userDto.BackImageUrl);
-            //    user.BackImageUrl = backUrl;
-            //}
-            user.Avatar = userDto.Avatar ?? user.Avatar;
-            user.FrontImageUrl = userDto.FrontImageUrl ?? user.FrontImageUrl;
-            user.BackImageUrl = userDto.BackImageUrl ?? user.BackImageUrl;
-            // ✅ Cập nhật tên tỉnh/xã nếu cần
-            if (!string.IsNullOrEmpty(user.ProvinceId))
-                user.ProvinceName = await GetProvinceNameAsync(user.ProvinceId) ?? "";
-
-            if (!string.IsNullOrEmpty(user.WardId) && !string.IsNullOrEmpty(user.ProvinceId))
-                user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
-            
-            // ✅ Only validate CitizenIdNumber if it's provided (not empty)
-            if (!string.IsNullOrWhiteSpace(userDto.CitizenIdNumber))
-            {
-                if (userDto.CitizenIdNumber.Length != 12 || !userDto.CitizenIdNumber.All(char.IsDigit))
-                {
-                    return false;
-                }
-                user.CitizenIdNumber = userDto.CitizenIdNumber;
-            }
-
+            user.ProvinceName = await GetProvinceNameAsync(user.ProvinceId) ?? "";
+            user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
             await _userRepository.UpdateAsync(user);
             return true;
         }

@@ -1,4 +1,4 @@
-﻿using AccountAPI.Data;
+﻿using AccountAPI.Model;
 using AccountAPI.DTO.Resquest;
 
 namespace AccountAPI.Repositories.Interfaces

@@ -8,12 +8,10 @@ namespace AccountAPI.DTO.Request
     {
         [Required(ErrorMessage = "Gender is required")]
         public GenderEnum Gender { get; set; }
-        
         public string? Avatar { get; set; }
         
-        [Required(ErrorMessage = "Bio is required")]
         [StringLength(500, ErrorMessage = "Bio cannot exceed 500 characters")]
-        public string Bio { get; set; }
+        public string? Bio { get; set; }
         
         [Required(ErrorMessage = "Date of birth is required")]
         public DateTime DateOfBirth { get; set; }

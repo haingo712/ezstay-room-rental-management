@@ -1,4 +1,4 @@
-﻿using AccountAPI.Data;
+﻿using AccountAPI.Model;
 using AccountAPI.DTO.Request;
 using AccountAPI.Repositories.Interfaces;
 using MongoDB.Driver;

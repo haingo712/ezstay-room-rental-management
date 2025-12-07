@@ -1,4 +1,4 @@
-﻿using AccountAPI.Data;
+﻿using AccountAPI.Model;
 using AccountAPI.DTO.Reponse;
 using AccountAPI.DTO.Request;
 using AccountAPI.DTO.Resquest;
@@ -8,7 +8,7 @@ namespace AccountAPI.Service.Interfaces
 {
     public interface IUserService
     {
-        Task<bool> CreateProfileAsync(Guid userId, UserDTO userDto);
+        Task<bool> CreateProfileAsync(Guid userId, CreateUserDTO createUserDto);
         Task<UserResponseDTO?> GetProfileAsync(Guid userId);
         Task<bool> UpdateProfile(Guid userId, UpdateUserDTO userDto);
         Task<bool> UpdatePhoneAsync(Guid userId, string newPhone);

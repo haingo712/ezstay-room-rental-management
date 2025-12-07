@@ -8,14 +8,12 @@ namespace AccountAPI.Service
     public class AuthApiClient : IAuthApiClient
     {
         private readonly HttpClient _http;
-    
-
         public AuthApiClient(HttpClient http, IHttpClientFactory factory)
         {
             _http = http;
             _http = factory.CreateClient("Gateway");
         }
-    
+        
         public async Task<bool> ConfirmOtpAsync(string email, string otp)
         {
             var response = await _http.PostAsJsonAsync("/api/Auth/confirm-otp", new
