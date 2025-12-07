@@ -23,13 +23,7 @@ public class ReviewController : ControllerBase
         _reviewService = reviewService;
         _tokenService = tokenService;
     }
-    // [HttpGet]
-    // [EnableQuery]
-    // public IQueryable<ReviewResponse> GetAll()
-    // {
-    //     return _reviewService.GetAll();
-    //     
-    // }
+
     
     [HttpGet]
     [EnableQuery]
@@ -37,6 +31,14 @@ public class ReviewController : ControllerBase
     {
         var ownerId = _tokenService.GetUserIdFromClaims(User);
         return _reviewService.GetAllByOwnerId(ownerId);
+    }
+    
+    [HttpGet("all/{roomId}")]
+    [EnableQuery]
+    public IQueryable<ReviewResponse> GetAllReviewByRoomId(Guid roomId)
+    {
+      
+        return _reviewService.GetAllReviewByRoomId(roomId);
     }
 
     [HttpGet("{id}")]
@@ -92,13 +94,5 @@ public class ReviewController : ControllerBase
         var result= await _reviewService.ReviewExistsByContractId(contractId);
         return Ok(result);
     }
-    [HttpGet("by-room")]
-    public async Task<IActionResult> GetReviewsByRoom([FromQuery] List<Guid> roomIds)
-    {
-        if (roomIds == null || !roomIds.Any())
-            return Ok(new List<ReviewResponse>());
-
-        var reviews = await _reviewService.GetByRoomIdsAsync(roomIds);
-        return Ok(reviews);
-    }
+   
 }

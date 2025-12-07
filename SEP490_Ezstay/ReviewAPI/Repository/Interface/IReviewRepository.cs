@@ -10,5 +10,6 @@ public interface IReviewRepository
     Task<Review?> GetById(Guid id);
     Task Add(Review review);
     Task Update(Review review);
-    Task<List<Review>> GetByRoomIds(List<Guid> roomIds);
+   
+    IQueryable<Review> GetAllReviewByRoomId(Guid roomId);
 }
