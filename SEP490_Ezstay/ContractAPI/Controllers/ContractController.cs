@@ -176,14 +176,49 @@ namespace ContractAPI.Controllers
         
         
         // hàm này dùng để 2 người kí 
-        [Authorize(Roles = "Owner, User")]
-        [HttpPut("{id}/sign-contract")]
-        public async Task<IActionResult> SignContract(Guid id, [FromBody] string ownerSignature )
+        // [Authorize(Roles = "User")]
+        // [HttpPut("{id}/sign-contract")]
+        // public async Task<IActionResult> SignContractUser(Guid id, [FromBody] string userSignature)
+        // {
+        //     try
+        //     {
+        //        var role = _tokenService.GetRoleFromClaims(User);
+        //         var result = await _contractService.SignContractUser(id, userSignature,role );
+        //         if (!result.IsSuccess)
+        //             return BadRequest(new { message = result.Message });
+        //         return Ok(result);
+        //     }
+        //     catch (KeyNotFoundException e)
+        //     {
+        //         return NotFound(new { message = e.Message });
+        //     }
+        // }
+        // hàm này dùng để 2 người kí 
+        [Authorize(Roles = "User")]
+        [HttpPut("{id}/sign-contract/user")]
+        public async Task<IActionResult> SignContractUser(Guid id, [FromBody] string userSignature)
         {
             try
             {
-                var role = _tokenService.GetRoleFromClaims(User);
-                var result = await _contractService.SignContract(id, ownerSignature, role);
+                var user = _tokenService.GetUserIdFromClaims(User);
+                var result = await _contractService.SignContractUser(id, userSignature, user);
+                if (!result.IsSuccess)
+                    return BadRequest(new { message = result.Message });
+                return Ok(result);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
+            }
+        }
+        [Authorize(Roles = "Owner")]
+        [HttpPut("{id}/sign-contract/owner")]
+        public async Task<IActionResult> SignContractOwner(Guid id, [FromBody] string ownerSignature )
+        {
+            try
+            {
+                var owner = _tokenService.GetUserIdFromClaims(User);
+                var result = await _contractService.SignContractOwner(id, ownerSignature, owner);
                 if (!result.IsSuccess)
                     return BadRequest(new { message = result.Message });
                 return Ok(result);
