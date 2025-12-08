@@ -56,24 +56,16 @@ namespace AuthApi.Services
             try
             {
                 var client = _httpClientFactory.CreateClient();
-
-                // 1) GỌI USER API KIỂM TRA PROFILE
+                //
+                // // 1) GỌI USER API KIỂM TRA PROFILE
                 var checkResp = await client.GetAsync($"{_UserApiUrl}/check-profile?id={accountId}");
-
+                //
                 if (!checkResp.IsSuccessStatusCode)
                 {
                    
                     return null;
                 }
-
-                var checkData = await checkResp.Content.ReadFromJsonAsync<Check>();
-
-                if (checkData == null || checkData.IsValid == false)
-                {
-                   
-                    return null;
-                }
-
+                
                 // 2) TẠO REQUEST
                 var entity = _mapper.Map<OwnerRegistrationRequest>(dto);
                 entity.Id = Guid.NewGuid();
@@ -102,7 +94,7 @@ namespace AuthApi.Services
                     RequestId = entity.Id
                 };
                 Console.WriteLine($"❌ Submit request failed: {notifyPayload}");
-                await client.PostAsJsonAsync($"{_NotifyApiUrl}/trigger-owner-register", notifyPayload);
+               await client.PostAsJsonAsync($"{_NotifyApiUrl}/trigger-owner-register", notifyPayload);
 
                 return resultDto;
             }
