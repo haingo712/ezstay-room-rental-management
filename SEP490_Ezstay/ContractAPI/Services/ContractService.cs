@@ -46,7 +46,9 @@ public class ContractService : IContractService
                 _contractRepository.Update(contract);
             }
         }
+
         return contracts.OrderByDescending(x => x.CreatedAt).ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
+
     }
     
     public IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId)
