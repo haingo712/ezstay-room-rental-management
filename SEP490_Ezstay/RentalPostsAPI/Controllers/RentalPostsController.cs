@@ -25,8 +25,29 @@ namespace RentalPostsAPI.Controllers
             _tokenService = tokenService;
             _bus = bus;
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllForUser()
+        {
+            var result = await _service.GetAllForUserAsync();
+            return Ok(result);
+        }
+        
+        [HttpGet("owner")]
+        [Authorize(Roles = "Owner")]
+        public async Task<IActionResult> GetAllForOwner()
+        {
 
+            var result = await _service.GetAllForOwnerAsync(User);
+            return Ok(result);
+        }
        
+        // hàm cho staff dùng 
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllPosts()
+        {
+            var posts = await _service.GetAllPostsAsync();
+            return Ok(posts);
+        }
         
         [HttpGet]
         [EnableQuery]
@@ -52,12 +73,7 @@ namespace RentalPostsAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllForUser()
-        {
-            var result = await _service.GetAllForUserAsync();
-            return Ok(result);
-        }
+       
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
@@ -68,14 +84,7 @@ namespace RentalPostsAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("owner")]
-        [Authorize(Roles = "Owner")]
-        public async Task<IActionResult> GetAllForOwner()
-        {
-
-            var result = await _service.GetAllForOwnerAsync(User);
-            return Ok(result);
-        }
+    
       
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner")]
@@ -104,12 +113,7 @@ namespace RentalPostsAPI.Controllers
             return Ok(postId);
         }
 
-        [HttpGet("pending")]
-        public async Task<IActionResult> GetPendingPosts()
-        {
-            var pendingPosts = await _service.GetPendingPostsAsync();
-            return Ok(pendingPosts);
-        }
+       
 
         [HttpPut("{id}/approve")]
         public async Task<IActionResult> Approve(Guid id)

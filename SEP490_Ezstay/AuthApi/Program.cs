@@ -151,10 +151,10 @@ builder.Services.AddHttpClient("Gateway", (serviceProvider, client) =>
                 logger.LogInformation("Admin user not found, creating one.");
                 var newAdmin = new Account
                 {
-                    FullName = "Administrator",
+                    FullName = "Adminis",
                     Email = "admin@gmail.com",
                     Password = BCrypt.Net.BCrypt.HashPassword("admin123"),
-                    Phone = "0000000000",
+                    Phone = "0799568612",
                     Role = Shared.Enums.RoleEnum.Admin,
                     IsVerified = true,
                     CreateAt = DateTime.UtcNow
@@ -175,9 +175,9 @@ builder.Services.AddHttpClient("Gateway", (serviceProvider, client) =>
                 var newStaff = new Account
                 {
                     FullName = "Staff One",
-                    Email = "staff1@gmail.com",
-                    Password = BCrypt.Net.BCrypt.HashPassword("123"),
-                    Phone = "1234567890",
+                    Email = "staff@gmail.com",
+                    Password = BCrypt.Net.BCrypt.HashPassword("Ezstay@12345"),
+                    Phone = "0799568611",
                     Role = Shared.Enums.RoleEnum.Staff,
                     IsVerified = true,
                     CreateAt = DateTime.UtcNow

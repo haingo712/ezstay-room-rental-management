@@ -9,7 +9,7 @@ namespace RentalPostsAPI.Repository.Interface
         Task<RentalPosts> CreateAsync(RentalPosts post);
         Task<RentalPosts?> GetByIdAsync(Guid id);
         Task<IEnumerable<RentalPosts>> GetAllAsync();
-        Task<IEnumerable<RentalPosts>> GetPendingAsync();
+        Task<IEnumerable<RentalPosts>> GetAllPostsAsync();
         Task<RentalPosts?> UpdateAsync(RentalPosts post);
         Task<bool> DeleteAsync(Guid id, Guid deletedBy);
         Task<Guid?> GetPostIdByRoomIdAsync(Guid roomId);

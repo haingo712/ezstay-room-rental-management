@@ -92,8 +92,8 @@ public class RoomService: IRoomService{
         var existRoomName = await _roomRepository.RoomNameExistsInHouse(room.HouseId, request.RoomName);
         if (existRoomName && request.RoomName != room.RoomName)
             return ApiResponse<bool>.Fail("Room name already exists in house");   
-        if (request.RoomStatus == RoomStatus.Occupied)
-            return ApiResponse<bool>.Fail("K dc set trang thai nay");  
+        if (room.RoomStatus == RoomStatus.Occupied && request.RoomStatus != RoomStatus.Occupied)
+            return ApiResponse<bool>.Fail("Cannot update the room status because this room is currently occupied.");  
         _mapper.Map(request, room);
         room.UpdatedAt = DateTime.UtcNow;
         room.ImageUrl = request.ImageUrls;
