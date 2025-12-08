@@ -8,6 +8,7 @@ public class VerificationEmailContractRequest
   //  public string Email { get; set; } 
 
     // Otp is required for verification but optional for send requests (backend can generate)
+    [Required]
     public string Otp { get; set; }
 
     // ContractId to associate OTP with a specific contract when sending
