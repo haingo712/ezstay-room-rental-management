@@ -27,32 +27,26 @@ public class MailService(
     
     public async Task<(bool success, string message)> VerifyOtp(Guid id, string otp, Guid signerId)
     {  
-        // var contract = await _contractAPI.GetContractByIdAsync(contractId);
-        // if (contract == null)
-        //     return (false, "Contract not found");
+        var otpRecord = await _mailRepository.GetByIdAsync(id);
+        
+        if (otpRecord == null)
+            return (false, "OTP not found");
+        
+        if (!string.Equals(otpRecord.OtpCode, otp, StringComparison.Ordinal))
+            return (false, "The OTP code is incorrect");
+        
+        if (otpRecord.IsUsed) 
+            return (false, "The OTP has already been used");
+        if (otpRecord.SignerId != signerId)
+            return (false, "The OTP does not belong to this user");
+        
+        if (DateTime.UtcNow > otpRecord.ExpireAt)
+            return (false, "The OTP has expired. Please request a new OTP.");
 
-        var mailId = await _mailRepository.GetByIdAsync(id);
+        otpRecord.IsUsed = true;
+        await _mailRepository.Update(otpRecord);
         
-        if (mailId == null)
-            return (false, "11 not found");
-        // var otpRecord = await _mailRepository.GetByContractAndSignerId(id, otp, signerId);
-        //
-        // if (otpRecord == null) 
-        //     return (false, "OTP not found for this contract");
-        //
-        // if (!string.Equals(otpRecord.Email, email, StringComparison.OrdinalIgnoreCase))
-        //     return (false, "Email does not match OTP record");
-        //
-        // if (otpRecord.IsUsed) 
-        //     return (false, "OTP already used");
-        //     
-        // if (DateTime.UtcNow > otpRecord.ExpireAt)
-        //     return (false, "OTP expired. Please request a new one.");
-        
-        //otpRecord.IsUsed = true;
-        mailId.IsUsed = true;
-        await _mailRepository.Update(mailId);
-        return (true, $"OTP verified successfully for ");
+        return (true, "OTP verified successfully");
     }
 
     public async Task<(bool success, string message, Guid? otpId)> SendOtp(string email, Guid contractId, Guid signerId)
@@ -67,7 +61,7 @@ public class MailService(
         {
             Email = email,
             OtpCode = otpCode,
-            ExpireAt = DateTime.UtcNow.AddMinutes(5),
+            ExpireAt = DateTime.UtcNow.AddMinutes(1.5),
             ContractId = contractId,
             SignerId = signerId
         };
