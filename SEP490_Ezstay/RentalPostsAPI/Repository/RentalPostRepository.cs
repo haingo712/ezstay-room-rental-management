@@ -34,14 +34,14 @@ namespace RentalPostsAPI.Repository
         {
             return await _collection.Find(x => x.IsActive && x.IsApproved == PostStatus.Approved).ToListAsync();
         }
-        public async Task<IEnumerable<RentalPosts>> GetPendingAsync()
+        public async Task<IEnumerable<RentalPosts>> GetAllPostsAsync()
         {
-            return await _collection.Find(p =>  p.IsActive).ToListAsync();
+            return await _collection.Find(_ => true).ToListAsync();
         }
 
         public async Task<IEnumerable<RentalPosts>> GetAllByOwnerIdAsync(Guid ownerId)
         {
-            return await _collection.Find(x => x.AuthorId == ownerId).ToListAsync();
+            return await _collection.Find(x => x.AuthorId == ownerId && x.IsActive).ToListAsync();
         }
 
         public async Task<RentalPosts?> GetByIdAsync(Guid id)

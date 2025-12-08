@@ -90,9 +90,24 @@ namespace RentalPostsAPI.Service
         
         public async Task<IEnumerable<RentalpostDTO>> GetAllForUserAsync()
         {
-            var entities = (await _repo.GetAllAsync()).ToList();
-            // return await MapRentalPostsAsync(entities);
-            return  _mapper.Map<IEnumerable<RentalpostDTO>>(entities);
+            var entities = (await _repo.GetAllAsync());
+            
+            var result = new List<RentalpostDTO>();
+
+            foreach (var entity in entities)
+            {
+                var room = await _externalService.GetRoomByIdAsync(entity.RoomId);
+                if (room == null) continue;
+               
+                if (room.RoomStatus != RoomStatus.Available) continue;
+
+                var dto = _mapper.Map<RentalpostDTO>(entity);
+                dto.Room = room;
+
+                result.Add(dto);
+            }
+
+            return result;
         }
 
      
@@ -146,9 +161,9 @@ namespace RentalPostsAPI.Service
         }
 
 
-        public async Task<IEnumerable<RentalpostDTO>> GetPendingPostsAsync()
+        public async Task<IEnumerable<RentalpostDTO>> GetAllPostsAsync()
         {
-            var entities = (await _repo.GetPendingAsync()).ToList();
+            var entities = (await _repo.GetAllPostsAsync()).ToList();
             return  _mapper.Map<IEnumerable<RentalpostDTO>>(entities);
         }
 

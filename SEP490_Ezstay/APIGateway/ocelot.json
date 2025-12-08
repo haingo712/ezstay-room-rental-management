@@ -347,6 +347,20 @@
       ]
     },
     {
+      "DownstreamPathTemplate": "/api/odata/RentalPosts",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "rentalpostsapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/odata/RentalPosts",
+      "UpstreamHttpMethod": [
+        "GET"
+      ]
+    },
+    {
       "DownstreamPathTemplate": "/api/RentalPosts/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

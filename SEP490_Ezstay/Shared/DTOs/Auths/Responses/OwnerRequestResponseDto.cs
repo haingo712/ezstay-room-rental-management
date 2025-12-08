@@ -1,6 +1,6 @@
 ﻿using Shared.DTOs.Auths.Responses;
 using Shared.Enums;
-namespace AuthApi.DTO.Response
+namespace Shared.DTOs.Auths.Responses
 {
     public class OwnerRequestResponseDto
     {
@@ -9,7 +9,7 @@ namespace AuthApi.DTO.Response
         public string Reason { get; set; } = null!;
         public DateTime SubmittedAt { get; set; }
         public RequestStatusEnum Status { get; set; }
-
+        public string Imageasset { get; set;}
         public string? RejectionReason { get; set; }
     }
 }

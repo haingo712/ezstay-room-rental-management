@@ -12,6 +12,7 @@ using Twilio.Http;
 using static Google.Apis.Requests.BatchRequest;
 using AccountAPI.DTO.Response;
 using AuthApi.Services.Interfaces;
+using Shared.DTOs.Auths.Responses;
 
 
 namespace AuthApi.Services
@@ -106,7 +107,7 @@ namespace AuthApi.Services
         }
 
 
-
+        
 
 
 
@@ -229,14 +230,9 @@ namespace AuthApi.Services
         public async Task<List<OwnerRequestResponseDto>> GetAllRequestsAsync()
         {
             var allRequests = await _ownerRequestRepo.GetAllAsync();
-
             // ✅ Lọc chỉ lấy những đơn có trạng thái Pending
-            var pendingRequests = allRequests
-                .Where(r => r.Status == RequestStatusEnum.Pending)
-                .ToList();
-
+            var pendingRequests = allRequests.ToList();
             return _mapper.Map<List<OwnerRequestResponseDto>>(pendingRequests);
         }
-
     }
 }
