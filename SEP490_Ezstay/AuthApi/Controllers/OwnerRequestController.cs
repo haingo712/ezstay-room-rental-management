@@ -87,12 +87,6 @@ namespace AuthApi.Controllers
             var requests = await _service.GetAllRequestsAsync();
             return Ok(requests);
         }
-
-
-
-
-
-
-
+        
     }
 }
