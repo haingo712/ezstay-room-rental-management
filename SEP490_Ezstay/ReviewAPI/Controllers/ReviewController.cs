@@ -24,7 +24,12 @@ public class ReviewController : ControllerBase
         _tokenService = tokenService;
     }
 
-    
+    [HttpGet("all")]
+    [EnableQuery]
+    public IQueryable<ReviewResponse> GetAll()
+    {
+        return _reviewService.GetAll();
+    }
     [HttpGet]
     [EnableQuery]
     public IQueryable<ReviewResponse> GetAllByOwnerId()

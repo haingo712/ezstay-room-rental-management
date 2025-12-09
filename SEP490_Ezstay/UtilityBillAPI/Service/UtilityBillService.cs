@@ -80,7 +80,6 @@ namespace UtilityBillAPI.Service
                     ContractStatus.Pending => "Contract is pending approval. Cannot generate a bill.",
                     ContractStatus.Cancelled => "Contract is cancelled. Cannot generate a bill.",
                     ContractStatus.Expired => "Contract is expired. Cannot generate a bill.",
-                    ContractStatus.Evicted => "Contract has been terminated. Cannot generate a bill.",
                     _ => "Contract is not valid for bill generation."
                 };
 
@@ -180,7 +179,7 @@ namespace UtilityBillAPI.Service
                     ContractStatus.Pending => "Contract is pending approval. Cannot generate a bill.",
                     ContractStatus.Cancelled => "Contract is cancelled. Cannot generate a bill.",
                     ContractStatus.Expired => "Contract is expired. Cannot generate a bill.",
-                    ContractStatus.Evicted => "Contract has been terminated. Cannot generate a bill.",
+                 //   ContractStatus.Evicted => "Contract has been terminated. Cannot generate a bill.",
                     _ => "Contract is not valid for bill generation."
                 };
 

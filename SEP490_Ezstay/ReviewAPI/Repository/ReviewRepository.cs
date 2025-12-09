@@ -12,7 +12,7 @@ public class ReviewRepository : IReviewRepository
     {
         _reviews = database.GetCollection<Review>("Reviews");
     }
-    //public IQueryable<Review> GetAll() => _reviews.AsQueryable();
+    public IQueryable<Review> GetAll() => _reviews.AsQueryable();
     public IQueryable<Review> GetAllByOwnerId(Guid ownerId) => _reviews.AsQueryable()
         .Where(r => r.OwnerId == ownerId);
     public Task<bool> ReviewExistsByContractId(Guid contractId)
