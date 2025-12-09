@@ -27,7 +27,8 @@ public class ReviewRepository : IReviewRepository
     public IQueryable<Review> GetAllReviewByRoomId(Guid roomId)
     {
       return  _reviews.AsQueryable()
-            .Where(r => r.RoomId == roomId);
+            .Where(r => r.RoomId == roomId && !r.IsHidden)
+            .OrderByDescending(r => r.CreatedAt);
     }
 
     public async Task Add(Review review)

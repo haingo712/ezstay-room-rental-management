@@ -508,6 +508,20 @@
       ]
     },
     {
+      "DownstreamPathTemplate": "/api/Review/all/{roomId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "reviewapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Review/all/{roomId}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ]
+    },
+    {
       "DownstreamPathTemplate": "/api/Review/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
