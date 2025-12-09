@@ -9,7 +9,7 @@ namespace RoomAPI.Model
     {
         [BsonId]
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public Guid RoomId { get; set; }
         [BsonGuidRepresentation(GuidRepresentation.Standard)]

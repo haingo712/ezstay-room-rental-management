@@ -20,5 +20,5 @@ public interface IRoomRepository
     IQueryable<RoomAmenity> GetAllRoomAmenityByRoomId(Guid roomId);
     Task AddAmenity(IEnumerable<RoomAmenity> roomAmenities);
     Task<bool> CheckAmenity(Guid amenityId);
-    Task DeleteByRoomId(Guid roomId);
+    Task DeleteAmenityByRoomId(Guid roomId);
 }

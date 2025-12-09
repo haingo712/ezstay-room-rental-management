@@ -117,7 +117,7 @@ public class RoomService: IRoomService{
         if (checkContract)
             return  ApiResponse<bool>.Fail("Can not delete room because it has contracts.");
         
-       // await _roomAmenity.DeleteAmenityByRoomId(room.Id);
+        await _roomRepository.DeleteAmenityByRoomId(room.Id);
         await _roomRepository.Delete(room);
         
         return ApiResponse<bool>.Success(true, "Delete Successfully");
@@ -150,7 +150,7 @@ public class RoomService: IRoomService{
         {
             amenityIds = new List<Guid>();
         }
-        await _roomRepository.DeleteByRoomId(roomId);
+        await _roomRepository.DeleteAmenityByRoomId(roomId);
         var newItems = amenityIds.Select(id => new RoomAmenity
         {
             RoomId = roomId,
