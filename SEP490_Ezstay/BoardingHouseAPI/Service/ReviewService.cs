@@ -22,7 +22,8 @@ namespace BoardingHouseAPI.Service
 
             foreach (var room in rooms)
             {
-                var response = await _httpClient.GetAsync($"api/Review?$filter=RoomId eq {room.Id}");
+                // Use the correct endpoint: GET /api/Review/all/{roomId}
+                var response = await _httpClient.GetAsync($"api/Review/all/{room.Id}");
 
                 if (!response.IsSuccessStatusCode)
                     continue;

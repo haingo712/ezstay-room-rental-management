@@ -79,9 +79,9 @@ namespace RentalPostsAPI.Controllers
        
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id, [FromQuery] bool incrementView = true)
         {
-            var result = await _service.GetByIdAsync(id);
+            var result = await _service.GetByIdAsync(id, incrementView);
             if (result == null)
                 return NotFound(ApiResponse<string>.Fail("Không tìm thấy bài đăng"));
             return Ok(result);

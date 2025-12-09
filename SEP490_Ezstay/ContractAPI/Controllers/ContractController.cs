@@ -259,5 +259,18 @@ namespace ContractAPI.Controllers
             var result = await _contractService.GetAllRentalByUserIdWithOwnerInfoAsync(userId);
             return Ok(result);
         }
+        
+        /// <summary>
+        /// Get all tenants (primary and cohabitants) for owner
+        /// Returns list of all IdentityProfile from Active contracts
+        /// </summary>
+        [Authorize(Roles = "Owner")]
+        [HttpGet("tenants")]
+        public async Task<IActionResult> GetAllTenants()
+        {
+            var ownerId = _tokenService.GetUserIdFromClaims(User);
+            var result = await _contractService.GetAllTenantsAsync(ownerId);
+            return Ok(result);
+        }
     }
 }

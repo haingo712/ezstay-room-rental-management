@@ -497,4 +497,71 @@ public class ContractService : IContractService
         var responses = rentalRequests.Select(r => _mapper.Map<RentalRequestResponse>(r)).ToList();
         return responses;
     }
+    
+    /// <summary>
+    /// Get all tenants (primary and cohabitants) from Active contracts
+    /// Returns flattened list with contract and room info
+    /// </summary>
+    public async Task<List<TenantInfoResponse>> GetAllTenantsAsync(Guid ownerId)
+    {
+        // Get all Active contracts for owner
+        var activeContracts = _contractRepository.GetAllByOwnerId(ownerId)
+            .Where(c => c.ContractStatus == ContractStatus.Active)
+            .ToList();
+
+        var tenantList = new List<TenantInfoResponse>();
+
+        foreach (var contract in activeContracts)
+        {
+            // Get room info
+            var room = await _roomService.GetRoomByIdAsync(contract.RoomId);
+            var roomName = room?.RoomName ?? "N/A";
+            // Note: HouseName will be fetched by frontend using room.HouseId
+            var houseName = "N/A"; // Placeholder - frontend will fetch from BoardingHouseAPI
+
+            // Get all profiles in contract (ProfilesInContract contains both primary tenant and cohabitants)
+            if (contract.ProfilesInContract != null && contract.ProfilesInContract.Any())
+            {
+                for (int i = 0; i < contract.ProfilesInContract.Count; i++)
+                {
+                    var profile = contract.ProfilesInContract[i];
+                    
+                    tenantList.Add(new TenantInfoResponse
+                    {
+                        Id = profile.Id,
+                        ContractId = contract.Id,
+                        UserId = profile.UserId,
+                        IsPrimary = i == 0, // First profile is primary tenant
+                        
+                        // Contract info
+                        RoomId = contract.RoomId,
+                        RoomName = roomName,
+                        HouseName = houseName,
+                        CheckinDate = contract.CheckinDate,
+                        CheckoutDate = contract.CheckoutDate,
+                        
+                        // Identity profile info
+                        FullName = profile.FullName,
+                        DateOfBirth = profile.DateOfBirth,
+                        Phone = profile.Phone,
+                        Email = profile.Email,
+                        Gender = profile.Gender,
+                        ProvinceId = profile.ProvinceId,
+                        ProvinceName = profile.ProvinceName,
+                        WardId = profile.WardId,
+                        WardName = profile.WardName,
+                        Address = profile.Address,
+                        TemporaryResidence = profile.TemporaryResidence,
+                        CitizenIdNumber = profile.CitizenIdNumber,
+                        CitizenIdIssuedDate = profile.CitizenIdIssuedDate,
+                        CitizenIdIssuedPlace = profile.CitizenIdIssuedPlace,
+                        FrontImageUrl = profile.FrontImageUrl,
+                        BackImageUrl = profile.BackImageUrl
+                    });
+                }
+            }
+        }
+
+        return tenantList;
+    }
 }

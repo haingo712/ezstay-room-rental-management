@@ -143,6 +143,7 @@ namespace BoardingHouseAPI.Controllers
         }
 
         [HttpGet("rank")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<BoardingHouseRankResponse>>> GetRankedBoardingHouses(
             [FromQuery] RankType type,
             [FromQuery] string order = "desc",
@@ -160,6 +161,7 @@ namespace BoardingHouseAPI.Controllers
         }
 
         [HttpGet("{id}/sentiment-feedback")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetSentimentFeedback(Guid id)
         {
             var response = await _boardingHouseService.GetSentimentSummaryAsync(id);

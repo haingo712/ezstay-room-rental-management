@@ -12,7 +12,7 @@ namespace RentalPostsAPI.Service.Interface
         Task<ApiResponse<RentalpostDTO>> CreateAsync(CreateRentalPostDTO dto, ClaimsPrincipal user);
         Task<IEnumerable<RentalpostDTO>> GetAllForUserAsync();
         Task<IEnumerable<RentalpostDTO>> GetAllForOwnerAsync(ClaimsPrincipal user);
-        Task<RentalpostDTO> GetByIdAsync(Guid id);
+        Task<RentalpostDTO> GetByIdAsync(Guid id, bool incrementView = false);
         Task<RentalpostDTO> UpdateAsync(Guid id, UpdateRentalPostDTO dto);
         Task<bool> DeleteAsync(Guid id, Guid deletedBy);
         Task<IEnumerable<RentalpostDTO>> GetAllPostsAsync();
