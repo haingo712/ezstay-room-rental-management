@@ -148,6 +148,10 @@ namespace RentalPostsAPI.Service
             _mapper.Map(dto, entity);
             entity.UpdatedAt = DateTime.UtcNow;
 
+            if (dto.ImageUrls != null)
+            {
+                entity.ImageUrls = dto.ImageUrls;
+            }
             var updated = await _repo.UpdateAsync(entity);
             if (updated == null) return null;
 

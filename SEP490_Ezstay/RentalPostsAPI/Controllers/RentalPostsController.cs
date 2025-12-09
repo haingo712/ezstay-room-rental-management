@@ -25,6 +25,9 @@ namespace RentalPostsAPI.Controllers
             _tokenService = tokenService;
             _bus = bus;
         }
+        
+        
+        // ngừoi dùng và guest thấy
         [HttpGet]
         public async Task<IActionResult> GetAllForUser()
         {
