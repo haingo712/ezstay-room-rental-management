@@ -21,6 +21,12 @@ namespace RentalPostsAPI.DTO.Request
         public int? IsApproved { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        
+        /// <summary>
+        /// Number of times this post has been viewed
+        /// </summary>
+        public int ViewCount { get; set; }
+        
         public BoardingHouseDTO BoardingHouse { get; set; }
         public RoomDto Room { get; set; } 
       //  public List<ReviewDto>? Reviews { get; set; }

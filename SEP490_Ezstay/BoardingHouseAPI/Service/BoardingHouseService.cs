@@ -204,6 +204,9 @@ namespace BoardingHouseAPI.Service
                 else if (type == RankType.Sentiment)
                 {
                     var sentiments = await _sentimentAnalysisService.SentimentAnalysisAsync(reviews);
+                    if (sentiments == null || !sentiments.Any())
+                        continue; // Skip this house if no sentiment data
+                        
                     score = sentiments.Average(s => s.Label switch
                     {
                         "positive" => 1.0,
@@ -217,7 +220,7 @@ namespace BoardingHouseAPI.Service
                 {
                     BoardingHouseId = house.Id,
                     HouseName = house.HouseName,
-                    FullAddress = house.Location.FullAddress,
+                    FullAddress = house.Location?.FullAddress ?? "Không có địa chỉ",
                     Score = Math.Round(score, 2),
                     Type = type
                 });

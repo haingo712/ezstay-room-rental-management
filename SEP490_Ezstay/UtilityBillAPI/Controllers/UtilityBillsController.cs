@@ -141,7 +141,36 @@ namespace UtilityBillAPI.Controllers
                 return BadRequest(new { message = response.Message });
             }
             return Ok(response);
-        }      
+        }
+
+        /// <summary>
+        /// Get financial statistics for owner dashboard
+        /// </summary>
+        /// <param name="year">Optional year filter (default: current year)</param>
+        /// <returns>Financial statistics including revenue summary, monthly breakdown, and recent payments</returns>
+        // GET: api/UtilityBills/owner/statistics
+        [HttpGet("owner/statistics")]
+        [Authorize(Roles = "Owner")]
+        public async Task<ActionResult<OwnerFinancialStatisticsResponse>> GetFinancialStatistics([FromQuery] int? year = null)
+        {
+            var ownerId = _tokenService.GetUserIdFromClaims(User);
+            var statistics = await _utilityBillService.GetFinancialStatisticsAsync(ownerId, year);
+            return Ok(statistics);
+        }
+
+        /// <summary>
+        /// Get system-wide financial statistics for Admin/Staff dashboard
+        /// </summary>
+        /// <param name="year">Optional year filter (default: current year)</param>
+        /// <returns>System-wide financial statistics including all owners' data</returns>
+        // GET: api/UtilityBills/system/statistics
+        [HttpGet("system/statistics")]
+        [Authorize(Roles = "Admin, Staff")]
+        public async Task<ActionResult<SystemFinancialStatisticsResponse>> GetSystemFinancialStatistics([FromQuery] int? year = null)
+        {
+            var statistics = await _utilityBillService.GetSystemFinancialStatisticsAsync(year);
+            return Ok(statistics);
+        }
 
 
     }

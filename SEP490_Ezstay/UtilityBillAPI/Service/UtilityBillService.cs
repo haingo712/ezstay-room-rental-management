@@ -253,6 +253,202 @@ namespace UtilityBillAPI.Service
             return ApiResponse<bool>.Success(true, "Bill canceled successfully!");
         }
 
+        /// <summary>
+        /// Get financial statistics for owner dashboard
+        /// Aggregates data from all owner's bills
+        /// </summary>
+        public async Task<OwnerFinancialStatisticsResponse> GetFinancialStatisticsAsync(Guid ownerId, int? year = null)
+        {
+            var targetYear = year ?? DateTime.UtcNow.Year;
+            var currentMonth = DateTime.UtcNow.Month;
+            
+            // Get all bills for this owner
+            var allBills = _utilityBillRepo.GetAllByOwner(ownerId).ToList();
+            
+            // Calculate revenue summary
+            var paidBills = allBills.Where(b => b.Status == UtilityBillStatus.Paid).ToList();
+            var unpaidBills = allBills.Where(b => b.Status == UtilityBillStatus.Unpaid).ToList();
+            var cancelledBills = allBills.Where(b => b.Status == UtilityBillStatus.Cancelled).ToList();
+            
+            var totalRevenue = paidBills.Sum(b => b.TotalAmount);
+            var monthlyRevenue = paidBills
+                .Where(b => b.CreatedAt.Year == targetYear && b.CreatedAt.Month == currentMonth)
+                .Sum(b => b.TotalAmount);
+            var pendingRevenue = unpaidBills.Sum(b => b.TotalAmount);
+            
+            // Monthly revenue breakdown (last 12 months)
+            var revenueByMonth = new List<MonthlyRevenueItem>();
+            var monthNames = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+            
+            for (int i = 11; i >= 0; i--)
+            {
+                var date = DateTime.UtcNow.AddMonths(-i);
+                var monthBills = paidBills
+                    .Where(b => b.CreatedAt.Year == date.Year && b.CreatedAt.Month == date.Month)
+                    .ToList();
+                
+                revenueByMonth.Add(new MonthlyRevenueItem
+                {
+                    Month = date.Month,
+                    Year = date.Year,
+                    MonthName = monthNames[date.Month - 1],
+                    Revenue = monthBills.Sum(b => b.TotalAmount),
+                    BillCount = monthBills.Count
+                });
+            }
+            
+            // Revenue by room
+            var revenueByRoom = allBills
+                .GroupBy(b => new { b.RoomName, b.HouseName })
+                .Select(g => new RoomRevenueItem
+                {
+                    RoomName = g.Key.RoomName ?? "Unknown",
+                    HouseName = g.Key.HouseName ?? "Unknown",
+                    TotalRevenue = g.Where(b => b.Status == UtilityBillStatus.Paid).Sum(b => b.TotalAmount),
+                    PendingAmount = g.Where(b => b.Status == UtilityBillStatus.Unpaid).Sum(b => b.TotalAmount),
+                    PaidBillCount = g.Count(b => b.Status == UtilityBillStatus.Paid),
+                    UnpaidBillCount = g.Count(b => b.Status == UtilityBillStatus.Unpaid)
+                })
+                .OrderByDescending(r => r.TotalRevenue)
+                .ToList();
+            
+            // Recent payments (last 10)
+            var recentPayments = paidBills
+                .OrderByDescending(b => b.UpdatedAt ?? b.CreatedAt)
+                .Take(10)
+                .Select(b => new RecentPaymentItem
+                {
+                    BillId = b.Id,
+                    RoomName = b.RoomName ?? "Unknown",
+                    HouseName = b.HouseName ?? "Unknown",
+                    Amount = b.TotalAmount,
+                    PaidDate = b.UpdatedAt ?? b.CreatedAt,
+                    BillType = b.BillType.ToString()
+                })
+                .ToList();
+            
+            return new OwnerFinancialStatisticsResponse
+            {
+                TotalRevenue = totalRevenue,
+                MonthlyRevenue = monthlyRevenue,
+                PendingRevenue = pendingRevenue,
+                TotalBills = allBills.Count,
+                PaidBills = paidBills.Count,
+                UnpaidBills = unpaidBills.Count,
+                CancelledBills = cancelledBills.Count,
+                RevenueByRoom = revenueByRoom,
+                RecentPayments = recentPayments
+            };
+        }
+
+        /// <summary>
+        /// Get system-wide financial statistics for Admin/Staff dashboard
+        /// Aggregates data from ALL owners' bills
+        /// </summary>
+        public async Task<SystemFinancialStatisticsResponse> GetSystemFinancialStatisticsAsync(int? year = null)
+        {
+            var targetYear = year ?? DateTime.UtcNow.Year;
+            var currentMonth = DateTime.UtcNow.Month;
+            
+            // Get ALL bills in the system
+            var allBills = _utilityBillRepo.GetAll().ToList();
+            
+            // Calculate system-wide statistics
+            var paidBills = allBills.Where(b => b.Status == UtilityBillStatus.Paid).ToList();
+            var unpaidBills = allBills.Where(b => b.Status == UtilityBillStatus.Unpaid).ToList();
+            var cancelledBills = allBills.Where(b => b.Status == UtilityBillStatus.Cancelled).ToList();
+            
+            var totalRevenue = paidBills.Sum(b => b.TotalAmount);
+            var pendingRevenue = unpaidBills.Sum(b => b.TotalAmount);
+            var monthlyRevenue = paidBills
+                .Where(b => b.CreatedAt.Year == targetYear && b.CreatedAt.Month == currentMonth)
+                .Sum(b => b.TotalAmount);
+            
+            // 5% platform commission
+            var platformCommission = totalRevenue * 0.05m;
+            
+            // Count unique owners
+            var allOwnerIds = allBills.Select(b => b.OwnerId).Distinct().ToList();
+            var activeOwnerIds = unpaidBills.Select(b => b.OwnerId).Distinct().ToList();
+            
+            // Monthly revenue breakdown (last 12 months)
+            var revenueByMonth = new List<SystemMonthlyRevenueItem>();
+            var monthNames = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+            
+            for (int i = 11; i >= 0; i--)
+            {
+                var date = DateTime.UtcNow.AddMonths(-i);
+                var monthBills = paidBills
+                    .Where(b => b.CreatedAt.Year == date.Year && b.CreatedAt.Month == date.Month)
+                    .ToList();
+                
+                var monthRevenue = monthBills.Sum(b => b.TotalAmount);
+                
+                revenueByMonth.Add(new SystemMonthlyRevenueItem
+                {
+                    Month = date.Month,
+                    Year = date.Year,
+                    MonthName = monthNames[date.Month - 1],
+                    TotalRevenue = monthRevenue,
+                    PlatformCommission = monthRevenue * 0.05m,
+                    BillCount = monthBills.Count,
+                    OwnerCount = monthBills.Select(b => b.OwnerId).Distinct().Count()
+                });
+            }
+            
+            // Top owners by revenue
+            var topOwners = allBills
+                .GroupBy(b => b.OwnerId)
+                .Select(g => new OwnerRevenueItem
+                {
+                    OwnerId = g.Key,
+                    OwnerName = $"Owner {g.Key.ToString().Substring(0, 8)}...",
+                    TotalRevenue = g.Where(b => b.Status == UtilityBillStatus.Paid).Sum(b => b.TotalAmount),
+                    PendingAmount = g.Where(b => b.Status == UtilityBillStatus.Unpaid).Sum(b => b.TotalAmount),
+                    TotalBills = g.Count(),
+                    PaidBills = g.Count(b => b.Status == UtilityBillStatus.Paid),
+                    RoomCount = g.Select(b => b.RoomName).Distinct().Count()
+                })
+                .OrderByDescending(o => o.TotalRevenue)
+                .Take(10)
+                .ToList();
+            
+            // Recent system payments (last 20)
+            var recentPayments = paidBills
+                .OrderByDescending(b => b.UpdatedAt ?? b.CreatedAt)
+                .Take(20)
+                .Select(b => new SystemPaymentItem
+                {
+                    BillId = b.Id,
+                    OwnerId = b.OwnerId,
+                    OwnerName = $"Owner {b.OwnerId.ToString().Substring(0, 8)}...",
+                    RoomName = b.RoomName ?? "Unknown",
+                    HouseName = b.HouseName ?? "Unknown",
+                    Amount = b.TotalAmount,
+                    PlatformCommission = b.TotalAmount * 0.05m,
+                    PaidDate = b.UpdatedAt ?? b.CreatedAt,
+                    BillType = b.BillType.ToString()
+                })
+                .ToList();
+            
+            return new SystemFinancialStatisticsResponse
+            {
+                TotalSystemRevenue = totalRevenue,
+                TotalPendingRevenue = pendingRevenue,
+                MonthlyRevenue = monthlyRevenue,
+                PlatformCommission = platformCommission,
+                TotalBills = allBills.Count,
+                PaidBills = paidBills.Count,
+                UnpaidBills = unpaidBills.Count,
+                CancelledBills = cancelledBills.Count,
+                TotalOwners = allOwnerIds.Count,
+                ActiveOwners = activeOwnerIds.Count,
+                RevenueByMonth = revenueByMonth,
+                TopOwners = topOwners,
+                RecentPayments = recentPayments
+            };
+        }
+
     }
 
 

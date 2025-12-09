@@ -46,12 +46,14 @@ namespace RoomAPI.Controllers
         }
         
         [HttpGet("house/{houseId}")]
+        [AllowAnonymous]
         [EnableQuery]        
         public IQueryable<RoomResponse> GetRoomsByHouseId(Guid houseId)
         {
             return _roomService.GetAllByHouseId(houseId);
         }
         [HttpGet("house/{houseId}/status")]
+        [AllowAnonymous]
         [EnableQuery]           
         public IQueryable<RoomResponse> GetRoomsStatusByHouseId(Guid houseId)
         {

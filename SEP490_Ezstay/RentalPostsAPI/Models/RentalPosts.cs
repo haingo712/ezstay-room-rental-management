@@ -42,6 +42,11 @@ namespace RentalPostsAPI.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Number of times this post has been viewed
+        /// </summary>
+        public int ViewCount { get; set; } = 0;
     }
 }
 

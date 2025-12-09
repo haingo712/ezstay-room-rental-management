@@ -25,6 +25,7 @@ public class ReviewController : ControllerBase
     }
 
     [HttpGet("all")]
+    [AllowAnonymous]
     [EnableQuery]
     public IQueryable<ReviewResponse> GetAll()
     {
@@ -39,6 +40,7 @@ public class ReviewController : ControllerBase
     }
     
     [HttpGet("all/{roomId}")]
+    [AllowAnonymous]
     [EnableQuery]
     public IQueryable<ReviewResponse> GetAllReviewByRoomId(Guid roomId)
     {

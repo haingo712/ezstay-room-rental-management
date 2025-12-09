@@ -31,5 +31,8 @@ public interface IContractService
     // Async versions with user/owner info populated
     Task<List<RentalRequestResponse>> GetAllRentalByOwnerIdWithUserInfoAsync(Guid ownerId);
     Task<List<RentalRequestResponse>> GetAllRentalByUserIdWithOwnerInfoAsync(Guid userId);
+    
+    // Get all tenants for owner
+    Task<List<TenantInfoResponse>> GetAllTenantsAsync(Guid ownerId);
 
 }

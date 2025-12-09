@@ -12,7 +12,12 @@ namespace UtilityBillAPI.Service.Interface
         Task<ApiResponse<UtilityBillDTO>> GenerateMonthlyBillAsync(Guid contractId, Guid ownerId);
         Task<ApiResponse<UtilityBillDTO>> GenerateDepositBillAsync(Guid contractId, Guid ownerId); 
         Task<ApiResponse<bool>> MarkAsPaidAsync(Guid billId);
-        Task<ApiResponse<bool>> CancelAsync(Guid billId, string? reason);     
-
+        Task<ApiResponse<bool>> CancelAsync(Guid billId, string? reason);
+        
+        // Financial Statistics for Owner
+        Task<OwnerFinancialStatisticsResponse> GetFinancialStatisticsAsync(Guid ownerId, int? year = null);
+        
+        // System-wide Financial Statistics for Admin/Staff
+        Task<SystemFinancialStatisticsResponse> GetSystemFinancialStatisticsAsync(int? year = null);
     }
 }

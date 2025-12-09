@@ -7,7 +7,7 @@ public class ReviewResponse
     public Guid ContractId { get; set; }
     public Guid OwnerId  { get; set; }
     public Guid RoomId { get; set; }
-    public string ImageUrl { get; set; }
+    public List<string> ImageUrl { get; set; }
     public DateTime ReviewDeadline { get; set; }
     public int Rating { get; set; }
     public string Content { get; set; }

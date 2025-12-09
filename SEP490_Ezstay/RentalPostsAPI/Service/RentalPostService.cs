@@ -103,6 +103,17 @@ namespace RentalPostsAPI.Service
 
                 var dto = _mapper.Map<RentalpostDTO>(entity);
                 dto.Room = room;
+                
+                // Get BoardingHouse with Location info
+                dto.BoardingHouse = await _externalService.GetBoardingHouseByIdAsync(entity.BoardingHouseId);
+                
+                // Get Author info (Owner name and phone)
+                var account = await _externalService.GetAccountByIdAsync(entity.AuthorId);
+                if (account != null)
+                {
+                    dto.AuthorName = account.FullName;
+                    dto.ContactPhone = account.Phone;
+                }
 
                 result.Add(dto);
             }
@@ -120,10 +131,17 @@ namespace RentalPostsAPI.Service
         }
 
        
-        public async Task<RentalpostDTO> GetByIdAsync(Guid id)
+        public async Task<RentalpostDTO> GetByIdAsync(Guid id, bool incrementView = false)
         {
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null) return null;
+            
+            // Increment view count if requested (typically when user views the post)
+            if (incrementView)
+            {
+                entity.ViewCount += 1;
+                await _repo.UpdateAsync(entity);
+            }
             
             var response = _mapper.Map<RentalpostDTO>(entity);
             var room = await _externalService.GetRoomByIdAsync(entity.RoomId);

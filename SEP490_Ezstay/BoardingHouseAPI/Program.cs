@@ -143,6 +143,17 @@ namespace BoardingHouseAPI
                 builder.Configuration["RabbitMQ:ConnectionString"]
             ));
 
+            // Add CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -153,6 +164,9 @@ namespace BoardingHouseAPI
             }
 
             app.UseHttpsRedirection();
+
+            // Use CORS
+            app.UseCors("AllowAll");
 
             app.UseAuthentication();
             app.UseAuthorization();
