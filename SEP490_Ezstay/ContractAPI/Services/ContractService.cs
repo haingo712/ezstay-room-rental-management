@@ -307,8 +307,9 @@ public class ContractService : IContractService
         var contract = await _contractRepository.GetById(id);
         if (contract == null) 
             throw new KeyNotFoundException("Contract not found");
-        if (contract.ContractStatus == ContractStatus.Active)
+        if (contract.ContractStatus != ContractStatus.Pending)
             return ApiResponse<bool>.Fail("The contract has already been signed, so it cannot be deleted.");
+      
         await _contractRepository.Delete(contract);
         
         return ApiResponse<bool>.Success(true, "Delete contract successfully.");
