@@ -434,11 +434,12 @@ public class ContractService : IContractService
         
         if (request.CheckoutDate < request.CheckinDate.AddMonths(1))
             return ApiResponse<RentalRequestResponse>.Fail("Ngày trả phòng phải ít nhất 1 tháng sau ngày nhận phòng.");
-        var contract = _mapper.Map<RentalRequest>(request);
-            contract.UserId = userId;
-            contract.RoomId = roomId;
-            contract.OwnerId = ownerId;
-            var result = await _contractRepository.Add(contract);
+        var rentalRequest = _mapper.Map<RentalRequest>(request);
+            rentalRequest.UserId = userId;
+            rentalRequest.RoomId = roomId;
+            rentalRequest.OwnerId = ownerId;
+          //  rentalRequest.Status = "Pending";
+            var result = await _contractRepository.Add(rentalRequest);
             var response = _mapper.Map<RentalRequestResponse>(result);
             
         return ApiResponse<RentalRequestResponse>.Success(response, "Add Sucessfully.");

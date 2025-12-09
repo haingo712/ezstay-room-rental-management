@@ -74,7 +74,7 @@ public class RoomRepository:IRoomRepository
         =>await _roomAmenities.Find(r => r.AmenityId == amenityId).AnyAsync();
 
    
-    public async Task DeleteByRoomId(Guid roomId)
+    public async Task DeleteAmenityByRoomId(Guid roomId)
     {
         await _roomAmenities.DeleteManyAsync(r => r.RoomId == roomId);
     }
