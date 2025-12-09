@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using RentalPostsAPI.Enum;
 using Shared.DTOs.Amenities.Responses;
 
@@ -9,6 +10,7 @@ public class RoomDto
     public Guid Id { get; set; }
     public Guid HouseId { get; set; }
     public string RoomName { get; set; } 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public RoomStatus RoomStatus { get; set; }
     public decimal Area { get; set; }
     public decimal Price { get; set; }

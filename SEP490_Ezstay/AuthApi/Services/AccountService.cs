@@ -99,7 +99,7 @@ namespace AuthApi.Services
             acc.Phone = request.Phone;
             acc.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
             acc.Role = request.Role;
-
+            
             var updated = await _repo.UpdateAsync(acc);
             return updated == null ? null : _mapper.Map<AccountResponse>(updated);
         }
