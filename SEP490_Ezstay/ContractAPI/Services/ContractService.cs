@@ -165,7 +165,7 @@ public class ContractService : IContractService
         if (contract.ContractStatus != ContractStatus.Active)
             return ApiResponse<ContractResponse>.Fail("The contract has not been signed yet, so it cannot be cancelled.");
         
-        contract.ContractStatus = ContractStatus.Cancelled;
+        contract.ContractStatus = ContractStatus.CancelledByOwner;
         contract.UpdatedAt = DateTime.UtcNow;
         contract.Reason = reason;
         await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Available);
@@ -342,22 +342,31 @@ public class ContractService : IContractService
 
         if (contract.ContractStatus == ContractStatus.Cancelled)
             return ApiResponse<ContractResponse>.Fail("Hợp đồng đã bị hủy");
-        
+     
+        var signerProfile = contract.ProfilesInContract
+            .FirstOrDefault(x => x.UserId == userId);
+        if (!signerProfile.IsSigner)
+        {
+            return ApiResponse<ContractResponse>.Fail(
+                "You are not the representative, so you cannot sign the contract."
+            );
+        }
         // if (role.Equals("Owner"))
         // {
         //     contract.OwnerSignature =ownerSignature.Trim('"');
         //     contract.OwnerSignedAt = DateTime.UtcNow;
         // } 
+        
        
             contract.TenantSignature = ownerSignature.Trim('"');
             contract.TenantSignedAt = DateTime.UtcNow;
         
-        if (!string.IsNullOrEmpty(contract.OwnerSignature) && !string.IsNullOrEmpty(contract.TenantSignature))
-        {
-            contract.ContractStatus = ContractStatus.Active;
-            contract.UpdatedAt = DateTime.UtcNow;
-            await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
-        }
+        // if (!string.IsNullOrEmpty(contract.OwnerSignature) && !string.IsNullOrEmpty(contract.TenantSignature))
+        // {
+        //     contract.ContractStatus = ContractStatus.Active;
+        //     contract.UpdatedAt = DateTime.UtcNow;
+        //     await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
+        // }
         await _contractRepository.Update(contract);
         var result = _mapper.Map<ContractResponse>(contract);
         return ApiResponse<ContractResponse>.Success(result, 
@@ -376,7 +385,15 @@ public class ContractService : IContractService
         
             contract.OwnerSignature =ownerSignature.Trim('"');
             contract.OwnerSignedAt = DateTime.UtcNow;
-        
+         
+            // var signerProfile = contract.ProfilesInContract
+            //     .FirstOrDefault(x => x.UserId == ownerId);
+            // if (!signerProfile.IsSigner)
+            // {
+            //     return ApiResponse<ContractResponse>.Fail(
+            //         "You are not the representative, so you cannot sign the contract."
+            //     );
+            // }
         if (!string.IsNullOrEmpty(contract.OwnerSignature) && !string.IsNullOrEmpty(contract.TenantSignature))
         {
             contract.ContractStatus = ContractStatus.Active;

@@ -7,7 +7,7 @@ namespace ReviewAPI.Service.Interface;
 
 public interface IReviewService
 {
-   // IQueryable<ReviewResponse> GetAll();
+   IQueryable<ReviewResponse> GetAll();
    IQueryable<ReviewResponse> GetAllByOwnerId(Guid ownerId);
     Task<bool> ReviewExistsByContractId(Guid contractId);
     Task<ReviewResponse> GetById(Guid id);

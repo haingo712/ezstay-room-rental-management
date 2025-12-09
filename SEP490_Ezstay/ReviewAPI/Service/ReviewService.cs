@@ -26,11 +26,11 @@ public class ReviewService : IReviewService
         _imageService = imageService;
     }
 
-    // public IQueryable<ReviewResponse> GetAll()
-    // {
-    //     var post = _reviewRepository.GetAll();
-    //     return post.ProjectTo<ReviewResponse>(_mapper.ConfigurationProvider);
-    // }
+    public IQueryable<ReviewResponse> GetAll()
+    {
+        var post = _reviewRepository.GetAll();
+        return post.ProjectTo<ReviewResponse>(_mapper.ConfigurationProvider);
+    }
     
     public async Task<ReviewResponse> GetById(Guid id)
     {
