@@ -174,7 +174,23 @@ namespace ContractAPI.Controllers
             return Ok(result);
         }
         
-        
+        [Authorize(Roles = "User")]
+        [HttpPut("{id}/sign-contract")]
+        public async Task<IActionResult> SignContra(Guid id, [FromBody] string userSignature)
+        {
+            try
+            {
+                var role = _tokenService.GetRoleFromClaims(User);
+                var result = await _contractService.SignContract(id, userSignature,role );
+                if (!result.IsSuccess)
+                    return BadRequest(new { message = result.Message });
+                return Ok(result);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(new { message = e.Message });
+            }
+        }
         // hàm này dùng để 2 người kí 
         // [Authorize(Roles = "User")]
         // [HttpPut("{id}/sign-contract")]

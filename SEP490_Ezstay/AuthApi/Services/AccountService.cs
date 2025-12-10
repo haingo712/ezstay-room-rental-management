@@ -89,7 +89,7 @@ namespace AuthApi.Services
                 (RoleEnum.Staff, RoleEnum.Staff) => true,
                 (RoleEnum.Staff, RoleEnum.User) => true,
                 _ => false
-            };
+};
 
             if (!isAllowed)
                 throw new UnauthorizedAccessException("Bạn không có quyền cập nhật tài khoản với vai trò này.");
@@ -163,12 +163,12 @@ namespace AuthApi.Services
             // ✅ So sánh mật khẩu cũ bằng BCrypt
             if (!BCrypt.Net.BCrypt.Verify(dto.OldPassword, account.Password))
             {
-                return "Mật khẩu hiện tại không đúng.";
+                return "The current password is incorrect.";
             }
 
             if (dto.NewPassword == dto.OldPassword)
             {
-                return "Mật khẩu mới không được trùng với mật khẩu hiện tại.";
+                return "The new password must be different from the current password.";
             }
 
             // ✅ Mã hóa mật khẩu mới

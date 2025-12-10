@@ -726,9 +726,11 @@ public class PaymentService : IPaymentService
     public async Task<ApiResponse<bool>> HandleSePayWebhookAsync(CreatePayment request){
       //  var payment = _mapper.Map<Payment>(request);
         // payment.BillId = ExtractBillIdFromContent(request.Content);
+        var billId = ExtractBillIdFromContent(request.Content);
+        
         var payment = new Payment
         {
-            BillId =  ExtractBillIdFromContent(request.Content),
+            BillId = billId,
             TransactionId = request.TransactionId,
             TransferAmount =  request.TransferAmount,
             Content =  request.Content,
@@ -739,10 +741,20 @@ public class PaymentService : IPaymentService
        };
       
         await _paymentRepository.CreateAsync(payment);
-        // await _utilityBillService.MarkBillAsPaidInternalAsync(payment.BillId);
-        if (payment.BillId != Guid.Empty)
+        
+        // Mark bill as paid if billId is valid
+        if (billId != Guid.Empty)
         {
-            await _utilityBillService.MarkBillAsPaidInternalAsync(payment.BillId);
+            var markPaidResult = await _utilityBillService.MarkBillAsPaidInternalAsync(billId);
+            if (!markPaidResult)
+            {
+                // Bill marking failed but payment was recorded
+                return ApiResponse<bool>.Fail($"Payment recorded but failed to mark bill {billId} as paid. Please contact support.");
+            }
+        }
+        else
+        {
+            return ApiResponse<bool>.Fail("Could not extract Bill ID from payment content.");
         }
         
         return ApiResponse<bool>.Success(true,"Payment Successfully");
