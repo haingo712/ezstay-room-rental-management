@@ -68,25 +68,24 @@ public class ContractService : IContractService
     } 
     
     
-    public IQueryable<ContractResponse> GetAllByTenantId(Guid userId)
+    public async Task<List<ContractResponse>> GetAllByTenantId(Guid userId)
     {
         var contracts = _contractRepository.GetAllByTenantId(userId);
         foreach (var contract in contracts)
         {
-            if (contract.CheckoutDate < DateTime.UtcNow.Date &&
-                contract.ContractStatus == ContractStatus.Active)
+            if (contract.CheckoutDate < DateTime.UtcNow.Date && contract.ContractStatus == ContractStatus.Active)
             {
                 contract.ContractStatus = ContractStatus.Expired;
                 contract.UpdatedAt = DateTime.UtcNow;
-                _contractRepository.Update(contract);
+                await  _contractRepository.Update(contract);
+                await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
             }
         }
-
-        return contracts.OrderByDescending(x => x.CreatedAt).ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
-
+        return _mapper.Map<List<ContractResponse>>(contracts.OrderByDescending(x => x.CreatedAt).ToList());
+             
     }
     
-    public IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId)
+    public async Task<List<ContractResponse>> GetAllByOwnerId(Guid ownerId)
     {
         var contracts = _contractRepository.GetAllByOwnerId(ownerId);
         foreach (var contract in contracts)
@@ -96,10 +95,11 @@ public class ContractService : IContractService
             {
                 contract.ContractStatus = ContractStatus.Expired;
                 contract.UpdatedAt = DateTime.UtcNow;
-                _contractRepository.Update(contract);
+                await  _contractRepository.Update(contract);
+                await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
             }
         }
-      return  contracts.OrderByDescending(x=> x.CreatedAt).ProjectTo<ContractResponse>(_mapper.ConfigurationProvider);
+      return _mapper.Map<List<ContractResponse>>(contracts.OrderByDescending(x => x.CreatedAt).ToList()); 
     }
 
     public async Task<ContractResponse?> GetByIdAsync(Guid id)
@@ -557,7 +557,7 @@ public class ContractService : IContractService
             // Get all profiles in contract (ProfilesInContract contains both primary tenant and cohabitants)
             if (contract.ProfilesInContract != null && contract.ProfilesInContract.Any())
             {
-                for (int i = 0; i < contract.ProfilesInContract.Count; i++)
+                for (int i = 1; i < contract.ProfilesInContract.Count; i++)
                 {
                     var profile = contract.ProfilesInContract[i];
                     

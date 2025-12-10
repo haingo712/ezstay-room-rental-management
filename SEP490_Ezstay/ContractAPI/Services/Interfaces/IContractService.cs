@@ -1,7 +1,3 @@
-
-
-
-
 using ContractAPI.DTO.Requests;
 using Shared.DTOs;
 using Shared.DTOs.Contracts.Responses;
@@ -12,8 +8,8 @@ public interface IContractService
 {
     
     Task<ApiResponse<ContractResponse>> SignContract(Guid contractId, string ownerSignature,  string role);
-    IQueryable<ContractResponse> GetAllByTenantId(Guid userId);
-    IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId);
+    Task<List<ContractResponse>> GetAllByTenantId(Guid userId);
+    Task<List<ContractResponse>> GetAllByOwnerId(Guid ownerId);
     Task<ContractResponse?> GetByIdAsync(Guid id);
     Task<ApiResponse<ContractResponse>> Add(Guid ownerId, CreateContract request);
     Task<ApiResponse<bool>> UpdateAsync(Guid id, UpdateContract request);
