@@ -33,6 +33,41 @@ public class ContractService : IContractService
         _accountService = accountService;
         _utilityReadingService = utilityReadingService;
     }
+    public async Task<ApiResponse<ContractResponse>> SignContract(Guid contractId, string ownerSignature, string role)
+    {
+        var contract = await _contractRepository.GetById(contractId);
+        if (contract.ContractStatus == ContractStatus.Active)
+            return ApiResponse<ContractResponse>.Fail("Hợp đồng đã được ký");
+    
+        if (contract.ContractStatus == ContractStatus.Cancelled)
+            return ApiResponse<ContractResponse>.Fail("Hợp đồng đã bị hủy");
+        
+        if (role.Equals("Owner"))
+        {
+            contract.OwnerSignature =ownerSignature.Trim('"');
+            contract.OwnerSignedAt = DateTime.UtcNow;
+        } 
+        if (role.Equals("User"))
+        {
+            contract.TenantSignature = ownerSignature.Trim('"');
+            contract.TenantSignedAt = DateTime.UtcNow;
+        }
+        
+        if (!string.IsNullOrEmpty(contract.OwnerSignature) && !string.IsNullOrEmpty(contract.TenantSignature))
+        {
+            contract.ContractStatus = ContractStatus.Active;
+            contract.UpdatedAt = DateTime.UtcNow;
+            await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
+        }
+        await _contractRepository.Update(contract);
+        var result = _mapper.Map<ContractResponse>(contract);
+        return ApiResponse<ContractResponse>.Success(result, 
+            contract.ContractStatus == ContractStatus.Active 
+                ? "Hợp đồng đã được ký thành công bởi cả hai bên" 
+                : $"Chữ ký {role} đã được lưu");
+    } 
+    
+    
     public IQueryable<ContractResponse> GetAllByTenantId(Guid userId)
     {
         var contracts = _contractRepository.GetAllByTenantId(userId);

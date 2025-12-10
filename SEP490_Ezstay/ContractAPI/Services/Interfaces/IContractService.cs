@@ -10,6 +10,8 @@ using Shared.Enums;
 namespace ContractAPI.Services.Interfaces;
 public interface IContractService
 {
+    
+    Task<ApiResponse<ContractResponse>> SignContract(Guid contractId, string ownerSignature,  string role);
     IQueryable<ContractResponse> GetAllByTenantId(Guid userId);
     IQueryable<ContractResponse> GetAllByOwnerId(Guid ownerId);
     Task<ContractResponse?> GetByIdAsync(Guid id);
