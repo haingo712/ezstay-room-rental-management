@@ -64,22 +64,23 @@ namespace ContractAPI.Controllers
             }
         }
    
-       [Authorize(Roles = "User")]
+      [Authorize(Roles = "User")]
        [HttpGet("my-contract")]
-       [EnableQuery]
-       public IQueryable<ContractResponse> GetContractsByTenantId()
+       public async Task<IActionResult> GetContractsByTenantId()
        {
            var tenantId = _tokenService.GetUserIdFromClaims(User);
-           return _contractService.GetAllByTenantId(tenantId);
+           var contract =await _contractService.GetAllByTenantId(tenantId);
+           return Ok(contract);
        }
        
        [Authorize(Roles = "Owner, User")]
        [HttpGet("all/owner")]
-       [EnableQuery]
-       public IQueryable<ContractResponse> GetContractsByOwnerId()
+       
+       public async Task<IActionResult> GetContractsByOwnerId()
        {
          var ownerId=  _tokenService.GetUserIdFromClaims(User);
-           return _contractService.GetAllByOwnerId(ownerId);
+         var contract =await   _contractService.GetAllByOwnerId(ownerId);
+         return Ok(contract);
        }
        
         // GET: api/Tenant/5
