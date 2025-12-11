@@ -7,6 +7,7 @@ using AuthApi.Repositories.Interfaces;
 using AuthApi.Services.Interfaces;
 using AutoMapper;
 using System.Security.Claims;
+using Shared.DTOs;
 using Shared.Enums;
 
 namespace AuthApi.Services
@@ -104,7 +105,7 @@ namespace AuthApi.Services
             return updated == null ? null : _mapper.Map<AccountResponse>(updated);
         }
 
-        public async Task<AccountResponse> CreateAsync(AccountRequest request)
+        public async Task<ApiResponse<AccountResponse>> CreateAsync(AccountRequest request)
         {
             var creatorRole = GetCurrentUserRole();
 
@@ -122,7 +123,7 @@ namespace AuthApi.Services
 
             var existing = await _repo.GetByEmailAsync(request.Email);
             if (existing != null)
-                throw new InvalidOperationException("Email đã tồn tại.");
+                return ApiResponse<AccountResponse>.Fail("Email Already Exists");
 
             var account = _mapper.Map<Account>(request);
             account.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
@@ -131,7 +132,7 @@ namespace AuthApi.Services
             account.CreateAt = DateTime.UtcNow;
 
             await _repo.CreateAsync(account);
-            return _mapper.Map<AccountResponse>(account);
+            return ApiResponse<AccountResponse>.Success(_mapper.Map<AccountResponse>(account)); 
         }
 
 

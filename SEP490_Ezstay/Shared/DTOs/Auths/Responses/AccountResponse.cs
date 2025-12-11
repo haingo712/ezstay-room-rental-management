@@ -12,6 +12,7 @@ namespace Shared.DTOs.Auths.Responses
         public RoleEnum Role { get; set; }
         public bool IsVerified { get; set; }
         public bool IsBanned { get; set; }
-
+        
+       
     }
 }

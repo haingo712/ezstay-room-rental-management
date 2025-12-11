@@ -273,19 +273,19 @@ public class ContractService : IContractService
     {
         var oldContract = await _contractRepository.GetById(contractId);
         if (oldContract == null)
-            return ApiResponse<ContractResponse>.Fail("Không tìm thấy hợp đồng thuê");
-        
-        if (oldContract.ContractStatus != ContractStatus.Active)
-            return ApiResponse<ContractResponse>.Fail("Chỉ hợp đồng đang hoạt động mới được gia hạn");
+            return ApiResponse<ContractResponse>.Fail("Rental contract not found");
+
+// if (oldContract.ContractStatus != ContractStatus.Active)
+//     return ApiResponse<ContractResponse>.Fail("Only active contracts can be extended");
 
         if (request.CheckoutDate <= oldContract.CheckoutDate)
-            return ApiResponse<ContractResponse>.Fail("Ngày trả phòng mới phải lớn hơn ngày trả phòng hiện tại");
+            return ApiResponse<ContractResponse>.Fail("New checkout date must be later than the current checkout date");
 
         if (request.CheckoutDate < DateTime.UtcNow.Date)
-            return ApiResponse<ContractResponse>.Fail("Ngày trả phòng mới phải lớn hơn ngày hiện tại");
-        
+            return ApiResponse<ContractResponse>.Fail("New checkout date must be later than the current date");
+
         if (request.CheckoutDate < oldContract.CheckinDate.AddMonths(1))
-            return ApiResponse<ContractResponse>.Fail("Ngày trả phòng mới phải cách ngày nhận phòng ít nhất 1 tháng");
+            return ApiResponse<ContractResponse>.Fail("New checkout date must be at least 1 month after the check-in date");
     
         var newContract = new Contract
         {
@@ -294,7 +294,7 @@ public class ContractService : IContractService
             CheckoutDate = request.CheckoutDate,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
-            ContractStatus = ContractStatus.Pending, 
+            ContractStatus = ContractStatus.Active, 
             Notes = request.Notes,
             RoomPrice = oldContract.RoomPrice,
             DepositAmount = oldContract.DepositAmount,
