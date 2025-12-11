@@ -314,6 +314,48 @@ namespace BoardingHouseAPI.Service
 
             return ApiResponse<RatingSummaryResponse>.Success(summary, "Rating statistics successful.");
         }
+public async Task<ApiResponse<OccupancyRateResponse>> GetOwnerOccupancyRateAsync(Guid ownerId)
+        {
+            var boardingHouses = _boardingHouseRepo.GetBoardingHousesByOwnerId(ownerId).ToList();
+            if (!boardingHouses.Any())
+                return ApiResponse<OccupancyRateResponse>.Fail("Owner has no boarding houses.");
+
+            int totalRooms = 0, totalOccupied = 0;
+            var boardingHouseDetails = new List<BoardingHouseOccupancyDetail>();
+
+            foreach (var house in boardingHouses)
+            {
+                var rooms = await _roomService.GetRoomsByHouseIdAsync(house.Id);
+                int houseTotal = rooms?.Count ?? 0;
+                int houseOccupied = rooms?.Count(r => r.RoomStatus == Shared.Enums.RoomStatus.Occupied) ?? 0;
+                double houseOccupancyRate = houseTotal > 0 ? Math.Round((double)houseOccupied / houseTotal * 100, 2) : 0;
+
+                boardingHouseDetails.Add(new BoardingHouseOccupancyDetail
+                {
+                    BoardingHouseId = house.Id,
+                    HouseName = house.HouseName,
+                    TotalRooms = houseTotal,
+                    OccupiedRooms = houseOccupied,
+                    OccupancyRate = houseOccupancyRate
+                });
+
+                totalRooms += houseTotal;
+                totalOccupied += houseOccupied;
+            }
+
+            double overallOccupancyRate = totalRooms > 0 ? Math.Round((double)totalOccupied / totalRooms * 100, 2) : 0;
+
+            return ApiResponse<OccupancyRateResponse>.Success(
+                new OccupancyRateResponse
+                {
+                    OwnerId = ownerId,
+                    TotalRooms = totalRooms,
+                    OccupiedRooms = totalOccupied,
+                    OccupancyRate = overallOccupancyRate,
+                    BoardingHouses = boardingHouseDetails
+                },
+                $"Owner has {boardingHouses.Count} boarding house(s) with occupancy rate of {overallOccupancyRate}%");
+        }
 
     }
 }

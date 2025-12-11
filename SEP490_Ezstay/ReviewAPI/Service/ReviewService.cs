@@ -54,9 +54,10 @@ public class ReviewService : IReviewService
         var contract = await _contractService.GetContractId(contractId);
         if (contract == null)
             return ApiResponse<ReviewResponse>.Fail("Không tìm thấy hợp đồng.");
-        var existingReview = await _reviewRepository.ReviewExistsByContractId(contractId);
-        if (existingReview)
-            return ApiResponse<ReviewResponse>.Fail("Contract Already has review.");
+        // Removed: Allow multiple reviews per contract
+        // var existingReview = await _reviewRepository.ReviewExistsByContractId(contractId);
+        // if (existingReview)
+        //     return ApiResponse<ReviewResponse>.Fail("Contract Already has review.");
         if (contract.CheckoutDate.AddMonths(1) < DateTime.UtcNow)
             return ApiResponse<ReviewResponse>.Fail("It has been over"+contract.CheckoutDate.AddMonths(1) +" month since the contract expired and cannot be reviewed.");
         var review = _mapper.Map<Review>(request);
@@ -68,7 +69,11 @@ public class ReviewService : IReviewService
         review.RoomId = contract.RoomId;
         review.IsHidden = false;
         review.CreatedAt = DateTime.UtcNow;
-        review.ImageUrl = _imageService.UploadMultipleImage(request.ImageUrl).Result;
+        if (request.ImageUrl != null)
+        {
+            review.ImageUrl =await  _imageService.UploadMultipleImage(request.ImageUrl);
+        }
+       
         await _reviewRepository.Add(review);
         var dto = _mapper.Map<ReviewResponse>(review);
         return ApiResponse<ReviewResponse>.Success(dto, "Created Successfully");
@@ -84,8 +89,12 @@ public class ReviewService : IReviewService
         if (review.ReviewDeadline < DateTime.UtcNow)
             return ApiResponse<bool>.Fail("K dc qua" + review.ReviewDeadline + " ngay");
         _mapper.Map(request, review);
+        
         review.UpdatedAt = DateTime.UtcNow;
-        review.ImageUrl = _imageService.UploadMultipleImage(request.ImageUrl).Result;
+        if (request.ImageUrl != null)
+        {
+            review.ImageUrl =await  _imageService.UploadMultipleImage(request.ImageUrl);
+        }
         await _reviewRepository.Update(review);
 
         return ApiResponse<bool>.Success(true, "Update Successfully");

@@ -40,7 +40,11 @@ public class ReviewReplyService: IReviewReplyService
         reviewReply.CreatedAt = DateTime.UtcNow;
         reviewReply.ReviewId = reviewId;
         reviewReply.OwnerId = ownerId;
-        _imageService.UploadMultipleImage(request.Image);
+        if (request.Image != null)
+        {
+          reviewReply.Image =  await  _imageService.UploadMultipleImage(request.Image);
+        }
+       
         await _reviewReplyRepository.Add(reviewReply);
        
         var dto = _mapper.Map<ReviewReplyResponse>(reviewReply);
@@ -61,7 +65,10 @@ public class ReviewReplyService: IReviewReplyService
         _mapper.Map(request, reviewReply);
         reviewReply.UpdatedAt = DateTime.UtcNow;
         await  _reviewReplyRepository.Update(reviewReply);
-        await _imageService.UploadMultipleImage(request.Image);
+        if (request.Image != null)
+        {
+            reviewReply.Image =  await  _imageService.UploadMultipleImage(request.Image);
+        }
         return ApiResponse<bool>.Success(true, "Update Successfully");
     }
 
