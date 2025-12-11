@@ -386,22 +386,8 @@ public class ContractService : IContractService
                 "You are not the representative, so you cannot sign the contract."
             );
         }
-        // if (role.Equals("Owner"))
-        // {
-        //     contract.OwnerSignature =ownerSignature.Trim('"');
-        //     contract.OwnerSignedAt = DateTime.UtcNow;
-        // } 
-        
-       
             contract.TenantSignature = ownerSignature.Trim('"');
             contract.TenantSignedAt = DateTime.UtcNow;
-        
-        // if (!string.IsNullOrEmpty(contract.OwnerSignature) && !string.IsNullOrEmpty(contract.TenantSignature))
-        // {
-        //     contract.ContractStatus = ContractStatus.Active;
-        //     contract.UpdatedAt = DateTime.UtcNow;
-        //     await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
-        // }
         await _contractRepository.Update(contract);
         var result = _mapper.Map<ContractResponse>(contract);
         return ApiResponse<ContractResponse>.Success(result, 
@@ -420,15 +406,6 @@ public class ContractService : IContractService
         
             contract.OwnerSignature =ownerSignature.Trim('"');
             contract.OwnerSignedAt = DateTime.UtcNow;
-         
-            // var signerProfile = contract.ProfilesInContract
-            //     .FirstOrDefault(x => x.UserId == ownerId);
-            // if (!signerProfile.IsSigner)
-            // {
-            //     return ApiResponse<ContractResponse>.Fail(
-            //         "You are not the representative, so you cannot sign the contract."
-            //     );
-            // }
         if (!string.IsNullOrEmpty(contract.OwnerSignature) && !string.IsNullOrEmpty(contract.TenantSignature))
         {
             contract.ContractStatus = ContractStatus.Active;
@@ -442,39 +419,7 @@ public class ContractService : IContractService
                 ? "Hợp đồng đã được ký thành công bởi cả hai bên" 
                 : $"Chữ ký đã được lưu");
     }    
-    // public async Task<ApiResponse<ContractResponse>> SignContract(Guid contractId, string ownerSignature, string role)
-    // {
-    //     var contract = await _contractRepository.GetById(contractId);
-    //     if (contract.ContractStatus == ContractStatus.Active)
-    //         return ApiResponse<ContractResponse>.Fail("Hợp đồng đã được ký");
-    //
-    //     if (contract.ContractStatus == ContractStatus.Cancelled)
-    //         return ApiResponse<ContractResponse>.Fail("Hợp đồng đã bị hủy");
-    //     
-    //     if (role.Equals("Owner"))
-    //     {
-    //         contract.OwnerSignature =ownerSignature.Trim('"');
-    //         contract.OwnerSignedAt = DateTime.UtcNow;
-    //     } 
-    //     if (role.Equals("User"))
-    //     {
-    //         contract.TenantSignature = ownerSignature.Trim('"');
-    //         contract.TenantSignedAt = DateTime.UtcNow;
-    //     }
-    //     
-    //     if (!string.IsNullOrEmpty(contract.OwnerSignature) && !string.IsNullOrEmpty(contract.TenantSignature))
-    //     {
-    //         contract.ContractStatus = ContractStatus.Active;
-    //         contract.UpdatedAt = DateTime.UtcNow;
-    //         await _roomService.UpdateRoomStatusAsync(contract.RoomId, RoomStatus.Occupied);
-    //     }
-    //     await _contractRepository.Update(contract);
-    //     var result = _mapper.Map<ContractResponse>(contract);
-    //     return ApiResponse<ContractResponse>.Success(result, 
-    //         contract.ContractStatus == ContractStatus.Active 
-    //             ? "Hợp đồng đã được ký thành công bởi cả hai bên" 
-    //             : $"Chữ ký {role} đã được lưu");
-    // }
+   
     
     public async Task<ApiResponse<RentalRequestResponse>> Add(Guid ownerId, Guid userId, Guid roomId, CreateRentalRequest request)
     {

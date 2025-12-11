@@ -95,11 +95,12 @@ public class ReviewController : ControllerBase
         return Ok(result);
     }
    
-    [HttpGet("{contractId}/check-exists")]
-    public async Task<IActionResult> ReviewExistsByContractId(Guid contractId)
-    {
-        var result= await _reviewService.ReviewExistsByContractId(contractId);
-        return Ok(result);
-    }
+    // Disabled: Allow multiple reviews per contract
+    // [HttpGet("{contractId}/check-exists")]
+    // public async Task<IActionResult> ReviewExistsByContractId(Guid contractId)
+    // {
+    //     var result= await _reviewService.ReviewExistsByContractId(contractId);
+    //     return Ok(result);
+    // }
    
 }

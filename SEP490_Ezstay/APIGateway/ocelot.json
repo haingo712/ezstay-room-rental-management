@@ -263,7 +263,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/signalR",
+      "UpstreamPathTemplate": "/api/signalR",
       "UpstreamHttpMethod": [
         "Get",
         "Post"
@@ -310,6 +310,42 @@
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []
       }
+    },
+    {
+      "DownstreamPathTemplate": "/api/BoardingHouses/rank",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "boardinghouseapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/BoardingHouses/rank",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/BoardingHouses/{id}/sentiment-feedback",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "boardinghouseapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/BoardingHouses/{id}/sentiment-feedback",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/BoardingHouses/{id}/rating-feedback",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "boardinghouseapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/BoardingHouses/{id}/rating-feedback",
+      "UpstreamHttpMethod": [ "GET" ]
     },
     {
       "DownstreamPathTemplate": "/api/BoardingHouses/{everything}",
@@ -517,6 +553,20 @@
         }
       ],
       "UpstreamPathTemplate": "/api/Review/all/{roomId}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/ReviewReply/review/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "reviewapi",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/ReviewReply/review/{everything}",
       "UpstreamHttpMethod": [
         "GET"
       ]

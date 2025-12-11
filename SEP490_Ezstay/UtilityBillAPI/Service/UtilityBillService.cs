@@ -198,10 +198,21 @@ namespace UtilityBillAPI.Service
 
             var roomInfo = await _roomInfoService.GetRoomInfoAsync(contract.RoomId);
 
+            // Get TenantId: Find the signer who is not the owner
+            // If IdentityProfiles is null/empty, try to get from contract's other identity info
+            var tenantId = contract.IdentityProfiles?
+                .FirstOrDefault(s => s.IsSigner && s.UserId != ownerId)?.UserId ?? Guid.Empty;
+            
+            // If still empty, log warning - deposit bill will be created but tenant won't see it in their bill list
+            if (tenantId == Guid.Empty)
+            {
+                Console.WriteLine($"⚠️ Warning: Could not find TenantId for contract {contractId}. IdentityProfiles count: {contract.IdentityProfiles?.Count ?? 0}");
+            }
+
             var bill = new UtilityBillDTO
             {
                 Id = Guid.NewGuid(),
-                TenantId = contract.IdentityProfiles.FirstOrDefault(s => s.IsSigner && s.UserId != ownerId)?.UserId ?? Guid.Empty,
+                TenantId = tenantId,
                 OwnerId = ownerId,                
                 ContractId = contract.Id,
                 RoomName = roomInfo.RoomName,

@@ -183,6 +183,24 @@ namespace BoardingHouseAPI.Controllers
             return Ok(response);
         }
 
+        [HttpGet("owner/occupancy-rate")]
+        [Authorize(Roles = "Owner")]
+        public async Task<IActionResult> GetOwnerOccupancyRate()
+        {
+            try
+            {
+                var ownerId = _tokenService.GetUserIdFromClaims(User);
+                var response = await _boardingHouseService.GetOwnerOccupancyRateAsync(ownerId);
 
+                if (!response.IsSuccess)
+                    return BadRequest(response);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

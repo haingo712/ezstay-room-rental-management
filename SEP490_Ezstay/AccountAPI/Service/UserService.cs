@@ -19,7 +19,7 @@ namespace AccountAPI.Service
         private readonly HttpClient _http;
         private readonly IUserClaimHelper _userClaimHelper;
 
-    
+
 
         public UserService(
             IUserRepository userRepository,
@@ -38,16 +38,22 @@ namespace AccountAPI.Service
             _userClaimHelper = userClaimHelper;
             _otpClient = otpClient;
             _http = factory.CreateClient("Gateway");
-        
-}
+
+        }
 
         public async Task<bool> CreateProfileAsync(Guid id, CreateUserDTO createUserDto)
         {
             var existingPhone = await _authApiClient.GetByIdAsync(id);
-        
+
             var existingUser = await _userRepository.GetByUserIdAsync(id);
             if (existingUser != null)
             {
+                return false;
+            } 
+             var existingCitizenIdNumber = await _userRepository.GetCitizenIdNumber(createUserDto.CitizenIdNumber);
+            if (existingCitizenIdNumber != null)
+            {
+                Console.WriteLine($"CitizenIdNumber {createUserDto.CitizenIdNumber} đã tồn tại");
                 return false;
             }
             var user = _mapper.Map<User>(createUserDto);
@@ -56,17 +62,18 @@ namespace AccountAPI.Service
             {
                 user.Avatar = await _imageService.UploadImageAsync(createUserDto.Avatar);
             }
+          
             user.FullName = existingPhone.FullName;
             user.Phone = existingPhone.Phone;
             user.Email = existingPhone.Email;
             user.FrontImageUrl = await _imageService.UploadImageAsync(createUserDto.FrontImageUrl);
-            
+
             user.BackImageUrl = await _imageService.UploadImageAsync(createUserDto.BackImageUrl);
 
             user.ProvinceName = await GetProvinceNameAsync(user.ProvinceId) ?? "";
-            
+
             user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
-            
+
             await _userRepository.CreateUserAsync(user);
             return true;
         }
@@ -111,6 +118,7 @@ namespace AccountAPI.Service
             var user = await _userRepository.GetByUserIdAsync(userId);
             if (user == null)
                 return false;
+           
             _mapper.Map(userDto, user);
             // user.ProvinceName = await GetProvinceNameAsync(user.ProvinceId) ?? "";
             // user.WardName = await GetCommuneNameAsync(user.ProvinceId, user.WardId) ?? "";
@@ -151,13 +159,13 @@ namespace AccountAPI.Service
         {
             var Phone = await _userRepository.GetPhone(phone);
             return _mapper.Map<UserResponseDTO>(Phone);
-           
+
         }
         public async Task<UserResponseDTO> GetCitizenIdNumber(string citizenIdNumber)
         {
             var result = await _userRepository.GetCitizenIdNumber(citizenIdNumber);
             return _mapper.Map<UserResponseDTO>(result);
-           
+
         }
 
         public async Task<bool> CheckProfileAsync(Guid id)

@@ -15,5 +15,6 @@ namespace BoardingHouseAPI.Service.Interface
         Task<List<BoardingHouseRankResponse>> GetRankedBoardingHousesAsync(RankType type, string order, int limit);
         Task<ApiResponse<SentimentSummaryResponse>> GetSentimentSummaryAsync(Guid boardingHouseId);
         Task<ApiResponse<RatingSummaryResponse>> GetRatingSummaryAsync(Guid boardingHouseId);
+        Task<ApiResponse<OccupancyRateResponse>> GetOwnerOccupancyRateAsync(Guid ownerId);
     }
 }
