@@ -57,7 +57,9 @@ namespace AuthApi.Controllers
         public async Task<IActionResult> Create([FromBody] AccountRequest request)
         {
             var created = await _service.CreateAsync(request);
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            if (!created.IsSuccess) return BadRequest(created);
+           
+            return CreatedAtAction(nameof(GetById), new { id = created.IsSuccess }, created);
         }
 
         [HttpPut("{id}")]

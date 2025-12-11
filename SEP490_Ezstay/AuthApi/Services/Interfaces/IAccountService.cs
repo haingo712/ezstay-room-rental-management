@@ -1,4 +1,5 @@
 ﻿using AuthApi.DTO.Request;
+using Shared.DTOs;
 using Shared.DTOs.Auths.Responses;
 using Shared.Enums;
 
@@ -6,7 +7,7 @@ namespace AuthApi.Services.Interfaces
 {
     public interface IAccountService
     {
-        Task<AccountResponse> CreateAsync(AccountRequest request);
+        Task<ApiResponse<AccountResponse>> CreateAsync(AccountRequest request);
 
         // Lấy account theo id, tự kiểm tra quyền bên trong service
         Task<AccountResponse?> GetByIdAsync(Guid id);
